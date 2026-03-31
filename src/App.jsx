@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Scene from "./components/Scene";
 import GlassModal from "./components/GlassModal";
+import CategoryLegend from "./components/CategoryLegend";
 
 function App() {
   // selectedOrgan is null when no modal is open, or an organ object when one is clicked
@@ -21,6 +22,8 @@ function App() {
         organ={selectedOrgan}
         onClose={() => setSelectedOrgan(null)}
       />
+
+      <CategoryLegend />
 
       <p className="scene-hint">Drag to orbit · Click a node to explore</p>
     </div>
