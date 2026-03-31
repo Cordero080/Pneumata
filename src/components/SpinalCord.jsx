@@ -2,19 +2,23 @@ import { useRef } from "react";
 import { Line } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 
-function SpinalCord({ organ, onSelect }) {
+function SpinalCord({ organ, onSelect, nodeOpacity = 1 }) {
   const coreRef = useRef();
   const glowRef = useRef();
 
-  // Pulse opacity to simulate a live data bus
+  // Pulse opacity to simulate a live data bus; respects viewMode nodeOpacity
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     const pulse = 0.7 + Math.sin(t * 2.5) * 0.3;
     if (coreRef.current?.material) {
-      coreRef.current.material.opacity = pulse;
+      const target = pulse * nodeOpacity;
+      coreRef.current.material.opacity +=
+        (target - coreRef.current.material.opacity) * 0.08;
     }
     if (glowRef.current?.material) {
-      glowRef.current.material.opacity = pulse * 0.25;
+      const target = pulse * 0.25 * nodeOpacity;
+      glowRef.current.material.opacity +=
+        (target - glowRef.current.material.opacity) * 0.08;
     }
   });
 

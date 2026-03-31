@@ -10,7 +10,7 @@ const CATEGORY_COLORS = {
   spirit: { color: "#ffffff", emissive: "#ffffff" },
 };
 
-function OrganNode({ organ, onSelect, onHover }) {
+function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
   const meshRef = useRef();
   const glowRef = useRef();
   const auraRef = useRef();
@@ -28,10 +28,14 @@ function OrganNode({ organ, onSelect, onHover }) {
     meshRef.current.material.emissiveIntensity =
       base + Math.sin(t * 3 + phase) * 0.5;
 
+    // Smooth opacity transition for view mode changes
+    meshRef.current.material.opacity +=
+      (nodeOpacity - meshRef.current.material.opacity) * 0.08;
+
     if (glowRef.current) {
-      const glowBase = hovered ? 0.22 : 0.1;
-      glowRef.current.material.opacity =
-        glowBase + Math.sin(t * 3 + phase) * 0.04;
+      const glowTarget = (hovered ? 0.22 : 0.1) * nodeOpacity;
+      glowRef.current.material.opacity +=
+        (glowTarget - glowRef.current.material.opacity) * 0.08;
     }
 
     // Spirit aura — expands from scale 1 to 5 on hover
@@ -96,6 +100,9 @@ function OrganNode({ organ, onSelect, onHover }) {
           emissive={emissive}
           emissiveIntensity={2}
           toneMapped={false}
+          transparent
+          opacity={1}
+          depthWrite={false}
         />
       </mesh>
 

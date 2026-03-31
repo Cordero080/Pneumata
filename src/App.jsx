@@ -2,10 +2,11 @@ import { useState } from "react";
 import Scene from "./components/Scene";
 import GlassModal from "./components/GlassModal";
 import CategoryLegend from "./components/CategoryLegend";
+import ViewModeController from "./components/ViewModeController";
 
 function App() {
-  // selectedOrgan is null when no modal is open, or an organ object when one is clicked
   const [selectedOrgan, setSelectedOrgan] = useState(null);
+  const [viewMode, setViewMode] = useState("logic");
 
   return (
     <div className="app">
@@ -14,10 +15,8 @@ function App() {
         <p>Analogical Anatomy</p>
       </header>
 
-      {/* The full-screen 3D canvas */}
-      <Scene onSelect={setSelectedOrgan} />
+      <Scene onSelect={setSelectedOrgan} viewMode={viewMode} />
 
-      {/* Modal — only renders when an organ is selected */}
       <GlassModal
         organ={selectedOrgan}
         onClose={() => setSelectedOrgan(null)}
@@ -25,7 +24,7 @@ function App() {
 
       <CategoryLegend />
 
-      <p className="scene-hint">Drag to orbit · Click a node to explore</p>
+      <ViewModeController viewMode={viewMode} setViewMode={setViewMode} />
     </div>
   );
 }
