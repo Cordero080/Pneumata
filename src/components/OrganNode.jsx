@@ -2,10 +2,23 @@ import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 
+const CATEGORY_COLORS = {
+  logic: { color: "#ffd700", emissive: "#ffaa00" },
+  thermal: { color: "#00f2ff", emissive: "#0088ff" },
+  power: { color: "#ff3131", emissive: "#880000" },
+  digestive: { color: "#39ff14", emissive: "#156600" },
+  spirit: { color: "#ffffff", emissive: "#ffffff" },
+};
+
 function OrganNode({ organ, onSelect, onHover }) {
   const meshRef = useRef();
   const glowRef = useRef();
+  const auraRef = useRef();
   const [hovered, setHovered] = useState(false);
+
+  const { color, emissive } =
+    CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
+  const isSpirit = organ.category === "spirit";
 
   useFrame((state) => {
     if (!meshRef.current) return;
@@ -14,10 +27,22 @@ function OrganNode({ organ, onSelect, onHover }) {
     const base = hovered ? 4 : 2;
     meshRef.current.material.emissiveIntensity =
       base + Math.sin(t * 3 + phase) * 0.5;
+
     if (glowRef.current) {
       const glowBase = hovered ? 0.22 : 0.1;
       glowRef.current.material.opacity =
         glowBase + Math.sin(t * 3 + phase) * 0.04;
+    }
+
+    // Spirit aura — expands from scale 1 to 5 on hover
+    if (isSpirit && auraRef.current) {
+      const targetScale = hovered ? 5 : 1;
+      const cur = auraRef.current.scale.x;
+      const next = cur + (targetScale - cur) * 0.06;
+      auraRef.current.scale.setScalar(next);
+      const targetOpacity = hovered ? 0.1 : 0;
+      auraRef.current.material.opacity +=
+        (targetOpacity - auraRef.current.material.opacity) * 0.06;
     }
   });
 
@@ -39,6 +64,22 @@ function OrganNode({ organ, onSelect, onHover }) {
 
   return (
     <group position={organ.position}>
+      {/* Spirit aura — expanding translucent field */}
+      {isSpirit && (
+        <mesh ref={auraRef} scale={1}>
+          <sphereGeometry args={[0.012, 16, 16]} />
+          <meshStandardMaterial
+            color="#ffffff"
+            emissive="#ffffff"
+            emissiveIntensity={0.3}
+            transparent
+            opacity={0}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </mesh>
+      )}
+
       {/* Core spark */}
       <mesh
         ref={meshRef}
@@ -51,8 +92,8 @@ function OrganNode({ organ, onSelect, onHover }) {
       >
         <sphereGeometry args={[0.012, 16, 16]} />
         <meshStandardMaterial
-          color="#ffd700"
-          emissive="#ffaa00"
+          color={color}
+          emissive={emissive}
           emissiveIntensity={2}
           toneMapped={false}
         />
@@ -62,8 +103,8 @@ function OrganNode({ organ, onSelect, onHover }) {
       <mesh ref={glowRef} scale={hovered ? 3.5 : 2.5}>
         <sphereGeometry args={[0.012, 12, 12]} />
         <meshStandardMaterial
-          color="#ffcc00"
-          emissive="#ff8800"
+          color={color}
+          emissive={emissive}
           emissiveIntensity={1}
           toneMapped={false}
           transparent
@@ -72,7 +113,7 @@ function OrganNode({ organ, onSelect, onHover }) {
         />
       </mesh>
 
-      {/* Side label with connector line — appears outside the body */}
+      {/* Side label with connector line */}
       {hovered && (
         <Html
           center
@@ -94,31 +135,28 @@ function OrganNode({ organ, onSelect, onHover }) {
                 : "translate(8px, -50%)",
             }}
           >
-            {/* Label */}
             <div
               style={{
                 background: "rgba(5, 8, 20, 0.72)",
-                border: "1px solid rgba(255, 200, 0, 0.35)",
+                border: `1px solid ${color}55`,
                 borderRadius: "4px",
                 padding: "3px 10px",
                 fontSize: "10px",
                 fontFamily: "'Orbitron', system-ui, sans-serif",
-                color: "#ffd700",
+                color: color,
                 backdropFilter: "blur(10px)",
                 WebkitBackdropFilter: "blur(10px)",
-                boxShadow: "0 0 10px rgba(255, 180, 0, 0.15)",
+                boxShadow: `0 0 10px ${color}26`,
                 letterSpacing: "0.04em",
               }}
             >
               {organ.organ}
             </div>
-            {/* Connector line */}
             <div
               style={{
                 width: "28px",
                 height: "1px",
-                background:
-                  "linear-gradient(to right, rgba(255,200,0,0.15), rgba(255,200,0,0.5))",
+                background: `linear-gradient(to right, ${color}26, ${color}80)`,
                 flexShrink: 0,
               }}
             />
