@@ -1,63 +1,93 @@
-import { useRef } from "react";
-import { Line } from "@react-three/drei";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
-// Aorta: emerges from left ventricle, arches at T3 level, descends left of spine
-// to bifurcation at L4. z goes anterior→posterior as it descends behind organs.
-const AORTA_POINTS = [
-  [-0.04, 1.3, 0.06], // origin: left ventricle (heart)
-  [-0.02, 1.45, 0.02], // ascending aorta / arch apex (~T3, corrected higher)
-  [0.02, 1.28, -0.02], // proximal descending thoracic (body's left of spine)
-  [0.02, 1.1, -0.04], // mid descending thoracic
-  [0.01, 0.92, -0.02], // abdominal aorta
-  [0.0, 0.8, -0.01], // bifurcation (~L4)
+// CatmullRom control points — aortic root → arch → descending → bifurcation
+// z transitions from anterior (+) at the heart to flush-against-spine (-) as it descends
+const CONTROL_POINTS = [
+  new THREE.Vector3(-0.04, 1.35, 0.08), // aortic root (left ventricle)
+  new THREE.Vector3(-0.02, 1.42, 0.06), // ascending aorta
+  new THREE.Vector3(0.01, 1.38, 0.02), // arch apex — hooks over and descends
+  new THREE.Vector3(0.02, 1.25, -0.02), // proximal descending (anterior spine)
+  new THREE.Vector3(0.02, 1.0, -0.04), // mid descending thoracic
+  new THREE.Vector3(0.01, 0.82, -0.01), // abdominal bifurcation (~L4)
 ];
 
 function AortaLine({ opacity }) {
-  const coreRef = useRef();
+  const tubeRef = useRef();
   const glowRef = useRef();
+  const surgeRef = useRef();
 
-  useFrame(() => {
-    if (!coreRef.current?.material) return;
+  // Curve and geometries are stable — computed once
+  const curve = useMemo(() => new THREE.CatmullRomCurve3(CONTROL_POINTS), []);
 
-    // Smooth opacity transition toward target
-    const mat = coreRef.current.material;
-    mat.opacity += (opacity - mat.opacity) * 0.08;
+  useFrame((state) => {
+    // Surge travels the full path every 2.5 s
+    const t = (state.clock.getElapsedTime() * 0.4) % 1;
 
-    const glowMat = glowRef.current?.material;
-    if (glowMat) {
-      glowMat.opacity += (opacity * 0.3 - glowMat.opacity) * 0.08;
+    if (surgeRef.current) {
+      surgeRef.current.position.copy(curve.getPoint(t));
+      // Fade in/out near the endpoints so it doesn't pop
+      const fade = Math.min(t * 10, 1, (1 - t) * 10);
+      surgeRef.current.material.opacity +=
+        (fade * opacity - surgeRef.current.material.opacity) * 0.12;
     }
 
-    // Positive increment = dashes travel from start→end (heart → bifurcation)
-    if (mat.dashOffset !== undefined) {
-      mat.dashOffset += 0.006;
+    if (tubeRef.current) {
+      tubeRef.current.material.opacity +=
+        (opacity * 0.9 - tubeRef.current.material.opacity) * 0.08;
+    }
+
+    if (glowRef.current) {
+      glowRef.current.material.opacity +=
+        (opacity * 0.12 - glowRef.current.material.opacity) * 0.08;
     }
   });
 
   return (
     <group>
-      {/* Core arterial trace */}
-      <Line
-        ref={coreRef}
-        points={AORTA_POINTS}
-        color="#ff3131"
-        lineWidth={1.8}
-        transparent
-        opacity={opacity}
-        dashed
-        dashSize={0.018}
-        gapSize={0.012}
-      />
-      {/* Soft red glow */}
-      <Line
-        ref={glowRef}
-        points={AORTA_POINTS}
-        color="#880000"
-        lineWidth={7}
-        transparent
-        opacity={opacity * 0.3}
-      />
+      {/* Outer glow shell — BackSide so it halos outward from the tube */}
+      <mesh ref={glowRef}>
+        <tubeGeometry args={[curve, 80, 0.008, 8, false]} />
+        <meshStandardMaterial
+          color="#ff2020"
+          emissive="#ff2020"
+          emissiveIntensity={1}
+          transparent
+          opacity={opacity * 0.12}
+          side={THREE.BackSide}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Core cable — dark red body with emissive glow */}
+      <mesh ref={tubeRef}>
+        <tubeGeometry args={[curve, 80, 0.003, 8, false]} />
+        <meshStandardMaterial
+          color="#330000"
+          emissive="#ff2020"
+          emissiveIntensity={2}
+          transparent
+          opacity={opacity * 0.9}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Traveling surge — bright orb that rides the curve */}
+      <mesh ref={surgeRef}>
+        <sphereGeometry args={[0.008, 10, 10]} />
+        <meshStandardMaterial
+          color="#ffffff"
+          emissive="#ff5050"
+          emissiveIntensity={10}
+          transparent
+          opacity={0}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
     </group>
   );
 }
