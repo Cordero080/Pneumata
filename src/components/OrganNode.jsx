@@ -10,8 +10,12 @@ const CATEGORY_COLORS = {
   spirit: { color: "#ffffff", emissive: "#ffffff" },
 };
 
+// Tiny inner core radius — everything else is scaled up from this
+const R = 0.005;
+
 function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
-  const meshRef = useRef();
+  const coreRef = useRef();
+  const coronaRef = useRef();
   const glowRef = useRef();
   const auraRef = useRef();
   const [hovered, setHovered] = useState(false);
@@ -20,31 +24,46 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
     CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
   const isSpirit = organ.category === "spirit";
 
+  // Spirit core pulses faster and brighter
+  const coreIntensity = isSpirit ? 8 : 4;
+  const pulseSpeed = isSpirit ? 4 : 3;
+  const glowBaseScale = isSpirit ? 5 : 3.5;
+  const glowHoverScale = isSpirit ? 7 : 5;
+
   useFrame((state) => {
-    if (!meshRef.current) return;
+    if (!coreRef.current) return;
     const t = state.clock.getElapsedTime();
     const phase = organ.position[0];
-    const base = hovered ? 4 : 2;
-    meshRef.current.material.emissiveIntensity =
-      base + Math.sin(t * 3 + phase) * 0.5;
+    const pulse = Math.sin(t * pulseSpeed + phase);
 
-    // Smooth opacity transition for view mode changes
-    meshRef.current.material.opacity +=
-      (nodeOpacity - meshRef.current.material.opacity) * 0.08;
+    // Core brightness animation
+    coreRef.current.material.emissiveIntensity =
+      coreIntensity + pulse * (isSpirit ? 3 : 1);
 
+    // Smooth opacity toward viewMode target
+    coreRef.current.material.opacity +=
+      (nodeOpacity - coreRef.current.material.opacity) * 0.08;
+
+    // Corona breathes
+    if (coronaRef.current) {
+      const coronaTarget = (hovered ? 0.45 : 0.25) * nodeOpacity;
+      coronaRef.current.material.opacity +=
+        (coronaTarget - coronaRef.current.material.opacity) * 0.08;
+    }
+
+    // Outer glow pulses
     if (glowRef.current) {
-      const glowTarget = (hovered ? 0.22 : 0.1) * nodeOpacity;
+      const glowTarget = ((hovered ? 0.14 : 0.07) + pulse * 0.03) * nodeOpacity;
       glowRef.current.material.opacity +=
         (glowTarget - glowRef.current.material.opacity) * 0.08;
     }
 
-    // Spirit aura — expands from scale 1 to 5 on hover
+    // Spirit aura expands on hover
     if (isSpirit && auraRef.current) {
-      const targetScale = hovered ? 5 : 1;
+      const targetScale = hovered ? 8 : 1;
       const cur = auraRef.current.scale.x;
-      const next = cur + (targetScale - cur) * 0.06;
-      auraRef.current.scale.setScalar(next);
-      const targetOpacity = hovered ? 0.1 : 0;
+      auraRef.current.scale.setScalar(cur + (targetScale - cur) * 0.06);
+      const targetOpacity = hovered ? 0.12 : 0;
       auraRef.current.material.opacity +=
         (targetOpacity - auraRef.current.material.opacity) * 0.06;
     }
@@ -63,19 +82,18 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
     document.body.style.cursor = "default";
   };
 
-  // Labels for left-side organs (x <= 0) go LEFT; right-side go RIGHT
   const isLeft = organ.position[0] <= 0;
 
   return (
     <group position={organ.position}>
-      {/* Spirit aura — expanding translucent field */}
+      {/* Spirit expanding aura field */}
       {isSpirit && (
         <mesh ref={auraRef} scale={1}>
-          <sphereGeometry args={[0.012, 16, 16]} />
+          <sphereGeometry args={[R, 16, 16]} />
           <meshStandardMaterial
             color="#ffffff"
             emissive="#ffffff"
-            emissiveIntensity={0.3}
+            emissiveIntensity={0.5}
             transparent
             opacity={0}
             depthWrite={false}
@@ -84,9 +102,35 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
         </mesh>
       )}
 
-      {/* Core spark */}
+      {/* Outer soft glow — large, very faint */}
+      <mesh ref={glowRef} scale={hovered ? glowHoverScale : glowBaseScale}>
+        <sphereGeometry args={[R, 8, 8]} />
+        <meshStandardMaterial
+          color={color}
+          transparent
+          opacity={0.07}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Corona — mid-layer radiation ring */}
+      <mesh ref={coronaRef} scale={hovered ? 2.2 : 1.6}>
+        <sphereGeometry args={[R, 12, 12]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={emissive}
+          emissiveIntensity={1.5}
+          transparent
+          opacity={0.25}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Tiny bright inner core — the actual "node" */}
       <mesh
-        ref={meshRef}
+        ref={coreRef}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
         onClick={(e) => {
@@ -94,28 +138,14 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
           onSelect(organ);
         }}
       >
-        <sphereGeometry args={[0.012, 16, 16]} />
+        <sphereGeometry args={[R, 16, 16]} />
         <meshStandardMaterial
           color={color}
           emissive={emissive}
-          emissiveIntensity={2}
+          emissiveIntensity={coreIntensity}
           toneMapped={false}
           transparent
           opacity={1}
-          depthWrite={false}
-        />
-      </mesh>
-
-      {/* Soft outer halo */}
-      <mesh ref={glowRef} scale={hovered ? 3.5 : 2.5}>
-        <sphereGeometry args={[0.012, 12, 12]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={emissive}
-          emissiveIntensity={1}
-          toneMapped={false}
-          transparent
-          opacity={0.1}
           depthWrite={false}
         />
       </mesh>

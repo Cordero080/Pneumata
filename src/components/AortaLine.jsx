@@ -29,9 +29,9 @@ function AortaLine({ opacity }) {
       glowMat.opacity += (opacity * 0.3 - glowMat.opacity) * 0.08;
     }
 
-    // Animate dash offset to simulate blood flowing downward from heart
+    // Positive increment = dashes travel from start→end (heart → bifurcation)
     if (mat.dashOffset !== undefined) {
-      mat.dashOffset -= 0.004;
+      mat.dashOffset += 0.006;
     }
   });
 
@@ -46,8 +46,8 @@ function AortaLine({ opacity }) {
         transparent
         opacity={opacity}
         dashed
-        dashSize={0.035}
-        gapSize={0.025}
+        dashSize={0.018}
+        gapSize={0.012}
       />
       {/* Soft red glow */}
       <Line
