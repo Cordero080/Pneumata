@@ -1,0 +1,24 @@
+@use 'variables' as v;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: v.$bg-base;
+  color: v.$text-primary;
+  font-family: v.$font-sans;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}

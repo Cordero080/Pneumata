@@ -1,0 +1,146 @@
+@use 'variables' as v;
+
+// Transparent click-catcher — lets the 3D canvas show through
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: all;
+  animation: fadeIn v.$transition-base;
+}
+
+// Side panel — slides in from the right, glass effect
+.modal-card {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(400px, 88vw);
+  background: rgba(8, 12, 28, 0.55);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-left: 1px solid rgba(255, 200, 0, 0.18);
+  padding: 2.5rem 1.75rem 2rem;
+  overflow-y: auto;
+  box-shadow:
+    -8px 0 40px rgba(0, 0, 0, 0.35),
+    inset 1px 0 0 rgba(255, 215, 0, 0.06);
+  animation: slideIn v.$transition-base;
+  pointer-events: all;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 200, 0, 0.2);
+  color: rgba(255, 200, 0, 0.5);
+  font-size: 0.85rem;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition:
+    color v.$transition-fast,
+    background v.$transition-fast;
+
+  &:hover {
+    color: #ffd700;
+    background: rgba(255, 200, 0, 0.1);
+  }
+}
+
+.modal-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 200, 0, 0.15);
+  flex-wrap: wrap;
+}
+
+.modal-organ {
+  color: #ffd700;
+  text-shadow: 0 0 18px rgba(255, 200, 0, 0.4);
+  font-size: 1rem;
+}
+
+.modal-arrow {
+  color: rgba(255, 200, 0, 0.25);
+  font-weight: 300;
+}
+
+.modal-hardware {
+  color: rgba(160, 190, 255, 0.85);
+  font-size: 0.78rem;
+}
+
+// Dual-column functional definitions
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+
+  h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 200, 0, 0.4);
+    margin-bottom: 0.6rem;
+  }
+
+  p {
+    font-size: 0.82rem;
+    line-height: 1.75;
+    color: rgba(220, 230, 255, 0.75);
+  }
+}
+
+.modal-divider {
+  width: 1px;
+  background: rgba(255, 200, 0, 0.12);
+  align-self: stretch;
+}
+
+// Synthesis strip
+.modal-synthesis {
+  background: rgba(255, 215, 0, 0.05);
+  border-left: 2px solid rgba(255, 200, 0, 0.35);
+  border-radius: 0 6px 6px 0;
+  padding: 0.875rem 1rem;
+
+  p {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: rgba(220, 230, 255, 0.65);
+    line-height: 1.7;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to   { opacity: 1 }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
