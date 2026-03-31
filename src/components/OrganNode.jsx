@@ -29,9 +29,9 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
     meshRef.current.material.emissiveIntensity =
       base + Math.sin(t * 3 + phase) * 0.5;
 
-    // Smooth opacity for view mode
+    // Smooth opacity for view mode (target is 0.18 × nodeOpacity)
     meshRef.current.material.opacity +=
-      (nodeOpacity - meshRef.current.material.opacity) * 0.08;
+      (0.18 * nodeOpacity - meshRef.current.material.opacity) * 0.08;
 
     if (glowRef.current) {
       const glowTarget = (hovered ? 0.22 : 0.1) * nodeOpacity;
@@ -120,10 +120,10 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
         <meshStandardMaterial
           color={color}
           emissive={emissive}
-          emissiveIntensity={2}
+          emissiveIntensity={1}
           toneMapped={false}
           transparent
-          opacity={1}
+          opacity={0.18}
           depthWrite={false}
         />
       </mesh>
