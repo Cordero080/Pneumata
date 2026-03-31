@@ -23,7 +23,7 @@ function Scene({ onSelect, viewMode }) {
 
   return (
     <Canvas
-      camera={{ position: [0, 0.875, 3.5], fov: 45 }}
+      camera={{ position: [0, 0.875, 2.5], fov: 48 }}
       style={{ width: "100%", height: "100%" }}
       gl={{ alpha: true }}
     >
@@ -72,7 +72,7 @@ function Scene({ onSelect, viewMode }) {
         enablePan={false}
         autoRotate
         autoRotateSpeed={0.5}
-        minDistance={1.5}
+        minDistance={1.2}
         maxDistance={7}
         target={[0, 0.9, 0]}
       />
