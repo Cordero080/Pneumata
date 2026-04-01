@@ -4,6 +4,16 @@
 
 ---
 
+| Logic mode | Power mode |
+|---|---|
+| ![Logic mode — all 37 nodes visible, color-coded by category](docs/screenshots/01-logic-mode.png) | ![Power mode — red emissive glow, circulatory orbs active](docs/screenshots/02-power-mode.png) |
+
+| Unified mode (side profile — spine visible) | About modal — tabbed philosophy and navigation |
+|---|---|
+| ![Unified mode side profile showing color-coded vertebral discs along the spine](docs/screenshots/03-unified-mode.png) | ![About modal with Philosophy and How to Navigate tabs](docs/screenshots/05-about-modal.png) |
+
+---
+
 ## What it is
 
 The human body and a computer are not metaphorically similar — they are architecturally isomorphic. The heart is a PSU. The spinal cord is a PCIe bus. The kidneys are a virtual memory manager. The immune system is an IDS with edge nodes, a SIEM, and a definition update engine.
