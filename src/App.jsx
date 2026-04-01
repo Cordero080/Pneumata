@@ -33,6 +33,8 @@ function App() {
       <CategoryLegend />
 
       <ViewModeController viewMode={viewMode} setViewMode={setViewMode} />
+
+      <p className="app-copyright">© 2026 Pablo Cordero</p>
     </div>
   );
 }

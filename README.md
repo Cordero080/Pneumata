@@ -62,3 +62,7 @@ Opens at `http://localhost:5173`.
 npm run build    # production build
 npm run preview  # preview production build
 ```
+
+---
+
+&copy; 2026 Pablo Cordero. All rights reserved.
