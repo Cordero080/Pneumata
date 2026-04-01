@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
+import * as THREE from "three";
 
 const CATEGORY_COLORS = {
   logic: { color: "#ffd700", emissive: "#ffaa00" },
@@ -10,12 +11,24 @@ const CATEGORY_COLORS = {
   spirit: { color: "#ffffff", emissive: "#ffffff" },
 };
 
-function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
+function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1, pulseRef }) {
   const meshRef = useRef();
   const glowRef = useRef();
   const innerRef = useRef();
   const auraRef = useRef();
   const [hovered, setHovered] = useState(false);
+  const lastBeatCount = useRef(0);
+
+  // Three radiating rings — only animated on the heart node
+  const ring1Ref = useRef();
+  const ring2Ref = useRef();
+  const ring3Ref = useRef();
+  // Each ring: { scale, opacity }
+  const ringStates = useRef([
+    { scale: 0, opacity: 0 },
+    { scale: 0, opacity: 0 },
+    { scale: 0, opacity: 0 },
+  ]);
 
   const { color, emissive } =
     CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
@@ -29,26 +42,44 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
     meshRef.current.material.emissiveIntensity =
       base + Math.sin(t * 3 + phase) * 0.5;
 
-    // Smooth opacity for view mode (target is 0.18 × nodeOpacity)
     meshRef.current.material.opacity +=
       (0.18 * nodeOpacity - meshRef.current.material.opacity) * 0.08;
 
+    // Fire rings when beat counter advances
+    if (pulseRef && pulseRef.current !== lastBeatCount.current) {
+      lastBeatCount.current = pulseRef.current;
+      // Launch rings at staggered starting scales for layered ripple
+      ringStates.current[0] = { scale: 1.0, opacity: 0.9 };
+      ringStates.current[1] = { scale: 0.5, opacity: 0.75 };
+      ringStates.current[2] = { scale: 0.1, opacity: 0.6 };
+    }
+
+    // Animate rings: expand + fade
+    const ringRefs = [ring1Ref, ring2Ref, ring3Ref];
+    ringRefs.forEach((ref, i) => {
+      if (!ref.current) return;
+      const rs = ringStates.current[i];
+      rs.scale += 0.08;
+      rs.opacity *= 0.945;
+      ref.current.scale.setScalar(rs.scale);
+      ref.current.material.opacity = rs.opacity * nodeOpacity;
+    });
+
     if (glowRef.current) {
       const glowTarget = (hovered ? 0.22 : 0.1) * nodeOpacity;
+      glowRef.current.scale.setScalar(hovered ? 3.5 : 2.5);
       glowRef.current.material.opacity +=
         (glowTarget - glowRef.current.material.opacity) * 0.08;
     }
 
-    // Inner bright core — pulses independently, slightly faster
     if (innerRef.current) {
-      const innerIntensity = isSpirit ? 12 : 6;
+      const innerBase = isSpirit ? 12 : 6;
       innerRef.current.material.emissiveIntensity =
-        innerIntensity + Math.sin(t * 5 + phase) * (isSpirit ? 4 : 2);
+        innerBase + Math.sin(t * 5 + phase) * (isSpirit ? 4 : 2);
       innerRef.current.material.opacity +=
         (nodeOpacity - innerRef.current.material.opacity) * 0.08;
     }
 
-    // Spirit aura
     if (isSpirit && auraRef.current) {
       const targetScale = hovered ? 5 : 1;
       const cur = auraRef.current.scale.x;
@@ -92,8 +123,50 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
         </mesh>
       )}
 
-      {/* Soft outer halo — same as original */}
-      <mesh ref={glowRef} scale={hovered ? 3.5 : 2.5}>
+      {/* Radiating heartbeat rings — only rendered on heart node */}
+      {pulseRef && (
+        <>
+          {/* Ring 1 — faces front (XY plane) */}
+          <mesh ref={ring1Ref}>
+            <ringGeometry args={[0.013, 0.022, 48]} />
+            <meshBasicMaterial
+              color="#ff3131"
+              transparent
+              opacity={0}
+              depthWrite={false}
+              toneMapped={false}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          {/* Ring 2 — tilted 60° for depth */}
+          <mesh ref={ring2Ref} rotation={[Math.PI / 3, 0, 0]}>
+            <ringGeometry args={[0.013, 0.022, 48]} />
+            <meshBasicMaterial
+              color="#ff6060"
+              transparent
+              opacity={0}
+              depthWrite={false}
+              toneMapped={false}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          {/* Ring 3 — tilted 90° (horizontal) */}
+          <mesh ref={ring3Ref} rotation={[Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.013, 0.022, 48]} />
+            <meshBasicMaterial
+              color="#ff9090"
+              transparent
+              opacity={0}
+              depthWrite={false}
+              toneMapped={false}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        </>
+      )}
+
+      {/* Soft outer halo */}
+      <mesh ref={glowRef}>
         <sphereGeometry args={[0.012, 12, 12]} />
         <meshStandardMaterial
           color={color}
@@ -106,7 +179,7 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
         />
       </mesh>
 
-      {/* Main node sphere — same as original */}
+      {/* Main node sphere */}
       <mesh
         ref={meshRef}
         onPointerOver={handlePointerOver}
@@ -128,7 +201,7 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1 }) {
         />
       </mesh>
 
-      {/* Small bright inner core — new addition */}
+      {/* Small bright inner core */}
       <mesh ref={innerRef}>
         <sphereGeometry args={[0.004, 12, 12]} />
         <meshStandardMaterial

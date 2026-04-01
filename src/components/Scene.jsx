@@ -1,24 +1,31 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import OrganNode from "./OrganNode";
 import SpinalCord from "./SpinalCord";
 import LungVolume from "./LungVolume";
 import AnatomyModel from "./AnatomyModel";
-import AortaLine from "./AortaLine";
+import BodyCirculation from "./BodyCirculation";
 import { organs } from "../data/organs";
 
 const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
 const RIGHT_LUNG_POS = [0.12, 1.22, 0.05];
 
-// Opacity values per viewMode
-const NODE_OPACITY = { logic: 1.0, power: 0.08, unified: 0.7 };
 const CIRC_OPACITY = { logic: 0.0, power: 1.0, unified: 0.65 };
+
+// In power mode: power-category nodes are fully visible, others fade out.
+// In logic mode: power-category nodes fade out, all others are full.
+// In unified: everything at 0.7.
+function getNodeOpacity(organ, viewMode) {
+  if (viewMode === "power") return organ.category === "power" ? 1.0 : 0.06;
+  if (viewMode === "logic") return organ.category === "power" ? 0.06 : 1.0;
+  return 0.7;
+}
 
 function Scene({ onSelect, viewMode }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
+  const heartbeatRef = useRef(0);
 
-  const nodeOpacity = NODE_OPACITY[viewMode] ?? 1.0;
   const circOpacity = CIRC_OPACITY[viewMode] ?? 0.0;
 
   return (
@@ -32,7 +39,7 @@ function Scene({ onSelect, viewMode }) {
       <pointLight position={[-3, 1.5, -2]} intensity={1} color="#bf00ff" />
       <pointLight position={[0, 1, 3]} intensity={0.6} color="#aaccff" />
 
-      <AnatomyModel />
+      <AnatomyModel viewMode={viewMode} />
 
       {/* Lung volumes */}
       <LungVolume
@@ -45,7 +52,7 @@ function Scene({ onSelect, viewMode }) {
       />
 
       {/* Circulatory layer */}
-      <AortaLine opacity={circOpacity} />
+      <BodyCirculation opacity={circOpacity} heartbeatRef={heartbeatRef} />
 
       {/* Organ nodes */}
       {organs.map((organ) =>
@@ -54,7 +61,7 @@ function Scene({ onSelect, viewMode }) {
             key={organ.id}
             organ={organ}
             onSelect={onSelect}
-            nodeOpacity={nodeOpacity}
+            nodeOpacity={getNodeOpacity(organ, viewMode)}
           />
         ) : (
           <OrganNode
@@ -62,7 +69,8 @@ function Scene({ onSelect, viewMode }) {
             organ={organ}
             onSelect={onSelect}
             onHover={setHoveredOrganId}
-            nodeOpacity={nodeOpacity}
+            nodeOpacity={getNodeOpacity(organ, viewMode)}
+            pulseRef={organ.id === "heart" ? heartbeatRef : undefined}
           />
         ),
       )}
