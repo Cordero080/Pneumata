@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import OrganNode from "./OrganNode";
@@ -24,7 +24,11 @@ function getNodeOpacity(organ, viewMode) {
 
 function Scene({ onSelect, viewMode }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
+  const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [spinePoints, setSpinePoints] = useState(null);
   const heartbeatRef = useRef(0);
+  const handleSpineExtracted = useCallback((pts) => setSpinePoints(pts), []);
+  const handleCategoryHover = useCallback((cat) => setHoveredCategory(cat), []);
 
   const circOpacity = CIRC_OPACITY[viewMode] ?? 0.0;
 
@@ -39,7 +43,10 @@ function Scene({ onSelect, viewMode }) {
       <pointLight position={[-3, 1.5, -2]} intensity={1} color="#bf00ff" />
       <pointLight position={[0, 1, 3]} intensity={0.6} color="#aaccff" />
 
-      <AnatomyModel viewMode={viewMode} />
+      <AnatomyModel
+        viewMode={viewMode}
+        onSpineExtracted={handleSpineExtracted}
+      />
 
       {/* Lung volumes */}
       <LungVolume
@@ -62,6 +69,9 @@ function Scene({ onSelect, viewMode }) {
             organ={organ}
             onSelect={onSelect}
             nodeOpacity={getNodeOpacity(organ, viewMode)}
+            dynamicPoints={spinePoints}
+            hoveredCategory={hoveredCategory}
+            onCategoryHover={handleCategoryHover}
           />
         ) : (
           <OrganNode
@@ -71,6 +81,8 @@ function Scene({ onSelect, viewMode }) {
             onHover={setHoveredOrganId}
             nodeOpacity={getNodeOpacity(organ, viewMode)}
             pulseRef={organ.id === "heart" ? heartbeatRef : undefined}
+            hoveredCategory={hoveredCategory}
+            onCategoryHover={handleCategoryHover}
           />
         ),
       )}
@@ -79,7 +91,7 @@ function Scene({ onSelect, viewMode }) {
         enableZoom
         enablePan={false}
         autoRotate
-        autoRotateSpeed={0.5}
+        autoRotateSpeed={1.2}
         minDistance={1.2}
         maxDistance={7}
         target={[0, 0.9, 0]}

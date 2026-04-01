@@ -9,9 +9,20 @@ const CATEGORY_COLORS = {
   power: { color: "#ff3131", emissive: "#880000" },
   digestive: { color: "#39ff14", emissive: "#156600" },
   spirit: { color: "#ffffff", emissive: "#ffffff" },
+  sensory: { color: "#ff8c00", emissive: "#cc6600" },
+  renal: { color: "#b06bff", emissive: "#7700cc" },
+  immune: { color: "#00e5cc", emissive: "#007a6e" },
 };
 
-function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1, pulseRef }) {
+function OrganNode({
+  organ,
+  onSelect,
+  onHover,
+  nodeOpacity = 1,
+  pulseRef,
+  hoveredCategory,
+  onCategoryHover,
+}) {
   const meshRef = useRef();
   const glowRef = useRef();
   const innerRef = useRef();
@@ -34,11 +45,14 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1, pulseRef }) {
     CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
   const isSpirit = organ.category === "spirit";
 
+  const isExternallyHighlighted =
+    !hovered && hoveredCategory === organ.category;
+
   useFrame((state) => {
     if (!meshRef.current) return;
     const t = state.clock.getElapsedTime();
     const phase = organ.position[0];
-    const base = hovered ? 4 : 2;
+    const base = hovered ? 4 : isExternallyHighlighted ? 3.5 : 2;
     meshRef.current.material.emissiveIntensity =
       base + Math.sin(t * 3 + phase) * 0.5;
 
@@ -66,8 +80,11 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1, pulseRef }) {
     });
 
     if (glowRef.current) {
-      const glowTarget = (hovered ? 0.22 : 0.1) * nodeOpacity;
-      glowRef.current.scale.setScalar(hovered ? 3.5 : 2.5);
+      const glowTarget =
+        (hovered ? 0.22 : isExternallyHighlighted ? 0.18 : 0.1) * nodeOpacity;
+      glowRef.current.scale.setScalar(
+        hovered ? 3.5 : isExternallyHighlighted ? 3.0 : 2.5,
+      );
       glowRef.current.material.opacity +=
         (glowTarget - glowRef.current.material.opacity) * 0.08;
     }
@@ -94,12 +111,14 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1, pulseRef }) {
     e.stopPropagation();
     setHovered(true);
     onHover?.(organ.id);
+    onCategoryHover?.(organ.category);
     document.body.style.cursor = "pointer";
   };
 
   const handlePointerOut = () => {
     setHovered(false);
     onHover?.(null);
+    onCategoryHover?.(null);
     document.body.style.cursor = "default";
   };
 
@@ -258,7 +277,9 @@ function OrganNode({ organ, onSelect, onHover, nodeOpacity = 1, pulseRef }) {
               style={{
                 width: "28px",
                 height: "1px",
-                background: `linear-gradient(to right, ${color}26, ${color}80)`,
+                background: isLeft
+                  ? `linear-gradient(to left, ${color}26, ${color}80)`
+                  : `linear-gradient(to right, ${color}26, ${color}80)`,
                 flexShrink: 0,
               }}
             />

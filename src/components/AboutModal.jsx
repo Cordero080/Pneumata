@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const CATEGORIES = [
   {
     color: "#ffd700",
@@ -26,7 +28,32 @@ const CATEGORIES = [
   },
 ];
 
+const NAV_ITEMS = [
+  {
+    icon: "◎",
+    action: "Click any node",
+    desc: "Opens a panel showing the organ's biological function, hardware analog, and philosophical synthesis.",
+  },
+  {
+    icon: "◈",
+    action: "Hover any node or disc",
+    desc: "Highlights the spinal bus lanes that organ system routes through — and vice versa. The backbone lights up with its category color.",
+  },
+  {
+    icon: "⬡",
+    action: "Click any vertebral disc",
+    desc: "Each disc is a bus arbitration layer. Click to see which spinal level it occupies, what it innervates, and its hardware analog.",
+  },
+  {
+    icon: "◻",
+    action: "Use the view modes",
+    desc: "Logic isolates the neural network. Power isolates the circulatory grid and activates the energy nodes. Unified shows all systems simultaneously.",
+  },
+];
+
 function AboutModal({ onClose }) {
+  const [tab, setTab] = useState("philosophy");
+
   return (
     <div className="about-overlay" onClick={onClose}>
       <div className="about-card" onClick={(e) => e.stopPropagation()}>
@@ -37,78 +64,116 @@ function AboutModal({ onClose }) {
         <div className="about-eyebrow">Analogical Anatomy</div>
         <h2 className="about-title">Pneumata</h2>
 
-        <p className="about-lead">
-          The human body is a machine. Not metaphorically — architecturally.
-          Every organ is a subsystem. Every fluid is a bus. Every heartbeat is a
-          clock cycle distributing power to the network.
-        </p>
-
-        <p className="about-body">
-          Pneumata maps the biological to the computational: the brain as CPU,
-          the heart as PSU, the lungs as cooling, the gut as storage. The goal
-          is not to reduce life to hardware — it is to reveal that hardware was
-          always modeled on life.
-        </p>
-
-        <p className="about-body">
-          The circulatory system is the power rail. Watch the energy nodes leave
-          the heart and trace the full circuit — cranium, arms, torso, legs —
-          before returning. Every organ along that path draws from the same
-          source.
-        </p>
-
-        <div className="about-divider" />
-
-        <div className="about-modes">
-          <div className="about-mode">
-            <span className="about-mode-label" style={{ color: "#ffd700" }}>
-              Logic
-            </span>
-            <span className="about-mode-desc">
-              The neural network. Processing, memory, signal.
-            </span>
-          </div>
-          <div className="about-mode">
-            <span className="about-mode-label" style={{ color: "#ff3131" }}>
-              Power
-            </span>
-            <span className="about-mode-desc">
-              The circulatory grid. Energy distribution from the heart outward.
-            </span>
-          </div>
-          <div className="about-mode">
-            <span className="about-mode-label" style={{ color: "#aaccff" }}>
-              Unified
-            </span>
-            <span className="about-mode-desc">
-              All systems at once. The full machine, alive.
-            </span>
-          </div>
+        {/* Tab bar */}
+        <div className="about-tabs">
+          <button
+            className={`about-tab${tab === "philosophy" ? " about-tab--active" : ""}`}
+            onClick={() => setTab("philosophy")}
+          >
+            Philosophy
+          </button>
+          <button
+            className={`about-tab${tab === "navigate" ? " about-tab--active" : ""}`}
+            onClick={() => setTab("navigate")}
+          >
+            How to Navigate
+          </button>
         </div>
 
-        <div className="about-divider" />
+        {tab === "philosophy" && (
+          <>
+            <p className="about-lead">
+              The human body is a machine. Not metaphorically — architecturally.
+              Every organ is a subsystem. Every fluid is a bus. Every heartbeat
+              is a clock cycle distributing power to the network.
+            </p>
 
-        <div className="about-categories">
-          {CATEGORIES.map(({ color, label, desc }) => (
-            <div key={label} className="about-cat-row">
-              <span
-                className="about-cat-dot"
-                style={{ background: color, boxShadow: `0 0 6px ${color}` }}
-              />
-              <div>
-                <span className="about-cat-label" style={{ color }}>
-                  {label}
+            <p className="about-body">
+              Pneumata maps the biological to the computational: the brain as
+              CPU, the heart as PSU, the lungs as cooling, the gut as storage.
+              The goal is not to reduce life to hardware — it is to reveal that
+              hardware was always modeled on life.
+            </p>
+
+            <p className="about-body">
+              The circulatory system is the power rail. Watch the energy nodes
+              leave the heart and trace the full circuit — cranium, arms, torso,
+              legs — before returning. Every organ along that path draws from
+              the same source.
+            </p>
+
+            <div className="about-divider" />
+
+            <div className="about-modes">
+              <div className="about-mode">
+                <span className="about-mode-label" style={{ color: "#ffd700" }}>
+                  Logic
                 </span>
-                <span className="about-cat-desc">{desc}</span>
+                <span className="about-mode-desc">
+                  The neural network. Processing, memory, signal.
+                </span>
+              </div>
+              <div className="about-mode">
+                <span className="about-mode-label" style={{ color: "#ff3131" }}>
+                  Power
+                </span>
+                <span className="about-mode-desc">
+                  The circulatory grid. Energy distribution from the heart
+                  outward.
+                </span>
+              </div>
+              <div className="about-mode">
+                <span className="about-mode-label" style={{ color: "#aaccff" }}>
+                  Unified
+                </span>
+                <span className="about-mode-desc">
+                  All systems at once. The full machine, alive.
+                </span>
               </div>
             </div>
-          ))}
-        </div>
 
-        <p className="about-footer">
-          Click any node to explore the analogy. The white node at the apex is
-          Pneuma — the point where the system becomes aware of itself.
-        </p>
+            <div className="about-divider" />
+
+            <div className="about-categories">
+              {CATEGORIES.map(({ color, label, desc }) => (
+                <div key={label} className="about-cat-row">
+                  <span
+                    className="about-cat-dot"
+                    style={{
+                      background: color,
+                      boxShadow: `0 0 6px ${color}`,
+                    }}
+                  />
+                  <div>
+                    <span className="about-cat-label" style={{ color }}>
+                      {label}
+                    </span>
+                    <span className="about-cat-desc">{desc}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="about-footer">
+              Click any node to explore the analogy. The white node at the apex
+              is Pneuma — the point where the system becomes aware of itself.
+            </p>
+          </>
+        )}
+
+        {tab === "navigate" && (
+          <div className="about-nav-list">
+            {NAV_ITEMS.map(({ icon, action, desc }) => (
+              <div key={action} className="about-nav-item">
+                <span className="about-nav-icon">{icon}</span>
+                <div>
+                  <div className="about-nav-action">{action}</div>
+                  <div className="about-nav-desc">{desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -40,6 +40,14 @@ function GlassModal({ organ, onClose }) {
         <div className="modal-synthesis">
           <p>{organ.synthesis}</p>
         </div>
+
+        {/* Bus Lane: spinal innervation → hardware channel analogy */}
+        {organ.spinalConnection && (
+          <div className="modal-bus-lane">
+            <h3>Bus Lane</h3>
+            <p>{organ.spinalConnection}</p>
+          </div>
+        )}
       </div>
     </div>
   );
