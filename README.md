@@ -6,11 +6,11 @@
 
 | Logic mode | Power mode |
 |---|---|
-| ![Logic mode — all 37 nodes visible, color-coded by category](docs/screenshots/01-logic-mode.png) | ![Power mode — red emissive glow, circulatory orbs active](docs/screenshots/02-power-mode.png) |
+| ![Logic mode — all 37 nodes visible, color-coded by category](public/screenshots/01-logic-mode.png) | ![Power mode — red emissive glow, circulatory orbs active](public/screenshots/02-power-mode.png) |
 
 | Unified mode (side profile — spine visible) | About modal — tabbed philosophy and navigation |
 |---|---|
-| ![Unified mode side profile showing color-coded vertebral discs along the spine](docs/screenshots/03-unified-mode.png) | ![About modal with Philosophy and How to Navigate tabs](docs/screenshots/05-about-modal.png) |
+| ![Unified mode side profile showing color-coded vertebral discs along the spine](public/screenshots/03-unified-mode.png) | ![About modal with Philosophy and How to Navigate tabs](public/screenshots/05-about-modal.png) |
 
 ---
 
