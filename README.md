@@ -8,9 +8,17 @@
 |---|---|
 | ![Logic mode — all 37 nodes visible, color-coded by category](public/screenshots/01-logic-mode.png) | ![Power mode — red emissive glow, circulatory orbs active](public/screenshots/02-power-mode.png) |
 
-| Unified mode (side profile — spine visible) | About modal — tabbed philosophy and navigation |
+| Breathing mode | Unified mode |
 |---|---|
-| ![Unified mode side profile showing color-coded vertebral discs along the spine](public/screenshots/03-unified-mode.png) | ![About modal with Philosophy and How to Navigate tabs](public/screenshots/05-about-modal.png) |
+| ![Breathing mode — body mesh shifts blue to cyan with each breath cycle](public/screenshots/06-breathing-mode.png) | ![Unified mode — all systems active, organ nodes and spinal discs visible](public/screenshots/09-unified-dramatic.png) |
+
+| Ribcage close-up — Power mode | Chest close-up — Breathing mode |
+|---|---|
+| ![Power mode close-up of ribcage showing red volumetric glow and circulatory layer](public/screenshots/07-ribcage-closeup.png) | ![Breathing mode chest close-up showing the blue-cyan oxygen pulse permeating through the mesh](public/screenshots/10-breathing-closeup.png) |
+
+| About modal — tabbed philosophy and navigation |  |
+|---|---|
+| ![About modal with Philosophy and How to Navigate tabs](public/screenshots/05-about-modal.png) | |
 
 ---
 
@@ -33,7 +41,8 @@ The philosophical source of truth is [`docs/analog.md`](docs/analog.md), which c
 - **Bidirectional spine-to-organ highlighting** — hovering any organ node illuminates its spinal bus lanes; hovering any disc illuminates the organ nodes it innervates
 - **Clickable vertebral discs** — each disc opens a modal with its spinal level, innervation target, biological description (fibrocartilaginous cushion, foraminal spacing), and hardware analog (bus arbitration and signal isolation layer)
 - **GlassModal with Bus Lane section** — clicking any node shows bio function, hardware function, synthesis, and the specific spinal channel assignment with PCIe lane analogy
-- **View mode switching** — Logic (neural network), Power (circulatory grid with traveling energy nodes and heartbeat rings), Unified (all systems)
+- **View mode switching** — Logic (neural network), Power (circulatory grid), Breathing (pulmonary cycle), Unified (all systems)
+- **Breathing mode** — body mesh color-shifts blue (deoxygenated, inhale) → cyan (oxygenated, peak) in sync with a 0.25Hz breath cycle; lung nodes flash at oxygenation moment
 - **Traveling circulation orbs** — two energy nodes circuit the full body on closed loops; the heart node radiates expanding rings on each pass
 - **Tabbed About modal** — Philosophy tab and How to Navigate tab for first-time onboarding
 

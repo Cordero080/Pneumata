@@ -31,6 +31,24 @@ const CATEGORIES = [
     label: "Digestive",
     desc: "Processing & Filtering",
   },
+  {
+    key: "sensory",
+    color: "#ff8c00",
+    label: "Sensory",
+    desc: "I/O & Signal Transduction",
+  },
+  {
+    key: "renal",
+    color: "#b06bff",
+    label: "Renal",
+    desc: "Filtration & Memory Mgmt",
+  },
+  {
+    key: "immune",
+    color: "#00e5cc",
+    label: "Immune",
+    desc: "Defense & Threat Response",
+  },
 ];
 
 function CategoryLegend() {

@@ -1,6 +1,7 @@
 const MODES = [
   { key: "logic", label: "Logic", color: "#ffd700" },
   { key: "power", label: "Power", color: "#ff3131" },
+  { key: "breathing", label: "Breathing", color: "#ffeea0" },
   { key: "unified", label: "Unified", color: "#aaccff" },
 ];
 

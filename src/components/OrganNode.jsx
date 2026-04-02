@@ -22,6 +22,8 @@ function OrganNode({
   pulseRef,
   hoveredCategory,
   onCategoryHover,
+  breathingRef,
+  viewMode,
 }) {
   const meshRef = useRef();
   const glowRef = useRef();
@@ -58,6 +60,14 @@ function OrganNode({
 
     meshRef.current.material.opacity +=
       (0.18 * nodeOpacity - meshRef.current.material.opacity) * 0.08;
+
+    // Breathing scale pulse — lung nodes only, Power Mode only
+    if (breathingRef && viewMode === "power") {
+      const targetScale = 1 + breathingRef.current * 0.08;
+      const cur = meshRef.current.scale.x;
+      const next = cur + (targetScale - cur) * 0.06;
+      meshRef.current.scale.setScalar(next);
+    }
 
     // Fire rings when beat counter advances
     if (pulseRef && pulseRef.current !== lastBeatCount.current) {

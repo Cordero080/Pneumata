@@ -55,7 +55,13 @@ const HEART_POS = new THREE.Vector3(-0.04, 1.3, 0.06);
 const HEART_TRIGGER_DIST = 0.06;
 
 // One traveling orb + PointLight on a closed loop
-function CircuitOrb({ curve, phaseOffset, opacity, heartbeatRef }) {
+function CircuitOrb({
+  curve,
+  phaseOffset,
+  opacity,
+  heartbeatRef,
+  lastBeatTimeRef,
+}) {
   const orbRef = useRef();
   const lightRef = useRef();
   const wasNear = useRef(false);
@@ -65,10 +71,17 @@ function CircuitOrb({ curve, phaseOffset, opacity, heartbeatRef }) {
     const t = (state.clock.getElapsedTime() * 0.22 + phaseOffset) % 1;
     const point = curve.getPoint(t);
 
-    // Increment counter each time orb enters heart zone — heart node watches for changes
+    // Increment counter each time orb enters heart zone — shared cooldown prevents
+    // the closing segment from double-firing and both orbs hitting back-to-back
     if (heartbeatRef) {
       const near = point.distanceTo(HEART_POS) < HEART_TRIGGER_DIST;
-      if (near && !wasNear.current) heartbeatRef.current += 1;
+      if (near && !wasNear.current) {
+        const now = state.clock.getElapsedTime();
+        if (now - lastBeatTimeRef.current > 1.5) {
+          heartbeatRef.current += 1;
+          lastBeatTimeRef.current = now;
+        }
+      }
       wasNear.current = near;
     }
 
@@ -121,6 +134,9 @@ function BodyCirculation({ opacity, heartbeatRef }) {
     [],
   );
 
+  // Shared cooldown — prevents closing-segment double-fires and back-to-back beats
+  const lastBeatTimeRef = useRef(-999);
+
   return (
     <group>
       {/* Left circuit — starts at phase 0 */}
@@ -129,6 +145,7 @@ function BodyCirculation({ opacity, heartbeatRef }) {
         phaseOffset={0}
         opacity={opacity}
         heartbeatRef={heartbeatRef}
+        lastBeatTimeRef={lastBeatTimeRef}
       />
       {/* Right circuit — starts half a loop behind so they're always opposite */}
       <CircuitOrb
@@ -136,6 +153,7 @@ function BodyCirculation({ opacity, heartbeatRef }) {
         phaseOffset={0.5}
         opacity={opacity}
         heartbeatRef={heartbeatRef}
+        lastBeatTimeRef={lastBeatTimeRef}
       />
     </group>
   );

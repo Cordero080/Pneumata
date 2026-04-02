@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -66,9 +66,24 @@ function sampleSpinePoints(scene, numBins = 24) {
 
 const TARGET_HEIGHT = 1.75;
 
-function AnatomyModel({ viewMode, onSpineExtracted }) {
+// Pre-created to avoid per-frame allocation — lerped each frame in useFrame
+const BREATH_BLUE = new THREE.Color("#334499"); // deoxygenated blood in transit
+const BREATH_CYAN = new THREE.Color("#b0e8ff"); // oxygenated at peak
+
+function AnatomyModel({
+  viewMode,
+  onSpineExtracted,
+  heartbeatRef,
+  breathingRef,
+}) {
   const { scene } = useGLTF("/male-body.glb");
   const materialRef = useRef(null);
+  const bloodMatRef = useRef(null);
+  const bloodPulseRef = useRef(0);
+  const lastBeatCountRef = useRef(0);
+  const [bloodScene, setBloodScene] = useState(null);
+  const breathMatRef = useRef(null);
+  const [breathScene, setBreathScene] = useState(null);
 
   useEffect(() => {
     const box = new THREE.Box3().setFromObject(scene);
@@ -114,6 +129,46 @@ function AnatomyModel({ viewMode, onSpineExtracted }) {
     // Sample posterior-midline vertices to auto-trace the vertebral column
     const spinePoints = sampleSpinePoints(scene);
     if (spinePoints && onSpineExtracted) onSpineExtracted(spinePoints);
+
+    // Blood volumetric layer — cloned mesh with additive blending
+    const bloodMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color("#4d1515"),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      opacity: 0,
+      toneMapped: false,
+    });
+    bloodMatRef.current = bloodMat;
+
+    const clone = scene.clone(true);
+    clone.traverse((child) => {
+      if (child.isMesh) {
+        child.material = bloodMat;
+        child.renderOrder = 1;
+      }
+    });
+    setBloodScene(clone);
+
+    // Breath volumetric layer — color-shifts blue→cyan with breathingRef
+    const breathMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color("#334499"),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      opacity: 0,
+      toneMapped: false,
+    });
+    breathMatRef.current = breathMat;
+
+    const breathClone = scene.clone(true);
+    breathClone.traverse((child) => {
+      if (child.isMesh) {
+        child.material = breathMat;
+        child.renderOrder = 2;
+      }
+    });
+    setBreathScene(breathClone);
   }, [scene]);
 
   useFrame((state) => {
@@ -125,14 +180,54 @@ function AnatomyModel({ viewMode, onSpineExtracted }) {
     if (viewMode === "power") base = 0.55;
     else if (viewMode === "unified") base = 0.25;
 
-    const pulse = base > 0 ? Math.sin(t * 1.2) * 0.15 * base : 0;
-    const target = base + pulse;
+    if (viewMode === "breathing") {
+      materialRef.current.emissiveIntensity = 0;
+    } else {
+      const pulse = base > 0 ? Math.sin(t * 1.2) * 0.15 * base : 0;
+      const target = base + pulse;
+      materialRef.current.emissiveIntensity +=
+        (target - materialRef.current.emissiveIntensity) * 0.05;
+    }
 
-    materialRef.current.emissiveIntensity +=
-      (target - materialRef.current.emissiveIntensity) * 0.05;
+    // Blood volumetric pulse — synced to heartbeatRef counter
+    if (!bloodMatRef.current) return;
+
+    if (heartbeatRef && heartbeatRef.current !== lastBeatCountRef.current) {
+      lastBeatCountRef.current = heartbeatRef.current;
+      bloodPulseRef.current = 0.35;
+    }
+
+    if (viewMode === "power") {
+      bloodPulseRef.current *= 0.94;
+      const ambient = Math.sin(t * 1.2) * 0.008 + 0.012;
+      bloodMatRef.current.opacity = bloodPulseRef.current + ambient;
+    } else if (viewMode === "breathing") {
+      bloodPulseRef.current = 0;
+      bloodMatRef.current.opacity = 0;
+    } else {
+      bloodPulseRef.current *= 0.9;
+      bloodMatRef.current.opacity = bloodPulseRef.current * 0.3;
+    }
+
+    // Breath color layer — blue (inhale/deoxygenated) → cyan (peak/oxygenated)
+    if (!breathMatRef.current) return;
+    const isBreathActive = viewMode === "breathing" || viewMode === "unified";
+    const breathe = breathingRef?.current ?? 0;
+    if (isBreathActive) {
+      breathMatRef.current.color.lerpColors(BREATH_BLUE, BREATH_CYAN, breathe);
+      breathMatRef.current.opacity = breathe * 0.14;
+    } else {
+      breathMatRef.current.opacity = 0;
+    }
   });
 
-  return <primitive object={scene} />;
+  return (
+    <>
+      <primitive object={scene} />
+      {bloodScene && <primitive object={bloodScene} />}
+      {breathScene && <primitive object={breathScene} />}
+    </>
+  );
 }
 
 useGLTF.preload("/male-body.glb");
