@@ -2,6 +2,8 @@
 @use 'base';
 @use 'modal';
 
+@import url("https://use.typekit.net/bcf3pbe.css");
+
 // === App Shell ===
 
 .app {
@@ -14,34 +16,53 @@
 
 .app-header {
   position: absolute;
-  left: 2rem;
+  left: -14rem;
   top: 50%;
-  transform: translateY(-50%) rotate(-90deg);
-  transform-origin: center center;
+  transform: translateY(-50%);
   z-index: 10;
   pointer-events: none;
-  white-space: nowrap;
+}
+
+.header-panel {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1.5rem;
+  padding: 1rem 2rem;
+  background: rgba(40, 55, 80, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform: rotate(-90deg);
+  transform-origin: center center;
+  white-space: nowrap;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
 
   h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.5rem;
+    font-family: "tachyon", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 1.7rem;
     font-weight: 900;
-    letter-spacing: 0.35em;
+    letter-spacing: 0.55em;
     text-transform: uppercase;
-    color: #000;
+    color: rgba(230, 240, 255, 0.95);
   }
 
   p {
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.5rem;
+    font-size: 0.55rem;
     font-weight: 400;
     letter-spacing: 0.5em;
     text-transform: uppercase;
-    color: rgba(0, 0, 0, 0.45);
+    color: rgba(160, 185, 220, 0.4);
   }
 }
 
@@ -102,7 +123,7 @@
 
 .app-copyright {
   position: fixed;
-  bottom: 1.75rem;
+  bottom: 0.75rem;
   left: 2rem;
   z-index: 50;
   font-family: 'Orbitron', sans-serif;
@@ -122,14 +143,8 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 4px;
+  gap: 0;
   z-index: 50;
-  background: rgba(5, 8, 20, 0.55);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 40px;
-  padding: 4px;
 }
 
 .view-btn {
@@ -138,15 +153,45 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 7px 18px;
-  border-radius: 40px;
-  border: 1px solid transparent;
+  padding: 10px 22px;
+  border: none;
   cursor: pointer;
-  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  background: transparent;
-  color: rgba(180, 200, 230, 0.35);
+  background: rgba(40, 55, 80, 0.45);
+  color: rgba(160, 185, 220, 0.4);
+  transition: color 0.2s ease, background 0.2s ease, filter 0.2s ease;
+
+  // First button: top-right & bottom-left chamfers (original shape)
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+
+  // Subsequent buttons: concave inward notch on the left side
+  // Top-left triangle fills button 1's chamfer gap, left edge starts at 14px below the notch
+  &:not(:first-child) {
+    margin-left: -11px;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 14px) 0,
+      100% 14px,
+      100% 100%,
+      14px 100%,
+      14px 14px
+    );
+  }
 
   &:hover:not(.view-btn--active) {
-    color: rgba(180, 200, 230, 0.65);
+    color: rgba(180, 200, 230, 0.7);
+    background: rgba(55, 70, 95, 0.6);
+  }
+
+  &--active {
+    color: rgba(230, 240, 255, 0.95);
+    background: rgba(55, 70, 95, 0.75);
+    z-index: 1;
   }
 }

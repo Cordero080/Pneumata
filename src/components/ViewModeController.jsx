@@ -17,10 +17,8 @@ function ViewModeController({ viewMode, setViewMode }) {
             style={
               active
                 ? {
-                    color,
-                    background: `${color}18`,
-                    boxShadow: `0 0 14px ${color}44`,
-                    borderColor: `${color}55`,
+                    borderBottom: `2px solid ${color}`,
+                    boxShadow: `0 2px 8px ${color}66, inset 0 -4px 12px ${color}15`,
                   }
                 : {}
             }
