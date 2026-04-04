@@ -10,6 +10,7 @@ function App() {
   const [viewMode, setViewMode] = useState("logic");
   const [showNerves, setShowNerves] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const aboutRef = useRef(null);
 
   const handleTilt = useCallback((e) => {
@@ -27,10 +28,17 @@ function App() {
   }, []);
 
   return (
-    <div className="app">
+    <div className={`app${darkMode ? " app--dark" : ""}`}>
       <header className="app-header">
         <div className="header-strip">
-          <div className="header-accent header-accent--top" />
+          <div className="header-accent header-accent--top">
+            <button
+              className={`mode-toggle-btn${darkMode ? " mode-toggle-btn--active" : ""}`}
+              onClick={() => setDarkMode((d) => !d)}
+            >
+              {darkMode ? "✦" : "☾"}
+            </button>
+          </div>
           <div className="header-panel">
             <h1>Pneumata</h1>
             <p>Analogical Anatomy</p>
@@ -53,6 +61,7 @@ function App() {
         onSelect={setSelectedOrgan}
         viewMode={viewMode}
         showNerves={showNerves}
+        darkMode={darkMode}
       />
 
       <GlassModal

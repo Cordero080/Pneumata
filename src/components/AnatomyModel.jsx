@@ -75,6 +75,7 @@ function AnatomyModel({
   onSpineExtracted,
   heartbeatRef,
   breathingRef,
+  darkMode,
 }) {
   const { scene } = useGLTF("/male-body.glb");
   const materialRef = useRef(null);
@@ -170,6 +171,33 @@ function AnatomyModel({
     });
     setBreathScene(breathClone);
   }, [scene]);
+
+  // Swap material properties when darkMode changes
+  useEffect(() => {
+    const mat = materialRef.current;
+    if (!mat) return;
+    if (darkMode) {
+      mat.color.set("#030306");
+      mat.metalness = 0.92;
+      mat.roughness = 0.08;
+      mat.transmission = 0;
+      mat.opacity = 0.82;
+      mat.iridescence = 0.45;
+      mat.iridescenceIOR = 1.32;
+      mat.iridescenceThicknessRange = [120, 280];
+      mat.clearcoat = 0.9;
+      mat.clearcoatRoughness = 0.08;
+    } else {
+      mat.color.set("#050505");
+      mat.metalness = 0;
+      mat.roughness = 0.2;
+      mat.transmission = 0.9;
+      mat.opacity = 0.4;
+      mat.iridescence = 0;
+      mat.clearcoat = 0;
+    }
+    mat.needsUpdate = true;
+  }, [darkMode]);
 
   useFrame((state) => {
     if (!materialRef.current) return;

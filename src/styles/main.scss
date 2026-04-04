@@ -18,7 +18,7 @@
   position: absolute;
   left: -14rem;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-62%);
   z-index: 10;
   pointer-events: none;
 
@@ -32,14 +32,18 @@
   transform: rotate(-90deg);
   transform-origin: center center;
   white-space: nowrap;
+  filter: drop-shadow(0 0 4px rgba(140, 171, 255, 0.434));
 }
 
 .header-accent {
   background: rgba(40, 55, 80, 0.45);
+  border: none;
+  cursor: default;
 
   &--top {
     width: 50px;
     margin-right: -11px;
+    position: relative;
     clip-path: polygon(
       0 0,
       calc(100% - 14px) 0,
@@ -48,6 +52,11 @@
       14px 100%,
       0 calc(100% - 14px)
     );
+  }
+
+  &--active {
+    color: rgba(230, 240, 255, 0.95);
+    background: rgba(30, 40, 65, 0.8);
   }
 
   &--bottom {
@@ -62,6 +71,43 @@
       14px 14px,
       0 0
     );
+  }
+}
+
+.mode-toggle-btn {
+  position: absolute;
+  inset: 0;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: rgba(160, 185, 220, 0.55);
+  background: transparent;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  transition: color 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    color: rgba(200, 220, 255, 0.9);
+    background: rgba(55, 70, 95, 0.4);
+  }
+
+  &--active {
+    color: rgba(230, 240, 255, 0.95);
   }
 }
 
@@ -119,6 +165,37 @@
 
 // === Category Legend ===
 
+// Dark mode badge overrides
+.app--dark {
+  .header-accent {
+    background: rgba(20, 30, 50, 0.35);
+    filter: drop-shadow(0 0 0.5px rgba(180, 200, 230, 0.35));
+  }
+  .header-panel {
+    background: rgba(51, 57, 96, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    filter: drop-shadow(0 0 0.5px rgba(180, 200, 230, 0.35));
+    h1 { color: rgb(210, 225, 255); }
+    p   { color: rgba(150, 175, 215, 0.769); }
+  }
+  .view-btn {
+    background: rgba(15, 22, 40, 0.38);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    filter: drop-shadow(0 0 0.5px rgba(17, 38, 71, 0.3));
+    &--active {
+      background: rgba(30, 45, 75, 0.55);
+      filter: drop-shadow(0 0 0.5px rgba(180, 200, 230, 0.5));
+    }
+    &:hover:not(.view-btn--active) {
+      background: rgba(25, 35, 60, 0.48);
+    }
+  }
+}
+
+// === Category Legend ===
+
 .category-legend {
   position: fixed;
   bottom: 3.5rem;
@@ -127,8 +204,6 @@
   flex-direction: column;
   gap: 10px;
   z-index: 50;
-
-
 }
 
 .legend-row {
@@ -201,6 +276,8 @@
   z-index: 1;
 }
 
+// === Dark Mode Toggle ===
+
 // === Copyright ===
 
 .app-copyright {
@@ -248,7 +325,6 @@
   color: rgba(160, 185, 220, 0.4);
   transition: color 0.2s ease, background 0.2s ease, filter 0.2s ease;
 
-  // First button: top-right & bottom-left chamfers (original shape)
   clip-path: polygon(
     0 0,
     calc(100% - 14px) 0,
@@ -258,8 +334,6 @@
     0 calc(100% - 14px)
   );
 
-  // Subsequent buttons: concave inward notch on the left side
-  // Top-left triangle fills button 1's chamfer gap, left edge starts at 14px below the notch
   &:not(:first-child) {
     margin-left: -11px;
     clip-path: polygon(
@@ -283,7 +357,6 @@
     z-index: 1;
   }
 
-  // Smaller accent-style NET toggle — interlocks with main button chain
   &--net {
     font-size: 6.5px;
     padding: 10px 14px;

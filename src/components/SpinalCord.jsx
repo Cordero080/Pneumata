@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { Line } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -99,6 +99,7 @@ function SpinalCord({
   const coreRefs = useRef([]);
   const glowRefs = useRef([]);
   const discRefs = useRef([]);
+  const groupRef = useRef();
 
   // Sync hoveredCategory into a ref so useFrame can read it without stale closure
   const hoveredCategoryRef = useRef(null);
@@ -204,31 +205,52 @@ function SpinalCord({
 
       // Transverse processes: two halves with central gap, offset posteriorly to attach at arch
       const canalHalf = radius * 0.7;
-      // Lumbar processes are stubbier/wider, cervical are narrower
-      const transHalfLen = radius * 0.85 + tNorm * radius * 0.3;
+      // Smooth anatomical length profile across all 24 levels:
+      //   Cervical  → moderate (~0.75)
+      //   T4–T6     → narrowest dip (~0.47)
+      //   T8–T12    → gradual rise
+      //   L1–L5     → widest peak (~0.82)
+      //   S1–S5     → smooth sacralFade to near-zero
+      const p = tNorm;
+      const baseProfile =
+        0.62 +
+        0.15 * Math.cos(p * 2 * Math.PI + 0.5) +
+        0.55 * Math.pow(Math.max(0, p - 0.55), 1.5);
+      const sacralFade = p > 0.82 ? 1 - Math.pow((p - 0.82) / 0.18, 1.5) : 1;
+      const transHalfLen = radius * Math.max(0.12, baseProfile * sacralFade);
+
+      // Radius: lumbar = wide flat blade; thoracic/cervical = narrow with costal knob at tip
+      const isLumbar = p > 0.62 && p <= 0.82;
+      const isSacral = p > 0.82;
+      const transRadiusTip = isLumbar ? radius * 0.4 : isSacral ? 0.001 : 0.004;
+      const transRadiusBase = isLumbar
+        ? radius * 0.12
+        : isSacral
+          ? 0.001
+          : 0.002;
       const transOffset = canalHalf + transHalfLen / 2;
       // Shift posteriorly so they attach at the pedicles behind the body
       const postShift = posterior.clone().multiplyScalar(radius * 0.55);
 
-      // Superior pitch: thoracic processes angle upward most (~15°), cervical/lumbar near-horizontal
-      // Rotate around global Z axis so all vertebrae pitch consistently
-      const transPitch = Math.sin(tNorm * Math.PI) * 0.26;
+      // Thoracic processes angle slightly inferiorly (downward), not superiorly.
+      // Negative angle on Z rotates +X toward -Y (downward) for right process.
+      const transPitch = Math.sin(tNorm * Math.PI) * 0.2;
       const pitchQuat = new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 0, 1),
-        transPitch,
+        -transPitch, // negative = inferior tilt on right side
       );
-      // Right process: tip at +X, base at -X; taper outward
+      // Right process: tip at +X (radiusTop), base at -X (radiusBottom)
       const rightTransQuat = new THREE.Quaternion()
         .setFromUnitVectors(_Y, _X)
         .premultiply(pitchQuat);
-      // Left process: tip at -X — mirror so taper is still tip-outward
+      // Left process: tip at -X — mirror pitch direction
       const _X_neg = new THREE.Vector3(-1, 0, 0);
       const leftTransQuat = new THREE.Quaternion()
         .setFromUnitVectors(_Y, _X_neg)
         .premultiply(
           new THREE.Quaternion().setFromAxisAngle(
             new THREE.Vector3(0, 0, 1),
-            -transPitch,
+            transPitch, // positive = inferior tilt mirrored on left
           ),
         );
 
@@ -292,6 +314,8 @@ function SpinalCord({
         spinousLen,
         spinousCenter,
         transHalfLen,
+        transRadiusTip,
+        transRadiusBase,
         leftTransQuat,
         rightTransQuat,
         leftTrans,
@@ -302,8 +326,15 @@ function SpinalCord({
     });
   }, [pts]);
 
+  // Force spine to render on top of the body mesh in all view modes
+  useEffect(() => {
+    groupRef.current?.traverse((o) => {
+      o.renderOrder = 2;
+    });
+  }, [vertebrae, pts]);
+
   return (
-    <group>
+    <group ref={groupRef}>
       {/* Segmented PCIe trace — gaps at each disc level */}
       {segments.map((seg, i) => (
         <Line
@@ -314,6 +345,7 @@ function SpinalCord({
           lineWidth={1.5}
           transparent
           opacity={0.8}
+          depthTest={false}
         />
       ))}
       {segments.map((seg, i) => (
@@ -325,6 +357,7 @@ function SpinalCord({
           lineWidth={8}
           transparent
           opacity={0.2}
+          depthTest={false}
         />
       ))}
       {/* Vertebral body glow — faint bone-white cylinder at each inter-disc space */}
@@ -340,6 +373,8 @@ function SpinalCord({
             spinousLen,
             spinousCenter,
             transHalfLen,
+            transRadiusTip,
+            transRadiusBase,
             leftTransQuat,
             rightTransQuat,
             leftTrans,
@@ -353,27 +388,23 @@ function SpinalCord({
             {/* Vertebral body — waisted lathe profile */}
             <mesh position={mid} quaternion={quat}>
               <primitive object={bodyGeo} attach="geometry" />
-              <meshStandardMaterial
+              <meshBasicMaterial
                 color="#a8c8ff"
-                emissive="#6699cc"
-                emissiveIntensity={2.5}
                 transparent
                 opacity={0.22}
+                depthTest={false}
                 depthWrite={false}
-                toneMapped={false}
               />
             </mesh>
             {/* Spinous process — tapered spike pointing posteriorly */}
             <mesh position={spinousCenter} quaternion={spinousQuat}>
               <cylinderGeometry args={[0.003, 0.005, spinousLen, 6]} />
-              <meshStandardMaterial
+              <meshBasicMaterial
                 color="#a8c8ff"
-                emissive="#6699cc"
-                emissiveIntensity={2.5}
                 transparent
                 opacity={0.18}
+                depthTest={false}
                 depthWrite={false}
-                toneMapped={false}
               />
             </mesh>
             {/* Transverse processes — tapered, pitched upward at thoracic */}
@@ -382,15 +413,15 @@ function SpinalCord({
               [rightTrans, rightTransQuat],
             ].map(([pos, tq], side) => (
               <mesh key={side} position={pos} quaternion={tq}>
-                <cylinderGeometry args={[0.001, 0.003, transHalfLen, 6]} />
-                <meshStandardMaterial
+                <cylinderGeometry
+                  args={[transRadiusTip, transRadiusBase, transHalfLen, 6]}
+                />
+                <meshBasicMaterial
                   color="#a8c8ff"
-                  emissive="#6699cc"
-                  emissiveIntensity={2.5}
                   transparent
                   opacity={0.16}
+                  depthTest={false}
                   depthWrite={false}
-                  toneMapped={false}
                 />
               </mesh>
             ))}
@@ -399,14 +430,12 @@ function SpinalCord({
               ({ center, length, lquat }, side) => (
                 <mesh key={`lam-${side}`} position={center} quaternion={lquat}>
                   <cylinderGeometry args={[0.002, 0.002, length, 6]} />
-                  <meshStandardMaterial
+                  <meshBasicMaterial
                     color="#a8c8ff"
-                    emissive="#6699cc"
-                    emissiveIntensity={2.5}
                     transparent
                     opacity={0.28}
+                    depthTest={false}
                     depthWrite={false}
-                    toneMapped={false}
                   />
                 </mesh>
               ),
@@ -414,6 +443,35 @@ function SpinalCord({
           </group>
         ),
       )}
+
+      {/* Cauda equina — nerve roots descending from conus medullaris (~L1) to sacrum */}
+      {(() => {
+        const conus = pts[Math.max(0, Math.floor(pts.length * 0.55))];
+        const rootCount = 9;
+        return Array.from({ length: rootCount }, (_, i) => {
+          const frac = i / (rootCount - 1);
+          // Fan laterally ±0.03, each root exits at a progressively lower level
+          const lateral = (frac - 0.5) * 0.038;
+          const endY = conus[1] - 0.07 - frac * 0.09;
+          const endZ = conus[2] + 0.004;
+          const midY = conus[1] - 0.03;
+          return (
+            <Line
+              key={`ce-${i}`}
+              points={[
+                [conus[0], conus[1], conus[2]],
+                [lateral * 0.35, midY, conus[2]],
+                [lateral, endY, endZ],
+              ]}
+              color="#00d4ff"
+              lineWidth={0.55}
+              transparent
+              opacity={0.22}
+              depthTest={false}
+            />
+          );
+        });
+      })()}
 
       {/* Vertebral disc markers — color-coded, interactive */}
       {pts.map((pt, i) => {
@@ -442,6 +500,7 @@ function SpinalCord({
               color={color}
               transparent
               opacity={0.2}
+              depthTest={false}
               depthWrite={false}
             />
           </mesh>
@@ -473,7 +532,12 @@ function SpinalCord({
             }}
           >
             <sphereGeometry args={[0.04, 4, 4]} />
-            <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+            <meshBasicMaterial
+              transparent
+              opacity={0}
+              depthTest={false}
+              depthWrite={false}
+            />
           </mesh>
         );
       })}

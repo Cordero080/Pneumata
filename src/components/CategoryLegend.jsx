@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const CATEGORIES = [
   {
     key: "spirit",
@@ -52,47 +50,28 @@ const CATEGORIES = [
 ];
 
 function CategoryLegend() {
-  const [hoveredKey, setHoveredKey] = useState(null);
-
   return (
     <div className="category-legend">
-      {CATEGORIES.map(({ key, color, label, desc }) => {
-        const active = hoveredKey === key;
-        return (
-          <div
-            key={key}
-            className="legend-row"
-            onMouseEnter={() => setHoveredKey(key)}
-            onMouseLeave={() => setHoveredKey(null)}
-          >
-            {/* Text fades in to the LEFT of the dot */}
-            <div
-              className="legend-text"
-              style={{
-                opacity: active ? 1 : 0,
-                transform: active ? "translateX(0)" : "translateX(6px)",
-              }}
-            >
-              <span className="legend-label" style={{ color }}>
-                {label}
-              </span>
-              <span className="legend-desc">{desc}</span>
-            </div>
-
-            {/* Colored dot */}
-            <div
-              className="legend-dot"
-              style={{
-                background: color,
-                boxShadow: active
-                  ? `0 0 10px ${color}, 0 0 20px ${color}55`
-                  : `0 0 6px ${color}80`,
-                transform: active ? "scale(1.5)" : "scale(1)",
-              }}
-            />
+      {CATEGORIES.map(({ key, color, label, desc }) => (
+        <div key={key} className="legend-row">
+          {/* Chamfered tag slides out on hover */}
+          <div className="legend-tag">
+            <span className="legend-label" style={{ color }}>
+              {label}
+            </span>
+            <span className="legend-desc">{desc}</span>
           </div>
-        );
-      })}
+
+          {/* Colored dot */}
+          <div
+            className="legend-dot"
+            style={{
+              background: color,
+              boxShadow: `0 0 6px ${color}80`,
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 }

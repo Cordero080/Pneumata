@@ -41,7 +41,7 @@ export const organs = [
     type: "point",
     organ: "Frontal Lobe",
     hardware: "RAM (Volatile Memory)",
-    position: [0.02, 1.68, 0.06],
+    position: [0, 1.68, 0.08],
     bio_function:
       "Center for active working memory, impulse control, and holding thoughts in immediate consciousness.",
     hard_function:
@@ -217,7 +217,7 @@ export const organs = [
     type: "point",
     organ: "Right Eye",
     hardware: "Camera / GPU Render Pipeline",
-    position: [-0.05, 1.645, 0.07],
+    position: [-0.035, 1.645, 0.08],
     bio_function:
       "Captures photons through the lens, focuses them on the retina's photoreceptors, and converts light into electrochemical signals. The eye actively preprocesses raw light into structured visual data before it reaches the brain.",
     hard_function:
@@ -233,7 +233,7 @@ export const organs = [
     type: "point",
     organ: "Left Eye",
     hardware: "Camera / GPU Render Pipeline",
-    position: [0.05, 1.645, 0.07],
+    position: [0.035, 1.645, 0.08],
     bio_function:
       "Captures photons through the lens, focuses them on the retina's photoreceptors, and converts light into electrochemical signals. The eye actively preprocesses raw light into structured visual data before it reaches the brain.",
     hard_function:

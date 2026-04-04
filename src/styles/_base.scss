@@ -23,6 +23,17 @@ body {
   overflow: hidden;
 }
 
+.app--dark {
+  background: radial-gradient(
+    ellipse 80% 90% at 50% 45%,
+    #0e1a30 0%,
+    #060c1c 45%,
+    #010208 100%
+  );
+  position: absolute;
+  inset: 0;
+}
+
 // === Scrollbar — circulatory vein style ===
 // Thin trace that fades at both ends, like a segment of a vessel in motion.
 
