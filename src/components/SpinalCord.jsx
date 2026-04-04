@@ -243,6 +243,31 @@ function SpinalCord({
         mid.z + postShift.z,
       ];
 
+      // Vertebral arch — laminae from inner transverse attachments to spinous process center
+      // spinousBase is buried inside the body; spinousCenter is in open space behind it
+      const leftArchAttach = new THREE.Vector3(
+        mid.x - canalHalf + postShift.x,
+        mid.y + postShift.y,
+        mid.z + postShift.z,
+      );
+      const rightArchAttach = new THREE.Vector3(
+        mid.x + canalHalf + postShift.x,
+        mid.y + postShift.y,
+        mid.z + postShift.z,
+      );
+      const makeLamina = (from, to) => {
+        const d = new THREE.Vector3().subVectors(to, from);
+        const length = d.length();
+        const center = from.clone().add(d.clone().multiplyScalar(0.5));
+        const lquat = new THREE.Quaternion().setFromUnitVectors(
+          _Y,
+          d.normalize(),
+        );
+        return { center, length, lquat };
+      };
+      const leftLamina = makeLamina(leftArchAttach, spinousCenter);
+      const rightLamina = makeLamina(rightArchAttach, spinousCenter);
+
       // Vertebral body as a lathe profile: waisted barrel with flared endplates
       // Profile: wider at top/bottom (endplates), narrower at waist (center)
       const h = height;
@@ -271,6 +296,8 @@ function SpinalCord({
         rightTransQuat,
         leftTrans,
         rightTrans,
+        leftLamina,
+        rightLamina,
       };
     });
   }, [pts]);
@@ -317,6 +344,8 @@ function SpinalCord({
             rightTransQuat,
             leftTrans,
             rightTrans,
+            leftLamina,
+            rightLamina,
           },
           i,
         ) => (
@@ -365,6 +394,23 @@ function SpinalCord({
                 />
               </mesh>
             ))}
+            {/* Vertebral arch — laminae closing the posterior ring */}
+            {[leftLamina, rightLamina].map(
+              ({ center, length, lquat }, side) => (
+                <mesh key={`lam-${side}`} position={center} quaternion={lquat}>
+                  <cylinderGeometry args={[0.002, 0.002, length, 6]} />
+                  <meshStandardMaterial
+                    color="#a8c8ff"
+                    emissive="#6699cc"
+                    emissiveIntensity={2.5}
+                    transparent
+                    opacity={0.28}
+                    depthWrite={false}
+                    toneMapped={false}
+                  />
+                </mesh>
+              ),
+            )}
           </group>
         ),
       )}

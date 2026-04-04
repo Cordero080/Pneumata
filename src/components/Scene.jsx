@@ -6,6 +6,7 @@ import SpinalCord from "./SpinalCord";
 import LungVolume from "./LungVolume";
 import AnatomyModel from "./AnatomyModel";
 import BodyCirculation from "./BodyCirculation";
+import NerveRoots from "./NerveRoots";
 import { organs } from "../data/organs";
 
 const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
@@ -19,7 +20,7 @@ const CIRC_OPACITY = { logic: 0.0, power: 1.0, breathing: 0.0, unified: 0.65 };
 // In unified: everything at 0.7.
 function getNodeOpacity(organ, viewMode) {
   if (viewMode === "power") return organ.category === "power" ? 1.0 : 0.06;
-  if (viewMode === "logic") return organ.category === "power" ? 0.06 : 1.0;
+  if (viewMode === "logic") return organ.category === "power" ? 0.35 : 1.0;
   if (viewMode === "breathing")
     return organ.id === "left_lung" || organ.id === "right_lung" ? 1.0 : 0.06;
   return 0.7;
@@ -34,7 +35,7 @@ function BreathingDriver({ breathingRef }) {
   return null;
 }
 
-function Scene({ onSelect, viewMode }) {
+function Scene({ onSelect, viewMode, showNerves }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [spinePoints, setSpinePoints] = useState(null);
@@ -80,6 +81,14 @@ function Scene({ onSelect, viewMode }) {
 
       {/* Circulatory layer */}
       <BodyCirculation opacity={circOpacity} heartbeatRef={heartbeatRef} />
+
+      {/* Nerve roots — spinal bus lanes to organ nodes */}
+      <NerveRoots
+        spinePoints={spinePoints}
+        hoveredCategory={hoveredCategory}
+        viewMode={viewMode}
+        showNerves={showNerves}
+      />
 
       {/* Organ nodes */}
       {organs.map((organ) =>
