@@ -215,7 +215,7 @@ function AnatomyModel({
     const breathe = breathingRef?.current ?? 0;
     if (isBreathActive) {
       breathMatRef.current.color.lerpColors(BREATH_BLUE, BREATH_CYAN, breathe);
-      breathMatRef.current.opacity = breathe * 0.14;
+      breathMatRef.current.opacity = breathe * 0.08;
     } else {
       breathMatRef.current.opacity = 0;
     }
