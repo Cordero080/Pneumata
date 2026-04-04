@@ -289,7 +289,7 @@ export const organs = [
     synthesis:
       "Output is always a translation. The vocal cords and the speaker are both the final stage of a long internal process — the point where thought becomes signal becomes wave.",
     spinalConnection:
-      "C1–C3 via the recurrent laryngeal branch of the vagus nerve — the audio output codec sits at the topmost vertebral tier, where the DAC channel exits the main bus toward the laryngeal hardware.",
+      "Cranial nerve X (vagus) via the recurrent laryngeal and superior laryngeal branches — the audio output codec bypasses the spinal bus entirely, routed by dedicated cranial channel directly to the laryngeal hardware.",
   },
   {
     id: "skin",
@@ -323,7 +323,7 @@ export const organs = [
     synthesis:
       "The metronome of existence: both systems run at the speed their clock dictates.",
     spinalConnection:
-      "C2–C4 cervical channel (cervical sympathetic chain) — the system clock signal is routed from the uppermost vertebral tier, setting the operating frequency before it propagates to any downstream bus segment.",
+      "T1–T3 thoracic channel (superior cervical ganglion via sympathetic chain) — preganglionic fibers originate in the upper thoracic cord, ascend through the cervical sympathetic chain, and synapse at the superior cervical ganglion before reaching the thyroid. The clock source is thoracic, even though the hardware sits in the neck.",
   },
   {
     id: "heart",
@@ -355,7 +355,7 @@ export const organs = [
     synthesis:
       "Both systems can exceed design limits under duress; the performance gain is always borrowed against longevity.",
     spinalConnection:
-      "T8–T12 thoracic channel (splanchnic nerves) — the overclock trigger is routed via the lower thoracic tier, the same segment that carries renal and upper digestive assignments. Peak load sharing is architectural.",
+      "T5–T11 thoracic channel (greater splanchnic T5–T9, lesser splanchnic T10–T11) — the overclock trigger spans the mid-to-lower thoracic tier. The greater splanchnic nerve drives the adrenal medulla directly, bypassing any ganglion for maximum response speed. Emergency acceleration is hard-wired at the bus level.",
   },
 
   // ── THERMAL (CYAN) ─────────────────────────────────────────────────────────
