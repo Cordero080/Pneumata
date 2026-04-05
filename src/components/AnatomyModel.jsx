@@ -133,12 +133,12 @@ function AnatomyModel({
     // Low metalness so base color (#d2d8de) shows as silver-gray without an envmap.
     // High opacity so the outer skin mesh occludes the inner bones — giving contrast.
     const aluminumMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#c4cad1"),
-      metalness: 0.72,
-      roughness: 0.28,
+      color: new THREE.Color("#d8dde2"),
+      metalness: 0.88,
+      roughness: 0.15,
       transparent: true,
-      opacity: 0.82,
-      depthWrite: false,
+      opacity: 0.95,
+      depthWrite: true,
     });
     aluminumMatRef.current = aluminumMat;
 
@@ -228,9 +228,10 @@ function AnatomyModel({
       mat.iridescenceThicknessRange = [120, 280];
       mat.clearcoat = 0.9;
       mat.clearcoatRoughness = 0.08;
-      // Hide aluminum layer in dark mode
+      // Hide aluminum layer in dark mode — also disable depthWrite so invisible mesh doesn't pollute depth buffer
       if (aluminumMatRef.current) {
         aluminumMatRef.current.opacity = 0;
+        aluminumMatRef.current.depthWrite = false;
         aluminumMatRef.current.needsUpdate = true;
       }
     } else {
@@ -245,9 +246,10 @@ function AnatomyModel({
       mat.clearcoatRoughness = 0.1;
       mat.emissive.set("#ffffff");
       mat.emissiveIntensity = 0;
-      // Restore aluminum layer in light mode
+      // Restore aluminum layer in light mode — re-enable depthWrite for solid silver look
       if (aluminumMatRef.current) {
-        aluminumMatRef.current.opacity = 0.82;
+        aluminumMatRef.current.opacity = 0.95;
+        aluminumMatRef.current.depthWrite = true;
         aluminumMatRef.current.needsUpdate = true;
       }
     }
