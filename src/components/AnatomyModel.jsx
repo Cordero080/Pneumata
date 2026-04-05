@@ -195,7 +195,7 @@ function AnatomyModel({
     // materials existed (async GLB load) and returned early without applying anything
     if (darkMode) {
       mat.color.set("#030306");
-      mat.emissive.set("#003355");
+      mat.emissive.set("#880000");
       mat.metalness = 0.92;
       mat.roughness = 0.08;
       mat.opacity = 0.82;
@@ -218,7 +218,7 @@ function AnatomyModel({
     if (darkMode) {
       // Obsidian — solid, iridescent, full presence
       mat.color.set("#030306");
-      mat.emissive.set("#003355"); // deep navy — keeps glow dark, not white
+      mat.emissive.set("#880000"); // crimson — power mode flush, not white
       mat.metalness = 0.92;
       mat.roughness = 0.08;
       mat.transmission = 0;
@@ -258,11 +258,11 @@ function AnatomyModel({
     if (!materialRef.current) return;
     const t = state.clock.getElapsedTime();
 
-    // Emissive pulse — dark mode only (light mode form comes from aluminum layer)
+    // Emissive pulse — crimson flush in dark mode power, complements blood layer
     let base = 0;
     if (darkMode) {
-      if (viewMode === "power") base = 0.18;
-      else if (viewMode === "unified") base = 0.1;
+      if (viewMode === "power") base = 0.55;
+      else if (viewMode === "unified") base = 0.25;
     }
 
     if (viewMode === "breathing") {
