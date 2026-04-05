@@ -3,17 +3,9 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-// Samples the posterior midline vertices from all meshes in the scene to
-// auto-trace the vertebral column. No bone names required.
-//
-// Strategy:
-//   1. After normalization, updateMatrixWorld so every vertex has correct world coords.
-//   2. Iterate every vertex across all meshes. Apply the mesh's world matrix so
-//      the position is in the same space as the organ node coordinates.
-//   3. Filter to the posterior-midline corridor: |x| < 0.025, z < -0.015,
-//      y in the known spine height range (0.86 → 1.60).
-//   4. Bucket the survivors into N equal y-bands. Average z per band → centerline.
-//   5. Return as [[0, y, z], ...] sorted top → bottom.
+// Skull bounds (sampled once from GLB, y > 1.55):
+//   x: -0.096 → 0.096   y: 1.550 → 1.750   z: -0.126 → 0.098
+
 function sampleSpinePoints(scene, numBins = 24) {
   scene.updateMatrixWorld(true);
 
@@ -85,6 +77,8 @@ function AnatomyModel({
   const [bloodScene, setBloodScene] = useState(null);
   const breathMatRef = useRef(null);
   const [breathScene, setBreathScene] = useState(null);
+  const aluminumMatRef = useRef(null);
+  const [aluminumScene, setAluminumScene] = useState(null);
 
   useEffect(() => {
     const box = new THREE.Box3().setFromObject(scene);
@@ -96,7 +90,6 @@ function AnatomyModel({
     scene.position.set(-center.x * s, -box.min.y * s, -center.z * s);
 
     // Harvest first available map from GLB to use as emissive mask.
-    // AO map settles glow into crevices/valleys; roughness map works similarly.
     let emissiveMap = null;
     scene.traverse((child) => {
       if (child.isMesh && !emissiveMap) {
@@ -105,31 +98,58 @@ function AnatomyModel({
       }
     });
 
+    // Main material — ghost skin overlay (light mode default)
+    // Near-invisible: lets the aluminum layer below define the body shape,
+    // while this layer adds a subtle translucent skin surface on top.
     const mat = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color("#050505"),
+      color: new THREE.Color("#eef2f6"),
       transparent: true,
-      transmission: 0.9,
-      opacity: 0.4,
+      transmission: 0,
+      opacity: 0.13,
       roughness: 0.2,
+      metalness: 0,
+      clearcoat: 0.5,
+      clearcoatRoughness: 0.1,
       depthWrite: false,
-      emissive: new THREE.Color("#880000"),
+      emissive: new THREE.Color("#ffffff"),
       emissiveIntensity: 0,
     });
 
     if (emissiveMap) mat.emissiveMap = emissiveMap;
-
     materialRef.current = mat;
 
     scene.traverse((child) => {
       if (child.isMesh) {
         child.material = mat;
-        child.renderOrder = 0;
+        child.renderOrder = 1; // ghost skin renders in front of aluminum
       }
     });
 
     // Sample posterior-midline vertices to auto-trace the vertebral column
     const spinePoints = sampleSpinePoints(scene);
     if (spinePoints && onSpineExtracted) onSpineExtracted(spinePoints);
+
+    // Aluminum structure layer — defines the body shape in light mode
+    // Low metalness so base color (#d2d8de) shows as silver-gray without an envmap.
+    // High opacity so the outer skin mesh occludes the inner bones — giving contrast.
+    const aluminumMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color("#c4cad1"),
+      metalness: 0.72,
+      roughness: 0.28,
+      transparent: true,
+      opacity: 0.82,
+      depthWrite: false,
+    });
+    aluminumMatRef.current = aluminumMat;
+
+    const aluminumClone = scene.clone(true);
+    aluminumClone.traverse((child) => {
+      if (child.isMesh) {
+        child.material = aluminumMat;
+        child.renderOrder = 0; // behind ghost skin
+      }
+    });
+    setAluminumScene(aluminumClone);
 
     // Blood volumetric layer — cloned mesh with additive blending
     const bloodMat = new THREE.MeshBasicMaterial({
@@ -146,7 +166,7 @@ function AnatomyModel({
     clone.traverse((child) => {
       if (child.isMesh) {
         child.material = bloodMat;
-        child.renderOrder = 1;
+        child.renderOrder = 2;
       }
     });
     setBloodScene(clone);
@@ -166,18 +186,39 @@ function AnatomyModel({
     breathClone.traverse((child) => {
       if (child.isMesh) {
         child.material = breathMat;
-        child.renderOrder = 2;
+        child.renderOrder = 3;
       }
     });
     setBreathScene(breathClone);
+
+    // Sync to current mode immediately — darkMode effect may have run before
+    // materials existed (async GLB load) and returned early without applying anything
+    if (darkMode) {
+      mat.color.set("#030306");
+      mat.emissive.set("#003355");
+      mat.metalness = 0.92;
+      mat.roughness = 0.08;
+      mat.opacity = 0.82;
+      mat.iridescence = 0.45;
+      mat.iridescenceIOR = 1.32;
+      mat.iridescenceThicknessRange = [120, 280];
+      mat.clearcoat = 0.9;
+      mat.clearcoatRoughness = 0.08;
+      mat.needsUpdate = true;
+      aluminumMat.opacity = 0;
+      aluminumMat.needsUpdate = true;
+    }
   }, [scene]);
 
   // Swap material properties when darkMode changes
   useEffect(() => {
     const mat = materialRef.current;
     if (!mat) return;
+
     if (darkMode) {
+      // Obsidian — solid, iridescent, full presence
       mat.color.set("#030306");
+      mat.emissive.set("#003355"); // deep navy — keeps glow dark, not white
       mat.metalness = 0.92;
       mat.roughness = 0.08;
       mat.transmission = 0;
@@ -187,14 +228,28 @@ function AnatomyModel({
       mat.iridescenceThicknessRange = [120, 280];
       mat.clearcoat = 0.9;
       mat.clearcoatRoughness = 0.08;
+      // Hide aluminum layer in dark mode
+      if (aluminumMatRef.current) {
+        aluminumMatRef.current.opacity = 0;
+        aluminumMatRef.current.needsUpdate = true;
+      }
     } else {
-      mat.color.set("#050505");
+      // Light mode — ghost skin: near-invisible aura, aluminum layer defines the shape
+      mat.color.set("#eef2f6");
       mat.metalness = 0;
       mat.roughness = 0.2;
-      mat.transmission = 0.9;
-      mat.opacity = 0.4;
+      mat.transmission = 0;
+      mat.opacity = 0.13;
       mat.iridescence = 0;
-      mat.clearcoat = 0;
+      mat.clearcoat = 0.5;
+      mat.clearcoatRoughness = 0.1;
+      mat.emissive.set("#ffffff");
+      mat.emissiveIntensity = 0;
+      // Restore aluminum layer in light mode
+      if (aluminumMatRef.current) {
+        aluminumMatRef.current.opacity = 0.82;
+        aluminumMatRef.current.needsUpdate = true;
+      }
     }
     mat.needsUpdate = true;
   }, [darkMode]);
@@ -203,10 +258,12 @@ function AnatomyModel({
     if (!materialRef.current) return;
     const t = state.clock.getElapsedTime();
 
-    // Subtle underlayer — complements the aorta surge without competing
+    // Emissive pulse — dark mode only (light mode form comes from aluminum layer)
     let base = 0;
-    if (viewMode === "power") base = 0.55;
-    else if (viewMode === "unified") base = 0.25;
+    if (darkMode) {
+      if (viewMode === "power") base = 0.18;
+      else if (viewMode === "unified") base = 0.1;
+    }
 
     if (viewMode === "breathing") {
       materialRef.current.emissiveIntensity = 0;
@@ -251,6 +308,7 @@ function AnatomyModel({
 
   return (
     <>
+      {aluminumScene && <primitive object={aluminumScene} />}
       <primitive object={scene} />
       {bloodScene && <primitive object={bloodScene} />}
       {breathScene && <primitive object={breathScene} />}

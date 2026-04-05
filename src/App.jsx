@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Scene from "./components/Scene";
 import GlassModal from "./components/GlassModal";
 import AboutModal from "./components/AboutModal";
@@ -11,7 +11,16 @@ function App() {
   const [showNerves, setShowNerves] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [brainZoom, setBrainZoom] = useState(false);
   const aboutRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "Escape" && brainZoom) setBrainZoom(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [brainZoom]);
 
   const handleTilt = useCallback((e) => {
     const btn = aboutRef.current;
@@ -62,7 +71,14 @@ function App() {
         viewMode={viewMode}
         showNerves={showNerves}
         darkMode={darkMode}
+        brainZoom={brainZoom}
+        setBrainZoom={setBrainZoom}
       />
+      {brainZoom && (
+        <button className="brain-back-btn" onClick={() => setBrainZoom(false)}>
+          ← Back
+        </button>
+      )}
 
       <GlassModal
         organ={selectedOrgan}

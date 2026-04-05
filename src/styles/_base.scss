@@ -16,7 +16,14 @@ body,
 }
 
 body {
-  background: v.$bg-base;
+  background: radial-gradient(
+    ellipse 72% 82% at 50% 42%,
+    #d6e4f0 0%,
+    #aec3d4 30%,
+    #8ba8c8 58%,
+    #6a8aaa 80%,
+    #587290 100%
+  );
   color: v.$text-primary;
   font-family: v.$font-sans;
   -webkit-font-smoothing: antialiased;
@@ -26,8 +33,8 @@ body {
 .app--dark {
   background: radial-gradient(
     ellipse 80% 90% at 50% 45%,
-    #0e1a30 0%,
-    #060c1c 45%,
+    #070d1e 0%,
+    #030610 45%,
     #010208 100%
   );
   position: absolute;

@@ -95,7 +95,37 @@ function SpinalCord({
   dynamicPoints,
   hoveredCategory,
   onCategoryHover,
+  darkMode = true,
 }) {
+  // Light mode: dark charcoal anatomy illustration palette
+  // Dark mode: glowing cyan/blue neon palette
+  const SC = darkMode
+    ? {
+        core: "#00d4ff",
+        glow: "#0066ff",
+        bone: "#a8c8ff",
+        cauda: "#00d4ff",
+        coreOp: 0.8,
+        glowOp: 0.2,
+        bodyOp: 0.22,
+        spinOp: 0.18,
+        transOp: 0.16,
+        lamOp: 0.28,
+        caudaOp: 0.22,
+      }
+    : {
+        core: "#ffffff",
+        glow: "#e8f0f8",
+        bone: "#f0f4f8",
+        cauda: "#ffffff",
+        coreOp: 0.7,
+        glowOp: 0.08,
+        bodyOp: 0.55,
+        spinOp: 0.45,
+        transOp: 0.4,
+        lamOp: 0.65,
+        caudaOp: 0.45,
+      };
   const coreRefs = useRef([]);
   const glowRefs = useRef([]);
   const discRefs = useRef([]);
@@ -341,10 +371,10 @@ function SpinalCord({
           key={`core-${i}`}
           ref={(el) => (coreRefs.current[i] = el)}
           points={seg}
-          color="#00d4ff"
+          color={SC.core}
           lineWidth={1.5}
           transparent
-          opacity={0.8}
+          opacity={SC.coreOp}
           depthTest={false}
         />
       ))}
@@ -353,10 +383,10 @@ function SpinalCord({
           key={`glow-${i}`}
           ref={(el) => (glowRefs.current[i] = el)}
           points={seg}
-          color="#0066ff"
+          color={SC.glow}
           lineWidth={8}
           transparent
-          opacity={0.2}
+          opacity={SC.glowOp}
           depthTest={false}
         />
       ))}
@@ -389,9 +419,9 @@ function SpinalCord({
             <mesh position={mid} quaternion={quat}>
               <primitive object={bodyGeo} attach="geometry" />
               <meshBasicMaterial
-                color="#a8c8ff"
+                color={SC.bone}
                 transparent
-                opacity={0.22}
+                opacity={SC.bodyOp}
                 depthTest={false}
                 depthWrite={false}
               />
@@ -400,9 +430,9 @@ function SpinalCord({
             <mesh position={spinousCenter} quaternion={spinousQuat}>
               <cylinderGeometry args={[0.003, 0.005, spinousLen, 6]} />
               <meshBasicMaterial
-                color="#a8c8ff"
+                color={SC.bone}
                 transparent
-                opacity={0.18}
+                opacity={SC.spinOp}
                 depthTest={false}
                 depthWrite={false}
               />
@@ -417,9 +447,9 @@ function SpinalCord({
                   args={[transRadiusTip, transRadiusBase, transHalfLen, 6]}
                 />
                 <meshBasicMaterial
-                  color="#a8c8ff"
+                  color={SC.bone}
                   transparent
-                  opacity={0.16}
+                  opacity={SC.transOp}
                   depthTest={false}
                   depthWrite={false}
                 />
@@ -431,9 +461,9 @@ function SpinalCord({
                 <mesh key={`lam-${side}`} position={center} quaternion={lquat}>
                   <cylinderGeometry args={[0.002, 0.002, length, 6]} />
                   <meshBasicMaterial
-                    color="#a8c8ff"
+                    color={SC.bone}
                     transparent
-                    opacity={0.28}
+                    opacity={SC.lamOp}
                     depthTest={false}
                     depthWrite={false}
                   />
@@ -463,10 +493,10 @@ function SpinalCord({
                 [lateral * 0.35, midY, conus[2]],
                 [lateral, endY, endZ],
               ]}
-              color="#00d4ff"
+              color={SC.cauda}
               lineWidth={0.55}
               transparent
-              opacity={0.22}
+              opacity={SC.caudaOp}
               depthTest={false}
             />
           );
