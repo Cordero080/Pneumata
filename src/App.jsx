@@ -72,8 +72,8 @@ function App() {
         onClick={() =>
           setMeshMode((m) => {
             if (darkMode) {
-              // dark: solid(2)→ghost(0)→semi(1)→white(3)→solid(2)
-              return { 2: 0, 0: 1, 1: 3, 3: 2 }[m] ?? 0;
+              // dark: solid(2)→ghost(0)→semi(1)→white(3)→semi-silver(4)→solid-silver(5)→solid(2)
+              return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 5, 5: 2 }[m] ?? 0;
             }
             return (m + 1) % 4;
           })
@@ -85,7 +85,11 @@ function App() {
             ? "◈"
             : meshMode === 2
               ? "◼"
-              : "◇"}
+              : meshMode === 3
+                ? "◇"
+                : meshMode === 4
+                  ? "◎"
+                  : "⬤"}
       </button>
 
       <Scene

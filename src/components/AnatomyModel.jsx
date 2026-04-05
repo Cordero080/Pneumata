@@ -264,8 +264,28 @@ function AnatomyModel({
     if (!mat || !al) return;
 
     if (darkMode) {
-      // Dark mode: 0 = dark ghost x-ray, 1 = semi-transparent obsidian, 2 = solid obsidian, 3 = white ghost
-      if (meshMode === 3) {
+      // Dark mode: 0=dark ghost, 1=semi obsidian, 2=solid obsidian, 3=white ghost, 4=semi silver, 5=solid silver
+      if (meshMode === 4 || meshMode === 5) {
+        const solid = meshMode === 5;
+        mat.color.set("#eef2f6");
+        mat.emissive.set("#ffffff");
+        mat.emissiveIntensity = 0;
+        mat.transparent = true;
+        mat.transmission = 0;
+        mat.opacity = 0.13;
+        mat.metalness = 0;
+        mat.roughness = 0.2;
+        mat.iridescence = 0;
+        mat.depthWrite = false;
+        mat.needsUpdate = true;
+        al.transparent = !solid;
+        al.color.set("#d8dde2");
+        al.metalness = 0.88;
+        al.roughness = 0.15;
+        al.opacity = solid ? 1.0 : 0.82;
+        al.depthWrite = solid;
+        al.needsUpdate = true;
+      } else if (meshMode === 3) {
         mat.color.set("#f0f4ff");
         mat.transparent = true;
         mat.transmission = 0;
@@ -300,6 +320,11 @@ function AnatomyModel({
         mat.iridescence = 0.45;
         mat.depthWrite = solid;
         mat.needsUpdate = true;
+        // Hide aluminum (always hidden for obsidian modes)
+        al.transparent = true;
+        al.opacity = 0;
+        al.depthWrite = false;
+        al.needsUpdate = true;
       }
     } else {
       // Light mode:

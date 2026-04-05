@@ -63,14 +63,43 @@ function Scene({
       style={{ width: "100%", height: "100%" }}
       gl={{ alpha: true }}
     >
-      {darkMode && meshMode !== 0 && meshMode !== 3 && (
-        <fog attach="fog" args={["#010208", 4.5, 9]} />
-      )}
-      {!darkMode && meshMode !== 0 && (
+      {darkMode &&
+        meshMode !== 0 &&
+        meshMode !== 3 &&
+        meshMode !== 4 &&
+        meshMode !== 5 && <fog attach="fog" args={["#010208", 4.5, 9]} />}
+      {((!darkMode && meshMode !== 0) ||
+        (darkMode && (meshMode === 4 || meshMode === 5))) && (
         <Environment preset="city" background={false} />
       )}
       <BreathingDriver breathingRef={breathingRef} />
-      {darkMode && meshMode !== 3 ? (
+      {darkMode && (meshMode === 4 || meshMode === 5) ? (
+        <>
+          <ambientLight intensity={1.6} />
+          <pointLight position={[2, 2.5, 2]} intensity={1.2} color="#f0ece8" />
+          <pointLight
+            position={[-3, 1.5, -2]}
+            intensity={0.8}
+            color="#e8eef4"
+          />
+          <pointLight position={[0, 1, 3]} intensity={0.6} color="#f4f0ec" />
+          <pointLight
+            position={[0, 1.5, -2.5]}
+            intensity={1.0}
+            color="#dce8f4"
+          />
+          <pointLight
+            position={[-1.5, 1.0, -2]}
+            intensity={0.6}
+            color="#e4eef8"
+          />
+          <pointLight
+            position={[1.5, 1.0, -2]}
+            intensity={0.6}
+            color="#e4eef8"
+          />
+        </>
+      ) : darkMode && meshMode !== 3 ? (
         <>
           <ambientLight intensity={0.15} />
           <pointLight position={[2, 2.5, 2]} intensity={2} color="#00f5ff" />

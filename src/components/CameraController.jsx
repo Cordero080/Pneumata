@@ -43,6 +43,7 @@ function CameraController({ brainZoom, controlsRef }) {
       ctrl.update();
       animating.current = false;
       ctrl.enabled = true;
+      ctrl.autoRotate = true;
     }
   });
 
