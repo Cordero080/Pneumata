@@ -391,9 +391,14 @@ function AnatomyModel({
 
     // Emissive pulse — crimson flush in dark mode power, complements blood layer
     let base = 0;
-    if (darkMode) {
-      if (viewMode === "power") base = 0.55;
-      else if (viewMode === "unified") base = 0.25;
+    if (viewMode === "power") base = darkMode ? 0.55 : 0.4;
+    else if (viewMode === "unified") base = darkMode ? 0.25 : 0.15;
+
+    // In light mode, emissive must be crimson for the flush to read as red
+    if (!darkMode) {
+      materialRef.current.emissive.set(
+        viewMode === "power" || viewMode === "unified" ? "#880000" : "#ffffff",
+      );
     }
 
     if (viewMode === "breathing") {

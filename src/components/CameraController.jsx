@@ -17,7 +17,6 @@ function CameraController({ brainZoom, controlsRef }) {
     animating.current = true;
     const ctrl = controlsRef.current;
     if (ctrl) {
-      ctrl.enabled = false;
       ctrl.minDistance = brainZoom ? 0.12 : 0.9;
       ctrl.maxDistance = brainZoom ? 0.6 : 7;
     }
@@ -27,23 +26,14 @@ function CameraController({ brainZoom, controlsRef }) {
     const ctrl = controlsRef.current;
     if (!ctrl || !animating.current) return;
 
-    const targetPos = brainZoom ? BRAIN_CAM_POS : FULL_CAM_POS;
     const targetOrbit = brainZoom ? BRAIN_TARGET : FULL_TARGET;
-
-    camera.position.lerp(targetPos, LERP);
     ctrl.target.lerp(targetOrbit, LERP);
     ctrl.update();
 
-    if (
-      camera.position.distanceTo(targetPos) < SETTLED &&
-      ctrl.target.distanceTo(targetOrbit) < SETTLED
-    ) {
-      camera.position.copy(targetPos);
+    if (ctrl.target.distanceTo(targetOrbit) < SETTLED) {
       ctrl.target.copy(targetOrbit);
       ctrl.update();
       animating.current = false;
-      ctrl.enabled = true;
-      ctrl.autoRotate = true;
     }
   });
 

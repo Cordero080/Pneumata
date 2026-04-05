@@ -158,12 +158,19 @@ function SpinalCord({
       const isCategoryHighlighted =
         hoveredCategoryRef.current === levelData.category;
       const isDirectlyHovered = hoveredDiscIndexRef.current === i;
-      const target = isDirectlyHovered
-        ? 0.7
+      const targetOpacity = isDirectlyHovered
+        ? 1.0
         : isCategoryHighlighted
-          ? 0.55
+          ? 0.92
           : 0.2;
-      mesh.material.opacity += (target - mesh.material.opacity) * 0.1;
+      const targetScale = isDirectlyHovered
+        ? 1.6
+        : isCategoryHighlighted
+          ? 1.4
+          : 1.0;
+      mesh.material.opacity += (targetOpacity - mesh.material.opacity) * 0.12;
+      const s = mesh.scale.x;
+      mesh.scale.setScalar(s + (targetScale - s) * 0.12);
     });
   });
 

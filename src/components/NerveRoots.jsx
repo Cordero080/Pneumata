@@ -145,7 +145,7 @@ function NerveRoots({ spinePoints, hoveredCategory, viewMode, showNerves }) {
               : 0.35
             : 0.08;
         const lineWidth = active
-          ? 1.5
+          ? 2.0
           : allVisible
             ? isBrain
               ? 0.6
