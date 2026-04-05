@@ -63,14 +63,14 @@ function Scene({
       style={{ width: "100%", height: "100%" }}
       gl={{ alpha: true }}
     >
-      {darkMode && meshMode !== 0 && (
+      {darkMode && meshMode !== 0 && meshMode !== 3 && (
         <fog attach="fog" args={["#010208", 4.5, 9]} />
       )}
       {!darkMode && meshMode !== 0 && (
         <Environment preset="city" background={false} />
       )}
       <BreathingDriver breathingRef={breathingRef} />
-      {darkMode ? (
+      {darkMode && meshMode !== 3 ? (
         <>
           <ambientLight intensity={0.15} />
           <pointLight position={[2, 2.5, 2]} intensity={2} color="#00f5ff" />
@@ -79,8 +79,8 @@ function Scene({
         </>
       ) : meshMode === 3 ? (
         <>
-          {/* White ghost — bright neutral lights, high ambient for luminous bone-scan look */}
-          <ambientLight intensity={2.2} />
+          {/* White ghost — reduced ambient so rim + emissive have contrast */}
+          <ambientLight intensity={1.2} />
           <pointLight position={[2, 2.5, 2]} intensity={1.4} color="#f8f4f0" />
           <pointLight
             position={[-3, 1.5, -2]}
@@ -88,6 +88,11 @@ function Scene({
             color="#f0f4f8"
           />
           <pointLight position={[0, 1, 3]} intensity={0.8} color="#f4f0f8" />
+          <pointLight
+            position={[0, 1.0, -3.5]}
+            intensity={3.5}
+            color="#a0c4ff"
+          />
           <pointLight
             position={[0, 1.5, -2.5]}
             intensity={1.2}

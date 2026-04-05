@@ -264,20 +264,40 @@ function AnatomyModel({
     if (!mat || !al) return;
 
     if (darkMode) {
-      // Dark mode: 0 = ghost x-ray, 1 = semi-transparent obsidian, 2 = solid obsidian
-      if (meshMode === 0) {
+      // Dark mode: 0 = dark ghost x-ray, 1 = semi-transparent obsidian, 2 = solid obsidian, 3 = white ghost
+      if (meshMode === 3) {
+        mat.color.set("#f0f4ff");
         mat.transparent = true;
+        mat.transmission = 0;
+        mat.opacity = 0.28;
+        mat.metalness = 0.05;
+        mat.roughness = 0.1;
+        mat.emissive.set("#c8a060");
+        mat.emissiveIntensity = 0.1;
+        mat.iridescence = 0;
+        mat.depthWrite = false;
+        mat.needsUpdate = true;
+      } else if (meshMode === 0) {
+        mat.color.set("#030306");
+        mat.emissive.set("#880000");
+        mat.transparent = true;
+        mat.transmission = 0;
         mat.opacity = 0.45;
         mat.metalness = 0.1;
         mat.roughness = 0.12;
+        mat.iridescence = 0;
         mat.depthWrite = false;
         mat.needsUpdate = true;
       } else {
         const solid = meshMode === 2;
+        mat.color.set("#030306");
+        mat.emissive.set("#880000");
         mat.transparent = !solid;
+        mat.transmission = 0;
         mat.opacity = solid ? 1.0 : 0.82;
         mat.metalness = 0.92;
         mat.roughness = 0.08;
+        mat.iridescence = 0.45;
         mat.depthWrite = solid;
         mat.needsUpdate = true;
       }
@@ -309,11 +329,12 @@ function AnatomyModel({
         mat.opacity = 0.28;
         mat.metalness = 0.05;
         mat.roughness = 0.1;
-        mat.emissiveIntensity = 0;
+        mat.emissive.set("#c8a060");
+        mat.emissiveIntensity = 0.1;
         mat.depthWrite = false;
         mat.needsUpdate = true;
         al.transparent = true;
-        al.color.set("#ffffff");
+        al.color.set("#a8bcd4");
         al.metalness = 0.1;
         al.roughness = 0.1;
         al.opacity = 0.55;
