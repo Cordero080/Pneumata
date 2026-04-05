@@ -68,6 +68,7 @@ function AnatomyModel({
   heartbeatRef,
   breathingRef,
   darkMode,
+  meshMode,
 }) {
   const { scene } = useGLTF("/male-body.glb");
   const materialRef = useRef(null);
@@ -255,6 +256,56 @@ function AnatomyModel({
     }
     mat.needsUpdate = true;
   }, [darkMode]);
+
+  // Mesh mode toggle
+  useEffect(() => {
+    const mat = materialRef.current;
+    const al = aluminumMatRef.current;
+    if (!mat || !al) return;
+
+    if (darkMode) {
+      // Dark mode: 0/1 = semi-transparent obsidian, 2 = solid obsidian
+      const solid = meshMode === 2;
+      mat.transparent = !solid;
+      mat.opacity = solid ? 1.0 : 0.82;
+      mat.depthWrite = solid;
+      mat.needsUpdate = true;
+    } else {
+      // Light mode:
+      // 0 = original ghost (dark glass, no aluminum)
+      // 1 = semi-transparent silver aluminum
+      // 2 = solid silver aluminum
+      if (meshMode === 0) {
+        // Ghost x-ray: hide aluminum, dark charcoal body — bones visible through stacked semi-transparent layers
+        al.transparent = true;
+        al.opacity = 0;
+        al.depthWrite = false;
+        al.needsUpdate = true;
+        mat.color.set("#1a1a2a");
+        mat.transparent = true;
+        mat.transmission = 0;
+        mat.opacity = 0.45;
+        mat.metalness = 0.1;
+        mat.roughness = 0.12;
+        mat.emissiveIntensity = 0;
+        mat.depthWrite = false;
+        mat.needsUpdate = true;
+      } else {
+        // Restore aluminum silver for modes 1 and 2
+        mat.color.set("#eef2f6");
+        mat.transmission = 0;
+        mat.opacity = 0.13;
+        mat.metalness = 0;
+        mat.roughness = 0.2;
+        mat.depthWrite = false;
+        mat.needsUpdate = true;
+        al.transparent = meshMode !== 2;
+        al.opacity = meshMode === 2 ? 1.0 : 0.82;
+        al.depthWrite = meshMode === 2;
+        al.needsUpdate = true;
+      }
+    }
+  }, [meshMode, darkMode]);
 
   useFrame((state) => {
     if (!materialRef.current) return;

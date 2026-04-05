@@ -42,6 +42,7 @@ function Scene({
   viewMode,
   showNerves,
   darkMode,
+  meshMode,
   brainZoom,
   setBrainZoom,
 }) {
@@ -63,11 +64,21 @@ function Scene({
       gl={{ alpha: true }}
     >
       {darkMode && <fog attach="fog" args={["#010208", 4.5, 9]} />}
-      {!darkMode && <Environment preset="city" background={false} />}
+      {!darkMode && meshMode !== 0 && (
+        <Environment preset="city" background={false} />
+      )}
       <BreathingDriver breathingRef={breathingRef} />
       {darkMode ? (
         <>
           <ambientLight intensity={0.15} />
+          <pointLight position={[2, 2.5, 2]} intensity={2} color="#00f5ff" />
+          <pointLight position={[-3, 1.5, -2]} intensity={1} color="#bf00ff" />
+          <pointLight position={[0, 1, 3]} intensity={0.6} color="#aaccff" />
+        </>
+      ) : meshMode === 0 ? (
+        <>
+          {/* Ghost mode — neon lights with enough ambient to show surface detail */}
+          <ambientLight intensity={0.4} />
           <pointLight position={[2, 2.5, 2]} intensity={2} color="#00f5ff" />
           <pointLight position={[-3, 1.5, -2]} intensity={1} color="#bf00ff" />
           <pointLight position={[0, 1, 3]} intensity={0.6} color="#aaccff" />
@@ -82,7 +93,6 @@ function Scene({
             color="#e8eef4"
           />
           <pointLight position={[0, 1, 3]} intensity={0.6} color="#f4f0ec" />
-          {/* Back/rim lights — illuminate aluminum from behind for depth */}
           <pointLight
             position={[0, 1.5, -2.5]}
             intensity={1.0}
@@ -181,6 +191,7 @@ function Scene({
         heartbeatRef={heartbeatRef}
         breathingRef={breathingRef}
         darkMode={darkMode}
+        meshMode={meshMode}
       />
 
       {/* Lung volumes */}

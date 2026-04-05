@@ -11,6 +11,7 @@ function App() {
   const [showNerves, setShowNerves] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [meshMode, setMeshMode] = useState(2); // 0=ghost, 1=semi-transparent silver, 2=solid silver
   const [brainZoom, setBrainZoom] = useState(false);
   const aboutRef = useRef(null);
 
@@ -66,11 +67,19 @@ function App() {
         About
       </button>
 
+      <button
+        className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
+        onClick={() => setMeshMode((m) => (m + 1) % 3)}
+      >
+        {meshMode === 0 ? "◻" : meshMode === 1 ? "◈" : "◼"}
+      </button>
+
       <Scene
         onSelect={setSelectedOrgan}
         viewMode={viewMode}
         showNerves={showNerves}
         darkMode={darkMode}
+        meshMode={meshMode}
         brainZoom={brainZoom}
         setBrainZoom={setBrainZoom}
       />
