@@ -264,12 +264,23 @@ function AnatomyModel({
     if (!mat || !al) return;
 
     if (darkMode) {
-      // Dark mode: 0/1 = semi-transparent obsidian, 2 = solid obsidian
-      const solid = meshMode === 2;
-      mat.transparent = !solid;
-      mat.opacity = solid ? 1.0 : 0.82;
-      mat.depthWrite = solid;
-      mat.needsUpdate = true;
+      // Dark mode: 0 = ghost x-ray, 1 = semi-transparent obsidian, 2 = solid obsidian
+      if (meshMode === 0) {
+        mat.transparent = true;
+        mat.opacity = 0.45;
+        mat.metalness = 0.1;
+        mat.roughness = 0.12;
+        mat.depthWrite = false;
+        mat.needsUpdate = true;
+      } else {
+        const solid = meshMode === 2;
+        mat.transparent = !solid;
+        mat.opacity = solid ? 1.0 : 0.82;
+        mat.metalness = 0.92;
+        mat.roughness = 0.08;
+        mat.depthWrite = solid;
+        mat.needsUpdate = true;
+      }
     } else {
       // Light mode:
       // 0 = original ghost (dark glass, no aluminum)
@@ -290,6 +301,24 @@ function AnatomyModel({
         mat.emissiveIntensity = 0;
         mat.depthWrite = false;
         mat.needsUpdate = true;
+      } else if (meshMode === 3) {
+        // White ghost x-ray: luminous white skin, aluminum at low opacity for structure
+        mat.color.set("#f0f4ff");
+        mat.transparent = true;
+        mat.transmission = 0;
+        mat.opacity = 0.28;
+        mat.metalness = 0.05;
+        mat.roughness = 0.1;
+        mat.emissiveIntensity = 0;
+        mat.depthWrite = false;
+        mat.needsUpdate = true;
+        al.transparent = true;
+        al.color.set("#ffffff");
+        al.metalness = 0.1;
+        al.roughness = 0.1;
+        al.opacity = 0.55;
+        al.depthWrite = false;
+        al.needsUpdate = true;
       } else {
         // Restore aluminum silver for modes 1 and 2
         mat.color.set("#eef2f6");
@@ -300,6 +329,9 @@ function AnatomyModel({
         mat.depthWrite = false;
         mat.needsUpdate = true;
         al.transparent = meshMode !== 2;
+        al.color.set("#d8dde2");
+        al.metalness = 0.88;
+        al.roughness = 0.15;
         al.opacity = meshMode === 2 ? 1.0 : 0.82;
         al.depthWrite = meshMode === 2;
         al.needsUpdate = true;

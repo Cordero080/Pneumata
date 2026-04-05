@@ -63,7 +63,9 @@ function Scene({
       style={{ width: "100%", height: "100%" }}
       gl={{ alpha: true }}
     >
-      {darkMode && <fog attach="fog" args={["#010208", 4.5, 9]} />}
+      {darkMode && meshMode !== 0 && (
+        <fog attach="fog" args={["#010208", 4.5, 9]} />
+      )}
       {!darkMode && meshMode !== 0 && (
         <Environment preset="city" background={false} />
       )}
@@ -74,6 +76,23 @@ function Scene({
           <pointLight position={[2, 2.5, 2]} intensity={2} color="#00f5ff" />
           <pointLight position={[-3, 1.5, -2]} intensity={1} color="#bf00ff" />
           <pointLight position={[0, 1, 3]} intensity={0.6} color="#aaccff" />
+        </>
+      ) : meshMode === 3 ? (
+        <>
+          {/* White ghost — bright neutral lights, high ambient for luminous bone-scan look */}
+          <ambientLight intensity={2.2} />
+          <pointLight position={[2, 2.5, 2]} intensity={1.4} color="#f8f4f0" />
+          <pointLight
+            position={[-3, 1.5, -2]}
+            intensity={1.0}
+            color="#f0f4f8"
+          />
+          <pointLight position={[0, 1, 3]} intensity={0.8} color="#f4f0f8" />
+          <pointLight
+            position={[0, 1.5, -2.5]}
+            intensity={1.2}
+            color="#e8f0ff"
+          />
         </>
       ) : meshMode === 0 ? (
         <>

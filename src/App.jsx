@@ -69,9 +69,15 @@ function App() {
 
       <button
         className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
-        onClick={() => setMeshMode((m) => (m + 1) % 3)}
+        onClick={() => setMeshMode((m) => (m + 1) % (darkMode ? 3 : 4))}
       >
-        {meshMode === 0 ? "◻" : meshMode === 1 ? "◈" : "◼"}
+        {meshMode === 0
+          ? "◻"
+          : meshMode === 1
+            ? "◈"
+            : meshMode === 2
+              ? "◼"
+              : "◇"}
       </button>
 
       <Scene
