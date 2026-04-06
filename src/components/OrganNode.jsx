@@ -284,44 +284,85 @@ function OrganNode({
         >
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: isLeft ? "row-reverse" : "row",
-              gap: 0,
+              position: "absolute",
               whiteSpace: "nowrap",
-              transform: isLeft
-                ? "translate(calc(-100% - 8px), -50%)"
-                : "translate(8px, -50%)",
+              left: isLeft ? "auto" : "10px",
+              right: isLeft ? "10px" : "auto",
+              top: "50%",
+              transform: "translateY(-50%)",
+              display: "flex",
+              flexDirection: isLeft ? "row-reverse" : "row",
+              alignItems: "center",
+              gap: "0",
+              animation: "scanReveal 0.18s ease-out both",
             }}
           >
+            {/* Connecting line with tick terminator */}
             <div
               style={{
-                background: "rgba(5, 8, 20, 0.72)",
-                border: `1px solid ${color}55`,
-                borderRadius: "4px",
-                padding: "3px 10px",
-                fontSize: "10px",
-                fontFamily: "'Orbitron', system-ui, sans-serif",
-                color: color,
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-                boxShadow: `0 0 10px ${color}26`,
-                letterSpacing: "0.04em",
+                display: "flex",
+                alignItems: "center",
+                flexDirection: isLeft ? "row-reverse" : "row",
               }}
             >
-              {organ.organ}
+              <div
+                style={{
+                  width: "32px",
+                  height: "1px",
+                  background: `linear-gradient(${isLeft ? "to left" : "to right"}, ${color}00, ${color}cc)`,
+                }}
+              />
+              <div
+                style={{
+                  width: "1px",
+                  height: "10px",
+                  background: `${color}cc`,
+                }}
+              />
             </div>
+            {/* Text block */}
             <div
               style={{
-                width: "28px",
-                height: "1px",
-                background: isLeft
-                  ? `linear-gradient(to left, ${color}26, ${color}80)`
-                  : `linear-gradient(to right, ${color}26, ${color}80)`,
-                flexShrink: 0,
+                padding: isLeft ? "0 0 0 8px" : "0 8px 0 0",
+                textAlign: isLeft ? "right" : "left",
               }}
-            />
+            >
+              <div
+                style={{
+                  fontFamily: "'Orbitron', system-ui, sans-serif",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  letterSpacing: "0.12em",
+                  color: color,
+                  textShadow: `0 1px 4px #000, 0 2px 8px #000a, 0 0 12px ${color}99`,
+                  lineHeight: 1.2,
+                  textTransform: "uppercase",
+                }}
+              >
+                {organ.organ}
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Orbitron', system-ui, sans-serif",
+                  fontSize: "7px",
+                  letterSpacing: "0.18em",
+                  color: `${color}88`,
+                  textShadow: `0 1px 3px #000, 0 2px 6px #000a`,
+                  lineHeight: 1.4,
+                  textTransform: "uppercase",
+                  marginTop: "2px",
+                }}
+              >
+                {organ.category}
+              </div>
+            </div>
           </div>
+          <style>{`
+            @keyframes scanReveal {
+              from { opacity: 0; clip-path: inset(0 100% 0 0); }
+              to   { opacity: 1; clip-path: inset(0 0% 0 0); }
+            }
+          `}</style>
         </Html>
       )}
     </group>

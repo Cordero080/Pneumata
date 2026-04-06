@@ -137,28 +137,37 @@ function NerveRoots({ spinePoints, hoveredCategory, viewMode, showNerves }) {
     <>
       {allRoutes.map(({ id, points, color, category, isBrain }) => {
         const active = !isBrain && hoveredCategory === category;
-        const opacity = active
-          ? 0.7
+        const coreOpacity = active
+          ? 0.9
           : allVisible
             ? isBrain
               ? 0.25
               : 0.35
             : 0.08;
-        const lineWidth = active
-          ? 2.0
+        const glowOpacity = active
+          ? 0.18
+          : allVisible
+            ? isBrain
+              ? 0.04
+              : 0.06
+            : 0.02;
+        const coreWidth = active
+          ? 1.5
           : allVisible
             ? isBrain
               ? 0.6
               : 1.0
             : 0.3;
+        const glowWidth = coreWidth * 4;
         return (
           <Line
             key={id}
             points={points}
             color={color}
-            lineWidth={lineWidth}
+            lineWidth={coreWidth}
             transparent
-            opacity={opacity}
+            opacity={coreOpacity}
+            toneMapped={false}
           />
         );
       })}

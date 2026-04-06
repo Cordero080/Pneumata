@@ -279,6 +279,7 @@ function Scene({
             key={organ.id}
             organ={organ}
             darkMode={darkMode}
+            meshMode={meshMode}
             onSelect={onSelect}
             nodeOpacity={getNodeOpacity(organ, viewMode)}
             dynamicPoints={spinePoints}

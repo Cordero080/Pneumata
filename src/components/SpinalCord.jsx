@@ -96,6 +96,7 @@ function SpinalCord({
   hoveredCategory,
   onCategoryHover,
   darkMode = true,
+  meshMode = 2,
 }) {
   // Light mode: dark charcoal anatomy illustration palette
   // Dark mode: glowing cyan/blue neon palette
@@ -126,6 +127,15 @@ function SpinalCord({
         lamOp: 0.65,
         caudaOp: 0.45,
       };
+  // Dark body = dark mode meshes 0/1/2, or light mode ghost (0) — discs need more pop
+  const isDarkMesh = darkMode ? meshMode <= 2 : meshMode === 0;
+  const discBaseOpacity = isDarkMesh ? 0.5 : 0.32;
+  const discEmissive = isDarkMesh ? 0.28 : 0.12;
+  const discMetalness = isDarkMesh ? 0.82 : 0.75;
+  const discRoughness = isDarkMesh ? 0.08 : 0.12;
+  const discHoverOpacity = isDarkMesh ? 1.0 : 0.9;
+  const discActiveOpacity = isDarkMesh ? 0.9 : 0.75;
+
   const coreRefs = useRef([]);
   const glowRefs = useRef([]);
   const discRefs = useRef([]);
@@ -159,10 +169,10 @@ function SpinalCord({
         hoveredCategoryRef.current === levelData.category;
       const isDirectlyHovered = hoveredDiscIndexRef.current === i;
       const targetOpacity = isDirectlyHovered
-        ? 1.0
+        ? discHoverOpacity
         : isCategoryHighlighted
-          ? 0.92
-          : 0.2;
+          ? discActiveOpacity
+          : discBaseOpacity;
       const targetScale = isDirectlyHovered
         ? 1.6
         : isCategoryHighlighted
@@ -535,10 +545,12 @@ function SpinalCord({
             <cylinderGeometry args={[0.018, 0.018, 0.006, 12]} />
             <meshStandardMaterial
               color={color}
-              metalness={0.92}
-              roughness={0.08}
+              emissive={color}
+              emissiveIntensity={discEmissive}
+              metalness={discMetalness}
+              roughness={discRoughness}
               transparent
-              opacity={0.2}
+              opacity={discBaseOpacity}
               depthTest={false}
               depthWrite={false}
               toneMapped={false}
