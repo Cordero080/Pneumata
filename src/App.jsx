@@ -18,6 +18,16 @@ function App() {
   // zoom:  0 = knob top (close),  1 = knob bottom (far). Default ≈ starting distance.
   const [panY, setPanY] = useState(0.5);
   const [zoom, setZoom] = useState(0.33);
+  const [globalScale, setGlobalScale] = useState(0.9);
+  const [offsetX, setOffsetX] = useState(0.0);
+  const [offsetY, setOffsetY] = useState(0.1);
+  const handleReset = () => {
+    setPanY(0.5);
+    setZoom(0.33);
+    setGlobalScale(0.9);
+    setOffsetX(0.0);
+    setOffsetY(0.1);
+  };
   const aboutRef = useRef(null);
 
   useEffect(() => {
@@ -97,7 +107,14 @@ function App() {
                   : "⬤"}
       </button>
 
+      <button className="reset-btn" onClick={handleReset}>
+        ↺
+      </button>
+
       <Scene
+        globalScale={globalScale}
+        offsetX={offsetX}
+        offsetY={offsetY}
         onSelect={setSelectedOrgan}
         viewMode={viewMode}
         showNerves={showNerves}
@@ -114,6 +131,10 @@ function App() {
         onPanChange={setPanY}
         zoom={zoom}
         onZoomChange={setZoom}
+        scale={globalScale}
+        onScaleChange={setGlobalScale}
+        offsetX={offsetX}
+        onOffsetXChange={setOffsetX}
       />
       {brainZoom && (
         <button className="brain-back-btn" onClick={() => setBrainZoom(false)}>

@@ -4,16 +4,20 @@
 
 .vertical-controls {
   position: fixed;
-  right: 1.4rem;
+  right: 8.5rem;
   top: 50%;
   transform: translateY(-50%);
+
+  @media (max-width: 768px) {
+    right: 2rem;
+  }
   z-index: 50;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.4rem;
-  padding: 1.2rem 0.7rem;
-  background: rgba(215, 222, 230, 0.45);
+  padding: 1.2rem 0.2rem;
+  background: rgba(215, 222, 230, 0.024);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow:
@@ -27,6 +31,24 @@
     #{v.$chamfer-sm} 100%,
     0 calc(100% - #{v.$chamfer-sm})
   );
+}
+
+// Reset button — lives inside the panel, full-width
+.vcontrols-reset {
+  width: 100%;
+  font-family: v.$font-hud;
+  font-size: 13px;
+  padding: 4px 0;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(55, 72, 88, 0.45);
+  transition: color 0.18s ease;
+  line-height: 1;
+
+  &:hover {
+    color: rgba(22, 36, 52, 0.85);
+  }
 }
 
 .vertical-controls__sep {
@@ -80,7 +102,7 @@
   top: 0;
   width: 1px;
   transform: translateX(-50%);
-  background: rgba(55, 90, 140, 0.55);
+  background: rgb(242, 247, 255);
   pointer-events: none;
 }
 
@@ -94,7 +116,7 @@
   background: rgba(210, 220, 232, 0.95);
   box-shadow:
     0 1px 4px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    inset 0 1px 0 rgba(255, 255, 255, 0.531);
   pointer-events: none;
   transition: box-shadow 0.15s ease;
 
@@ -107,6 +129,15 @@
 }
 
 // === Dark mode ===
+
+.app--dark .vcontrols-reset {
+  color: v.$dark-text-dim;
+
+  &:hover {
+    color: v.$dark-text;
+    filter: drop-shadow(0 0 6px v.$dark-glow);
+  }
+}
 
 .app--dark .vertical-controls {
   @include v.dark-surface;
@@ -123,11 +154,11 @@
 }
 
 .app--dark .vslider__track::before {
-  background: rgba(100, 140, 200, 0.2);
+  background: rgba(100, 140, 200, 0.328);
 }
 
 .app--dark .vslider__fill {
-  background: rgba(80, 160, 255, 0.5);
+  background: rgba(157, 188, 226, 0.967);
 }
 
 .app--dark .vslider__knob {

@@ -34,6 +34,9 @@ function BreathingDriver({ breathingRef }) {
 }
 
 function Scene({
+  globalScale,
+  offsetX,
+  offsetY,
   onSelect,
   viewMode,
   showNerves,
@@ -63,75 +66,75 @@ function Scene({
     >
       <SceneLights darkMode={darkMode} meshMode={meshMode} />
       <BreathingDriver breathingRef={breathingRef} />
+      <group scale={globalScale} position={[offsetX, offsetY, 0]}>
+        <AnatomyModel
+          viewMode={viewMode}
+          onSpineExtracted={handleSpineExtracted}
+          heartbeatRef={heartbeatRef}
+          breathingRef={breathingRef}
+          darkMode={darkMode}
+          meshMode={meshMode}
+        />
 
-      <AnatomyModel
-        viewMode={viewMode}
-        onSpineExtracted={handleSpineExtracted}
-        heartbeatRef={heartbeatRef}
-        breathingRef={breathingRef}
-        darkMode={darkMode}
-        meshMode={meshMode}
-      />
+        <LungVolume
+          position={LEFT_LUNG_POS}
+          visible={hoveredOrganId === "left_lung"}
+          breathingRef={breathingRef}
+          viewMode={viewMode}
+        />
+        <LungVolume
+          position={RIGHT_LUNG_POS}
+          visible={hoveredOrganId === "right_lung"}
+          breathingRef={breathingRef}
+          viewMode={viewMode}
+        />
 
-      <LungVolume
-        position={LEFT_LUNG_POS}
-        visible={hoveredOrganId === "left_lung"}
-        breathingRef={breathingRef}
-        viewMode={viewMode}
-      />
-      <LungVolume
-        position={RIGHT_LUNG_POS}
-        visible={hoveredOrganId === "right_lung"}
-        breathingRef={breathingRef}
-        viewMode={viewMode}
-      />
+        <BodyCirculation opacity={circOpacity} heartbeatRef={heartbeatRef} />
 
-      <BodyCirculation opacity={circOpacity} heartbeatRef={heartbeatRef} />
+        <NerveRoots
+          spinePoints={spinePoints}
+          hoveredCategory={hoveredCategory}
+          viewMode={viewMode}
+          showNerves={showNerves}
+        />
 
-      <NerveRoots
-        spinePoints={spinePoints}
-        hoveredCategory={hoveredCategory}
-        viewMode={viewMode}
-        showNerves={showNerves}
-      />
-
-      {organs.map((organ) =>
-        organ.type === "line" ? (
-          <SpinalCord
-            key={organ.id}
-            organ={organ}
-            darkMode={darkMode}
-            meshMode={meshMode}
-            onSelect={onSelect}
-            nodeOpacity={getNodeOpacity(organ, viewMode)}
-            dynamicPoints={spinePoints}
-            hoveredCategory={hoveredCategory}
-            onCategoryHover={handleCategoryHover}
-          />
-        ) : (
-          <OrganNode
-            key={organ.id}
-            organ={organ}
-            onSelect={(o) => {
-              onSelect(o);
-              if (o.brainPosition) setBrainZoom(true);
-            }}
-            onHover={setHoveredOrganId}
-            nodeOpacity={getNodeOpacity(organ, viewMode)}
-            pulseRef={organ.id === "heart" ? heartbeatRef : undefined}
-            breathingRef={
-              organ.id === "left_lung" || organ.id === "right_lung"
-                ? breathingRef
-                : undefined
-            }
-            viewMode={viewMode}
-            hoveredCategory={hoveredCategory}
-            onCategoryHover={handleCategoryHover}
-            brainZoom={brainZoom}
-          />
-        ),
-      )}
-
+        {organs.map((organ) =>
+          organ.type === "line" ? (
+            <SpinalCord
+              key={organ.id}
+              organ={organ}
+              darkMode={darkMode}
+              meshMode={meshMode}
+              onSelect={onSelect}
+              nodeOpacity={getNodeOpacity(organ, viewMode)}
+              dynamicPoints={spinePoints}
+              hoveredCategory={hoveredCategory}
+              onCategoryHover={handleCategoryHover}
+            />
+          ) : (
+            <OrganNode
+              key={organ.id}
+              organ={organ}
+              onSelect={(o) => {
+                onSelect(o);
+                if (o.brainPosition) setBrainZoom(true);
+              }}
+              onHover={setHoveredOrganId}
+              nodeOpacity={getNodeOpacity(organ, viewMode)}
+              pulseRef={organ.id === "heart" ? heartbeatRef : undefined}
+              breathingRef={
+                organ.id === "left_lung" || organ.id === "right_lung"
+                  ? breathingRef
+                  : undefined
+              }
+              viewMode={viewMode}
+              hoveredCategory={hoveredCategory}
+              onCategoryHover={handleCategoryHover}
+              brainZoom={brainZoom}
+            />
+          ),
+        )}
+      </group>
       <CameraController
         brainZoom={brainZoom}
         controlsRef={controlsRef}
