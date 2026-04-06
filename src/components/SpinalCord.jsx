@@ -533,12 +533,15 @@ function SpinalCord({
             }}
           >
             <cylinderGeometry args={[0.018, 0.018, 0.006, 12]} />
-            <meshBasicMaterial
+            <meshStandardMaterial
               color={color}
+              metalness={0.92}
+              roughness={0.08}
               transparent
               opacity={0.2}
               depthTest={false}
               depthWrite={false}
+              toneMapped={false}
             />
           </mesh>
         );
