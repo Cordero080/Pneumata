@@ -4,6 +4,7 @@ import GlassModal from "./components/GlassModal";
 import AboutModal from "./components/AboutModal";
 import CategoryLegend from "./components/CategoryLegend";
 import ViewModeController from "./components/ViewModeController";
+import VerticalControls from "./components/VerticalControls";
 
 function App() {
   const [selectedOrgan, setSelectedOrgan] = useState(null);
@@ -13,6 +14,10 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [meshMode, setMeshMode] = useState(2); // 0=ghost, 1=semi-transparent silver, 2=solid silver
   const [brainZoom, setBrainZoom] = useState(false);
+  // panY: 0 = knob top (head), 1 = knob bottom (legs). Default ≈ body center.
+  // zoom:  0 = knob top (close),  1 = knob bottom (far). Default ≈ starting distance.
+  const [panY, setPanY] = useState(0.5);
+  const [zoom, setZoom] = useState(0.33);
   const aboutRef = useRef(null);
 
   useEffect(() => {
@@ -100,6 +105,15 @@ function App() {
         meshMode={meshMode}
         brainZoom={brainZoom}
         setBrainZoom={setBrainZoom}
+        panY={panY}
+        zoom={zoom}
+      />
+
+      <VerticalControls
+        panY={panY}
+        onPanChange={setPanY}
+        zoom={zoom}
+        onZoomChange={setZoom}
       />
       {brainZoom && (
         <button className="brain-back-btn" onClick={() => setBrainZoom(false)}>

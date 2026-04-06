@@ -41,6 +41,8 @@ function Scene({
   meshMode,
   brainZoom,
   setBrainZoom,
+  panY,
+  zoom,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -130,7 +132,12 @@ function Scene({
         ),
       )}
 
-      <CameraController brainZoom={brainZoom} controlsRef={controlsRef} />
+      <CameraController
+        brainZoom={brainZoom}
+        controlsRef={controlsRef}
+        panY={panY}
+        zoom={zoom}
+      />
       <OrbitControls
         ref={controlsRef}
         enableZoom
