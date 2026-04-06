@@ -1,19 +1,161 @@
-// === Color Palette ===
-$bg-base: #8ba8c8;
-$neon-cyan: #00f5ff;
-$neon-purple: #bf00ff;
-$neon-pink: #ff00a0;
+// =============================================================================
+// Design Tokens
+// =============================================================================
 
-$text-primary: #e8e8f4;
-$text-secondary: rgba(232, 232, 244, 0.55);
+// === Chamfer sizes ===
+$chamfer-sm: 8px;
+$chamfer-md: 10px;
+$chamfer-lg: 14px;
 
-// === Glass Surface ===
-$glass-bg: rgba(14, 14, 30, 0.65);
-$glass-border: rgba(0, 245, 255, 0.15);
-
-// === Typography ===
-$font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-
-// === Motion ===
+// === Transitions ===
 $transition-fast: 0.15s ease;
 $transition-base: 0.25s ease;
+
+// === Typography ===
+$font-sans: "Inter", system-ui, -apple-system, sans-serif;
+$font-hud:  "Orbitron", sans-serif;
+
+// Legacy text tokens (used in _base.scss)
+$text-primary:   #e8e8f4;
+$text-secondary: rgba(232, 232, 244, 0.55);
+
+// === Category colors (mirrors src/data/categories.js) ===
+$cat-spirit:    #ffffff;
+$cat-logic:     #ffd700;
+$cat-power:     #ff3131;
+$cat-thermal:   #00f2ff;
+$cat-digestive: #39ff14;
+$cat-sensory:   #ff8c00;
+$cat-renal:     #b06bff;
+$cat-immune:    #00e5cc;
+
+// =============================================================================
+// Light Mode Tokens
+// =============================================================================
+
+$light-surface: linear-gradient(
+  135deg,
+  rgba(222, 228, 234, 0.96) 0%,
+  rgba(200, 210, 218, 0.92) 25%,
+  rgba(232, 238, 244, 0.96) 50%,
+  rgba(195, 206, 214, 0.92) 75%,
+  rgba(215, 222, 229, 0.96) 100%
+);
+
+$light-surface-active: linear-gradient(
+  135deg,
+  rgba(195, 204, 213, 0.97) 0%,
+  rgba(178, 190, 200, 0.95) 25%,
+  rgba(205, 215, 225, 0.97) 50%,
+  rgba(175, 188, 200, 0.95) 75%,
+  rgba(192, 202, 212, 0.97) 100%
+);
+
+$light-shadow:
+  0 2px 8px rgba(0, 0, 0, 0.1),
+  inset 0 1px 0 rgba(255, 255, 255, 0.9),
+  inset 0 -1px 0 rgba(0, 0, 0, 0.07);
+
+$light-text:     rgba(22, 36, 52, 0.9);
+$light-text-dim: rgba(55, 72, 88, 0.68);
+
+// =============================================================================
+// Dark Mode Tokens
+// =============================================================================
+
+// Holographic obsidian surface — used on all buttons/panels in dark mode
+$dark-surface:
+  linear-gradient(145deg, #0a0a0a, #000000),
+  radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent 50%),
+  radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
+  linear-gradient(
+    45deg,
+    rgba(138, 43, 226, 0.05),
+    rgba(0, 212, 255, 0.05),
+    rgba(138, 43, 226, 0.05)
+  );
+
+$dark-surface-active:
+  linear-gradient(145deg, #111118, #050508),
+  radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), transparent 50%),
+  radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
+  linear-gradient(
+    45deg,
+    rgba(138, 43, 226, 0.08),
+    rgba(0, 212, 255, 0.08),
+    rgba(138, 43, 226, 0.08)
+  );
+
+$dark-surface-hover:
+  linear-gradient(145deg, #0e0e14, #030306),
+  radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.12), transparent 50%),
+  radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
+  linear-gradient(
+    45deg,
+    rgba(138, 43, 226, 0.06),
+    rgba(0, 212, 255, 0.06),
+    rgba(138, 43, 226, 0.06)
+  );
+
+$dark-surface-size: 100% 100%, 150% 150%, 150% 150%, 200% 200%;
+
+$dark-text:     rgba(230, 240, 255, 0.95);
+$dark-text-dim: rgba(160, 185, 220, 0.6);
+$dark-glow:     rgba(0, 212, 255, 0.35);
+
+// =============================================================================
+// Glass Surface (modal / overlay)
+// =============================================================================
+
+$glass-bg:     rgba(14, 14, 30, 0.65);
+$glass-border: rgba(0, 245, 255, 0.15);
+
+// Legacy neon accents (kept for potential future use)
+$neon-cyan:   #00f5ff;
+$neon-purple: #bf00ff;
+$neon-pink:   #ff00a0;
+
+// =============================================================================
+// Chamfer Mixins
+// =============================================================================
+
+@mixin chamfer($size: $chamfer-md) {
+  clip-path: polygon(
+    0 0,
+    calc(100% - #{$size}) 0,
+    100% #{$size},
+    100% 100%,
+    #{$size} 100%,
+    0 calc(100% - #{$size})
+  );
+}
+
+@mixin chamfer-notch($size: $chamfer-md) {
+  clip-path: polygon(
+    0 0,
+    calc(100% - #{$size}) 0,
+    100% #{$size},
+    100% 100%,
+    #{$size} 100%,
+    #{$size} #{$size}
+  );
+}
+
+// Dark mode holographic surface helper
+@mixin dark-surface {
+  background: $dark-surface;
+  background-size: $dark-surface-size;
+  background-blend-mode: overlay, multiply, overlay;
+}
+
+@mixin dark-surface-active {
+  background: $dark-surface-active;
+  background-size: $dark-surface-size;
+  background-blend-mode: overlay, multiply, overlay;
+}
+
+@mixin dark-surface-hover {
+  background: $dark-surface-hover;
+  background-size: $dark-surface-size;
+  background-blend-mode: overlay, multiply, overlay;
+}

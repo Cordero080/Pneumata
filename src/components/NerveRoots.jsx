@@ -2,17 +2,7 @@ import { useMemo } from "react";
 import { Line } from "@react-three/drei";
 import * as THREE from "three";
 import { organs } from "../data/organs";
-
-const CATEGORY_COLORS = {
-  logic: "#ffd700",
-  thermal: "#00f2ff",
-  power: "#ff3131",
-  digestive: "#39ff14",
-  sensory: "#ff8c00",
-  renal: "#b06bff",
-  immune: "#00e5cc",
-  spirit: "#ffffff",
-};
+import { CATEGORY_COLORS } from "../data/categories";
 
 // Primary disc index for each organ's spinal connection.
 // Indices map to SPINAL_LEVELS order: 0=C2-C3, 5=C7-T1, 10=T5-T6 … 23=S1-S2.

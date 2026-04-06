@@ -169,28 +169,16 @@
   }
 }
 
-// === Category Legend ===
+// === Dark mode overrides ===
 
-// Dark mode badge overrides
 .app--dark {
   .header-accent {
-    background:
-      linear-gradient(145deg, #0a0a0a, #000000),
-      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent 50%),
-      radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
-      linear-gradient(45deg, rgba(138, 43, 226, 0.05), rgba(0, 212, 255, 0.05), rgba(138, 43, 226, 0.05));
-    background-size: 100% 100%, 150% 150%, 150% 150%, 200% 200%;
-    background-blend-mode: overlay, multiply, overlay;
+    @include v.dark-surface;
     filter: drop-shadow(0 0 0.5px rgba(180, 200, 230, 0.35));
   }
+
   .header-panel {
-    background:
-      linear-gradient(145deg, #0a0a0a, #000000),
-      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent 50%),
-      radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
-      linear-gradient(45deg, rgba(138, 43, 226, 0.05), rgba(0, 212, 255, 0.05), rgba(138, 43, 226, 0.05));
-    background-size: 100% 100%, 150% 150%, 150% 150%, 200% 200%;
-    background-blend-mode: overlay, multiply, overlay;
+    @include v.dark-surface;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     box-shadow: none;
@@ -198,58 +186,35 @@
     h1 { color: rgb(210, 225, 255); }
     p   { color: rgba(150, 175, 215, 0.769); }
   }
+
   .view-btn {
-    background:
-      linear-gradient(145deg, #0a0a0a, #000000),
-      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent 50%),
-      radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
-      linear-gradient(45deg, rgba(138, 43, 226, 0.05), rgba(0, 212, 255, 0.05), rgba(138, 43, 226, 0.05));
-    background-size: 100% 100%, 150% 150%, 150% 150%, 200% 200%;
-    background-blend-mode: overlay, multiply, overlay;
+    @include v.dark-surface;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     box-shadow: none;
     filter: drop-shadow(0 0 0.5px rgba(17, 38, 71, 0.3));
-    color: rgba(160, 185, 220, 0.6);
+    color: v.$dark-text-dim;
+
     &--active {
-      background:
-        linear-gradient(145deg, #111118, #050508),
-        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
-        linear-gradient(45deg, rgba(138, 43, 226, 0.08), rgba(0, 212, 255, 0.08), rgba(138, 43, 226, 0.08));
-      background-size: 100% 100%, 150% 150%, 150% 150%, 200% 200%;
-      background-blend-mode: overlay, multiply, overlay;
+      @include v.dark-surface-active;
       filter: drop-shadow(0 0 0.5px rgba(180, 200, 230, 0.5));
-      color: rgba(230, 240, 255, 0.95);
+      color: v.$dark-text;
     }
+
     &:hover:not(.view-btn--active) {
-      background:
-        linear-gradient(145deg, #0e0e14, #030306),
-        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.12), transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
-        linear-gradient(45deg, rgba(138, 43, 226, 0.06), rgba(0, 212, 255, 0.06), rgba(138, 43, 226, 0.06));
-      background-size: 100% 100%, 150% 150%, 150% 150%, 200% 200%;
-      background-blend-mode: overlay, multiply, overlay;
+      @include v.dark-surface-hover;
     }
   }
-
-  // Shared holographic mixin for about-btn, brain-back-btn, dark-toggle-btn
-  $holo-bg: linear-gradient(145deg, #0a0a0a, #000000),
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent 50%),
-    radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
-    linear-gradient(45deg, rgba(138, 43, 226, 0.05), rgba(0, 212, 255, 0.05), rgba(138, 43, 226, 0.05));
 
   .about-btn,
   .brain-back-btn,
   .dark-toggle-btn {
-    background: $holo-bg;
-    background-size: 100% 100%, 150% 150%, 150% 150%, 200% 200%;
-    background-blend-mode: overlay, multiply, overlay;
+    @include v.dark-surface;
     box-shadow: none;
-    color: rgba(160, 185, 220, 0.6);
+    color: v.$dark-text-dim;
     &:hover {
       color: rgba(220, 235, 255, 0.95);
-      filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.35));
+      filter: drop-shadow(0 0 8px v.$dark-glow);
     }
   }
 }
@@ -421,13 +386,7 @@
 }
 
 .app--dark .mesh-toggle-btn {
-  background:
-    linear-gradient(145deg, #0a0a0a, #000000),
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent 50%),
-    radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.5), transparent 50%),
-    linear-gradient(45deg, rgba(138, 43, 226, 0.05), rgba(0, 212, 255, 0.05), rgba(138, 43, 226, 0.05));
-  background-size: 100% 100%, 150% 150%, 150% 150%, 200% 200%;
-  background-blend-mode: overlay, multiply, overlay;
+  @include v.dark-surface;
   box-shadow: none;
   color: rgba(160, 185, 220, 0.5);
 
@@ -436,7 +395,7 @@
   }
 
   &:hover {
-    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.35));
+    filter: drop-shadow(0 0 8px v.$dark-glow);
     color: rgba(220, 235, 255, 0.95);
   }
 }

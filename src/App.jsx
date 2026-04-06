@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import Scene from "./components/Scene";
+import Scene from "./components/scene/Scene";
 import GlassModal from "./components/GlassModal";
 import AboutModal from "./components/AboutModal";
 import CategoryLegend from "./components/CategoryLegend";

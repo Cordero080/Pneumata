@@ -1,53 +1,7 @@
-const CATEGORIES = [
-  {
-    key: "spirit",
-    color: "#ffffff",
-    label: "Spirit",
-    desc: "Emergence & Consciousness",
-  },
-  {
-    key: "logic",
-    color: "#ffd700",
-    label: "Logic",
-    desc: "Cognition & Control",
-  },
-  {
-    key: "power",
-    color: "#ff3131",
-    label: "Power",
-    desc: "Energy & Regulation",
-  },
-  {
-    key: "thermal",
-    color: "#00f2ff",
-    label: "Thermal",
-    desc: "Exchange & Cooling",
-  },
-  {
-    key: "digestive",
-    color: "#39ff14",
-    label: "Digestive",
-    desc: "Processing & Filtering",
-  },
-  {
-    key: "sensory",
-    color: "#ff8c00",
-    label: "Sensory",
-    desc: "I/O & Signal Transduction",
-  },
-  {
-    key: "renal",
-    color: "#b06bff",
-    label: "Renal",
-    desc: "Filtration & Memory Mgmt",
-  },
-  {
-    key: "immune",
-    color: "#00e5cc",
-    label: "Immune",
-    desc: "Defense & Threat Response",
-  },
-];
+import { CATEGORIES as _BASE, CATEGORY_COLORS } from "../data/categories";
+
+// Merge colors into the shared CATEGORIES array for rendering
+const CATEGORIES = _BASE.map((c) => ({ ...c, color: CATEGORY_COLORS[c.key] }));
 
 function CategoryLegend() {
   return (
