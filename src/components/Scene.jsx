@@ -12,7 +12,7 @@ import { organs } from "../data/organs";
 
 const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
 const RIGHT_LUNG_POS = [0.12, 1.22, 0.05];
-const ORBIT_TARGET = [0, window.innerWidth <= 768 ? 0.88 : 0.85, 0];
+const ORBIT_TARGET = [0, window.innerWidth <= 768 ? 0.91 : 0.85, 0];
 
 const CIRC_OPACITY = { logic: 0.0, power: 1.0, breathing: 0.0, unified: 0.65 };
 

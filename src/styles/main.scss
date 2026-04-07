@@ -436,7 +436,6 @@
   }
 
   // "mesh" tooltip on hover
-  position: relative;
   &::after {
     content: 'mesh';
     position: absolute;
