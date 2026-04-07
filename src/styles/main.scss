@@ -434,12 +434,36 @@
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.18));
     color: rgba(22, 36, 52, 0.92);
   }
+
+  // "mesh" tooltip on hover
+  position: relative;
+  &::after {
+    content: 'mesh';
+    position: absolute;
+    left: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(55, 72, 88, 0.5);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  &:hover::after {
+    opacity: 1;
+  }
 }
 
 .reset-btn {
   @extend %chamfer-btn;
   top: 3.2rem;
   left: 35rem;
+  font-size: 18px;
 
   @media (max-width: 768px) {
     left: auto;
@@ -462,6 +486,10 @@
   &:hover {
     filter: drop-shadow(0 0 8px v.$dark-glow);
     color: rgba(220, 235, 255, 0.95);
+  }
+
+  &::after {
+    color: rgba(160, 185, 220, 0.5);
   }
 }
 .app--dark .reset-btn {
