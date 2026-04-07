@@ -16,6 +16,7 @@ function OrganNode({
   breathingRef,
   viewMode,
   brainZoom,
+  darkMode,
   previewedOrganId,
   onPreview,
   onClearPreview,
@@ -202,7 +203,9 @@ function OrganNode({
       </mesh>
 
       {/* Label — on hover (desktop) or first tap (mobile preview) */}
-      {(hovered || isPreview) && <OrganLabel organ={organ} color={color} />}
+      {(hovered || isPreview) && (
+        <OrganLabel organ={organ} color={color} darkMode={darkMode} />
+      )}
     </group>
   );
 }

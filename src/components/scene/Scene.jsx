@@ -149,6 +149,7 @@ function Scene({
               hoveredCategory={activeCategory}
               onCategoryHover={handleCategoryHover}
               brainZoom={brainZoom}
+              darkMode={darkMode}
               previewedOrganId={previewedOrgan?.id}
               onPreview={handlePreview}
               onClearPreview={handleClearPreview}
