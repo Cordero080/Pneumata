@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CATEGORY_COLORS, CATEGORY_EMISSIVE } from "../../data/categories";
+
+const IS_MOBILE = window.innerWidth <= 768;
 import HeartRings from "./HeartRings";
 import OrganLabel from "./OrganLabel";
 
@@ -171,7 +173,7 @@ function OrganNode({
         onPointerOut={handlePointerOut}
         onClick={(e) => {
           e.stopPropagation();
-          if (e.pointerType === "touch") {
+          if (IS_MOBILE) {
             if (isPreview) {
               // Second tap — open modal
               onClearPreview?.();

@@ -9,7 +9,7 @@ import VerticalControls from "./components/VerticalControls";
 // Defaults differ by device — mobile needs smaller scale to clear the bottom bar
 const IS_MOBILE = window.innerWidth <= 768;
 const DEFAULTS = IS_MOBILE
-  ? { panY: 0.45, zoom: 0.38, globalScale: 0.72, offsetX: 0, offsetY: 0.08 }
+  ? { panY: 0.48, zoom: 0.22, globalScale: 0.85, offsetX: 0, offsetY: 0.16 }
   : { panY: 0.5, zoom: 0.33, globalScale: 0.9, offsetX: 0, offsetY: 0.1 };
 
 function App() {
