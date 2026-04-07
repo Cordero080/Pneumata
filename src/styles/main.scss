@@ -420,13 +420,22 @@
   }
 }
 
-// === Mesh Solid Toggle ===
+// === Mesh Solid Toggle + Reset — identical sizing, 14px chamfer ===
 
 .mesh-toggle-btn {
   @extend %chamfer-btn;
-  font-size: 14px;
-  padding: 7px 14px;
+  font-size: 16px;
+  padding: 9px 18px;
   color: rgba(55, 72, 88, 0.55);
+  // 14px chamfer matches the notch on reset
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
 
   &:hover {
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.18));
@@ -437,7 +446,7 @@
 .reset-btn {
   @extend %chamfer-btn;
   font-size: 16px;
-  padding: 7px 13px;
+  padding: 9px 18px;
 }
 
 .app--dark .mesh-toggle-btn {
