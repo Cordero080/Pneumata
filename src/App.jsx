@@ -21,12 +21,14 @@ function App() {
   const [globalScale, setGlobalScale] = useState(0.9);
   const [offsetX, setOffsetX] = useState(0.0);
   const [offsetY, setOffsetY] = useState(0.1);
+  const [resetKey, setResetKey] = useState(0);
   const handleReset = () => {
     setPanY(0.5);
     setZoom(0.33);
     setGlobalScale(0.9);
     setOffsetX(0.0);
     setOffsetY(0.1);
+    setResetKey((k) => k + 1);
   };
   const aboutRef = useRef(null);
 
@@ -124,6 +126,7 @@ function App() {
         setBrainZoom={setBrainZoom}
         panY={panY}
         zoom={zoom}
+        resetKey={resetKey}
       />
 
       <VerticalControls

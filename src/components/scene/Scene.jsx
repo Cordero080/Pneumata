@@ -47,6 +47,7 @@ function Scene({
   setBrainZoom,
   panY,
   zoom,
+  resetKey,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -160,6 +161,7 @@ function Scene({
         controlsRef={controlsRef}
         panY={panY}
         zoom={zoom}
+        resetKey={resetKey}
       />
       <OrbitControls
         ref={controlsRef}

@@ -14,7 +14,15 @@ const PAN_Y_BOTTOM = 0.1;
 const ZOOM_NEAR = 0.9;
 const ZOOM_FAR = 4.0;
 
-function CameraController({ brainZoom, controlsRef, panY = 0.5, zoom = 0.33 }) {
+const INITIAL_CAM = { x: 0, y: 0.82, z: 2.1 };
+
+function CameraController({
+  brainZoom,
+  controlsRef,
+  panY = 0.5,
+  zoom = 0.33,
+  resetKey = 0,
+}) {
   const { camera } = useThree();
   const animating = useRef(false);
   const panYRef = useRef(panY);
@@ -40,6 +48,20 @@ function CameraController({ brainZoom, controlsRef, panY = 0.5, zoom = 0.33 }) {
       ctrl.maxDistance = brainZoom ? 0.6 : ZOOM_FAR;
     }
   }, [brainZoom, controlsRef]);
+
+  // On reset: directly snap camera back to initial position + target.
+  // This works regardless of how the user moved the camera (slider, scroll,
+  // pinch, or orbit drag) because we bypass the dirty-flag system entirely
+  // and just tell Three.js where the camera should be.
+  useEffect(() => {
+    if (resetKey === 0) return;
+    const ctrl = controlsRef.current;
+    if (!ctrl) return;
+    camera.position.set(INITIAL_CAM.x, INITIAL_CAM.y, INITIAL_CAM.z);
+    ctrl.target.set(0, 0.85, 0);
+    ctrl.update();
+    zoomDirty.current = false;
+  }, [resetKey, camera, controlsRef]);
 
   useFrame(() => {
     const ctrl = controlsRef.current;
