@@ -383,12 +383,12 @@
   }
 }
 
-// === Top-right control strip — About + Mesh + Reset interlocked ===
+// === Top-left utility strip — Mesh + Reset interlocked ===
 
-.top-right-strip {
+.top-left-strip {
   position: fixed;
   top: 1rem;
-  right: 1rem;
+  left: 12rem;   // clears the header banner
   z-index: 50;
   display: flex;
   flex-direction: row;
@@ -397,19 +397,16 @@
 
   @media (max-width: 768px) {
     top: 0.6rem;
-    right: 0.6rem;
+    left: 0.6rem;
   }
 
-  // All three buttons become flow elements — the strip owns positioning
-  .about-btn,
   .mesh-toggle-btn,
   .reset-btn {
     position: static;
     flex-shrink: 0;
   }
 
-  // Mesh + Reset interlock with the button before them
-  .mesh-toggle-btn,
+  // Reset interlocks with mesh
   .reset-btn {
     margin-left: -11px;
     clip-path: polygon(

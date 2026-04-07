@@ -74,16 +74,8 @@ function App() {
         </div>
       </header>
 
-      <div className="top-right-strip">
-        <button
-          ref={aboutRef}
-          className="about-btn"
-          onClick={() => setShowAbout(true)}
-          onMouseMove={handleTilt}
-          onMouseLeave={resetTilt}
-        >
-          About
-        </button>
+      {/* Utility controls — top-left, used frequently */}
+      <div className="top-left-strip">
         <button
           className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
           onClick={() =>
@@ -111,6 +103,17 @@ function App() {
           ↺
         </button>
       </div>
+
+      {/* About — top-right, used infrequently */}
+      <button
+        ref={aboutRef}
+        className="about-btn"
+        onClick={() => setShowAbout(true)}
+        onMouseMove={handleTilt}
+        onMouseLeave={resetTilt}
+      >
+        About
+      </button>
 
       <Scene
         globalScale={globalScale}
