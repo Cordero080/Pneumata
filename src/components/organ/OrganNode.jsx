@@ -119,7 +119,7 @@ function OrganNode({
       {/* Spirit expanding aura */}
       {isSpirit && (
         <mesh ref={auraRef} scale={1}>
-          <sphereGeometry args={[0.012, 16, 16]} />
+          <sphereGeometry args={[0.016, 16, 16]} />
           <meshStandardMaterial
             color="#ffffff"
             emissive="#ffffff"
@@ -174,7 +174,7 @@ function OrganNode({
           }
         }}
       >
-        <sphereGeometry args={[0.012, 16, 16]} />
+        <sphereGeometry args={[0.016, 16, 16]} />
         <meshStandardMaterial
           color={color}
           emissive={emissive}
@@ -189,7 +189,7 @@ function OrganNode({
 
       {/* Small bright inner core */}
       <mesh ref={innerRef} renderOrder={6}>
-        <sphereGeometry args={[0.004, 12, 12]} />
+        <sphereGeometry args={[0.007, 12, 12]} />
         <meshStandardMaterial
           color="#ffffff"
           emissive={isSpirit ? "#ffffff" : color}
