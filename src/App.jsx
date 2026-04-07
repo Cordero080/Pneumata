@@ -6,10 +6,17 @@ import CategoryLegend from "./components/CategoryLegend";
 import ViewModeController from "./components/ViewModeController";
 import VerticalControls from "./components/VerticalControls";
 
-// Defaults differ by device — mobile needs smaller scale to clear the bottom bar
+// Defaults differ by device and display context
 const IS_MOBILE = window.innerWidth <= 768;
+// Standalone (PWA / Add to Home Screen) has no browser chrome, so the canvas
+// is taller — use slightly smaller scale and less Y offset to compensate.
+const IS_STANDALONE =
+  window.navigator.standalone === true ||
+  window.matchMedia("(display-mode: standalone)").matches;
 const DEFAULTS = IS_MOBILE
-  ? { panY: 0.48, zoom: 0.22, globalScale: 0.92, offsetX: 0, offsetY: 0.16 }
+  ? IS_STANDALONE
+    ? { panY: 0.48, zoom: 0.22, globalScale: 0.88, offsetX: 0, offsetY: 0.12 }
+    : { panY: 0.48, zoom: 0.22, globalScale: 0.92, offsetX: 0, offsetY: 0.16 }
   : { panY: 0.5, zoom: 0.33, globalScale: 0.9, offsetX: 0, offsetY: 0.1 };
 
 function App() {
