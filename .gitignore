@@ -4,3 +4,4 @@ docs/
 .playwright-mcp/
 *.png
 !public/screenshots/*.png
+.vercel
