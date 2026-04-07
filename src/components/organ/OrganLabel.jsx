@@ -1,7 +1,7 @@
 import { Html } from "@react-three/drei";
 import { darkenForLight } from "../../data/categories";
 
-function OrganLabel({ organ, color, darkMode }) {
+function OrganLabel({ organ, color, darkMode, onSelect }) {
   const isLeft = organ.position[0] <= 0;
   // Light mode: darken neons so they read on silvery panel
   // Dark mode: use raw neon — it pops on the dark surface
@@ -68,14 +68,24 @@ function OrganLabel({ organ, color, darkMode }) {
           />
         </div>
 
-        {/* Label panel */}
+        {/* Label panel — tappable to open modal */}
         <div
+          onClick={
+            onSelect
+              ? (e) => {
+                  e.stopPropagation();
+                  onSelect(organ);
+                }
+              : undefined
+          }
           style={{
             ...panel,
             padding: "6px 10px",
             clipPath:
               "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
             textAlign: isLeft ? "right" : "left",
+            cursor: onSelect ? "pointer" : "default",
+            pointerEvents: onSelect ? "all" : "none",
           }}
         >
           <div

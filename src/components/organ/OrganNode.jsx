@@ -215,7 +215,15 @@ function OrganNode({
 
       {/* Label — on hover (desktop) or first tap (mobile preview) */}
       {(hovered || isPreview) && (
-        <OrganLabel organ={organ} color={color} darkMode={darkMode} />
+        <OrganLabel
+          organ={organ}
+          color={color}
+          darkMode={darkMode}
+          onSelect={() => {
+            onClearPreview?.();
+            onSelect(organ);
+          }}
+        />
       )}
     </group>
   );
