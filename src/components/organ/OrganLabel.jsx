@@ -47,10 +47,12 @@ function OrganLabel({ organ, color }) {
         {/* Label panel */}
         <div
           style={{
-            background: "rgba(6, 10, 18, 0.82)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            border: `1px solid ${color}44`,
+            background: "rgba(218, 225, 233, 0.92)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            boxShadow:
+              "0 2px 10px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.85)",
+            border: `1px solid ${color}55`,
             padding: "6px 10px",
             clipPath:
               "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
@@ -64,7 +66,7 @@ function OrganLabel({ organ, color }) {
               fontWeight: 700,
               letterSpacing: "0.14em",
               color: color,
-              textShadow: `0 0 10px ${color}99`,
+              textShadow: `0 0 8px ${color}66`,
               lineHeight: 1.2,
               textTransform: "uppercase",
             }}
@@ -75,9 +77,9 @@ function OrganLabel({ organ, color }) {
             style={{
               fontFamily: "'Orbitron', system-ui, sans-serif",
               fontSize: "7px",
-              fontWeight: 400,
+              fontWeight: 500,
               letterSpacing: "0.12em",
-              color: "rgba(200, 215, 235, 0.75)",
+              color: "rgba(45, 60, 78, 0.72)",
               lineHeight: 1.4,
               textTransform: "uppercase",
               marginTop: "3px",
