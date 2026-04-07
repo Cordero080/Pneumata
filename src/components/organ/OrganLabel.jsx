@@ -20,33 +20,40 @@ function OrganLabel({ organ, color }) {
           flexDirection: isLeft ? "row-reverse" : "row",
           alignItems: "center",
           gap: "0",
-          animation: "scanReveal 0.18s ease-out both",
+          animation: "scanReveal 0.22s ease-out both",
         }}
       >
-        {/* Connecting line with tick terminator */}
+        {/* Connector line + tick */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             flexDirection: isLeft ? "row-reverse" : "row",
+            flexShrink: 0,
           }}
         >
           <div
             style={{
-              width: "32px",
+              width: "52px",
               height: "1px",
-              background: `linear-gradient(${isLeft ? "to left" : "to right"}, ${color}00, ${color}cc)`,
+              background: `linear-gradient(${isLeft ? "to left" : "to right"}, ${color}00, ${color}dd)`,
             }}
           />
           <div
-            style={{ width: "1px", height: "10px", background: `${color}cc` }}
+            style={{ width: "1px", height: "10px", background: `${color}dd` }}
           />
         </div>
 
-        {/* Text block */}
+        {/* Label panel */}
         <div
           style={{
-            padding: isLeft ? "0 0 0 8px" : "0 8px 0 0",
+            background: "rgba(6, 10, 18, 0.82)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: `1px solid ${color}44`,
+            padding: "6px 10px",
+            clipPath:
+              "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
             textAlign: isLeft ? "right" : "left",
           }}
         >
@@ -54,10 +61,10 @@ function OrganLabel({ organ, color }) {
             style={{
               fontFamily: "'Orbitron', system-ui, sans-serif",
               fontSize: "10px",
-              fontWeight: 600,
-              letterSpacing: "0.12em",
+              fontWeight: 700,
+              letterSpacing: "0.14em",
               color: color,
-              textShadow: `0 1px 4px #000, 0 2px 8px #000a, 0 0 12px ${color}99`,
+              textShadow: `0 0 10px ${color}99`,
               lineHeight: 1.2,
               textTransform: "uppercase",
             }}
@@ -68,15 +75,15 @@ function OrganLabel({ organ, color }) {
             style={{
               fontFamily: "'Orbitron', system-ui, sans-serif",
               fontSize: "7px",
-              letterSpacing: "0.18em",
-              color: `${color}88`,
-              textShadow: "0 1px 3px #000, 0 2px 6px #000a",
+              fontWeight: 400,
+              letterSpacing: "0.12em",
+              color: "rgba(200, 215, 235, 0.75)",
               lineHeight: 1.4,
               textTransform: "uppercase",
-              marginTop: "2px",
+              marginTop: "3px",
             }}
           >
-            {organ.category}
+            {organ.hardware}
           </div>
         </div>
       </div>
