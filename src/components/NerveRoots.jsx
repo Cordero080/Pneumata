@@ -120,35 +120,38 @@ function NerveRoots({ spinePoints, hoveredCategory, viewMode, showNerves }) {
   const allRoutes = [...routes, ...brainTracts];
   if (!allRoutes.length) return null;
 
-  const allVisible =
-    viewMode === "unified" || viewMode === "logic" || showNerves;
+  // Base visibility from view mode (no NET)
+  const modeVisible = viewMode === "unified" || viewMode === "logic";
 
   return (
     <>
       {allRoutes.map(({ id, points, color, category, isBrain }) => {
         const active = !isBrain && hoveredCategory === category;
+        // NET on: full nerve map at high opacity in every mode
+        // Mode visible (logic/unified): faint background nerves
+        // Otherwise: nearly invisible
         const coreOpacity = active
           ? 0.9
-          : allVisible
+          : showNerves
             ? isBrain
-              ? 0.25
-              : 0.35
-            : 0.08;
-        const glowOpacity = active
-          ? 0.18
-          : allVisible
-            ? isBrain
-              ? 0.04
-              : 0.06
-            : 0.02;
+              ? 0.55
+              : 0.72
+            : modeVisible
+              ? isBrain
+                ? 0.25
+                : 0.35
+              : 0.08;
         const coreWidth = active
           ? 1.5
-          : allVisible
+          : showNerves
             ? isBrain
-              ? 0.6
-              : 1.0
-            : 0.3;
-        const glowWidth = coreWidth * 4;
+              ? 0.8
+              : 1.2
+            : modeVisible
+              ? isBrain
+                ? 0.6
+                : 1.0
+              : 0.3;
         return (
           <Line
             key={id}
