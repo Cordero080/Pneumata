@@ -16,6 +16,9 @@ function OrganNode({
   breathingRef,
   viewMode,
   brainZoom,
+  previewedOrganId,
+  onPreview,
+  onClearPreview,
 }) {
   const meshRef = useRef();
   const glowRef = useRef();
@@ -34,6 +37,7 @@ function OrganNode({
   const color = CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
   const emissive = CATEGORY_EMISSIVE[organ.category] ?? CATEGORY_EMISSIVE.logic;
   const isSpirit = organ.category === "spirit";
+  const isPreview = previewedOrganId === organ.id;
   const isExternallyHighlighted =
     !hovered && hoveredCategory === organ.category;
 
@@ -153,7 +157,20 @@ function OrganNode({
         onPointerOut={handlePointerOut}
         onClick={(e) => {
           e.stopPropagation();
-          onSelect(organ);
+          if (e.pointerType === "touch") {
+            if (isPreview) {
+              // Second tap — open modal
+              onClearPreview?.();
+              onSelect(organ);
+            } else {
+              // First tap — preview: show label + highlight category
+              onPreview?.(organ);
+              onCategoryHover?.(organ.category);
+            }
+          } else {
+            // Desktop: click opens modal directly
+            onSelect(organ);
+          }
         }}
       >
         <sphereGeometry args={[0.012, 16, 16]} />
@@ -184,8 +201,8 @@ function OrganNode({
         />
       </mesh>
 
-      {/* Hover label */}
-      {hovered && <OrganLabel organ={organ} color={color} />}
+      {/* Label — on hover (desktop) or first tap (mobile preview) */}
+      {(hovered || isPreview) && <OrganLabel organ={organ} color={color} />}
     </group>
   );
 }

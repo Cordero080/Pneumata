@@ -38,6 +38,7 @@ function Scene({
   offsetX,
   offsetY,
   onSelect,
+  selectedOrgan,
   viewMode,
   showNerves,
   darkMode,
@@ -49,12 +50,21 @@ function Scene({
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [previewedOrgan, setPreviewedOrgan] = useState(null);
+  // Priority: live hover > open modal > touch preview
+  const activeCategory =
+    hoveredCategory ??
+    selectedOrgan?.category ??
+    previewedOrgan?.category ??
+    null;
   const [spinePoints, setSpinePoints] = useState(null);
   const heartbeatRef = useRef(0);
   const breathingRef = useRef(0);
   const controlsRef = useRef();
   const handleSpineExtracted = useCallback((pts) => setSpinePoints(pts), []);
   const handleCategoryHover = useCallback((cat) => setHoveredCategory(cat), []);
+  const handlePreview = useCallback((organ) => setPreviewedOrgan(organ), []);
+  const handleClearPreview = useCallback(() => setPreviewedOrgan(null), []);
 
   const circOpacity = CIRC_OPACITY[viewMode] ?? 0.0;
 
@@ -69,6 +79,7 @@ function Scene({
       }}
       dpr={[1, 2]}
       performance={{ min: 0.5 }}
+      onPointerMissed={() => handleClearPreview()}
     >
       <SceneLights darkMode={darkMode} meshMode={meshMode} />
       <BreathingDriver breathingRef={breathingRef} />
@@ -99,7 +110,7 @@ function Scene({
 
         <NerveRoots
           spinePoints={spinePoints}
-          hoveredCategory={hoveredCategory}
+          hoveredCategory={activeCategory}
           viewMode={viewMode}
           showNerves={showNerves}
         />
@@ -114,7 +125,7 @@ function Scene({
               onSelect={onSelect}
               nodeOpacity={getNodeOpacity(organ, viewMode)}
               dynamicPoints={spinePoints}
-              hoveredCategory={hoveredCategory}
+              hoveredCategory={activeCategory}
               onCategoryHover={handleCategoryHover}
             />
           ) : (
@@ -134,9 +145,12 @@ function Scene({
                   : undefined
               }
               viewMode={viewMode}
-              hoveredCategory={hoveredCategory}
+              hoveredCategory={activeCategory}
               onCategoryHover={handleCategoryHover}
               brainZoom={brainZoom}
+              previewedOrganId={previewedOrgan?.id}
+              onPreview={handlePreview}
+              onClearPreview={handleClearPreview}
             />
           ),
         )}

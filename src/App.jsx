@@ -72,50 +72,50 @@ function App() {
         </div>
       </header>
 
-      <button
-        ref={aboutRef}
-        className="about-btn"
-        onClick={() => setShowAbout(true)}
-        onMouseMove={handleTilt}
-        onMouseLeave={resetTilt}
-      >
-        About
-      </button>
-
-      <button
-        className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
-        onClick={() =>
-          setMeshMode((m) => {
-            if (darkMode) {
-              // dark: solid(2)→ghost(0)→semi(1)→white(3)→semi-silver(4)→solid-silver(5)→solid(2)
-              return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 5, 5: 2 }[m] ?? 0;
-            }
-            return (m + 1) % 4;
-          })
-        }
-      >
-        {meshMode === 0
-          ? "◻"
-          : meshMode === 1
-            ? "◈"
-            : meshMode === 2
-              ? "◼"
-              : meshMode === 3
-                ? "◇"
-                : meshMode === 4
-                  ? "◎"
-                  : "⬤"}
-      </button>
-
-      <button className="reset-btn" onClick={handleReset}>
-        ↺
-      </button>
+      <div className="top-right-strip">
+        <button
+          ref={aboutRef}
+          className="about-btn"
+          onClick={() => setShowAbout(true)}
+          onMouseMove={handleTilt}
+          onMouseLeave={resetTilt}
+        >
+          About
+        </button>
+        <button
+          className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
+          onClick={() =>
+            setMeshMode((m) => {
+              if (darkMode) {
+                return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 5, 5: 2 }[m] ?? 0;
+              }
+              return (m + 1) % 4;
+            })
+          }
+        >
+          {meshMode === 0
+            ? "◻"
+            : meshMode === 1
+              ? "◈"
+              : meshMode === 2
+                ? "◼"
+                : meshMode === 3
+                  ? "◇"
+                  : meshMode === 4
+                    ? "◎"
+                    : "⬤"}
+        </button>
+        <button className="reset-btn" onClick={handleReset}>
+          ↺
+        </button>
+      </div>
 
       <Scene
         globalScale={globalScale}
         offsetX={offsetX}
         offsetY={offsetY}
         onSelect={setSelectedOrgan}
+        selectedOrgan={selectedOrgan}
         viewMode={viewMode}
         showNerves={showNerves}
         darkMode={darkMode}
