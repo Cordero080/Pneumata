@@ -151,9 +151,22 @@ function OrganNode({
       </mesh>
 
       {/* Main node sphere */}
+      <mesh ref={meshRef} renderOrder={5}>
+        <sphereGeometry args={[0.016, 16, 16]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={emissive}
+          emissiveIntensity={1}
+          toneMapped={false}
+          transparent
+          opacity={0.18}
+          depthWrite={false}
+          depthTest={false}
+        />
+      </mesh>
+
+      {/* Invisible enlarged hit target — easier to tap on mobile */}
       <mesh
-        ref={meshRef}
-        renderOrder={5}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
         onClick={(e) => {
@@ -174,16 +187,12 @@ function OrganNode({
           }
         }}
       >
-        <sphereGeometry args={[0.016, 16, 16]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={emissive}
-          emissiveIntensity={1}
-          toneMapped={false}
+        <sphereGeometry args={[0.04, 8, 8]} />
+        <meshBasicMaterial
           transparent
-          opacity={0.18}
-          depthWrite={false}
+          opacity={0}
           depthTest={false}
+          depthWrite={false}
         />
       </mesh>
 
