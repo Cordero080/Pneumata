@@ -52,7 +52,7 @@
 
 .app-header {
   position: absolute;
-  left: -14rem;
+  left: clamp(-14rem, -9vw, -10rem);
   top: 50%;
   transform: translateY(-62%);
   z-index: 10;
@@ -146,8 +146,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: clamp(1.5rem, 1.8vw, 2.5rem);
-  padding: clamp(1rem, 1.2vw, 1.6rem) clamp(2rem, 2.5vw, 3.2rem);
+  gap: clamp(1.5rem, 2.5vw, 3.2rem);
+  padding: clamp(1rem, 1.8vw, 2.2rem) clamp(2rem, 3.5vw, 4.5rem);
 
   @media (max-width: 768px) {
     padding: 0.5rem 1.2rem;
@@ -183,7 +183,7 @@
     font-family: "tachyon", sans-serif;
     font-weight: 300;
     font-style: normal;
-    font-size: clamp(1.7rem, 2vw, 2.6rem);
+    font-size: clamp(1.7rem, 3vw, 3.4rem);
     font-weight: 900;
     letter-spacing: 0.55em;
     text-transform: uppercase;
@@ -197,7 +197,7 @@
 
   p {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(0.55rem, 0.5vw, 0.75rem);
+    font-size: clamp(0.55rem, 0.75vw, 0.95rem);
     font-weight: 400;
     letter-spacing: 0.5em;
     text-transform: uppercase;
@@ -388,7 +388,7 @@
 .top-left-strip {
   position: fixed;
   top: 1rem;
-  left: 11rem;
+  left: clamp(11rem, 14vw, 22rem);
   z-index: 50;
   display: flex;
   flex-direction: row;
