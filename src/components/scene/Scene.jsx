@@ -62,7 +62,13 @@ function Scene({
     <Canvas
       camera={{ position: [0, 0.82, 2.1], fov: 48 }}
       style={{ width: "100%", height: "100%" }}
-      gl={{ alpha: true }}
+      gl={{
+        alpha: true,
+        powerPreference: "high-performance",
+        antialias: window.devicePixelRatio < 2,
+      }}
+      dpr={[1, 2]}
+      performance={{ min: 0.5 }}
     >
       <SceneLights darkMode={darkMode} meshMode={meshMode} />
       <BreathingDriver breathingRef={breathingRef} />
