@@ -446,11 +446,12 @@
 .reset-btn {
   @extend %chamfer-btn;
   font-size: 20px;
-  padding: 9px 18px;
+  padding: 9px 16px 9px 24px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 52px;
 }
 
 .app--dark .mesh-toggle-btn {
