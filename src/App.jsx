@@ -15,7 +15,7 @@ const IS_STANDALONE =
   window.matchMedia("(display-mode: standalone)").matches;
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
-    ? { panY: 0.48, zoom: 0.22, globalScale: 0.88, offsetX: 0, offsetY: 0.15 }
+    ? { panY: 0.56, zoom: 0.22, globalScale: 0.88, offsetX: 0, offsetY: 0.12 }
     : { panY: 0.48, zoom: 0.22, globalScale: 0.92, offsetX: 0, offsetY: 0.16 }
   : { panY: 0.5, zoom: 0.33, globalScale: 0.9, offsetX: 0, offsetY: 0.1 };
 
