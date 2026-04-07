@@ -6,6 +6,12 @@ import CategoryLegend from "./components/CategoryLegend";
 import ViewModeController from "./components/ViewModeController";
 import VerticalControls from "./components/VerticalControls";
 
+// Defaults differ by device — mobile needs smaller scale to clear the bottom bar
+const IS_MOBILE = window.innerWidth <= 768;
+const DEFAULTS = IS_MOBILE
+  ? { panY: 0.45, zoom: 0.38, globalScale: 0.72, offsetX: 0, offsetY: 0.08 }
+  : { panY: 0.5, zoom: 0.33, globalScale: 0.9, offsetX: 0, offsetY: 0.1 };
+
 function App() {
   const [selectedOrgan, setSelectedOrgan] = useState(null);
   const [viewMode, setViewMode] = useState("logic");
@@ -14,20 +20,18 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [meshMode, setMeshMode] = useState(2); // 0=ghost, 1=semi-transparent silver, 2=solid silver
   const [brainZoom, setBrainZoom] = useState(false);
-  // panY: 0 = knob top (head), 1 = knob bottom (legs). Default ≈ body center.
-  // zoom:  0 = knob top (close),  1 = knob bottom (far). Default ≈ starting distance.
-  const [panY, setPanY] = useState(0.5);
-  const [zoom, setZoom] = useState(0.33);
-  const [globalScale, setGlobalScale] = useState(0.9);
-  const [offsetX, setOffsetX] = useState(0.0);
-  const [offsetY, setOffsetY] = useState(0.1);
+  const [panY, setPanY] = useState(DEFAULTS.panY);
+  const [zoom, setZoom] = useState(DEFAULTS.zoom);
+  const [globalScale, setGlobalScale] = useState(DEFAULTS.globalScale);
+  const [offsetX, setOffsetX] = useState(DEFAULTS.offsetX);
+  const [offsetY, setOffsetY] = useState(DEFAULTS.offsetY);
   const [resetKey, setResetKey] = useState(0);
   const handleReset = () => {
-    setPanY(0.5);
-    setZoom(0.33);
-    setGlobalScale(0.9);
-    setOffsetX(0.0);
-    setOffsetY(0.1);
+    setPanY(DEFAULTS.panY);
+    setZoom(DEFAULTS.zoom);
+    setGlobalScale(DEFAULTS.globalScale);
+    setOffsetX(DEFAULTS.offsetX);
+    setOffsetY(DEFAULTS.offsetY);
     setResetKey((k) => k + 1);
   };
   const aboutRef = useRef(null);
@@ -88,16 +92,16 @@ function App() {
           }
         >
           {meshMode === 0
-            ? "◻"
+            ? "◻\uFE0E"
             : meshMode === 1
-              ? "◈"
+              ? "◈\uFE0E"
               : meshMode === 2
-                ? "◼"
+                ? "◼\uFE0E"
                 : meshMode === 3
-                  ? "◇"
+                  ? "◇\uFE0E"
                   : meshMode === 4
-                    ? "◎"
-                    : "⬤"}
+                    ? "◎\uFE0E"
+                    : "⬤\uFE0E"}
         </button>
         <button className="reset-btn" onClick={handleReset}>
           ↺
