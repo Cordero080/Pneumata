@@ -1,7 +1,9 @@
 import { Html } from "@react-three/drei";
+import { darkenForLight } from "../../data/categories";
 
 function OrganLabel({ organ, color }) {
   const isLeft = organ.position[0] <= 0;
+  const textColor = darkenForLight(color);
 
   return (
     <Html
@@ -52,7 +54,7 @@ function OrganLabel({ organ, color }) {
             WebkitBackdropFilter: "blur(14px)",
             boxShadow:
               "0 2px 10px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.85)",
-            border: `1px solid ${color}55`,
+            border: `1px solid ${textColor}`,
             padding: "6px 10px",
             clipPath:
               "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
@@ -65,8 +67,8 @@ function OrganLabel({ organ, color }) {
               fontSize: "10px",
               fontWeight: 700,
               letterSpacing: "0.14em",
-              color: color,
-              textShadow: `0 0 8px ${color}66`,
+              color: textColor,
+              textShadow: `0 0 8px ${color}44`,
               lineHeight: 1.2,
               textTransform: "uppercase",
             }}

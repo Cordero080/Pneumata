@@ -23,6 +23,15 @@ export const CATEGORY_EMISSIVE = {
   spirit: "#ffffff",
 };
 
+// Darkened variants for use on light surfaces (panels, labels).
+// Neon colors like cyan, green, yellow are unreadable on light backgrounds.
+export function darkenForLight(hex, factor = 0.62) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgb(${Math.round(r * factor)}, ${Math.round(g * factor)}, ${Math.round(b * factor)})`;
+}
+
 export const CATEGORIES = [
   { key: "spirit", label: "Spirit", desc: "Emergence & Consciousness" },
   { key: "logic", label: "Logic", desc: "Cognition & Control" },

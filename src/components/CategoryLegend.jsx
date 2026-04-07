@@ -1,4 +1,8 @@
-import { CATEGORIES as _BASE, CATEGORY_COLORS } from "../data/categories";
+import {
+  CATEGORIES as _BASE,
+  CATEGORY_COLORS,
+  darkenForLight,
+} from "../data/categories";
 
 // Merge colors into the shared CATEGORIES array for rendering
 const CATEGORIES = _BASE.map((c) => ({ ...c, color: CATEGORY_COLORS[c.key] }));
@@ -10,7 +14,13 @@ function CategoryLegend() {
         <div key={key} className="legend-row">
           {/* Chamfered tag slides out on hover */}
           <div className="legend-tag">
-            <span className="legend-label" style={{ color }}>
+            <span
+              className="legend-label"
+              style={{
+                color,
+                textShadow: `0 0 8px ${color}99, 0 1px 3px rgba(0,0,0,0.6)`,
+              }}
+            >
               {label}
             </span>
             <span className="legend-desc">{desc}</span>
