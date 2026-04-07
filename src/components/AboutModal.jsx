@@ -31,23 +31,33 @@ const CATEGORIES = [
 const NAV_ITEMS = [
   {
     icon: "◎",
-    action: "Click any node",
-    desc: "Opens a panel showing the organ's biological function, hardware analog, and philosophical synthesis.",
-  },
-  {
-    icon: "◈",
-    action: "Hover any node or disc",
-    desc: "Highlights the spinal bus lanes that organ system routes through — and vice versa. The backbone lights up with its category color.",
+    action: "Tap / click a node",
+    desc: "On mobile: first tap reveals the label and highlights that system's spinal bus lanes. Tap the label or the node again to open the detail panel. On desktop: a single click opens the panel directly.",
   },
   {
     icon: "⬡",
-    action: "Click any vertebral disc",
-    desc: "Each disc is a bus arbitration layer. Click to see which spinal level it occupies, what it innervates, and its hardware analog.",
+    action: "Tap / click a vertebral disc",
+    desc: "Each disc is a bus arbitration layer. Opens a panel showing the spinal level, what it innervates, and its hardware analog.",
+  },
+  {
+    icon: "◈",
+    action: "Hover a node or disc (desktop)",
+    desc: "Highlights the nerve roots and spinal bus lanes for that organ system. The backbone lights up with the category color.",
   },
   {
     icon: "◻",
-    action: "Use the view modes",
-    desc: "Logic isolates the neural network. Power isolates the circulatory grid and activates the energy nodes. Unified shows all systems simultaneously.",
+    action: "View modes — Logic / Power / Breathing / Unified",
+    desc: "Logic isolates the neural network. Power activates the circulatory grid. Breathing isolates the lungs with a live respiration animation. Unified shows all systems simultaneously.",
+  },
+  {
+    icon: "⬤",
+    action: "NET toggle",
+    desc: "Overlays the full peripheral nervous system — spinal nerve roots mapped to each organ and white matter tracts between brain regions.",
+  },
+  {
+    icon: "◼\uFE0E",
+    action: "Mesh toggle",
+    desc: "Cycles the body model through rendering styles: solid, semi-transparent, wireframe, and more. Dark mode unlocks additional variants.",
   },
 ];
 
@@ -155,8 +165,9 @@ function AboutModal({ onClose }) {
             </div>
 
             <p className="about-footer">
-              Click any node to explore the analogy. The white node at the apex
-              is Pneuma — the point where the system becomes aware of itself.
+              Tap or click any node to explore the analogy. The white node at
+              the apex is Pneuma — the point where the system becomes aware of
+              itself.
             </p>
           </>
         )}
