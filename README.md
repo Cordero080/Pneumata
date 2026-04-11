@@ -4,21 +4,15 @@
 
 ---
 
-| Logic mode                                                                                          | Power mode                                                                                       |
-| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| ![Logic mode — all 37 nodes visible, color-coded by category](public/screenshots/01-logic-mode.png) | ![Power mode — red emissive glow, circulatory orbs active](public/screenshots/02-power-mode.png) |
+![Unified mode — ghost mesh, all systems active, full circulatory layer](public/screenshots/new-shots/dark-mode-1.png)
 
-| Breathing mode                                                                                                     | Unified mode                                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| ![Breathing mode — body mesh shifts blue to cyan with each breath cycle](public/screenshots/06-breathing-mode.png) | ![Unified mode — all systems active, organ nodes and spinal discs visible](public/screenshots/09-unified-dramatic.png) |
+| Power mode                                                                                  | Light mode — node hover                                                                              |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| ![Power mode — all category nodes blazing, circulatory orbs active](public/screenshots/new-shots/dark-mode-6.png) | ![Light mode — liver hovered, green category highlight on spine](public/screenshots/new-shots/light-mode-7.png) |
 
-| Ribcage close-up — Power mode                                                                                                  | Chest close-up — Breathing mode                                                                                                              |
-| ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Power mode close-up of ribcage showing red volumetric glow and circulatory layer](public/screenshots/07-ribcage-closeup.png) | ![Breathing mode chest close-up showing the blue-cyan oxygen pulse permeating through the mesh](public/screenshots/10-breathing-closeup.png) |
-
-| About modal — tabbed philosophy and navigation                                                 |     |
-| ---------------------------------------------------------------------------------------------- | --- |
-| ![About modal with Philosophy and How to Navigate tabs](public/screenshots/05-about-modal.png) |     |
+| Brain zoom — Logic view                                                                          | About modal                                                                                        |
+| ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| ![Brain zoom — Logic mode with cranial nodes clustered, vocal cords label](public/screenshots/new-shots/dark-mode-4.png) | ![About modal — Philosophy tab with category breakdown](public/screenshots/new-shots/dark-mode-about.png) |
 
 ---
 
