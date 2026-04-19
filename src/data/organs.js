@@ -24,6 +24,7 @@ export const organs = [
     organ: "Pneuma",
     hardware: "Integrated Information",
     position: [0, 1.7, 0.0],
+    femalePosition: [0, 1.637, 0.0],
     bio_function:
       "The emergent phenomenon of self-awareness arising from coordinated neural activity — biology become witness to itself.",
     hard_function:
@@ -42,7 +43,9 @@ export const organs = [
     organ: "Frontal Lobe",
     hardware: "RAM (Volatile Memory)",
     position: [0, 1.68, 0.08],
+    femalePosition: [0, 1.619, 0.08],
     brainPosition: [0, 1.71, 0.06],
+    femaleBrainPosition: [0, 1.646, 0.06],
     bio_function:
       "Center for active working memory, impulse control, and holding thoughts in immediate consciousness.",
     hard_function:
@@ -59,7 +62,9 @@ export const organs = [
     organ: "Left Hemisphere",
     hardware: "CPU (Logic Processor)",
     position: [-0.05, 1.67, 0.02],
+    femalePosition: [-0.05, 1.61, 0.02],
     brainPosition: [-0.078, 1.675, 0.0],
+    femaleBrainPosition: [-0.078, 1.615, 0.0],
     bio_function:
       "Handles sequential reasoning, language processing, and linear, logical computation.",
     hard_function:
@@ -75,7 +80,9 @@ export const organs = [
     organ: "Right Hemisphere",
     hardware: "GPU (Parallel Processor)",
     position: [0.05, 1.67, 0.02],
+    femalePosition: [0.05, 1.61, 0.02],
     brainPosition: [0.078, 1.675, 0.0],
+    femaleBrainPosition: [0.078, 1.615, 0.0],
     bio_function:
       "Handles pattern recognition, spatial processing, and parallel streams of sensory data.",
     hard_function:
@@ -92,7 +99,9 @@ export const organs = [
     organ: "Thalamus",
     hardware: "Interrupt Controller",
     position: [-0.02, 1.645, -0.01],
+    femalePosition: [-0.02, 1.588, -0.01],
     brainPosition: [0, 1.642, -0.02],
+    femaleBrainPosition: [0, 1.586, -0.02],
     bio_function:
       "A central relay nucleus that receives virtually all sensory input and routes it to the correct cortical region. Nothing reaches conscious awareness without passing through it first.",
     hard_function:
@@ -109,7 +118,9 @@ export const organs = [
     organ: "Hippocampus",
     hardware: "Storage Drive (SSD/HDD)",
     position: [0, 1.63, -0.04],
+    femalePosition: [0, 1.575, -0.04],
     brainPosition: [0.055, 1.618, -0.055],
+    femaleBrainPosition: [0.055, 1.564, -0.055],
     bio_function:
       "Encodes and retrieves long-term memory storage, indexing experiences for later recall.",
     hard_function:
@@ -126,7 +137,9 @@ export const organs = [
     organ: "Amygdala",
     hardware: "Interrupt Handler",
     position: [0, 1.63, 0.03],
+    femalePosition: [0, 1.575, 0.03],
     brainPosition: [0.055, 1.633, 0.02],
+    femaleBrainPosition: [0.055, 1.578, 0.02],
     bio_function:
       "Rapidly detects emotional and survival-critical threats, overriding deliberate cognition to trigger immediate responses.",
     hard_function:
@@ -143,7 +156,9 @@ export const organs = [
     organ: "Hypothalamus",
     hardware: "Thermal & Power State Manager",
     position: [0, 1.626, 0.02],
+    femalePosition: [0, 1.571, 0.02],
     brainPosition: [0, 1.624, 0.01],
+    femaleBrainPosition: [0, 1.57, 0.01],
     bio_function:
       "Monitors core temperature, hunger, thirst, and hormonal balance — continuously adjusting the body's internal environment to maintain equilibrium.",
     hard_function:
@@ -160,7 +175,9 @@ export const organs = [
     organ: "Pituitary Gland",
     hardware: "Control Chip (Southbridge)",
     position: [0, 1.62, 0.01],
+    femalePosition: [0, 1.566, 0.01],
     brainPosition: [0, 1.609, 0.022],
+    femaleBrainPosition: [0, 1.556, 0.022],
     bio_function:
       "The master gland that secretes hormones to dictate the behavior of other glands, orchestrating systemic balance.",
     hard_function:
@@ -177,7 +194,9 @@ export const organs = [
     organ: "Brain Stem",
     hardware: "BIOS / Firmware",
     position: [0, 1.575, -0.04],
+    femalePosition: [0, 1.526, -0.04],
     brainPosition: [0, 1.572, -0.058],
+    femaleBrainPosition: [0, 1.523, -0.058],
     bio_function:
       "The most primitive region of the brain, governing all involuntary survival functions — breathing, heart rate, blood pressure — continuously beneath conscious awareness. The organism cannot survive its failure regardless of how healthy the cortex is.",
     hard_function:
@@ -227,6 +246,7 @@ export const organs = [
     organ: "Right Eye",
     hardware: "Camera / GPU Render Pipeline",
     position: [-0.035, 1.645, 0.08],
+    femalePosition: [-0.035, 1.588, 0.08],
     bio_function:
       "Captures photons through the lens, focuses them on the retina's photoreceptors, and converts light into electrochemical signals. The eye actively preprocesses raw light into structured visual data before it reaches the brain.",
     hard_function:
@@ -243,6 +263,7 @@ export const organs = [
     organ: "Left Eye",
     hardware: "Camera / GPU Render Pipeline",
     position: [0.035, 1.645, 0.08],
+    femalePosition: [0.035, 1.588, 0.08],
     bio_function:
       "Captures photons through the lens, focuses them on the retina's photoreceptors, and converts light into electrochemical signals. The eye actively preprocesses raw light into structured visual data before it reaches the brain.",
     hard_function:
@@ -259,6 +280,7 @@ export const organs = [
     organ: "Right Ear",
     hardware: "Microphone / Audio Input Processor",
     position: [-0.07, 1.635, 0.0],
+    femalePosition: [-0.07, 1.579, 0.0],
     bio_function:
       "Converts pressure waves in air into mechanical vibration via the eardrum and ossicles, then into electrochemical nerve signals via the cochlea's hair cells.",
     hard_function:
@@ -275,6 +297,7 @@ export const organs = [
     organ: "Left Ear",
     hardware: "Microphone / Audio Input Processor",
     position: [0.07, 1.635, 0.0],
+    femalePosition: [0.07, 1.579, 0.0],
     bio_function:
       "Converts pressure waves in air into mechanical vibration via the eardrum and ossicles, then into electrochemical nerve signals via the cochlea's hair cells.",
     hard_function:

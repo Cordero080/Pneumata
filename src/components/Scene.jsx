@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import OrganNode from "./OrganNode";
@@ -9,6 +9,7 @@ import BodyCirculation from "./BodyCirculation";
 import NerveRoots from "./NerveRoots";
 import CameraController from "./CameraController";
 import { organs } from "../data/organs";
+import { buildFemalePositions } from "../data/femaleMapping";
 
 const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
 const RIGHT_LUNG_POS = [0.12, 1.22, 0.05];
@@ -45,15 +46,45 @@ function Scene({
   meshMode,
   brainZoom,
   setBrainZoom,
+  modelPath,
+  femaleMode,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [spinePoints, setSpinePoints] = useState(null);
+  const [maleLandmarks, setMaleLandmarks] = useState(null);
+  const [femaleLandmarks, setFemaleLandmarks] = useState(null);
+  const [femalePositions, setFemalePositions] = useState(null);
   const heartbeatRef = useRef(0);
   const breathingRef = useRef(0);
   const controlsRef = useRef();
   const handleSpineExtracted = useCallback((pts) => setSpinePoints(pts), []);
   const handleCategoryHover = useCallback((cat) => setHoveredCategory(cat), []);
+
+  // Store landmarks from whichever body is loaded
+  const handleLandmarksExtracted = useCallback(
+    (landmarks) => {
+      if (femaleMode) {
+        setFemaleLandmarks(landmarks);
+      } else {
+        setMaleLandmarks(landmarks);
+      }
+    },
+    [femaleMode],
+  );
+
+  // Build female position map when female landmarks are available.
+  // Male landmarks are optional — organs with explicit femalePosition
+  // overrides don't need them, and non-cranial organs fall back to
+  // simple scaling when maleLandmarks is null.
+  useEffect(() => {
+    if (femaleMode && femaleLandmarks) {
+      const map = buildFemalePositions(organs, maleLandmarks, femaleLandmarks);
+      setFemalePositions(map);
+    } else {
+      setFemalePositions(null);
+    }
+  }, [femaleMode, femaleLandmarks, maleLandmarks]);
 
   const circOpacity = CIRC_OPACITY[viewMode] ?? 0.0;
 
@@ -239,12 +270,15 @@ function Scene({
       )}
 
       <AnatomyModel
+        modelPath={modelPath}
         viewMode={viewMode}
         onSpineExtracted={handleSpineExtracted}
+        onLandmarksExtracted={handleLandmarksExtracted}
         heartbeatRef={heartbeatRef}
         breathingRef={breathingRef}
         darkMode={darkMode}
         meshMode={meshMode}
+        femaleMode={femaleMode}
       />
 
       {/* Lung volumes */}
@@ -306,6 +340,9 @@ function Scene({
             hoveredCategory={hoveredCategory}
             onCategoryHover={handleCategoryHover}
             brainZoom={brainZoom}
+            darkMode={darkMode}
+            femaleMode={femaleMode}
+            femalePositions={femalePositions}
           />
         ),
       )}

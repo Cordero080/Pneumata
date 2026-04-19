@@ -21,11 +21,11 @@ function OrganNode({
   brainZoom,
   darkMode,
   femaleMode,
+  femalePositions,
   previewedOrganId,
   onPreview,
   onClearPreview,
 }) {
-  console.log("OrganNode femaleMode:", femaleMode, organ.id);
   const meshRef = useRef();
   const glowRef = useRef();
   const innerRef = useRef();
@@ -33,51 +33,43 @@ function OrganNode({
   const groupRef = useRef();
   const [hovered, setHovered] = useState(false);
 
-  const FEMALE_Y_OFFSET = -0.1;
-  const yOff = femaleMode ? FEMALE_Y_OFFSET : 0;
+  // Resolve position: explicit override → landmark-mapped → raw male position
+  const femalePos =
+    femaleMode && (femalePositions?.get(organ.id) || organ.femalePosition);
+  const femaleBrainPos =
+    femaleMode &&
+    (femalePositions?.get(organ.id + ":brain") || organ.femaleBrainPosition);
+  const resolvedPos = femalePos || organ.position;
+  const resolvedBrainPos = femaleBrainPos || organ.brainPosition;
+
   const fullPos = useRef(
-    new THREE.Vector3(
-      organ.position[0],
-      organ.position[1] + yOff,
-      organ.position[2],
-    ),
+    new THREE.Vector3(resolvedPos[0], resolvedPos[1], resolvedPos[2]),
   );
   const zoomedPos = useRef(
-    organ.brainPosition
+    resolvedBrainPos
       ? new THREE.Vector3(
-          organ.brainPosition[0],
-          organ.brainPosition[1] + yOff,
-          organ.brainPosition[2],
+          resolvedBrainPos[0],
+          resolvedBrainPos[1],
+          resolvedBrainPos[2],
         )
       : null,
   );
   const currentPos = useRef(
-    new THREE.Vector3(
-      organ.position[0],
-      organ.position[1] + yOff,
-      organ.position[2],
-    ),
+    new THREE.Vector3(resolvedPos[0], resolvedPos[1], resolvedPos[2]),
   );
 
   useEffect(() => {
-    const offset = femaleMode ? 0.1 : 0;
-    fullPos.current.set(
-      organ.position[0],
-      organ.position[1] - offset,
-      organ.position[2],
-    );
-    if (organ.brainPosition) {
-      zoomedPos.current?.set(
-        organ.brainPosition[0],
-        organ.brainPosition[1] - offset,
-        organ.brainPosition[2],
-      );
+    const pos = femalePos || organ.position;
+    const brain = femaleBrainPos || organ.brainPosition;
+    fullPos.current.set(pos[0], pos[1], pos[2]);
+    if (brain) {
+      zoomedPos.current?.set(brain[0], brain[1], brain[2]);
     }
     currentPos.current.copy(fullPos.current);
     if (groupRef.current) {
       groupRef.current.position.copy(fullPos.current);
     }
-  }, [femaleMode]);
+  }, [femaleMode, femalePositions]);
 
   const color = CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
   const emissive = CATEGORY_EMISSIVE[organ.category] ?? CATEGORY_EMISSIVE.logic;
