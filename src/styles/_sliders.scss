@@ -11,6 +11,7 @@
   @media (max-width: 768px) {
     right: 2rem;
   }
+
   z-index: 50;
   display: flex;
   flex-direction: column;
@@ -31,6 +32,11 @@
     #{v.$chamfer-sm} 100%,
     0 calc(100% - #{v.$chamfer-sm})
   );
+
+  @media (min-width: 769px) {
+    gap: 2rem;
+    padding: 1.8rem 0.4rem;
+  }
 }
 
 // Reset button — lives inside the panel, full-width
@@ -78,10 +84,15 @@
 
 .vslider__track {
   position: relative;
-  width: 16px;
+  width: 4px;
+  height: 120px;
   cursor: ns-resize;
   display: flex;
   justify-content: center;
+
+  @media (min-width: 769px) {
+    height: 16vh;
+  }
 
   // Center rail
   &::before {
@@ -101,7 +112,7 @@
   position: absolute;
   left: 50%;
   top: 0;
-  width: 5px;
+  width: 8px;
   border-radius: 4px;
   transform: translateX(-50%);
   background: rgba(242, 247, 255, 0.736);

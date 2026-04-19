@@ -1,7 +1,5 @@
 import { useRef } from "react";
 
-const TRACK_H = 110;
-
 // Scale: slider 0 (top) = small, 1 (bottom) = large → globalScale 0.5..1.5
 export const SCALE_MIN = 0.5;
 export const SCALE_MAX = 1.5;
@@ -38,7 +36,6 @@ function VSlider({ label, value, onChange }) {
       <div
         ref={trackRef}
         className="vslider__track"
-        style={{ height: TRACK_H }}
         onPointerDown={(e) => {
           e.preventDefault();
           dragging.current = true;
@@ -52,14 +49,8 @@ function VSlider({ label, value, onChange }) {
           dragging.current = false;
         }}
       >
-        <div
-          className="vslider__fill"
-          style={{ height: `${value * TRACK_H}px` }}
-        />
-        <div
-          className="vslider__knob"
-          style={{ top: `${value * TRACK_H}px` }}
-        />
+        <div className="vslider__fill" style={{ height: `${value * 100}%` }} />
+        <div className="vslider__knob" style={{ top: `${value * 100}%` }} />
       </div>
     </div>
   );
