@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CATEGORY_COLORS, CATEGORY_EMISSIVE } from "../../data/categories";
 
 const IS_MOBILE = window.innerWidth <= 768;
+
 import HeartRings from "./HeartRings";
 import OrganLabel from "./OrganLabel";
 
@@ -19,10 +20,12 @@ function OrganNode({
   viewMode,
   brainZoom,
   darkMode,
+  femaleMode,
   previewedOrganId,
   onPreview,
   onClearPreview,
 }) {
+  console.log("OrganNode femaleMode:", femaleMode, organ.id);
   const meshRef = useRef();
   const glowRef = useRef();
   const innerRef = useRef();
@@ -30,12 +33,51 @@ function OrganNode({
   const groupRef = useRef();
   const [hovered, setHovered] = useState(false);
 
-  // Stable Vector3 targets — never recreated
-  const fullPos = useRef(new THREE.Vector3(...organ.position));
-  const zoomedPos = useRef(
-    organ.brainPosition ? new THREE.Vector3(...organ.brainPosition) : null,
+  const FEMALE_Y_OFFSET = -0.1;
+  const yOff = femaleMode ? FEMALE_Y_OFFSET : 0;
+  const fullPos = useRef(
+    new THREE.Vector3(
+      organ.position[0],
+      organ.position[1] + yOff,
+      organ.position[2],
+    ),
   );
-  const currentPos = useRef(new THREE.Vector3(...organ.position));
+  const zoomedPos = useRef(
+    organ.brainPosition
+      ? new THREE.Vector3(
+          organ.brainPosition[0],
+          organ.brainPosition[1] + yOff,
+          organ.brainPosition[2],
+        )
+      : null,
+  );
+  const currentPos = useRef(
+    new THREE.Vector3(
+      organ.position[0],
+      organ.position[1] + yOff,
+      organ.position[2],
+    ),
+  );
+
+  useEffect(() => {
+    const offset = femaleMode ? 0.1 : 0;
+    fullPos.current.set(
+      organ.position[0],
+      organ.position[1] - offset,
+      organ.position[2],
+    );
+    if (organ.brainPosition) {
+      zoomedPos.current?.set(
+        organ.brainPosition[0],
+        organ.brainPosition[1] - offset,
+        organ.brainPosition[2],
+      );
+    }
+    currentPos.current.copy(fullPos.current);
+    if (groupRef.current) {
+      groupRef.current.position.copy(fullPos.current);
+    }
+  }, [femaleMode]);
 
   const color = CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
   const emissive = CATEGORY_EMISSIVE[organ.category] ?? CATEGORY_EMISSIVE.logic;
@@ -45,7 +87,7 @@ function OrganNode({
     !hovered && hoveredCategory === organ.category;
 
   useFrame((state) => {
-    // Lerp group position between full-body and brain-zoom targets
+    // Lerp group position — nodes live in male-GLB coordinate space and never relocate
     if (groupRef.current) {
       const target =
         brainZoom && zoomedPos.current ? zoomedPos.current : fullPos.current;

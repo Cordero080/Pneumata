@@ -294,7 +294,7 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  background: rgba(40, 55, 80, 0.55);
+  background: rgba(116, 129, 151, 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   margin-right: -3px;
@@ -304,7 +304,7 @@
   transition: max-width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
              opacity 0.2s ease,
              padding 0.35s ease;
-  padding: 8px 0;
+  padding: 1px 0;
   white-space: nowrap;
 
   clip-path: polygon(
@@ -329,7 +329,7 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  line-height: 1.2;
+  line-height: 2.8;
 }
 
 .legend-desc {
@@ -411,13 +411,27 @@
   }
 
   .mesh-toggle-btn,
-  .reset-btn {
+  .reset-btn,
+  .body-toggle-btn {
     position: static;
     flex-shrink: 0;
   }
 
   // Reset interlocks with mesh
   .reset-btn {
+    margin-left: -11px;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 14px) 0,
+      100% 14px,
+      100% 100%,
+      14px 100%,
+      14px 14px
+    );
+  }
+
+  // Body toggle interlocks with reset
+  .body-toggle-btn {
     margin-left: -11px;
     clip-path: polygon(
       0 0,
@@ -464,6 +478,21 @@
   min-width: 52px;
 }
 
+.body-toggle-btn {
+  @extend %chamfer-btn;
+  font-size: 16px;
+  padding: 9px 16px 9px 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+
+  &--active {
+    color: #5a8fd0;
+  }
+}
+
 .app--dark .mesh-toggle-btn {
   @include v.dark-surface;
   box-shadow: none;
@@ -482,6 +511,18 @@
   @include v.dark-surface;
   box-shadow: none;
   color: rgba(160, 185, 220, 0.5);
+  &:hover {
+    filter: drop-shadow(0 0 8px v.$dark-glow);
+    color: rgba(220, 235, 255, 0.95);
+  }
+}
+.app--dark .body-toggle-btn {
+  @include v.dark-surface;
+  box-shadow: none;
+  color: rgba(160, 185, 220, 0.5);
+  &.body-toggle-btn--active {
+    color: rgba(180, 210, 255, 0.9);
+  }
   &:hover {
     filter: drop-shadow(0 0 8px v.$dark-glow);
     color: rgba(220, 235, 255, 0.95);
@@ -637,4 +678,184 @@
     letter-spacing: 0.2em;
     color: rgba(55, 72, 88, 0.6);
   }
+}
+
+// =============================================================================
+// Female Mode — UI color overrides (light + dark)
+// Keeps identical geometry/layout; only surface colors and text change.
+// =============================================================================
+
+// --- Light female ---
+
+.app--female:not(.app--dark) {
+  .header-strip {
+    filter: drop-shadow(0 0 5px rgba(220, 60, 160, 0.5));
+  }
+
+  .header-accent {
+    @include v.female-light-surface;
+  }
+
+  .header-panel {
+    @include v.female-light-surface;
+    h1 { color: rgba(80, 15, 50, 0.88); }
+    p  { color: rgba(150, 60, 110, 0.65); }
+  }
+
+  .mesh-toggle-btn,
+  .reset-btn,
+  .body-toggle-btn {
+    @include v.female-light-surface;
+    color: rgba(100, 20, 65, 0.75);
+    &:hover { color: rgba(60, 5, 40, 0.95); }
+  }
+
+  .about-btn {
+    @include v.female-light-surface;
+    color: rgba(100, 20, 65, 0.75);
+    &:hover { color: rgba(60, 5, 40, 0.95); }
+  }
+
+  .view-btn {
+    @include v.female-light-surface;
+    color: rgba(120, 30, 80, 0.65);
+    &--active {
+      @include v.female-light-surface;
+      background: v.$female-light-surface-active;
+      color: rgba(60, 5, 40, 0.95);
+    }
+    &:hover:not(.view-btn--active) { color: rgba(60, 5, 40, 0.9); }
+  }
+
+  .legend-tag {
+    background: rgba(90, 20, 65, 0.55);
+  }
+
+  .vertical-controls {
+    @include v.female-light-surface;
+    box-shadow:
+      0 2px 12px rgba(100, 0, 60, 0.1),
+      inset 0 1px 0 rgba(255, 220, 240, 0.8);
+  }
+
+  .vcontrols-reset {
+    color: rgba(140, 50, 100, 0.5);
+    &:hover { color: rgba(80, 10, 55, 0.85); }
+  }
+
+  .vertical-controls__sep {
+    background: rgba(180, 80, 140, 0.25);
+  }
+
+  .vslider__label { color: rgba(140, 50, 100, 0.55); }
+
+  .vslider__track::before { background: rgba(180, 60, 130, 0.3); }
+
+  .vslider__fill { background: rgba(240, 180, 220, 0.85); }
+
+  .vslider__knob {
+    background: rgba(230, 200, 220, 0.95);
+    box-shadow: 0 1px 4px rgba(80, 0, 50, 0.2), inset 0 1px 0 rgba(255, 240, 250, 0.8);
+    .vslider__track:hover & {
+      box-shadow: 0 1px 6px rgba(80, 0, 50, 0.25), 0 0 8px rgba(220, 80, 160, 0.4),
+        inset 0 1px 0 rgba(255, 240, 250, 0.9);
+    }
+  }
+
+  .mode-toggle-btn { color: rgba(255, 230, 245, 0.9); }
+}
+
+// --- Dark female ---
+
+.app--dark.app--female {
+  .header-strip {
+    filter: drop-shadow(0 0 5px rgba(255, 20, 140, 0.4));
+  }
+
+  .header-accent {
+    @include v.female-dark-surface;
+    filter: drop-shadow(0 0 0.5px rgba(255, 80, 180, 0.35));
+  }
+
+  .header-panel {
+    @include v.female-dark-surface;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: none;
+    filter: drop-shadow(0 0 0.5px rgba(255, 80, 180, 0.35));
+    h1 { color: v.$female-text; }
+    p  { color: v.$female-text-dim; }
+  }
+
+  .mesh-toggle-btn,
+  .reset-btn,
+  .body-toggle-btn {
+    @include v.female-dark-surface;
+    box-shadow: none;
+    color: v.$female-text-dim;
+    &:hover {
+      filter: drop-shadow(0 0 8px v.$female-glow);
+      color: v.$female-text;
+    }
+  }
+
+  .about-btn,
+  .brain-back-btn {
+    @include v.female-dark-surface;
+    box-shadow: none;
+    color: v.$female-text-dim;
+    &:hover {
+      filter: drop-shadow(0 0 8px v.$female-glow);
+      color: v.$female-text;
+    }
+  }
+
+  .view-btn {
+    @include v.female-dark-surface;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: none;
+    color: v.$female-text-dim;
+    &--active { color: v.$female-text; }
+    &:hover:not(.view-btn--active) {
+      filter: drop-shadow(0 0 8px v.$female-glow);
+      color: v.$female-text;
+    }
+  }
+
+  .legend-tag { background: rgba(80, 5, 55, 0.65); }
+
+  .vertical-controls {
+    @include v.female-dark-surface;
+    box-shadow: none;
+    filter: drop-shadow(0 0 0.5px rgba(255, 80, 180, 0.25));
+  }
+
+  .vcontrols-reset {
+    color: v.$female-text-dim;
+    &:hover {
+      color: v.$female-text;
+      filter: drop-shadow(0 0 6px v.$female-glow);
+    }
+  }
+
+  .vertical-controls__sep { background: rgba(220, 80, 160, 0.15); }
+
+  .vslider__label { color: v.$female-text-dim; }
+
+  .vslider__track::before { background: rgba(200, 60, 140, 0.3); border-radius: 4px; }
+
+  .vslider__fill { background: rgba(240, 140, 200, 0.92); }
+
+  .vslider__knob {
+    background: rgba(35, 5, 25, 0.9);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5), 0 0 6px rgba(220, 0, 140, 0.2),
+      inset 0 1px 0 rgba(255, 80, 160, 0.2);
+    .vslider__track:hover & {
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 20, 160, 0.5),
+        inset 0 1px 0 rgba(255, 120, 180, 0.3);
+    }
+  }
+
+  .mode-toggle-btn { color: v.$female-text-dim; }
 }

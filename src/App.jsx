@@ -26,6 +26,9 @@ function App() {
   const [showAbout, setShowAbout] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [meshMode, setMeshMode] = useState(2); // 0=ghost, 1=semi-transparent silver, 2=solid silver
+  const [bodyModel, setBodyModel] = useState("male");
+  const modelPath =
+    bodyModel === "male" ? "/male-body.glb" : "/female-body.glb";
   const [brainZoom, setBrainZoom] = useState(false);
   const [panY, setPanY] = useState(DEFAULTS.panY);
   const [zoom, setZoom] = useState(DEFAULTS.zoom);
@@ -51,6 +54,11 @@ function App() {
     return () => window.removeEventListener("keydown", handler);
   }, [brainZoom]);
 
+  useEffect(() => {
+    document.body.classList.toggle("body--female", bodyModel === "female");
+    return () => document.body.classList.remove("body--female");
+  }, [bodyModel]);
+
   const handleTilt = useCallback((e) => {
     const btn = aboutRef.current;
     if (!btn) return;
@@ -66,7 +74,9 @@ function App() {
   }, []);
 
   return (
-    <div className={`app${darkMode ? " app--dark" : ""}`}>
+    <div
+      className={`app${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""}`}
+    >
       <header className="app-header">
         <div className="header-strip">
           <div className="header-accent header-accent--top">
@@ -113,6 +123,15 @@ function App() {
         <button className="reset-btn" onClick={handleReset}>
           ↺
         </button>
+        <button
+          className={`body-toggle-btn${bodyModel === "female" ? " body-toggle-btn--active" : ""}`}
+          onClick={() => {
+            setBodyModel((m) => (m === "male" ? "female" : "male"));
+            handleReset();
+          }}
+        >
+          {bodyModel === "male" ? "♂\uFE0E" : "♀\uFE0E"}
+        </button>
       </div>
 
       {/* About — top-right, used infrequently */}
@@ -141,6 +160,8 @@ function App() {
         panY={panY}
         zoom={zoom}
         resetKey={resetKey}
+        modelPath={modelPath}
+        femaleMode={bodyModel === "female"}
       />
 
       <VerticalControls

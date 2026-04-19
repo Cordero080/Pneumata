@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import SceneLights from "./SceneLights";
@@ -8,12 +8,15 @@ import LungVolume from "../LungVolume";
 import AnatomyModel from "../AnatomyModel";
 import BodyCirculation from "../BodyCirculation";
 import NerveRoots from "../NerveRoots";
+import NerveSystem from "../spine/NerveSystem";
 import CameraController from "../CameraController";
 import { organs } from "../../data/organs";
 
 const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
 const RIGHT_LUNG_POS = [0.12, 1.22, 0.05];
 const ORBIT_TARGET = [0, 0.85, 0];
+
+export const FEMALE_SCALE = 0.88;
 
 const CIRC_OPACITY = { logic: 0.0, power: 1.0, breathing: 0.0, unified: 0.65 };
 
@@ -48,21 +51,33 @@ function Scene({
   panY,
   zoom,
   resetKey,
+  modelPath,
+  femaleMode,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [previewedOrgan, setPreviewedOrgan] = useState(null);
-  // Priority: live hover > open modal > touch preview
   const activeCategory =
     hoveredCategory ??
     selectedOrgan?.category ??
     previewedOrgan?.category ??
     null;
   const [spinePoints, setSpinePoints] = useState(null);
+  const [bodyLandmarks, setBodyLandmarks] = useState(null);
+
+  useEffect(() => {
+    setSpinePoints(null);
+    setBodyLandmarks(null);
+  }, [modelPath]);
+
   const heartbeatRef = useRef(0);
   const breathingRef = useRef(0);
   const controlsRef = useRef();
   const handleSpineExtracted = useCallback((pts) => setSpinePoints(pts), []);
+  const handleLandmarksExtracted = useCallback(
+    (lm) => setBodyLandmarks(lm),
+    [],
+  );
   const handleCategoryHover = useCallback((cat) => setHoveredCategory(cat), []);
   const handlePreview = useCallback((organ) => setPreviewedOrgan(organ), []);
   const handleClearPreview = useCallback(() => setPreviewedOrgan(null), []);
@@ -82,16 +97,24 @@ function Scene({
       performance={{ min: 0.5 }}
       onPointerMissed={() => handleClearPreview()}
     >
-      <SceneLights darkMode={darkMode} meshMode={meshMode} />
+      <SceneLights
+        darkMode={darkMode}
+        meshMode={meshMode}
+        femaleMode={femaleMode}
+      />
       <BreathingDriver breathingRef={breathingRef} />
       <group scale={globalScale} position={[offsetX, offsetY, 0]}>
         <AnatomyModel
+          key={modelPath}
+          modelPath={modelPath}
           viewMode={viewMode}
           onSpineExtracted={handleSpineExtracted}
+          onLandmarksExtracted={handleLandmarksExtracted}
           heartbeatRef={heartbeatRef}
           breathingRef={breathingRef}
           darkMode={darkMode}
           meshMode={meshMode}
+          femaleMode={femaleMode}
         />
 
         <LungVolume
@@ -116,6 +139,14 @@ function Scene({
           showNerves={showNerves}
         />
 
+        <NerveSystem
+          spinePoints={spinePoints}
+          bodyLandmarks={bodyLandmarks}
+          viewMode={viewMode}
+          hoveredCategory={activeCategory}
+          showNerves={showNerves}
+        />
+
         {organs.map((organ) =>
           organ.type === "line" ? (
             <SpinalCord
@@ -133,6 +164,7 @@ function Scene({
             <OrganNode
               key={organ.id}
               organ={organ}
+              femaleMode={femaleMode}
               onSelect={(o) => {
                 onSelect(o);
                 if (o.brainPosition) setBrainZoom(true);
