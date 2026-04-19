@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -225,7 +225,9 @@ function AnatomyModel({
   meshMode,
   femaleMode,
 }) {
-  const { scene } = useGLTF(modelPath);
+  const gltf = useGLTF(modelPath);
+  // Deep-clone so we never mutate the cached GLB — prevents cache poisoning on model toggle
+  const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
   const materialRef = useRef(null);
   const bloodMatRef = useRef(null);
   const bloodPulseRef = useRef(0);
@@ -238,21 +240,38 @@ function AnatomyModel({
   const [sheenScene, setSheenScene] = useState(null);
 
   useEffect(() => {
-    // Reset any mutations from the GLTF cache before measuring
+    // Force-unmount stale cloned primitives so React doesn't keep old female/male geometry
+    setBloodScene(null);
+    setBreathScene(null);
+    setAluminumScene(null);
+    setSheenScene(null);
+
+    // Hardcoded raw GLB dimensions — measured once on clean first load.
+    // Three.js's GLB cache corrupts bounding box / vertex traversal measurements
+    // after model toggling, so dynamic measurement is unreliable.
+    const MALE_RAW = {
+      height: 15.8869,
+      yMin: -8.0072,
+      centerX: 0,
+      centerZ: 0.17,
+    };
+    const FEMALE_RAW = {
+      height: 14.2881,
+      yMin: -7.1065,
+      centerX: 0,
+      centerZ: 0.17,
+    };
+    const raw = femaleMode ? FEMALE_RAW : MALE_RAW;
+    const s = (femaleMode ? TARGET_HEIGHT * 0.88 : TARGET_HEIGHT) / raw.height;
+
     scene.scale.set(1, 1, 1);
     scene.position.set(0, 0, 0);
     scene.updateMatrixWorld(true);
-
-    const box = new THREE.Box3().setFromObject(scene);
-    const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
-    const s = (femaleMode ? TARGET_HEIGHT * 0.88 : TARGET_HEIGHT) / size.y;
-
     scene.scale.setScalar(s);
     scene.position.set(
-      -center.x * s,
-      -box.min.y * s + (femaleMode ? 0.08 : 0),
-      -center.z * s,
+      -raw.centerX * s,
+      -raw.yMin * s + (femaleMode ? 0.08 : 0),
+      -raw.centerZ * s,
     );
 
     // Harvest first available map from GLB to use as emissive mask.

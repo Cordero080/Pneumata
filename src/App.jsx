@@ -56,6 +56,13 @@ function App() {
 
   useEffect(() => {
     document.body.classList.toggle("body--female", bodyModel === "female");
+    // Reset transform values to defaults so female scale/offset doesn't bleed into male view
+    setPanY(DEFAULTS.panY);
+    setZoom(DEFAULTS.zoom);
+    setGlobalScale(DEFAULTS.globalScale);
+    setOffsetX(DEFAULTS.offsetX);
+    setOffsetY(DEFAULTS.offsetY);
+    setResetKey((k) => k + 1);
     return () => document.body.classList.remove("body--female");
   }, [bodyModel]);
 
