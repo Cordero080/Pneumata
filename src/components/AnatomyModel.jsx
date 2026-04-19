@@ -12,6 +12,7 @@ function sampleSpinePoints(scene, numBins = 24, opts = {}) {
   const Y_MIN = opts.yMin ?? 0.86;
   const Y_MAX = opts.yMax ?? 1.6;
   const Z_NUDGE = opts.zNudge ?? 0; // positive = push forward (toward viewer)
+  const Z_NUDGE_TOP = opts.zNudgeTop ?? 0; // extra forward push for upper spine
   const Z_MAX = opts.zMax ?? -0.015; // most-forward Z allowed — tighten for female
   const bins = Array.from({ length: numBins }, () => ({
     sumY: 0,
@@ -47,7 +48,15 @@ function sampleSpinePoints(scene, numBins = 24, opts = {}) {
 
   const points = bins
     .filter((b) => b.n >= 3)
-    .map((b) => [0, b.sumY / b.n, b.sumZ / b.n + Z_NUDGE])
+    .map((b) => {
+      const y = b.sumY / b.n;
+      // Graduated top nudge: ramps from 0 at 75% height to full at Y_MAX (cervical only)
+      const topT = Math.max(
+        0,
+        (y - (Y_MIN + (Y_MAX - Y_MIN) * 0.75)) / ((Y_MAX - Y_MIN) * 0.25),
+      );
+      return [0, y, b.sumZ / b.n + Z_NUDGE + topT * topT * Z_NUDGE_TOP];
+    })
     .sort((a, b) => b[1] - a[1]); // descending y = top to bottom
 
   console.log(`[SpineSampler] ${points.length} points extracted:`);
@@ -288,7 +297,15 @@ function AnatomyModel({
     const spinePoints = sampleSpinePoints(
       scene,
       24,
-      femaleMode ? { zNudge: -0.01, yMin: 0.85, yMax: 1.55, zMax: -0.03 } : {},
+      femaleMode
+        ? {
+            zNudge: 0.005,
+            zNudgeTop: 0.025,
+            yMin: 0.85,
+            yMax: 1.55,
+            zMax: -0.035,
+          }
+        : {},
     );
     if (spinePoints && onSpineExtracted) onSpineExtracted(spinePoints);
 
