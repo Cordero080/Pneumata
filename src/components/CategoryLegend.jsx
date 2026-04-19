@@ -30,8 +30,8 @@ function CategoryLegend() {
           <div
             className="legend-dot"
             style={{
-              background: color,
-              boxShadow: `0 0 6px ${color}80`,
+              background: `radial-gradient(circle at 35% 35%, rgba(255,255,255,0.6), ${color} 55%, rgba(0,0,0,0.3))`,
+              boxShadow: `0 2px 4px rgba(0,0,0,0.3), 0 0 8px ${color}80`,
             }}
           />
         </div>

@@ -41,34 +41,16 @@ body {
   inset: 0;
 }
 
-.app--dark.app--female {
-  background:
-    radial-gradient(ellipse 60% 45% at 15% 25%, rgba(180, 10, 110, 0.7) 0%, transparent 100%),
-    radial-gradient(ellipse 50% 60% at 85% 75%, rgba(0, 160, 200, 0.5) 0%, transparent 100%),
-    radial-gradient(ellipse 65% 45% at 65% 15%, rgba(130, 5, 210, 0.65) 0%, transparent 100%),
-    radial-gradient(ellipse 45% 65% at 30% 85%, rgba(200, 40, 150, 0.45) 0%, transparent 100%),
-    radial-gradient(ellipse 40% 40% at 78% 28%, rgba(60, 5, 180, 0.5) 0%, transparent 100%),
-    radial-gradient(ellipse 80% 80% at 50% 50%, rgba(10, 2, 20, 0.9) 0%, transparent 100%),
-    #04010a;
-  animation: nebula-pulse 9s ease-in-out infinite alternate;
-}
-
-@keyframes nebula-pulse {
-  0%   { filter: hue-rotate(0deg) brightness(1); }
-  40%  { filter: hue-rotate(18deg) brightness(1.12); }
-  70%  { filter: hue-rotate(-12deg) brightness(0.95); }
-  100% { filter: hue-rotate(8deg) brightness(1.06); }
-}
 
 body.body--female {
-  background:
-    radial-gradient(ellipse 60% 45% at 15% 25%, rgba(255, 120, 200, 0.22) 0%, transparent 100%),
-    radial-gradient(ellipse 50% 60% at 85% 70%, rgba(140, 80, 255, 0.18) 0%, transparent 100%),
-    radial-gradient(ellipse 65% 45% at 65% 10%, rgba(200, 100, 255, 0.16) 0%, transparent 100%),
-    radial-gradient(ellipse 50% 65% at 30% 88%, rgba(255, 160, 210, 0.2) 0%, transparent 100%),
-    radial-gradient(ellipse 40% 40% at 78% 28%, rgba(180, 80, 240, 0.12) 0%, transparent 100%),
-    #f5eef8;
-  animation: nebula-pulse 9s ease-in-out infinite alternate;
+  background: radial-gradient(
+    ellipse 72% 82% at 50% 42%,
+    #f0d6e4 0%,
+    #d4aec3 30%,
+    #c88ba8 58%,
+    #aa6a8a 80%,
+    #905878 100%
+  );
 }
 
 // === Scrollbar — circulatory vein style ===

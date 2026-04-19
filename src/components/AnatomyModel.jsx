@@ -399,8 +399,8 @@ function AnatomyModel({
     // Sync to current mode immediately — darkMode effect may have run before
     // materials existed (async GLB load) and returned early without applying anything
     if (darkMode) {
-      mat.color.set("#030306");
-      mat.emissive.set("#880000");
+      mat.color.set(femaleMode ? "#08041a" : "#030306");
+      mat.emissive.set(femaleMode ? "#5533cc" : "#880000");
       mat.metalness = 0.92;
       mat.roughness = 0.08;
       mat.opacity = 0.82;
@@ -415,15 +415,19 @@ function AnatomyModel({
     }
   }, [scene]);
 
-  // Swap material properties when darkMode changes
+  // Swap material properties when darkMode or femaleMode changes
   useEffect(() => {
     const mat = materialRef.current;
     if (!mat) return;
 
+    const obsColor = femaleMode ? "#08041a" : "#030306";
+    const obsEmissive = femaleMode ? "#5533cc" : "#880000";
+    const ghostColor = femaleMode ? "#f5eaf0" : "#eef2f6";
+    const alColor = femaleMode ? "#d4a0b8" : "#d8dde2";
+
     if (darkMode) {
-      // Obsidian — solid, iridescent, full presence
-      mat.color.set("#030306");
-      mat.emissive.set("#880000"); // crimson — power mode flush, not white
+      mat.color.set(obsColor);
+      mat.emissive.set(obsEmissive);
       mat.metalness = 0.92;
       mat.roughness = 0.08;
       mat.transmission = 0;
@@ -433,15 +437,13 @@ function AnatomyModel({
       mat.iridescenceThicknessRange = [120, 280];
       mat.clearcoat = 0.9;
       mat.clearcoatRoughness = 0.08;
-      // Hide aluminum layer in dark mode — also disable depthWrite so invisible mesh doesn't pollute depth buffer
       if (aluminumMatRef.current) {
         aluminumMatRef.current.opacity = 0;
         aluminumMatRef.current.depthWrite = false;
         aluminumMatRef.current.needsUpdate = true;
       }
     } else {
-      // Light mode — ghost skin: near-invisible aura, aluminum layer defines the shape
-      mat.color.set("#eef2f6");
+      mat.color.set(ghostColor);
       mat.metalness = 0;
       mat.roughness = 0.2;
       mat.transmission = 0;
@@ -451,15 +453,15 @@ function AnatomyModel({
       mat.clearcoatRoughness = 0.1;
       mat.emissive.set("#ffffff");
       mat.emissiveIntensity = 0;
-      // Restore aluminum layer in light mode — re-enable depthWrite for solid silver look
       if (aluminumMatRef.current) {
+        aluminumMatRef.current.color.set(alColor);
         aluminumMatRef.current.opacity = 0.95;
         aluminumMatRef.current.depthWrite = true;
         aluminumMatRef.current.needsUpdate = true;
       }
     }
     mat.needsUpdate = true;
-  }, [darkMode]);
+  }, [darkMode, femaleMode]);
 
   // Mesh mode toggle
   useEffect(() => {
@@ -467,11 +469,29 @@ function AnatomyModel({
     const al = aluminumMatRef.current;
     if (!mat || !al) return;
 
+    // Dark female = indigo/violet tint; light female = rose/blush tint
+    const obsColor = femaleMode ? "#08041a" : "#030306";
+    const obsEmissive = femaleMode ? "#5533cc" : "#880000";
+    const alColor = femaleMode ? (darkMode ? "#b0a0d4" : "#d4a0b8") : "#d8dde2";
+    const ghostColor = femaleMode ? "#f5eaf0" : "#eef2f6";
+    const ghostDark = femaleMode ? "#130a2a" : "#1a1a2a";
+    const whiteColor = femaleMode ? "#f8f0ff" : "#f0f4ff";
+    const whiteAlColor = femaleMode
+      ? darkMode
+        ? "#9988cc"
+        : "#c8a0b5"
+      : "#a8bcd4";
+    const whiteEmissive = femaleMode
+      ? darkMode
+        ? "#9966ff"
+        : "#c86090"
+      : "#c8a060";
+
     if (darkMode) {
       // Dark mode: 0=dark ghost, 1=semi obsidian, 2=solid obsidian, 3=white ghost, 4=semi silver, 5=solid silver
       if (meshMode === 4 || meshMode === 5) {
         const solid = meshMode === 5;
-        mat.color.set("#eef2f6");
+        mat.color.set(ghostColor);
         mat.emissive.set("#ffffff");
         mat.emissiveIntensity = 0;
         mat.transparent = true;
@@ -483,27 +503,27 @@ function AnatomyModel({
         mat.depthWrite = false;
         mat.needsUpdate = true;
         al.transparent = !solid;
-        al.color.set("#d8dde2");
+        al.color.set(alColor);
         al.metalness = 0.88;
         al.roughness = 0.15;
         al.opacity = solid ? 1.0 : 0.82;
         al.depthWrite = solid;
         al.needsUpdate = true;
       } else if (meshMode === 3) {
-        mat.color.set("#f0f4ff");
+        mat.color.set(whiteColor);
         mat.transparent = true;
         mat.transmission = 0;
         mat.opacity = 0.28;
         mat.metalness = 0.05;
         mat.roughness = 0.1;
-        mat.emissive.set("#c8a060");
+        mat.emissive.set(whiteEmissive);
         mat.emissiveIntensity = 0.1;
         mat.iridescence = 0;
         mat.depthWrite = false;
         mat.needsUpdate = true;
       } else if (meshMode === 0) {
-        mat.color.set("#030306");
-        mat.emissive.set("#880000");
+        mat.color.set(obsColor);
+        mat.emissive.set(obsEmissive);
         mat.transparent = true;
         mat.transmission = 0;
         mat.opacity = 0.45;
@@ -514,8 +534,8 @@ function AnatomyModel({
         mat.needsUpdate = true;
       } else {
         const solid = meshMode === 2;
-        mat.color.set("#030306");
-        mat.emissive.set("#880000");
+        mat.color.set(obsColor);
+        mat.emissive.set(obsEmissive);
         mat.transparent = !solid;
         mat.transmission = 0;
         mat.opacity = solid ? 1.0 : 0.82;
@@ -524,7 +544,6 @@ function AnatomyModel({
         mat.iridescence = 0.45;
         mat.depthWrite = solid;
         mat.needsUpdate = true;
-        // Hide aluminum (always hidden for obsidian modes)
         al.transparent = true;
         al.opacity = 0;
         al.depthWrite = false;
@@ -532,16 +551,16 @@ function AnatomyModel({
       }
     } else {
       // Light mode:
-      // 0 = original ghost (dark glass, no aluminum)
+      // 0 = ghost (dark charcoal, no aluminum)
       // 1 = semi-transparent silver aluminum
       // 2 = solid silver aluminum
+      // 3 = white ghost x-ray
       if (meshMode === 0) {
-        // Ghost x-ray: hide aluminum, dark charcoal body — bones visible through stacked semi-transparent layers
         al.transparent = true;
         al.opacity = 0;
         al.depthWrite = false;
         al.needsUpdate = true;
-        mat.color.set("#1a1a2a");
+        mat.color.set(ghostDark);
         mat.transparent = true;
         mat.transmission = 0;
         mat.opacity = 0.45;
@@ -551,27 +570,25 @@ function AnatomyModel({
         mat.depthWrite = false;
         mat.needsUpdate = true;
       } else if (meshMode === 3) {
-        // White ghost x-ray: luminous white skin, aluminum at low opacity for structure
-        mat.color.set("#f0f4ff");
+        mat.color.set(whiteColor);
         mat.transparent = true;
         mat.transmission = 0;
         mat.opacity = 0.28;
         mat.metalness = 0.05;
         mat.roughness = 0.1;
-        mat.emissive.set("#c8a060");
+        mat.emissive.set(whiteEmissive);
         mat.emissiveIntensity = 0.1;
         mat.depthWrite = false;
         mat.needsUpdate = true;
         al.transparent = true;
-        al.color.set("#a8bcd4");
+        al.color.set(whiteAlColor);
         al.metalness = 0.1;
         al.roughness = 0.1;
         al.opacity = 0.55;
         al.depthWrite = false;
         al.needsUpdate = true;
       } else {
-        // Restore aluminum silver for modes 1 and 2
-        mat.color.set("#eef2f6");
+        mat.color.set(ghostColor);
         mat.transmission = 0;
         mat.opacity = 0.13;
         mat.metalness = 0;
@@ -579,7 +596,7 @@ function AnatomyModel({
         mat.depthWrite = false;
         mat.needsUpdate = true;
         al.transparent = meshMode !== 2;
-        al.color.set("#d8dde2");
+        al.color.set(alColor);
         al.metalness = 0.88;
         al.roughness = 0.15;
         al.opacity = meshMode === 2 ? 1.0 : 0.82;
@@ -587,46 +604,7 @@ function AnatomyModel({
         al.needsUpdate = true;
       }
     }
-  }, [meshMode, darkMode]);
-
-  // Female mode — override aluminum and emissive to pink/magenta palette
-  useEffect(() => {
-    const mat = materialRef.current;
-    const al = aluminumMatRef.current;
-    if (!mat || !al) return;
-
-    if (femaleMode) {
-      if (darkMode) {
-        // Dark female: visible rose surface — low metalness so color shows
-        mat.color.set("#b1255d");
-        mat.emissive.set("#ec0b7b");
-        mat.emissiveIntensity = 0.45;
-        mat.opacity = 0.94;
-        mat.metalness = 0.68;
-        mat.roughness = 0.38;
-        mat.iridescence = 0.95;
-        mat.iridescenceIOR = 1.35;
-        mat.iridescenceThicknessRange = [120, 320];
-        mat.clearcoat = 0.6;
-        mat.clearcoatRoughness = 0.12;
-        mat.needsUpdate = true;
-        al.opacity = 0;
-        al.depthWrite = false;
-        al.needsUpdate = true;
-      } else {
-        // Light female: rose-gold aluminum layer
-        al.color.set("#ef3e8e");
-        al.metalness = 0.65;
-        al.roughness = 0.22;
-        al.opacity = 0.94;
-        al.depthWrite = true;
-        al.needsUpdate = true;
-        mat.emissive.set("#cc0066");
-        mat.emissiveIntensity = 0.08;
-        mat.needsUpdate = true;
-      }
-    }
-  }, [femaleMode, darkMode]);
+  }, [meshMode, darkMode, femaleMode]);
 
   // Sheen layer — upper-body velvet/peach-fuzz, fades out at waist
   useEffect(() => {
