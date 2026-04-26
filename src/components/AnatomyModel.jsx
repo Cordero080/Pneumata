@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { MALE_SPINE_POINTS } from "./spine/spineData";
 
 // Skull bounds (sampled once from GLB, y > 1.55):
 //   x: -0.096 → 0.096   y: 1.550 → 1.750   z: -0.126 → 0.098
@@ -313,19 +314,15 @@ function AnatomyModel({
     // Sample posterior-midline vertices to auto-trace the vertebral column.
     // Female model has a different posterior profile — nudge spine z forward
     // so it doesn't protrude outside her body contour.
-    const spinePoints = sampleSpinePoints(
-      scene,
-      24,
-      femaleMode
-        ? {
-            zNudge: 0.005,
-            zNudgeTop: 0.025,
-            yMin: 0.85,
-            yMax: 1.55,
-            zMax: -0.035,
-          }
-        : {},
-    );
+    const spinePoints = femaleMode
+      ? sampleSpinePoints(scene, 24, {
+          zNudge: 0.005,
+          zNudgeTop: 0.025,
+          yMin: 0.85,
+          yMax: 1.55,
+          zMax: -0.035,
+        })
+      : MALE_SPINE_POINTS;
     if (spinePoints && onSpineExtracted) onSpineExtracted(spinePoints);
 
     // Sample anatomical landmarks for peripheral nerve routing.
