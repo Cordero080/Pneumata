@@ -23,9 +23,9 @@ export const organs = [
     type: "point",
     organ: "Pneuma",
     hardware: "Integrated Information",
-    position: [0, 1.8, 0.0],
+    position: [0, 1.746, 0.0],
     femalePosition: [0, 1.737, 0.0],
-    brainPosition: [0, 1.8, 0.0],
+    brainPosition: [0, 1.746, 0.0],
     femaleBrainPosition: [0, 1.737, 0.0],
     bio_function:
       "The emergent phenomenon of self-awareness arising from coordinated neural activity — biology become witness to itself.",
@@ -247,8 +247,10 @@ export const organs = [
     type: "point",
     organ: "Right Eye",
     hardware: "Camera / GPU Render Pipeline",
-    position: [-0.035, 1.645, 0.08],
+    position: [-0.035, 1.64, 0.08], // [x: left/right,  y: up/down ← lower = smaller number,  z: front/back]
     femalePosition: [-0.035, 1.588, 0.08],
+    brainPosition: [-0.035, 1.64, 0.08], // keep in sync with position above
+    femaleBrainPosition: [-0.035, 1.588, 0.08],
     bio_function:
       "Captures photons through the lens, focuses them on the retina's photoreceptors, and converts light into electrochemical signals. The eye actively preprocesses raw light into structured visual data before it reaches the brain.",
     hard_function:
@@ -264,8 +266,10 @@ export const organs = [
     type: "point",
     organ: "Left Eye",
     hardware: "Camera / GPU Render Pipeline",
-    position: [0.035, 1.645, 0.08],
+    position: [0.035, 1.64, 0.08], // [x: left/right,  y: up/down ← lower = smaller number,  z: front/back]
     femalePosition: [0.035, 1.588, 0.08],
+    brainPosition: [0.035, 1.64, 0.08], // keep in sync with position above
+    femaleBrainPosition: [0.035, 1.588, 0.08],
     bio_function:
       "Captures photons through the lens, focuses them on the retina's photoreceptors, and converts light into electrochemical signals. The eye actively preprocesses raw light into structured visual data before it reaches the brain.",
     hard_function:
@@ -283,6 +287,8 @@ export const organs = [
     hardware: "Microphone / Audio Input Processor",
     position: [-0.07, 1.635, 0.0],
     femalePosition: [-0.07, 1.579, 0.0],
+    brainPosition: [-0.07, 1.635, 0.0],
+    femaleBrainPosition: [-0.07, 1.579, 0.0],
     bio_function:
       "Converts pressure waves in air into mechanical vibration via the eardrum and ossicles, then into electrochemical nerve signals via the cochlea's hair cells.",
     hard_function:
@@ -300,6 +306,8 @@ export const organs = [
     hardware: "Microphone / Audio Input Processor",
     position: [0.07, 1.635, 0.0],
     femalePosition: [0.07, 1.579, 0.0],
+    brainPosition: [0.07, 1.635, 0.0],
+    femaleBrainPosition: [0.07, 1.579, 0.0],
     bio_function:
       "Converts pressure waves in air into mechanical vibration via the eardrum and ossicles, then into electrochemical nerve signals via the cochlea's hair cells.",
     hard_function:
