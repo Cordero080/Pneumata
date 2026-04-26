@@ -181,7 +181,9 @@ function Scene({
               nodeOpacity={getNodeOpacity(organ, viewMode)}
               pulseRef={organ.id === "heart" ? heartbeatRef : undefined}
               breathingRef={
-                organ.id === "left_lung" || organ.id === "right_lung"
+                organ.id === "left_lung" ||
+                organ.id === "right_lung" ||
+                organ.id === "consciousness"
                   ? breathingRef
                   : undefined
               }

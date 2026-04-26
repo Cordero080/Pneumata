@@ -23,8 +23,10 @@ export const organs = [
     type: "point",
     organ: "Pneuma",
     hardware: "Integrated Information",
-    position: [0, 1.7, 0.0],
-    femalePosition: [0, 1.637, 0.0],
+    position: [0, 1.8, 0.0],
+    femalePosition: [0, 1.737, 0.0],
+    brainPosition: [0, 1.8, 0.0],
+    femaleBrainPosition: [0, 1.737, 0.0],
     bio_function:
       "The emergent phenomenon of self-awareness arising from coordinated neural activity — biology become witness to itself.",
     hard_function:

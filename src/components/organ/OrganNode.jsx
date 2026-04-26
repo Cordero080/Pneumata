@@ -100,11 +100,17 @@ function OrganNode({
       (0.18 * nodeOpacity * brainFade - meshRef.current.material.opacity) *
       0.08;
 
-    // Breathing scale pulse — lung nodes only in power mode
-    if (breathingRef && viewMode === "power") {
-      const targetScale = 1 + breathingRef.current * 0.08;
-      const cur = meshRef.current.scale.x;
-      meshRef.current.scale.setScalar(cur + (targetScale - cur) * 0.06);
+    // Breathing scale pulse — lungs in power mode, spirit node always
+    if (breathingRef) {
+      if (isSpirit) {
+        const targetScale = 1 + breathingRef.current * 0.25;
+        const cur = meshRef.current.scale.x;
+        meshRef.current.scale.setScalar(cur + (targetScale - cur) * 0.04);
+      } else if (viewMode === "power") {
+        const targetScale = 1 + breathingRef.current * 0.08;
+        const cur = meshRef.current.scale.x;
+        meshRef.current.scale.setScalar(cur + (targetScale - cur) * 0.06);
+      }
     }
 
     if (glowRef.current) {
