@@ -122,6 +122,7 @@ function Scene({
           meshMode={meshMode}
           brainZoom={brainZoom}
           darkMode={darkMode}
+          onBrainClick={() => setBrainZoom(true)}
         />
 
         <LungVolume

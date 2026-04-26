@@ -5,7 +5,7 @@ import * as THREE from "three";
 const LERP = 0.055;
 const SETTLED = 0.0008;
 
-const BRAIN_TARGET = new THREE.Vector3(0, 1.655, 0);
+const BRAIN_TARGET = new THREE.Vector3(0, 1.55, 0);
 
 // Slider value 0 (knob top) = viewing head, 1 (knob bottom) = viewing legs
 const PAN_Y_TOP = 1.65;
