@@ -10,6 +10,7 @@ import BodyCirculation from "../BodyCirculation";
 import NerveRoots from "../NerveRoots";
 import NerveSystem from "../spine/NerveSystem";
 import CameraController from "../CameraController";
+import BrainModel from "../brain/BrainModel";
 import { organs } from "../../data/organs";
 
 const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
@@ -115,6 +116,12 @@ function Scene({
           darkMode={darkMode}
           meshMode={meshMode}
           femaleMode={femaleMode}
+        />
+
+        <BrainModel
+          meshMode={meshMode}
+          brainZoom={brainZoom}
+          darkMode={darkMode}
         />
 
         <LungVolume

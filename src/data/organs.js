@@ -193,9 +193,9 @@ export const organs = [
     type: "point",
     organ: "Brain Stem",
     hardware: "BIOS / Firmware",
-    position: [0, 1.575, -0.04],
+    position: [0, 1.592, -0.063],
     femalePosition: [0, 1.526, -0.04],
-    brainPosition: [0, 1.572, -0.058],
+    brainPosition: [0, 1.592, -0.063],
     femaleBrainPosition: [0, 1.523, -0.058],
     bio_function:
       "The most primitive region of the brain, governing all involuntary survival functions — breathing, heart rate, blood pressure — continuously beneath conscious awareness. The organism cannot survive its failure regardless of how healthy the cortex is.",
