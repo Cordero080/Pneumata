@@ -1,0 +1,26 @@
+{
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.guides.highlightActiveBracketPair": true,
+  "workbench.colorCustomizations": {
+    "editorBracketHighlight.foreground1": "#8FB8FF",
+    "editorBracketHighlight.foreground2": "#7FB0FF",
+    "editorBracketHighlight.foreground3": "#9CC4FF",
+    "editorBracketHighlight.foreground4": "#6EA6FF",
+    "editorBracketHighlight.foreground5": "#A9CCFF",
+    "editorBracketHighlight.foreground6": "#5D9CFF",
+    "editorBracketHighlight.unexpectedBracket.foreground": "#FF6B8A",
+    "editorBracketPairGuide.background1": "#8FB8FF55",
+    "editorBracketPairGuide.background2": "#7FB0FF55",
+    "editorBracketPairGuide.background3": "#9CC4FF55",
+    "editorBracketPairGuide.background4": "#6EA6FF55",
+    "editorBracketPairGuide.background5": "#A9CCFF55",
+    "editorBracketPairGuide.background6": "#5D9CFF55",
+    "editorBracketPairGuide.activeBackground1": "#8FB8FFCC",
+    "editorBracketPairGuide.activeBackground2": "#7FB0FFCC",
+    "editorBracketPairGuide.activeBackground3": "#9CC4FFCC",
+    "editorBracketPairGuide.activeBackground4": "#6EA6FFCC",
+    "editorBracketPairGuide.activeBackground5": "#A9CCFFCC",
+    "editorBracketPairGuide.activeBackground6": "#5D9CFFCC"
+  }
+}
