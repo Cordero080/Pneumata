@@ -12,7 +12,31 @@ function AnimatedModel({ darkMode, meshMode }) {
     const swing = fbx.animations[0]?.clone();
     if (swing) swing.name = "Swing";
     const standing = standingFbx.animations[0]?.clone();
-    if (standing) standing.name = "Standing";
+    if (standing) {
+      standing.name = "Standing";
+      // Shift Standing's root position track so it starts exactly where Swing ends.
+      const swingRoot = swing?.tracks.find((t) => t.name.endsWith(".position"));
+      const standRoot = standing.tracks.find((t) =>
+        t.name.endsWith(".position"),
+      );
+      if (swingRoot && standRoot) {
+        const n = swingRoot.values.length;
+        const ex = swingRoot.values[n - 3];
+        const ey = swingRoot.values[n - 2];
+        const ez = swingRoot.values[n - 1];
+        const sx = standRoot.values[0];
+        const sy = standRoot.values[1];
+        const sz = standRoot.values[2];
+        const dx = ex - sx,
+          dy = ey - sy,
+          dz = ez - sz;
+        for (let i = 0; i < standRoot.values.length; i += 3) {
+          standRoot.values[i] += dx;
+          standRoot.values[i + 1] += dy;
+          standRoot.values[i + 2] += dz;
+        }
+      }
+    }
     return [swing, standing].filter(Boolean);
   }, [fbx, standingFbx]);
 
@@ -32,8 +56,8 @@ function AnimatedModel({ darkMode, meshMode }) {
     const onFinished = (e) => {
       if (e.action === swing && standing) {
         standing.setLoop(THREE.LoopRepeat, Infinity);
-        standing.reset().play();
-        standing.crossFadeFrom(swing, 0.4, false);
+        standing.play();
+        swing.crossFadeTo(standing, 0.8, true);
       }
     };
     mixer.addEventListener("finished", onFinished);
@@ -138,7 +162,7 @@ function AnimatedModel({ darkMode, meshMode }) {
   }, [fbx, darkMode, meshMode]);
 
   useFrame(() => {
-    fbx.position.set(0, 0.4, -0.9);
+    fbx.position.set(0, 0.45, -0.9);
   });
 
   return <primitive object={fbx} />;
