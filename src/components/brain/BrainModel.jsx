@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 const BRAIN_CENTER_Y = 1.665;
 const BRAIN_Z_OFFSET = -0.015;
-const TARGET_HEIGHT = 0.16; // fits y: 1.58 → 1.75
+const TARGET_HEIGHT = 0.165;
 
 function BrainModel({ meshMode, brainZoom, darkMode, onBrainClick }) {
   const gltf = useGLTF("/platinum-brain.glb");
