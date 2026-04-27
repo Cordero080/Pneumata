@@ -1,0 +1,147 @@
+import { useEffect, useRef, useMemo } from "react";
+import { useFBX, useAnimations } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+
+function AnimatedModel({ darkMode, meshMode }) {
+  const fbx = useFBX("/animations/pneumata_swing.fbx");
+  const standingFbx = useFBX("/animations/Standing.fbx");
+  const matRef = useRef(null);
+
+  const clips = useMemo(() => {
+    const swing = fbx.animations[0]?.clone();
+    if (swing) swing.name = "Swing";
+    const standing = standingFbx.animations[0]?.clone();
+    if (standing) standing.name = "Standing";
+    return [swing, standing].filter(Boolean);
+  }, [fbx, standingFbx]);
+
+  const { actions, mixer } = useAnimations(clips, fbx);
+
+  useEffect(() => {
+    fbx.scale.setScalar(0.045);
+  }, [fbx]);
+
+  useEffect(() => {
+    const swing = actions["Swing"];
+    const standing = actions["Standing"];
+    if (!swing || !mixer) return;
+    swing.setLoop(THREE.LoopOnce);
+    swing.clampWhenFinished = true;
+    swing.play();
+    const onFinished = (e) => {
+      if (e.action === swing && standing) {
+        standing.setLoop(THREE.LoopRepeat, Infinity);
+        standing.reset().play();
+        standing.crossFadeFrom(swing, 0.4, false);
+      }
+    };
+    mixer.addEventListener("finished", onFinished);
+    return () => mixer.removeEventListener("finished", onFinished);
+  }, [actions, mixer]);
+
+  // Single material applied directly to the animated mesh.
+  // We cannot clone the FBX for a second render layer — the mixer is bound
+  // to the original fbx object, so any clone stays frozen in T-pose.
+  useEffect(() => {
+    let mat;
+    if (darkMode) {
+      if (meshMode === 4 || meshMode === 5) {
+        const solid = meshMode === 5;
+        mat = new THREE.MeshStandardMaterial({
+          color: "#d8dde2",
+          metalness: 0.88,
+          roughness: 0.15,
+          transparent: !solid,
+          opacity: solid ? 1.0 : 0.82,
+          depthWrite: solid,
+        });
+      } else if (meshMode === 3) {
+        mat = new THREE.MeshPhysicalMaterial({
+          color: "#f0f4ff",
+          emissive: "#c8a060",
+          emissiveIntensity: 0.1,
+          transparent: true,
+          opacity: 0.28,
+          metalness: 0.05,
+          roughness: 0.1,
+          depthWrite: false,
+        });
+      } else if (meshMode === 0) {
+        mat = new THREE.MeshPhysicalMaterial({
+          color: "#030306",
+          emissive: "#880000",
+          transparent: true,
+          opacity: 0.45,
+          metalness: 0.1,
+          roughness: 0.12,
+          depthWrite: false,
+        });
+      } else {
+        const solid = meshMode === 2;
+        mat = new THREE.MeshPhysicalMaterial({
+          color: "#030306",
+          emissive: "#880000",
+          metalness: 0.92,
+          roughness: 0.08,
+          transparent: !solid,
+          opacity: solid ? 1.0 : 0.82,
+          iridescence: 0.45,
+          iridescenceIOR: 1.32,
+          iridescenceThicknessRange: [120, 280],
+          clearcoat: 0.9,
+          clearcoatRoughness: 0.08,
+          depthWrite: solid,
+        });
+      }
+    } else {
+      if (meshMode === 0) {
+        mat = new THREE.MeshPhysicalMaterial({
+          color: "#1a1a2a",
+          transparent: true,
+          opacity: 0.45,
+          metalness: 0.1,
+          roughness: 0.12,
+          depthWrite: false,
+        });
+      } else if (meshMode === 3) {
+        mat = new THREE.MeshPhysicalMaterial({
+          color: "#f0f4ff",
+          emissive: "#c8a060",
+          emissiveIntensity: 0.1,
+          transparent: true,
+          opacity: 0.28,
+          metalness: 0.05,
+          roughness: 0.1,
+          depthWrite: false,
+        });
+      } else {
+        const solid = meshMode === 2;
+        mat = new THREE.MeshStandardMaterial({
+          color: "#d8dde2",
+          metalness: 0.88,
+          roughness: 0.15,
+          transparent: !solid,
+          opacity: solid ? 1.0 : 0.82,
+          depthWrite: solid,
+        });
+      }
+    }
+    if (matRef.current) matRef.current.dispose();
+    matRef.current = mat;
+    fbx.traverse((child) => {
+      if (child.isMesh) child.material = mat;
+    });
+    return () => {
+      mat.dispose();
+    };
+  }, [fbx, darkMode, meshMode]);
+
+  useFrame(() => {
+    fbx.position.set(0, 0.4, -0.9);
+  });
+
+  return <primitive object={fbx} />;
+}
+
+export default AnimatedModel;
