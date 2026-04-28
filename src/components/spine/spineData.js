@@ -96,29 +96,33 @@ export const DISC_STYLES = {
   },
 };
 
+// Format: [x, y, z] — x is always 0 (spine is centered)
+// y = height (1.585 = top near skull base, 0.877 = bottom of lumbar)
+// z = forward/back depth — less negative = closer to viewer/forward, more negative = further back
+// Brain stem sits at z = -0.052 — top disc should be near this value to connect underneath it
 export const MALE_SPINE_POINTS = [
-  [0, 1.585, -0.03],
-  [0, 1.554, -0.038],
-  [0, 1.523, -0.05],
-  [0, 1.493, -0.067],
-  [0, 1.462, -0.076],
-  [0, 1.431, -0.085],
-  [0, 1.4, -0.096],
-  [0, 1.369, -0.102],
-  [0, 1.338, -0.105],
-  [0, 1.307, -0.104],
-  [0, 1.277, -0.1],
-  [0, 1.245, -0.091],
-  [0, 1.212, -0.079],
-  [0, 1.182, -0.068],
-  [0, 1.152, -0.062],
-  [0, 1.122, -0.061],
-  [0, 1.09, -0.059],
-  [0, 1.06, -0.06],
-  [0, 1.03, -0.067],
-  [0, 1.001, -0.069],
-  [0, 0.967, -0.075],
-  [0, 0.938, -0.098],
-  [0, 0.907, -0.103],
-  [0, 0.877, -0.1],
+  [0, 1.580, -0.035], // C2 — top disc, sits just below brain stem (z ≈ brain stem z)
+  [0, 1.554, -0.01], // C3 — nudge z to curve neck
+  [0, 1.523, -0.035], // C4 — cervical curve continues back
+  [0, 1.493, -0.033], // C5
+  [0, 1.462, -0.042], // C6
+  [0, 1.431, -0.095], // C7 — base of neck, spine shifts further back
+  [0, 1.4, -0.096], // T1
+  [0, 1.369, -0.102], // T2
+  [0, 1.338, -0.105], // T3 — thoracic kyphosis peak (most posterior)
+  [0, 1.307, -0.104], // T4
+  [0, 1.277, -0.1], // T5
+  [0, 1.245, -0.091], // T6
+  [0, 1.212, -0.079], // T7
+  [0, 1.182, -0.068], // T8 — thoracic curve straightening
+  [0, 1.152, -0.062], // T9
+  [0, 1.122, -0.061], // T10
+  [0, 1.09, -0.059], // T11
+  [0, 1.06, -0.06], // T12
+  [0, 1.03, -0.067], // L1 — lumbar curve begins
+  [0, 1.001, -0.069], // L2
+  [0, 0.967, -0.075], // L3
+  [0, 0.938, -0.098], // L4
+  [0, 0.907, -0.103], // L5 — lumbar lordosis base
+  [0, 0.877, -0.1], // S1 — sacrum top
 ];

@@ -7,46 +7,49 @@ const LOGIC_COLOR = "#64c8ff";
 const INFRA_COLOR = "#ffb347";
 
 const CELL_NODES = [
+  // On neuron.glb — center [0.02, 1.64, 0.01]
   {
     id: "neuron",
     label: "Neuron",
     hardware: "Transistor",
-    position: [0.02, 1.645, 0.01],
+    position: [0.02, 1.646, 0.014],
     color: LOGIC_COLOR,
   },
   {
     id: "synapse",
     label: "Synapse",
     hardware: "Logic Gate",
-    position: [-0.025, 1.63, 0.015],
+    position: [0.026, 1.634, 0.008],
     color: LOGIC_COLOR,
   },
+  // On axon-single.glb — center [-0.02, 1.62, -0.01]
   {
     id: "axon",
     label: "Axon",
     hardware: "Data Bus",
-    position: [0.01, 1.615, -0.02],
+    position: [-0.02, 1.626, -0.006],
     color: LOGIC_COLOR,
   },
   {
     id: "myelin",
     label: "Myelin",
     hardware: "Signal Insulation",
-    position: [-0.015, 1.66, -0.015],
+    position: [-0.026, 1.614, -0.014],
     color: LOGIC_COLOR,
   },
+  // On pituitary.glb — center [0, 1.645, -0.01]
   {
     id: "glial",
     label: "Glial Cell",
     hardware: "Cache",
-    position: [0.025, 1.625, -0.005],
+    position: [0.006, 1.65, -0.006],
     color: INFRA_COLOR,
   },
   {
     id: "bbbarrier",
     label: "Blood Brain Barrier",
     hardware: "Firewall",
-    position: [0, 1.595, 0.025],
+    position: [-0.006, 1.638, -0.014],
     color: INFRA_COLOR,
   },
 ];
@@ -192,10 +195,14 @@ function CellNode({ node, cellZoom, onCellSelect }) {
           <div
             style={{
               color: node.color,
-              fontSize: "9px",
+              fontSize: "13px",
               fontFamily: "monospace",
               whiteSpace: "nowrap",
-              textShadow: `0 0 6px ${node.color}`,
+              textShadow: `0 0 8px ${node.color}`,
+              background: "rgba(0,0,0,0.55)",
+              padding: "2px 6px",
+              borderRadius: "3px",
+              letterSpacing: "0.04em",
             }}
           >
             {node.label} / {node.hardware}
@@ -232,7 +239,7 @@ function CellularView({ cellZoom, darkMode, meshMode, onCellSelect }) {
         targetHeight={0.025}
         posX={0}
         posY={1.645}
-        posZ={-0.01}
+        posZ={0.005}
         color="#c8a090"
         cellZoom={cellZoom}
       />
