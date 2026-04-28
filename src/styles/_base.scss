@@ -18,10 +18,10 @@ body,
 body {
   background: radial-gradient(
     ellipse 72% 82% at 50% 42%,
-    #d6e4f0 0%,
+    #a5b7c7 0%,
     #aec3d4 30%,
     #8ba8c8 58%,
-    #6a8aaa 80%,
+    #506c89c6 80%,
     #587290 100%
   );
   color: v.$text-primary;
@@ -33,7 +33,7 @@ body {
 .app--dark {
   background: radial-gradient(
     ellipse 80% 90% at 50% 45%,
-    #070d1e 0%,
+    #181d2e 0%,
     #030610 45%,
     #010208 100%
   );

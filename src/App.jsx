@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import Scene from "./components/scene/Scene";
+import AnimatedScene from "./components/scene/AnimatedScene";
 import GlassModal from "./components/GlassModal";
 import AboutModal from "./components/AboutModal";
 import CategoryLegend from "./components/CategoryLegend";
@@ -30,11 +31,13 @@ function App() {
   const modelPath =
     bodyModel === "male" ? "/male-body.glb" : "/female-body.glb";
   const [brainZoom, setBrainZoom] = useState(false);
+  const [cellZoom, setCellZoom] = useState(false);
   const [panY, setPanY] = useState(DEFAULTS.panY);
   const [zoom, setZoom] = useState(DEFAULTS.zoom);
   const [globalScale, setGlobalScale] = useState(DEFAULTS.globalScale);
   const [offsetX, setOffsetX] = useState(DEFAULTS.offsetX);
   const [offsetY, setOffsetY] = useState(DEFAULTS.offsetY);
+  const [showAnimation, setShowAnimation] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const handleReset = () => {
     setPanY(DEFAULTS.panY);
@@ -48,11 +51,14 @@ function App() {
 
   useEffect(() => {
     const handler = (e) => {
-      if (e.key === "Escape" && brainZoom) setBrainZoom(false);
+      if (e.key === "Escape") {
+        if (cellZoom) setCellZoom(false);
+        else if (brainZoom) setBrainZoom(false);
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [brainZoom]);
+  }, [brainZoom, cellZoom]);
 
   useEffect(() => {
     document.body.classList.toggle("body--female", bodyModel === "female");
@@ -139,6 +145,12 @@ function App() {
         >
           {bodyModel === "male" ? "♂\uFE0E" : "♀\uFE0E"}
         </button>
+        <button
+          className={`anim-toggle-btn${showAnimation ? " anim-toggle-btn--active" : ""}`}
+          onClick={() => setShowAnimation((v) => !v)}
+        >
+          {showAnimation ? "✕" : "▶"}
+        </button>
       </div>
 
       {/* About — top-right, used infrequently */}
@@ -152,37 +164,51 @@ function App() {
         About
       </button>
 
-      <Scene
-        globalScale={globalScale}
-        offsetX={offsetX}
-        offsetY={offsetY}
-        onSelect={setSelectedOrgan}
-        selectedOrgan={selectedOrgan}
-        viewMode={viewMode}
-        showNerves={showNerves}
-        darkMode={darkMode}
-        meshMode={meshMode}
-        brainZoom={brainZoom}
-        setBrainZoom={setBrainZoom}
-        panY={panY}
-        zoom={zoom}
-        resetKey={resetKey}
-        modelPath={modelPath}
-        femaleMode={bodyModel === "female"}
-      />
+      {showAnimation ? (
+        <AnimatedScene darkMode={darkMode} meshMode={meshMode} />
+      ) : (
+        <Scene
+          globalScale={globalScale}
+          offsetX={offsetX}
+          offsetY={offsetY}
+          onSelect={setSelectedOrgan}
+          selectedOrgan={selectedOrgan}
+          viewMode={viewMode}
+          showNerves={showNerves}
+          darkMode={darkMode}
+          meshMode={meshMode}
+          brainZoom={brainZoom}
+          setBrainZoom={setBrainZoom}
+          cellZoom={cellZoom}
+          setCellZoom={setCellZoom}
+          panY={panY}
+          zoom={zoom}
+          resetKey={resetKey}
+          modelPath={modelPath}
+          femaleMode={bodyModel === "female"}
+        />
+      )}
 
-      <VerticalControls
-        panY={panY}
-        onPanChange={setPanY}
-        zoom={zoom}
-        onZoomChange={setZoom}
-        scale={globalScale}
-        onScaleChange={setGlobalScale}
-        offsetX={offsetX}
-        onOffsetXChange={setOffsetX}
-      />
-      {brainZoom && (
-        <button className="brain-back-btn" onClick={() => setBrainZoom(false)}>
+      {!showAnimation && (
+        <VerticalControls
+          panY={panY}
+          onPanChange={setPanY}
+          zoom={zoom}
+          onZoomChange={setZoom}
+          scale={globalScale}
+          onScaleChange={setGlobalScale}
+          offsetX={offsetX}
+          onOffsetXChange={setOffsetX}
+        />
+      )}
+      {(brainZoom || cellZoom) && (
+        <button
+          className="brain-back-btn"
+          onClick={() => {
+            if (cellZoom) setCellZoom(false);
+            else setBrainZoom(false);
+          }}
+        >
           ← Back
         </button>
       )}
@@ -194,14 +220,16 @@ function App() {
 
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
 
-      <CategoryLegend />
+      {!showAnimation && <CategoryLegend />}
 
-      <ViewModeController
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-        showNerves={showNerves}
-        setShowNerves={setShowNerves}
-      />
+      {!showAnimation && (
+        <ViewModeController
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          showNerves={showNerves}
+          setShowNerves={setShowNerves}
+        />
+      )}
 
       <p className="app-copyright">© 2026 Pablo Cordero</p>
     </div>

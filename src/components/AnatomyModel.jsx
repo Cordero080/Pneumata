@@ -314,15 +314,19 @@ function AnatomyModel({
     // Sample posterior-midline vertices to auto-trace the vertebral column.
     // Female model has a different posterior profile — nudge spine z forward
     // so it doesn't protrude outside her body contour.
-    const spinePoints = femaleMode
-      ? sampleSpinePoints(scene, 24, {
-          zNudge: 0.005,
-          zNudgeTop: 0.025,
-          yMin: 0.85,
-          yMax: 1.55,
-          zMax: -0.035,
-        })
-      : MALE_SPINE_POINTS;
+    const spinePoints = sampleSpinePoints(
+      scene,
+      24,
+      femaleMode
+        ? {
+            zNudge: 0.005,
+            zNudgeTop: 0.025,
+            yMin: 0.85,
+            yMax: 1.55,
+            zMax: -0.035,
+          }
+        : {},
+    );
     if (spinePoints && onSpineExtracted) onSpineExtracted(spinePoints);
 
     // Sample anatomical landmarks for peripheral nerve routing.
@@ -524,7 +528,7 @@ function AnatomyModel({
         mat.transparent = true;
         mat.transmission = 0;
         mat.opacity = 0.45;
-        mat.metalness = 0.1;
+        mat.metalness = 0.11;
         mat.roughness = 0.12;
         mat.iridescence = 0;
         mat.depthWrite = false;

@@ -6,6 +6,7 @@ const LERP = 0.055;
 const SETTLED = 0.0008;
 
 const BRAIN_TARGET = new THREE.Vector3(0, 1.55, 0);
+const CELL_TARGET = new THREE.Vector3(0, 1.6, 0);
 
 // Slider value 0 (knob top) = viewing head, 1 (knob bottom) = viewing legs
 const PAN_Y_TOP = 1.65;
@@ -19,6 +20,8 @@ const INITIAL_CAM = { x: 0, y: 0.82, z: 2.1 };
 
 function CameraController({
   brainZoom,
+  cellZoom,
+  cellTarget,
   controlsRef,
   panY = 0.5,
   zoom = 0.33,
@@ -29,6 +32,7 @@ function CameraController({
   const panYRef = useRef(panY);
   const zoomRef = useRef(zoom);
   const zoomDirty = useRef(false);
+  const cellTargetVec = useRef(new THREE.Vector3());
 
   // Keep refs current without triggering re-renders
   panYRef.current = panY;
@@ -44,11 +48,16 @@ function CameraController({
   useEffect(() => {
     animating.current = true;
     const ctrl = controlsRef.current;
-    if (ctrl) {
-      ctrl.minDistance = brainZoom ? 0.12 : ZOOM_NEAR;
-      ctrl.maxDistance = brainZoom ? 0.6 : ZOOM_FAR;
+    if (!ctrl) return;
+    ctrl.minDistance = cellZoom ? 0.05 : brainZoom ? 0.12 : ZOOM_NEAR;
+    ctrl.maxDistance = cellZoom ? 0.35 : brainZoom ? 0.6 : ZOOM_FAR;
+    if (cellZoom) {
+      // Snap to frontal position — directly in front of brain at eye level
+      camera.position.set(0, 1.58, 0.22);
+      ctrl.target.set(0, 1.6, 0);
+      ctrl.update();
     }
-  }, [brainZoom, controlsRef]);
+  }, [brainZoom, cellZoom, controlsRef, camera]);
 
   // On reset: directly snap camera back to initial position + target.
   // This works regardless of how the user moved the camera (slider, scroll,
@@ -68,8 +77,15 @@ function CameraController({
     const ctrl = controlsRef.current;
     if (!ctrl) return;
 
-    if (brainZoom) {
-      ctrl.target.lerp(BRAIN_TARGET, LERP);
+    if (cellZoom || brainZoom) {
+      const target =
+        cellZoom && cellTarget
+          ? cellTargetVec.current.set(...cellTarget)
+          : cellZoom
+            ? CELL_TARGET
+            : BRAIN_TARGET;
+      ctrl.target.lerp(target, LERP);
+      ctrl.autoRotateSpeed = cellZoom ? 0 : 1.2;
       ctrl.update();
       if (!animating.current) return;
       if (ctrl.target.distanceTo(BRAIN_TARGET) < SETTLED) {

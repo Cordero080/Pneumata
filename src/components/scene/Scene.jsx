@@ -11,7 +11,20 @@ import NerveRoots from "../NerveRoots";
 import NerveSystem from "../spine/NerveSystem";
 import CameraController from "../CameraController";
 import BrainModel from "../brain/BrainModel";
+import CellularView from "../brain/CellularView";
 import { organs } from "../../data/organs";
+
+const CELL_ZOOM_IDS = new Set([
+  "frontal_lobe",
+  "left_hemisphere",
+  "right_hemisphere",
+  "thalamus",
+  "hippocampus",
+  "amygdala",
+  "hypothalamus",
+  "pituitary",
+  "brain_stem",
+]);
 
 const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
 const RIGHT_LUNG_POS = [0.12, 1.22, 0.05];
@@ -49,6 +62,8 @@ function Scene({
   meshMode,
   brainZoom,
   setBrainZoom,
+  cellZoom,
+  setCellZoom,
   panY,
   zoom,
   resetKey,
@@ -65,6 +80,7 @@ function Scene({
     null;
   const [spinePoints, setSpinePoints] = useState(null);
   const [bodyLandmarks, setBodyLandmarks] = useState(null);
+  const [cellTarget, setCellTarget] = useState(null);
 
   useEffect(() => {
     setSpinePoints(null);
@@ -121,8 +137,16 @@ function Scene({
         <BrainModel
           meshMode={meshMode}
           brainZoom={brainZoom}
+          cellZoom={cellZoom}
           darkMode={darkMode}
           onBrainClick={() => setBrainZoom(true)}
+        />
+
+        <CellularView
+          cellZoom={cellZoom}
+          darkMode={darkMode}
+          meshMode={meshMode}
+          onCellSelect={(pos) => setCellTarget(pos)}
         />
 
         <LungVolume
@@ -175,7 +199,10 @@ function Scene({
               femaleMode={femaleMode}
               onSelect={(o) => {
                 onSelect(o);
-                if (o.brainPosition) setBrainZoom(true);
+                if (o.brainPosition) {
+                  if (brainZoom && CELL_ZOOM_IDS.has(o.id)) setCellZoom(true);
+                  else setBrainZoom(true);
+                }
               }}
               onHover={setHoveredOrganId}
               nodeOpacity={getNodeOpacity(organ, viewMode)}
@@ -191,6 +218,7 @@ function Scene({
               hoveredCategory={activeCategory}
               onCategoryHover={handleCategoryHover}
               brainZoom={brainZoom}
+              cellZoom={cellZoom}
               darkMode={darkMode}
               previewedOrganId={previewedOrgan?.id}
               onPreview={handlePreview}
@@ -201,6 +229,8 @@ function Scene({
       </group>
       <CameraController
         brainZoom={brainZoom}
+        cellZoom={cellZoom}
+        cellTarget={cellTarget}
         controlsRef={controlsRef}
         panY={panY}
         zoom={zoom}

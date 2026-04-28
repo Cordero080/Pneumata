@@ -7,7 +7,7 @@ const BRAIN_CENTER_Y = 1.665;
 const BRAIN_Z_OFFSET = -0.015;
 const TARGET_HEIGHT = 0.165;
 
-function BrainModel({ meshMode, brainZoom, darkMode, onBrainClick }) {
+function BrainModel({ meshMode, brainZoom, cellZoom, darkMode, onBrainClick }) {
   const gltf = useGLTF("/platinum-brain.glb");
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
   // Collect original materials so we can drive their opacity each frame
@@ -54,7 +54,13 @@ function BrainModel({ meshMode, brainZoom, darkMode, onBrainClick }) {
 
     const ghostMode = meshMode === 0 || meshMode === 3;
 
-    const targetOpacity = ghostMode ? (brainZoom ? 0.88 : 0.28) : 0.0;
+    const targetOpacity = cellZoom
+      ? 0.15
+      : ghostMode
+        ? brainZoom
+          ? 0.88
+          : 0.28
+        : 0.0;
     const targetEmissive =
       darkMode && ghostMode ? (brainZoom ? 0.38 : 0.1) : 0.0;
 

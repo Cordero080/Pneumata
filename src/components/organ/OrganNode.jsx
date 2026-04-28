@@ -19,6 +19,7 @@ function OrganNode({
   breathingRef,
   viewMode,
   brainZoom,
+  cellZoom,
   darkMode,
   femaleMode,
   femalePositions,
@@ -91,7 +92,7 @@ function OrganNode({
     const t = state.clock.getElapsedTime();
     const phase = organ.position[0];
 
-    const brainFade = brainZoom && !organ.brainPosition ? 0 : 1;
+    const brainFade = cellZoom || (brainZoom && !organ.brainPosition) ? 0 : 1;
     const base = hovered ? 4 : isExternallyHighlighted ? 3.5 : 2;
     meshRef.current.material.emissiveIntensity =
       base + Math.sin(t * 3 + phase) * 0.5;
@@ -142,6 +143,7 @@ function OrganNode({
   });
 
   const handlePointerOver = (e) => {
+    if (cellZoom || (brainZoom && !organ.brainPosition)) return;
     e.stopPropagation();
     setHovered(true);
     onHover?.(organ.id);
@@ -213,6 +215,7 @@ function OrganNode({
         onPointerOut={handlePointerOut}
         onClick={(e) => {
           e.stopPropagation();
+          if (cellZoom || (brainZoom && !organ.brainPosition)) return;
           if (IS_MOBILE) {
             if (isPreview) {
               // Second tap — open modal
@@ -229,7 +232,7 @@ function OrganNode({
           }
         }}
       >
-        <sphereGeometry args={[0.04, 8, 8]} />
+        <sphereGeometry args={[0.02, 8, 8]} />
         <meshBasicMaterial
           transparent
           opacity={0}
@@ -254,17 +257,19 @@ function OrganNode({
       </mesh>
 
       {/* Label — on hover (desktop) or first tap (mobile preview) */}
-      {(hovered || isPreview) && (
-        <OrganLabel
-          organ={organ}
-          color={color}
-          darkMode={darkMode}
-          onSelect={() => {
-            onClearPreview?.();
-            onSelect(organ);
-          }}
-        />
-      )}
+      {(hovered || isPreview) &&
+        !cellZoom &&
+        !(brainZoom && !organ.brainPosition) && (
+          <OrganLabel
+            organ={organ}
+            color={color}
+            darkMode={darkMode}
+            onSelect={() => {
+              onClearPreview?.();
+              onSelect(organ);
+            }}
+          />
+        )}
     </group>
   );
 }

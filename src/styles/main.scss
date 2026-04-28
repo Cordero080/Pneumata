@@ -410,7 +410,7 @@
 .top-left-strip {
   position: fixed;
   top: 1rem;
-  left: 11.5rem;
+  left: 13rem;
   z-index: 50;
   display: flex;
   flex-direction: row;
@@ -428,7 +428,8 @@
 
   .mesh-toggle-btn,
   .reset-btn,
-  .body-toggle-btn {
+  .body-toggle-btn,
+  .anim-toggle-btn {
     position: static;
     flex-shrink: 0;
   }
@@ -448,6 +449,19 @@
 
   // Body toggle interlocks with reset
   .body-toggle-btn {
+    margin-left: -11px;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 14px) 0,
+      100% 14px,
+      100% 100%,
+      14px 100%,
+      14px 14px
+    );
+  }
+
+  // Anim toggle interlocks with body toggle
+  .anim-toggle-btn {
     margin-left: -11px;
     clip-path: polygon(
       0 0,
@@ -504,6 +518,21 @@
   }
 }
 
+.anim-toggle-btn {
+  @extend %chamfer-btn;
+  font-size: 13px;
+  padding: 9px 16px 9px 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+
+  &--active {
+    color: #e86030;
+  }
+}
+
 .app--dark .mesh-toggle-btn {
   @include v.dark-surface;
   box-shadow: none;
@@ -533,6 +562,18 @@
   color: rgba(160, 185, 220, 0.5);
   &.body-toggle-btn--active {
     color: rgba(180, 210, 255, 0.9);
+  }
+  &:hover {
+    filter: drop-shadow(0 0 8px v.$dark-glow);
+    color: rgba(220, 235, 255, 0.95);
+  }
+}
+.app--dark .anim-toggle-btn {
+  @include v.dark-surface;
+  box-shadow: none;
+  color: rgba(160, 185, 220, 0.5);
+  &.anim-toggle-btn--active {
+    color: rgba(255, 180, 120, 0.9);
   }
   &:hover {
     filter: drop-shadow(0 0 8px v.$dark-glow);
@@ -723,7 +764,8 @@
 
   .mesh-toggle-btn,
   .reset-btn,
-  .body-toggle-btn {
+  .body-toggle-btn,
+  .anim-toggle-btn {
     @include v.female-light-surface;
     color: rgba(100, 20, 65, 0.75);
     &:hover { color: rgba(60, 5, 40, 0.95); }
@@ -808,7 +850,8 @@
 
   .mesh-toggle-btn,
   .reset-btn,
-  .body-toggle-btn {
+  .body-toggle-btn,
+  .anim-toggle-btn {
     @include v.female-dark-surface;
     box-shadow: none;
     color: v.$female-text-dim;

@@ -110,7 +110,7 @@ function Vertebrae({ pts, SC }) {
       const bodyGeo = new THREE.LatheGeometry(
         [
           new THREE.Vector2(radius * 1.06, -height / 2),
-          new THREE.Vector2(radius * 0.93, -height * 0.28),
+          new THREE.Vector2(radius * .93, -height * 0.28),
           new THREE.Vector2(radius * 0.84, 0),
           new THREE.Vector2(radius * 0.93, height * 0.28),
           new THREE.Vector2(radius * 1.06, height / 2),
@@ -176,7 +176,7 @@ function Vertebrae({ pts, SC }) {
 
             {/* Spinous process */}
             <mesh position={spinousCenter} quaternion={spinousQuat}>
-              <cylinderGeometry args={[0.003, 0.005, spinousLen, 6]} />
+              <cylinderGeometry args={[0.003, 0.001, spinousLen, 6]} />
               <meshBasicMaterial
                 color={SC.bone}
                 transparent
