@@ -54,7 +54,7 @@ const CELL_NODES = [
   },
 ];
 
-function CellMesh({ path, targetHeight, posX, posY, posZ, color, cellZoom }) {
+function CellMesh({ path, targetHeight, posX, posY, posZ, color, emissive, emissiveIntensity = 0.4, cellZoom }) {
   const gltf = useGLTF(path);
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
   const matsRef = useRef([]);
@@ -80,11 +80,12 @@ function CellMesh({ path, targetHeight, posX, posY, posZ, color, cellZoom }) {
       -center.z * s + posZ,
     );
 
-    const mat = new THREE.MeshPhysicalMaterial({
+    const mat = new THREE.MeshPhongMaterial({
       color,
-      metalness: 0.9,
-      roughness: 0.1,
-      clearcoat: 1.0,
+      emissive: emissive ?? color,
+      emissiveIntensity: emissiveIntensity * 0.5,
+      specular: "#ffffff",
+      shininess: 120,
       transparent: true,
       opacity: 0,
       depthWrite: false,
@@ -95,9 +96,10 @@ function CellMesh({ path, targetHeight, posX, posY, posZ, color, cellZoom }) {
         child.renderOrder = 5;
       }
     });
+    mat.needsUpdate = true;
     matsRef.current = [mat];
     return () => mat.dispose();
-  }, [scene, targetHeight, posX, posY, posZ, color]);
+  }, [scene, targetHeight, posX, posY, posZ, color, emissive, emissiveIntensity]);
 
   useFrame(() => {
     const target = cellZoomRef.current ? 0.9 : 0.0;
@@ -223,6 +225,8 @@ function CellularView({ cellZoom, darkMode, meshMode, onCellSelect }) {
         posY={1.64}
         posZ={0.01}
         color="#88b4d8"
+        emissive="#4488cc"
+        emissiveIntensity={0.6}
         cellZoom={cellZoom}
       />
       <CellMesh
@@ -232,6 +236,8 @@ function CellularView({ cellZoom, darkMode, meshMode, onCellSelect }) {
         posY={1.62}
         posZ={-0.01}
         color="#6aa8cc"
+        emissive="#3380aa"
+        emissiveIntensity={0.5}
         cellZoom={cellZoom}
       />
       <CellMesh
@@ -240,7 +246,9 @@ function CellularView({ cellZoom, darkMode, meshMode, onCellSelect }) {
         posX={0}
         posY={1.645}
         posZ={0.005}
-        color="#c8a090"
+        color="#ffe080"
+        emissive="#ffaa00"
+        emissiveIntensity={1.2}
         cellZoom={cellZoom}
       />
       {CELL_NODES.map((node) => (
