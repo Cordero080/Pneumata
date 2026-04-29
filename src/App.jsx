@@ -38,6 +38,7 @@ function App() {
   const [offsetX, setOffsetX] = useState(DEFAULTS.offsetX);
   const [offsetY, setOffsetY] = useState(DEFAULTS.offsetY);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [viewPanelOpen, setViewPanelOpen] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const handleReset = () => {
     setPanY(DEFAULTS.panY);
@@ -167,26 +168,35 @@ function App() {
       {showAnimation ? (
         <AnimatedScene darkMode={darkMode} meshMode={meshMode} />
       ) : (
-        <Scene
-          globalScale={globalScale}
-          offsetX={offsetX}
-          offsetY={offsetY}
-          onSelect={setSelectedOrgan}
-          selectedOrgan={selectedOrgan}
-          viewMode={viewMode}
-          showNerves={showNerves}
-          darkMode={darkMode}
-          meshMode={meshMode}
-          brainZoom={brainZoom}
-          setBrainZoom={setBrainZoom}
-          cellZoom={cellZoom}
-          setCellZoom={setCellZoom}
-          panY={panY}
-          zoom={zoom}
-          resetKey={resetKey}
-          modelPath={modelPath}
-          femaleMode={bodyModel === "female"}
-        />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            transform: viewPanelOpen ? "translateY(0)" : "translateY(2%)",
+            transition: "transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+          <Scene
+            globalScale={globalScale}
+            offsetX={offsetX}
+            offsetY={offsetY}
+            onSelect={setSelectedOrgan}
+            selectedOrgan={selectedOrgan}
+            viewMode={viewMode}
+            showNerves={showNerves}
+            darkMode={darkMode}
+            meshMode={meshMode}
+            brainZoom={brainZoom}
+            setBrainZoom={setBrainZoom}
+            cellZoom={cellZoom}
+            setCellZoom={setCellZoom}
+            panY={panY}
+            zoom={zoom}
+            resetKey={resetKey}
+            modelPath={modelPath}
+            femaleMode={bodyModel === "female"}
+          />
+        </div>
       )}
 
       {!showAnimation && (
@@ -228,6 +238,8 @@ function App() {
           setViewMode={setViewMode}
           showNerves={showNerves}
           setShowNerves={setShowNerves}
+          open={viewPanelOpen}
+          onToggle={setViewPanelOpen}
         />
       )}
 

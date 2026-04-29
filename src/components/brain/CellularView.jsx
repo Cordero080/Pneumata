@@ -54,7 +54,17 @@ const CELL_NODES = [
   },
 ];
 
-function CellMesh({ path, targetHeight, posX, posY, posZ, color, emissive, emissiveIntensity = 0.4, cellZoom }) {
+function CellMesh({
+  path,
+  targetHeight,
+  posX,
+  posY,
+  posZ,
+  color,
+  emissive,
+  emissiveIntensity = 0.4,
+  cellZoom,
+}) {
   const gltf = useGLTF(path);
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
   const matsRef = useRef([]);
@@ -83,9 +93,10 @@ function CellMesh({ path, targetHeight, posX, posY, posZ, color, emissive, emiss
     const mat = new THREE.MeshPhongMaterial({
       color,
       emissive: emissive ?? color,
-      emissiveIntensity: emissiveIntensity * 0.5,
+      emissiveIntensity,
       specular: "#ffffff",
       shininess: 120,
+      toneMapped: false,
       transparent: true,
       opacity: 0,
       depthWrite: false,
@@ -99,7 +110,16 @@ function CellMesh({ path, targetHeight, posX, posY, posZ, color, emissive, emiss
     mat.needsUpdate = true;
     matsRef.current = [mat];
     return () => mat.dispose();
-  }, [scene, targetHeight, posX, posY, posZ, color, emissive, emissiveIntensity]);
+  }, [
+    scene,
+    targetHeight,
+    posX,
+    posY,
+    posZ,
+    color,
+    emissive,
+    emissiveIntensity,
+  ]);
 
   useFrame(() => {
     const target = cellZoomRef.current ? 0.9 : 0.0;

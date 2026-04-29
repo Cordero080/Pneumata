@@ -275,6 +275,14 @@
       filter: drop-shadow(0 0 8px v.$dark-glow);
     }
   }
+
+  .view-controller-tab {
+    background: rgba(20, 30, 50, 0.55);
+    border-top-color: rgba(100, 150, 220, 0.2);
+    &:hover { background: rgba(30, 45, 75, 0.75); }
+    &__arrow { color: v.$dark-text-dim; }
+    &:hover &__arrow { color: v.$dark-text; filter: drop-shadow(0 0 6px v.$dark-glow); }
+  }
 }
 
 // === Category Legend ===
@@ -437,6 +445,7 @@
   // Reset interlocks with mesh
   .reset-btn {
     margin-left: -11px;
+    padding-left: 24px;
     clip-path: polygon(
       0 0,
       calc(100% - 14px) 0,
@@ -450,6 +459,7 @@
   // Body toggle interlocks with reset
   .body-toggle-btn {
     margin-left: -11px;
+    padding-left: 24px;
     clip-path: polygon(
       0 0,
       calc(100% - 14px) 0,
@@ -463,6 +473,7 @@
   // Anim toggle interlocks with body toggle
   .anim-toggle-btn {
     margin-left: -11px;
+    padding-left: 24px;
     clip-path: polygon(
       0 0,
       calc(100% - 14px) 0,
@@ -478,8 +489,8 @@
 
 .mesh-toggle-btn {
   @extend %chamfer-btn;
-  font-size: 16px;
-  padding: 9px 18px;
+  font-size: 13px;
+  padding: 6px 14px;
   color: rgba(55, 72, 88, 0.55);
   // 14px chamfer matches the notch on reset
   clip-path: polygon(
@@ -494,24 +505,24 @@
 
 .reset-btn {
   @extend %chamfer-btn;
-  font-size: 20px;
-  padding: 9px 16px 9px 24px;
+  font-size: 16px;
+  padding: 6px 12px 6px 20px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 52px;
+  min-width: 42px;
 }
 
 .body-toggle-btn {
   @extend %chamfer-btn;
-  font-size: 16px;
-  padding: 9px 16px 9px 24px;
+  font-size: 13px;
+  padding: 6px 12px 6px 20px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 48px;
+  min-width: 38px;
 
   &--active {
     color: #5a8fd0;
@@ -520,8 +531,8 @@
 
 .anim-toggle-btn {
   @extend %chamfer-btn;
-  font-size: 13px;
-  padding: 9px 16px 9px 24px;
+  font-size: 11px;
+  padding: 6px 12px 6px 20px;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -647,14 +658,92 @@
 
 // === View Mode Controller ===
 
+@keyframes arrow-pulse {
+  0%, 100% { color: rgba(70, 80, 95, 0.7); text-shadow: none; }
+  50%       { color: rgba(255, 255, 255, 1); text-shadow: 0 0 16px rgba(255, 255, 255, 0.9), 0 0 28px rgba(200, 220, 255, 0.5); }
+}
+
 .view-controller {
   position: fixed;
-  bottom: 0.25rem;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0;
+  flex-direction: column;
+  align-items: center;
   z-index: 50;
+}
+
+.view-controller-panel {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  display: flex;
+  gap: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    visibility 0.35s,
+    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+
+  .view-controller--open & {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+}
+
+.view-controller-tab {
+  width: 52px;
+  height: 14px;
+  background: rgba(200, 210, 222, 0.38);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.75);
+  border-right: 2px solid rgba(0, 0, 0, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% 100%,
+    0 100%,
+    0 8px
+  );
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(200, 210, 222, 0.62);
+  }
+
+  &__arrow {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1;
+    margin-bottom: 4px;
+    animation: arrow-pulse 2s ease-in-out infinite;
+    transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+
+    .view-controller--open & {
+      transform: rotate(180deg);
+      animation: none;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    .view-controller-tab:hover & {
+      animation: none;
+      text-shadow: 0 0 16px rgba(255, 255, 255, 1), 0 0 30px rgba(200, 220, 255, 0.7);
+    }
+  }
 }
 
 .view-btn {
@@ -663,7 +752,7 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 10px 22px;
+  padding: 5px 16px;
   border-left: none;
   border-top: 2px solid rgba(255, 255, 255, 0.35);
   border-right: 3px solid rgba(0, 0, 0, 0.18);
@@ -695,6 +784,7 @@
 
   &:not(:first-child) {
     margin-left: -11px;
+    padding-left: 24px;
     clip-path: polygon(
       0 0,
       calc(100% - 14px) 0,
@@ -793,10 +883,17 @@
   }
 
   .vertical-controls {
-    @include v.female-light-surface;
-    box-shadow:
-      0 2px 12px rgba(100, 0, 60, 0.1),
-      inset 0 1px 0 rgba(255, 220, 240, 0.8);
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  .vcontrols-tab {
+    background: rgba(220, 180, 210, 0.38);
+    border-top-color: rgba(255, 200, 240, 0.4);
+    &:hover { background: rgba(220, 160, 200, 0.6); }
+    &__arrow { color: rgba(140, 50, 100, 0.6); }
   }
 
   .vcontrols-reset {
@@ -888,9 +985,19 @@
   .legend-tag { background: rgba(80, 5, 55, 0.65); }
 
   .vertical-controls {
-    @include v.female-dark-surface;
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     box-shadow: none;
-    filter: drop-shadow(0 0 0.5px rgba(255, 80, 180, 0.25));
+    filter: none;
+  }
+
+  .vcontrols-tab {
+    background: rgba(60, 15, 45, 0.55);
+    border-top-color: rgba(220, 80, 160, 0.2);
+    &:hover { background: rgba(80, 20, 60, 0.75); }
+    &__arrow { color: v.$female-text-dim; }
+    &:hover &__arrow { color: v.$female-text; filter: drop-shadow(0 0 6px v.$female-glow); }
   }
 
   .vcontrols-reset {

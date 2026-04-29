@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 // Scale: slider 0 (top) = small, 1 (bottom) = large → globalScale 0.5..1.5
 export const SCALE_MIN = 0.5;
@@ -20,7 +20,7 @@ export function sliderToX(v) {
   return X_MIN + v * (X_MAX - X_MIN);
 }
 
-function VSlider({ label, value, onChange }) {
+function VSlider({ label, labelStyle, value, onChange }) {
   const trackRef = useRef();
   const dragging = useRef(false);
 
@@ -32,7 +32,9 @@ function VSlider({ label, value, onChange }) {
 
   return (
     <div className="vslider">
-      <span className="vslider__label">{label}</span>
+      <span className="vslider__label" style={labelStyle}>
+        {label}
+      </span>
       <div
         ref={trackRef}
         className="vslider__track"
@@ -66,20 +68,38 @@ function VerticalControls({
   offsetX,
   onOffsetXChange,
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className="vertical-controls">
-      <VSlider
-        label="SIZE"
-        value={scaleToSlider(scale)}
-        onChange={(v) => onScaleChange(sliderToScale(v))}
-      />
-      <VSlider
-        label="X"
-        value={xToSlider(offsetX)}
-        onChange={(v) => onOffsetXChange(sliderToX(v))}
-      />
-      <VSlider label="PAN" value={panY} onChange={onPanChange} />
-      <VSlider label="ZOOM" value={zoom} onChange={onZoomChange} />
+    <div
+      className={`vcontrols-wrapper${open ? " vcontrols-wrapper--open" : ""}`}
+    >
+      <div className="vertical-controls">
+        <VSlider
+          label="SIZE"
+          value={scaleToSlider(scale)}
+          onChange={(v) => onScaleChange(sliderToScale(v))}
+        />
+        <VSlider
+          label="X"
+          value={xToSlider(offsetX)}
+          onChange={(v) => onOffsetXChange(sliderToX(v))}
+        />
+        <VSlider label="PAN" value={panY} onChange={onPanChange} />
+        <VSlider
+          label="+"
+          labelStyle={{ fontSize: "18px", letterSpacing: 0, marginLeft: "2px" }}
+          value={zoom}
+          onChange={onZoomChange}
+        />
+      </div>
+      <button
+        className="vcontrols-tab"
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Toggle controls"
+      >
+        <span className="vcontrols-tab__arrow">‹</span>
+      </button>
     </div>
   );
 }
