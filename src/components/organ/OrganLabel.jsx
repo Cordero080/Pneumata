@@ -31,6 +31,8 @@ function OrganLabel({ organ, color, darkMode, onSelect }) {
   return (
     <Html
       center
+      portal={{ current: document.body }}
+      zIndexRange={[9999, 9999]}
       style={{ pointerEvents: "none", userSelect: "none", overflow: "visible" }}
     >
       <div
