@@ -734,7 +734,7 @@
     transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
 
     .view-controller--open & {
-      transform: rotate(180deg);
+      transform: rotate(180deg) translateY(-3px);
       animation: none;
       text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
     }
