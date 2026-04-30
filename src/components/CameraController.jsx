@@ -18,6 +18,8 @@ const ZOOM_FAR = 4.0;
 
 const INITIAL_CAM = { x: 0, y: 0.82, z: 2.1 };
 
+const TORSO_FOCUS_DIST = 1.45;
+
 function CameraController({
   brainZoom,
   cellZoom,
@@ -26,6 +28,8 @@ function CameraController({
   panY = 0.5,
   zoom = 0.33,
   resetKey = 0,
+  organFocusY = null,
+  viewPanelOpen = false,
 }) {
   const { camera } = useThree();
   const animating = useRef(false);
@@ -100,12 +104,25 @@ function CameraController({
       return;
     }
 
-    // Pan — always apply so slider owns vertical position
-    const targetY = PAN_Y_TOP - panYRef.current * (PAN_Y_TOP - PAN_Y_BOTTOM);
+    // Pan — focus on selected organ or use slider; shift down when panel hidden
+    const panelOffset = viewPanelOpen ? 0 : 0.04;
+    const targetY =
+      organFocusY !== null
+        ? organFocusY
+        : PAN_Y_TOP -
+          panYRef.current * (PAN_Y_TOP - PAN_Y_BOTTOM) +
+          panelOffset;
     ctrl.target.y += (targetY - ctrl.target.y) * LERP;
 
-    // Zoom — only apply while dirty; scroll wheel works freely otherwise
-    if (zoomDirty.current) {
+    // Zoom — pull toward organ focus distance, or use slider
+    if (organFocusY !== null) {
+      const currentDist = camera.position.distanceTo(ctrl.target);
+      if (Math.abs(currentDist - TORSO_FOCUS_DIST) > 0.01) {
+        const dir = camera.position.clone().sub(ctrl.target).normalize();
+        const newDist = currentDist + (TORSO_FOCUS_DIST - currentDist) * LERP;
+        camera.position.copy(ctrl.target).addScaledVector(dir, newDist);
+      }
+    } else if (zoomDirty.current) {
       const targetDist = ZOOM_NEAR + zoomRef.current * (ZOOM_FAR - ZOOM_NEAR);
       const currentDist = camera.position.distanceTo(ctrl.target);
       if (Math.abs(currentDist - targetDist) < 0.015) {

@@ -22,6 +22,7 @@ const DEFAULTS = IS_MOBILE
 
 function App() {
   const [selectedOrgan, setSelectedOrgan] = useState(null);
+  const [organFocusY, setOrganFocusY] = useState(null);
   const [viewMode, setViewMode] = useState("logic");
   const [showNerves, setShowNerves] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
@@ -168,35 +169,35 @@ function App() {
       {showAnimation ? (
         <AnimatedScene darkMode={darkMode} meshMode={meshMode} />
       ) : (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            transform: viewPanelOpen ? "translateY(0)" : "translateY(2%)",
-            transition: "transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)",
+        <Scene
+          globalScale={globalScale}
+          offsetX={offsetX}
+          offsetY={offsetY}
+          onSelect={(organ) => {
+            setSelectedOrgan(organ);
+            if (organ && !organ.brainPosition && organ.type !== "line") {
+              setOrganFocusY(organ.position[1] * globalScale + offsetY);
+            } else {
+              setOrganFocusY(null);
+            }
           }}
-        >
-          <Scene
-            globalScale={globalScale}
-            offsetX={offsetX}
-            offsetY={offsetY}
-            onSelect={setSelectedOrgan}
-            selectedOrgan={selectedOrgan}
-            viewMode={viewMode}
-            showNerves={showNerves}
-            darkMode={darkMode}
-            meshMode={meshMode}
-            brainZoom={brainZoom}
-            setBrainZoom={setBrainZoom}
-            cellZoom={cellZoom}
-            setCellZoom={setCellZoom}
-            panY={panY}
-            zoom={zoom}
-            resetKey={resetKey}
-            modelPath={modelPath}
-            femaleMode={bodyModel === "female"}
-          />
-        </div>
+          selectedOrgan={selectedOrgan}
+          viewMode={viewMode}
+          showNerves={showNerves}
+          darkMode={darkMode}
+          meshMode={meshMode}
+          brainZoom={brainZoom}
+          setBrainZoom={setBrainZoom}
+          cellZoom={cellZoom}
+          setCellZoom={setCellZoom}
+          panY={panY}
+          zoom={zoom}
+          resetKey={resetKey}
+          modelPath={modelPath}
+          femaleMode={bodyModel === "female"}
+          organFocusY={organFocusY}
+          viewPanelOpen={viewPanelOpen}
+        />
       )}
 
       {!showAnimation && (
@@ -217,6 +218,7 @@ function App() {
           onClick={() => {
             if (cellZoom) setCellZoom(false);
             else setBrainZoom(false);
+            handleReset();
           }}
         >
           ← Back
@@ -225,7 +227,10 @@ function App() {
 
       <GlassModal
         organ={selectedOrgan}
-        onClose={() => setSelectedOrgan(null)}
+        onClose={() => {
+          setSelectedOrgan(null);
+          setOrganFocusY(null);
+        }}
       />
 
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}

@@ -69,6 +69,8 @@ function Scene({
   resetKey,
   modelPath,
   femaleMode,
+  organFocusY,
+  viewPanelOpen,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -235,6 +237,8 @@ function Scene({
         panY={panY}
         zoom={zoom}
         resetKey={resetKey}
+        organFocusY={organFocusY}
+        viewPanelOpen={viewPanelOpen}
       />
       <OrbitControls
         ref={controlsRef}
