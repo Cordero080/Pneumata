@@ -52,9 +52,13 @@ function CameraController({
     ctrl.minDistance = cellZoom ? 0.05 : brainZoom ? 0.12 : ZOOM_NEAR;
     ctrl.maxDistance = cellZoom ? 0.35 : brainZoom ? 0.6 : ZOOM_FAR;
     if (cellZoom) {
-      // Snap to frontal position — directly in front of brain at eye level
       camera.position.set(0, 1.58, 0.22);
       ctrl.target.set(0, 1.6, 0);
+      ctrl.update();
+    } else if (brainZoom) {
+      // Snap to frontal position — directly in front of brain at eye level
+      camera.position.set(0, 1.62, 0.55);
+      ctrl.target.set(0, 1.55, 0);
       ctrl.update();
     }
   }, [brainZoom, cellZoom, controlsRef, camera]);
