@@ -1,8 +1,5 @@
-import {
-  CATEGORIES as _BASE,
-  CATEGORY_COLORS,
-  darkenForLight,
-} from "../data/categories";
+import { CATEGORIES as _BASE, CATEGORY_COLORS } from "../../data/categories";
+import "./CategoryLegend.scss";
 
 // Merge colors into the shared CATEGORIES array for rendering
 const CATEGORIES = _BASE.map((c) => ({ ...c, color: CATEGORY_COLORS[c.key] }));

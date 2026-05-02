@@ -1,11 +1,12 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import "./App.scss";
 import Scene from "./components/scene/Scene";
 import AnimatedScene from "./components/scene/AnimatedScene";
-import GlassModal from "./components/GlassModal";
-import AboutModal from "./components/AboutModal";
-import CategoryLegend from "./components/CategoryLegend";
-import ViewModeController from "./components/ViewModeController";
-import VerticalControls from "./components/VerticalControls";
+import GlassModal from "./components/modal/GlassModal";
+import AboutModal from "./components/about/AboutModal";
+import CategoryLegend from "./components/legend/CategoryLegend";
+import ViewModeController from "./components/view-controller/ViewModeController";
+import VerticalControls from "./components/controls/VerticalControls";
 
 // Defaults differ by device and display context
 const IS_MOBILE = window.innerWidth <= 768;

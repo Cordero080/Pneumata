@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import "./ViewModeController.scss";
 
 const MODES = [
   { key: "logic", label: "Logic", color: "#ffd700" },

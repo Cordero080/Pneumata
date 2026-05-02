@@ -1,4 +1,4 @@
-@use "variables" as v;
+@use '../../styles/variables' as v;
 
 .vcontrols-wrapper {
   position: relative;
@@ -176,7 +176,6 @@
 
   .vslider__track:hover & {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.22), 0 0 8px rgba(80, 140, 220, 0.35);
-
   }
 }
 

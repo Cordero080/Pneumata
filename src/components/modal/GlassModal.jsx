@@ -1,3 +1,5 @@
+import "./GlassModal.scss";
+
 function GlassModal({ organ, onClose }) {
   if (!organ) return null;
 

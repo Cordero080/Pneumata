@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import "./VerticalControls.scss";
 
 export const X_MIN = -0.3;
 export const X_MAX = 0.3;
