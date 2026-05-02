@@ -153,6 +153,19 @@ function App() {
         >
           {showAnimation ? "✕" : "▶"}
         </button>
+      </div>
+
+      {/* About + Adjust — top-right stack */}
+      <div className="top-right-stack">
+        <button
+          ref={aboutRef}
+          className="about-btn"
+          onClick={() => setShowAbout(true)}
+          onMouseMove={handleTilt}
+          onMouseLeave={resetTilt}
+        >
+          About
+        </button>
         {!showAnimation && (
           <VerticalControls
             panY={panY}
@@ -166,17 +179,6 @@ function App() {
           />
         )}
       </div>
-
-      {/* About — top-right, used infrequently */}
-      <button
-        ref={aboutRef}
-        className="about-btn"
-        onClick={() => setShowAbout(true)}
-        onMouseMove={handleTilt}
-        onMouseLeave={resetTilt}
-      >
-        About
-      </button>
 
       {showAnimation ? (
         <AnimatedScene darkMode={darkMode} meshMode={meshMode} />

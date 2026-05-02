@@ -24,8 +24,7 @@ function HSlider({ label, value, onChange }) {
 
   const updateFromPointer = (e) => {
     const rect = trackRef.current.getBoundingClientRect();
-    const raw = (e.clientX - rect.left) / rect.width;
-    onChange(Math.max(0, Math.min(1, raw)));
+    onChange(Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)));
   };
 
   return (
@@ -44,6 +43,9 @@ function HSlider({ label, value, onChange }) {
           if (dragging.current) updateFromPointer(e);
         }}
         onPointerUp={() => {
+          dragging.current = false;
+        }}
+        onPointerCancel={() => {
           dragging.current = false;
         }}
       >
