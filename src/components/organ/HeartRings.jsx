@@ -2,72 +2,62 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+const RINGS = [
+  { rotation: [0, 0, 0], color: "#ff0000" },
+  { rotation: [Math.PI / 3, 0, 0], color: "#ff1111" },
+  { rotation: [Math.PI / 2, 0, 0], color: "#ff2222" },
+  { rotation: [Math.PI / 6, Math.PI / 4, 0], color: "#ff0808" },
+];
+
 function HeartRings({ pulseRef, nodeOpacity }) {
-  const ring1Ref = useRef();
-  const ring2Ref = useRef();
-  const ring3Ref = useRef();
-  const ringStates = useRef([
-    { scale: 0, opacity: 0 },
-    { scale: 0, opacity: 0 },
-    { scale: 0, opacity: 0 },
-  ]);
+  const refs = useRef([]);
+  const states = useRef(
+    RINGS.map((_, i) => ({ scale: 0, opacity: 0, delay: i * 0.12 })),
+  );
   const lastBeatCount = useRef(0);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (pulseRef.current !== lastBeatCount.current) {
       lastBeatCount.current = pulseRef.current;
-      ringStates.current[0] = { scale: 1.0, opacity: 0.9 };
-      ringStates.current[1] = { scale: 0.5, opacity: 0.75 };
-      ringStates.current[2] = { scale: 0.1, opacity: 0.6 };
+      states.current.forEach((s, i) => {
+        s.scale = 1.0;
+        s.opacity = 0.95;
+        s.delay = i * 0.12;
+      });
     }
-    [ring1Ref, ring2Ref, ring3Ref].forEach((ref, i) => {
-      if (!ref.current) return;
-      const rs = ringStates.current[i];
-      rs.scale += 0.08;
-      rs.opacity *= 0.945;
-      ref.current.scale.setScalar(rs.scale);
-      ref.current.material.opacity = rs.opacity * nodeOpacity;
+
+    states.current.forEach((s, i) => {
+      if (!refs.current[i]) return;
+      s.delay -= delta;
+      if (s.delay > 0) return;
+      s.scale += 0.1;
+      s.opacity *= 0.94;
+      refs.current[i].scale.setScalar(s.scale);
+      refs.current[i].material.opacity = s.opacity * nodeOpacity;
     });
   });
 
   return (
     <>
-      <mesh ref={ring1Ref} renderOrder={4}>
-        <ringGeometry args={[0.013, 0.022, 48]} />
-        <meshBasicMaterial
-          color="#ff3131"
-          transparent
-          opacity={0}
-          depthWrite={false}
-          depthTest={false}
-          toneMapped={false}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      <mesh ref={ring2Ref} rotation={[Math.PI / 3, 0, 0]} renderOrder={4}>
-        <ringGeometry args={[0.013, 0.022, 48]} />
-        <meshBasicMaterial
-          color="#ff6060"
-          transparent
-          opacity={0}
-          depthWrite={false}
-          depthTest={false}
-          toneMapped={false}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      <mesh ref={ring3Ref} rotation={[Math.PI / 2, 0, 0]} renderOrder={4}>
-        <ringGeometry args={[0.013, 0.022, 48]} />
-        <meshBasicMaterial
-          color="#ff9090"
-          transparent
-          opacity={0}
-          depthWrite={false}
-          depthTest={false}
-          toneMapped={false}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {RINGS.map(({ rotation, color }, i) => (
+        <mesh
+          key={i}
+          ref={(el) => (refs.current[i] = el)}
+          rotation={rotation}
+          renderOrder={4}
+        >
+          <ringGeometry args={[0.015, 0.019, 56]} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={0}
+            depthWrite={false}
+            depthTest={false}
+            toneMapped={false}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      ))}
     </>
   );
 }

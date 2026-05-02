@@ -105,7 +105,7 @@ function CameraController({
     }
 
     // Pan — focus on selected organ or use slider; shift down when panel hidden
-    const panelOffset = viewPanelOpen ? 0 : 0.04;
+    const panelOffset = viewPanelOpen ? 0.06 : 0.07;
     const targetY =
       organFocusY !== null
         ? organFocusY

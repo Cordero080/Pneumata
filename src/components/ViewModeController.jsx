@@ -1,3 +1,5 @@
+import { useRef, useEffect, useState } from "react";
+
 const MODES = [
   { key: "logic", label: "Logic", color: "#ffd700" },
   { key: "power", label: "Power", color: "#ff3131" },
@@ -13,9 +15,24 @@ function ViewModeController({
   open,
   onToggle,
 }) {
+  const panelRef = useRef();
+  const [panelW, setPanelW] = useState(null);
+
+  useEffect(() => {
+    if (open && panelRef.current) {
+      setPanelW(panelRef.current.scrollWidth);
+    } else {
+      const t = setTimeout(() => setPanelW(null), 400);
+      return () => clearTimeout(t);
+    }
+  }, [open]);
+
   return (
-    <div className={`view-controller${open ? " view-controller--open" : ""}`}>
-      <div className="view-controller-panel">
+    <div
+      className={`view-controller${open ? " view-controller--open" : ""}`}
+      style={panelW ? { width: panelW } : undefined}
+    >
+      <div className="view-controller-panel" ref={panelRef}>
         {MODES.map(({ key, label, color }) => {
           const active = viewMode === key;
           return (

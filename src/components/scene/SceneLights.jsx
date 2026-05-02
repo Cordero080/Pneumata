@@ -1,6 +1,7 @@
 import { Environment } from "@react-three/drei";
 
 // Warm studio — light mode default and dark mode silver states (4, 5)
+// ✏️ LIGHT MODE — warm studio lighting — edit colors/intensities here
 function StudioLights() {
   return (
     <>
@@ -16,6 +17,7 @@ function StudioLights() {
 }
 
 // Neon — dark mode obsidian states (0, 1, 2)
+// ✏️ OBSIDIAN DARK MODES (meshMode 0–2) — edit colors/intensities here
 function NeonLights() {
   return (
     <>
@@ -28,6 +30,7 @@ function NeonLights() {
 }
 
 // White ghost — mode 3 in both dark and light
+// ✏️ WHITE GHOST mode (meshMode 3) lighting
 function WhiteGhostLights() {
   return (
     <>
@@ -42,6 +45,7 @@ function WhiteGhostLights() {
 }
 
 // Nebula — female mode
+// ✏️ FEMALE MODE accent lighting — pink/purple nebula glow
 function NebulaLights() {
   return (
     <>

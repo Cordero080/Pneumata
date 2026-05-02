@@ -76,6 +76,18 @@ function buildCurve(nerve, spinePoints, bodyLandmarks, xSign) {
     if (lm) pts.push(new THREE.Vector3(...lm));
   }
 
+  // No landmark data — only extend laterally for thoracic nerves (intercostals etc.)
+  // Cervical nerves like phrenic descend medially and shouldn't get a lateral stub.
+  if (pts.length === 1) {
+    const avgIdx = nerve.spinalLevels
+      .map((l) => LEVEL_TO_INDEX[l])
+      .filter((i) => i !== undefined)
+      .reduce((s, i, _, a) => s + i / a.length, 0);
+    if (avgIdx >= 6) {
+      const exit = pts[0];
+      pts.push(new THREE.Vector3(exit.x + xSign * 0.14, exit.y, exit.z + 0.04));
+    }
+  }
   if (pts.length < 2) return null;
   // tension 0.9 = very tight, stays close to control points, minimal overshoot
   return new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.9);
@@ -133,7 +145,7 @@ export default function NerveSystem({
     for (const nerve of nerves) {
       const curves = allCurves[nerve.id];
       if (!curves?.length) continue;
-      if (!nerve.viewModes.includes(viewMode)) continue;
+      // Animate pulses for all nerves — NET shows everything regardless of viewMode
 
       if (pulseT.current[nerve.id] === undefined) {
         // Stagger start positions so pulses don't all fire simultaneously
@@ -160,14 +172,11 @@ export default function NerveSystem({
         const curves = allCurves[nerve.id];
         if (!curves?.length) return [];
 
-        // NET view uses gold for all nerves so they read as a unified neural network.
-        // Category colors are still used for the pulse dots.
         const categoryColor = CATEGORY_COLORS[nerve.category] ?? "#aaaaaa";
-        const color = "#ffd700";
-        const inMode = nerve.viewModes.includes(viewMode);
+        const color = categoryColor;
         const catMatch = !hoveredCategory || hoveredCategory === nerve.category;
-        const opacity = inMode && catMatch ? 0.88 : catMatch ? 0.3 : 0.06;
-        const width = inMode && catMatch ? 2.5 : 0.6;
+        const opacity = catMatch ? 0.85 : 0.06;
+        const width = catMatch ? 2.2 : 0.5;
 
         return curves.map((curve, ci) => {
           const points = curve.getPoints(CURVE_SAMPLES);
@@ -180,24 +189,22 @@ export default function NerveSystem({
                 opacity={opacity}
                 transparent
               />
-              {/* Traveling signal pulses — only rendered when view mode is active */}
-              {inMode &&
-                Array.from({ length: nerve.pulseCount }, (_, pi) => (
-                  <mesh
-                    key={pi}
-                    ref={(el) => {
-                      if (el) pulseRefs.current[`${nerve.id}_${ci}_${pi}`] = el;
-                    }}
-                  >
-                    <sphereGeometry args={[0.0038, 6, 6]} />
-                    <meshBasicMaterial
-                      color={color}
-                      transparent
-                      opacity={catMatch ? 0.95 : 0.3}
-                      toneMapped={false}
-                    />
-                  </mesh>
-                ))}
+              {Array.from({ length: nerve.pulseCount }, (_, pi) => (
+                <mesh
+                  key={pi}
+                  ref={(el) => {
+                    if (el) pulseRefs.current[`${nerve.id}_${ci}_${pi}`] = el;
+                  }}
+                >
+                  <sphereGeometry args={[0.0038, 6, 6]} />
+                  <meshBasicMaterial
+                    color={color}
+                    transparent
+                    opacity={catMatch ? 0.95 : 0.3}
+                    toneMapped={false}
+                  />
+                </mesh>
+              ))}
             </group>
           );
         });

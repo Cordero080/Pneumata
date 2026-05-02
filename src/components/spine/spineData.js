@@ -101,7 +101,7 @@ export const DISC_STYLES = {
 // z = forward/back depth — less negative = closer to viewer/forward, more negative = further back
 // Brain stem sits at z = -0.052 — top disc should be near this value to connect underneath it
 export const MALE_SPINE_POINTS = [
-  [0, 1.580, -0.035], // C2 — top disc, sits just below brain stem (z ≈ brain stem z)
+  [0, 1.58, -0.035], // C2 — top disc, sits just below brain stem (z ≈ brain stem z)
   [0, 1.554, -0.01], // C3 — nudge z to curve neck
   [0, 1.523, -0.035], // C4 — cervical curve continues back
   [0, 1.493, -0.033], // C5

@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 
-// Scale: slider 0 (top) = small, 1 (bottom) = large → globalScale 0.5..1.5
 export const SCALE_MIN = 0.5;
 export const SCALE_MAX = 1.5;
 export function scaleToSlider(s) {
@@ -10,7 +9,6 @@ export function sliderToScale(v) {
   return SCALE_MIN + v * (SCALE_MAX - SCALE_MIN);
 }
 
-// X offset: slider 0 (top) = left, 1 (bottom) = right → offsetX -0.3..0.3
 export const X_MIN = -0.3;
 export const X_MAX = 0.3;
 export function xToSlider(x) {
@@ -20,24 +18,22 @@ export function sliderToX(v) {
   return X_MIN + v * (X_MAX - X_MIN);
 }
 
-function VSlider({ label, labelStyle, value, onChange }) {
+function HSlider({ label, value, onChange }) {
   const trackRef = useRef();
   const dragging = useRef(false);
 
   const updateFromPointer = (e) => {
     const rect = trackRef.current.getBoundingClientRect();
-    const raw = (e.clientY - rect.top) / rect.height;
+    const raw = (e.clientX - rect.left) / rect.width;
     onChange(Math.max(0, Math.min(1, raw)));
   };
 
   return (
-    <div className="vslider">
-      <span className="vslider__label" style={labelStyle}>
-        {label}
-      </span>
+    <div className="hslider">
+      <span className="hslider__label">{label}</span>
       <div
         ref={trackRef}
-        className="vslider__track"
+        className="hslider__track"
         onPointerDown={(e) => {
           e.preventDefault();
           dragging.current = true;
@@ -51,8 +47,8 @@ function VSlider({ label, labelStyle, value, onChange }) {
           dragging.current = false;
         }}
       >
-        <div className="vslider__fill" style={{ height: `${value * 100}%` }} />
-        <div className="vslider__knob" style={{ top: `${value * 100}%` }} />
+        <div className="hslider__fill" style={{ width: `${value * 100}%` }} />
+        <div className="hslider__knob" style={{ left: `${value * 100}%` }} />
       </div>
     </div>
   );
@@ -74,32 +70,27 @@ function VerticalControls({
     <div
       className={`vcontrols-wrapper${open ? " vcontrols-wrapper--open" : ""}`}
     >
-      <div className="vertical-controls">
-        <VSlider
+      <button
+        className="vcontrols-trigger"
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Toggle controls"
+      >
+        ⊞
+      </button>
+      <div className="vcontrols-panel">
+        <HSlider
           label="SIZE"
           value={scaleToSlider(scale)}
           onChange={(v) => onScaleChange(sliderToScale(v))}
         />
-        <VSlider
+        <HSlider
           label="X"
           value={xToSlider(offsetX)}
           onChange={(v) => onOffsetXChange(sliderToX(v))}
         />
-        <VSlider label="PAN" value={panY} onChange={onPanChange} />
-        <VSlider
-          label="+"
-          labelStyle={{ fontSize: "18px", letterSpacing: 0, marginLeft: "2px" }}
-          value={zoom}
-          onChange={onZoomChange}
-        />
+        <HSlider label="PAN" value={panY} onChange={onPanChange} />
+        <HSlider label="ZOOM" value={zoom} onChange={onZoomChange} />
       </div>
-      <button
-        className="vcontrols-tab"
-        onClick={() => setOpen((o) => !o)}
-        aria-label="Toggle controls"
-      >
-        <span className="vcontrols-tab__arrow">‹</span>
-      </button>
     </div>
   );
 }

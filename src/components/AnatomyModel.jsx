@@ -302,6 +302,8 @@ function AnatomyModel({
     });
 
     if (emissiveMap) mat.emissiveMap = emissiveMap;
+
+    mat.needsUpdate = true;
     materialRef.current = mat;
 
     scene.traverse((child) => {
@@ -337,7 +339,7 @@ function AnatomyModel({
     // Low metalness so base color (#d2d8de) shows as silver-gray without an envmap.
     // High opacity so the outer skin mesh occludes the inner bones — giving contrast.
     const aluminumMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#d8dde2"),
+      color: new THREE.Color("#c8d5e0"),
       metalness: 0.88,
       roughness: 0.15,
       transparent: true,
@@ -419,34 +421,40 @@ function AnatomyModel({
     const mat = materialRef.current;
     if (!mat) return;
 
+    // ✏️ OBSIDIAN base color (male | female)
     const obsColor = femaleMode ? "#08041a" : "#030306";
+    // ✏️ OBSIDIAN inner glow color — red for male, violet for female
     const obsEmissive = femaleMode ? "#5533cc" : "#880000";
+    // ✏️ GHOST body color (light mode)
     const ghostColor = femaleMode ? "#f5eaf0" : "#eef2f6";
-    const alColor = femaleMode ? "#d4a0b8" : "#d8dde2";
+    // ✏️ ALUMINUM layer color (light mode)
+    const alColor = femaleMode ? "#d4a0b8" : "#c8d5e0";
 
     if (darkMode) {
-      mat.color.set(obsColor);
-      mat.emissive.set(obsEmissive);
-      mat.metalness = 0.92;
-      mat.roughness = 0.08;
+      // ✏️ DARK MODE BASE — obsidian shell
+      mat.color.set(obsColor); // surface tint
+      mat.emissive.set(obsEmissive); // inner glow color
+      mat.metalness = 0.92; // ← higher = more mirror-like
+      mat.roughness = 0.08; // ← lower = glassier
       mat.transmission = 0;
-      mat.opacity = 0.82;
-      mat.iridescence = 0.45;
-      mat.iridescenceIOR = 1.32;
-      mat.iridescenceThicknessRange = [120, 280];
-      mat.clearcoat = 0.9;
-      mat.clearcoatRoughness = 0.08;
+      mat.opacity = 0.82; // ← transparency of skin shell
+      mat.iridescence = 0.45; // ← rainbow sheen intensity
+      mat.iridescenceIOR = 1.32; // ← rainbow refraction angle
+      mat.iridescenceThicknessRange = [120, 280]; // ← rainbow color spread
+      mat.clearcoat = 0.9; // ← glossy top coat strength
+      mat.clearcoatRoughness = 0.08; // ← clearcoat blurriness
       if (aluminumMatRef.current) {
         aluminumMatRef.current.opacity = 0;
         aluminumMatRef.current.depthWrite = false;
         aluminumMatRef.current.needsUpdate = true;
       }
     } else {
-      mat.color.set(ghostColor);
+      // ✏️ LIGHT MODE BASE — ghost shell over aluminum body
+      mat.color.set(ghostColor); // outer shell tint
       mat.metalness = 0;
       mat.roughness = 0.2;
       mat.transmission = 0;
-      mat.opacity = 0.13;
+      mat.opacity = 0.13; // ← ghost shell opacity
       mat.iridescence = 0;
       mat.clearcoat = 0.5;
       mat.clearcoatRoughness = 0.1;
@@ -471,7 +479,7 @@ function AnatomyModel({
     // Dark female = indigo/violet tint; light female = rose/blush tint
     const obsColor = femaleMode ? "#08041a" : "#030306";
     const obsEmissive = femaleMode ? "#5533cc" : "#880000";
-    const alColor = femaleMode ? (darkMode ? "#b0a0d4" : "#d4a0b8") : "#d8dde2";
+    const alColor = femaleMode ? (darkMode ? "#b0a0d4" : "#d4a0b8") : "#c8d5e0";
     const ghostColor = femaleMode ? "#f5eaf0" : "#eef2f6";
     const ghostDark = femaleMode ? "#130a2a" : "#1a1a2a";
     const whiteColor = femaleMode ? "#f8f0ff" : "#f0f4ff";
@@ -655,6 +663,14 @@ function AnatomyModel({
   useFrame((state) => {
     if (!materialRef.current) return;
     const t = state.clock.getElapsedTime();
+    // Iridescence pulse — slow IOR cycle makes surface shimmer like oil on metal
+    if (darkMode && materialRef.current.iridescence > 0) {
+      materialRef.current.iridescenceIOR = 1.2 + Math.sin(t * 0.4) * 0.25;
+      materialRef.current.iridescenceThicknessRange = [
+        100 + Math.sin(t * 0.3) * 60,
+        260 + Math.cos(t * 0.35) * 80,
+      ];
+    }
 
     // Emissive pulse — crimson flush in dark mode power, complements blood layer
     let base = 0;

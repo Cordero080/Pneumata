@@ -3,7 +3,7 @@
 
 export const CATEGORY_COLORS = {
   logic: "#ffd700",
-  thermal: "#00f2ff",
+  thermal: "#00f2ff", // STYLE: cyan node color — try #00ffff (pure) or #00e8ff (more saturated)
   power: "#ff3131",
   digestive: "#39ff14",
   sensory: "#ff8c00",
@@ -14,7 +14,7 @@ export const CATEGORY_COLORS = {
 
 export const CATEGORY_EMISSIVE = {
   logic: "#ffaa00",
-  thermal: "#0088ff",
+  thermal: "#0088ff", // STYLE: cyan emissive — try #00aaff or #00ccff for more punch
   power: "#880000",
   digestive: "#156600",
   sensory: "#cc6600",

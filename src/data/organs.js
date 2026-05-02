@@ -61,6 +61,7 @@ export const organs = [
     id: "left_hemisphere",
     category: "logic",
     type: "point",
+    nodeSize: "large", // STYLE: dominant brain mass — larger node
     organ: "Left Hemisphere",
     hardware: "CPU (Logic Processor)",
     position: [-0.05, 1.67, 0.02],
@@ -80,6 +81,7 @@ export const organs = [
     id: "right_hemisphere",
     category: "logic",
     type: "point",
+    nodeSize: "large", // STYLE: dominant brain mass — larger node
     organ: "Right Hemisphere",
     hardware: "GPU (Parallel Processor)",
     position: [0.05, 1.67, 0.02],
@@ -99,6 +101,7 @@ export const organs = [
     id: "thalamus",
     category: "logic",
     type: "point",
+    nodeSize: "small", // STYLE: deep/interior brain node — smaller sphere
     organ: "Thalamus",
     hardware: "Interrupt Controller",
     position: [-0.02, 1.645, -0.01],
@@ -118,6 +121,7 @@ export const organs = [
     id: "hippocampus",
     category: "logic",
     type: "point",
+    nodeSize: "small", // STYLE: deep/interior brain node — smaller sphere
     organ: "Hippocampus",
     hardware: "Storage Drive (SSD/HDD)",
     position: [0, 1.63, -0.04],
@@ -137,6 +141,7 @@ export const organs = [
     id: "amygdala",
     category: "logic",
     type: "point",
+    nodeSize: "small", // STYLE: deep/interior brain node — smaller sphere
     organ: "Amygdala",
     hardware: "Interrupt Handler",
     position: [0, 1.63, 0.03],
@@ -156,6 +161,7 @@ export const organs = [
     id: "hypothalamus",
     category: "logic",
     type: "point",
+    nodeSize: "small", // STYLE: deep/interior brain node — smaller sphere
     organ: "Hypothalamus",
     hardware: "Thermal & Power State Manager",
     position: [0, 1.626, 0.02],
@@ -175,6 +181,8 @@ export const organs = [
     id: "pituitary",
     category: "logic",
     type: "point",
+    nodeSize: "small", // STYLE: deep/interior brain node — smaller sphere
+    nodeColor: "#c87820", // STYLE: deep amber-gold — master transducer between neural & hormonal worlds
     organ: "Pituitary Gland",
     hardware: "Control Chip (Master Regulator)",
     position: [0, 1.62, 0.01],
@@ -194,6 +202,7 @@ export const organs = [
     id: "cerebellum",
     category: "logic",
     type: "point",
+    nodeSize: "small", // STYLE: deep/interior brain node — smaller sphere
     organ: "Cerebellum",
     hardware: "Clock Crystal",
     position: [0, 1.605, -0.07],
@@ -213,6 +222,7 @@ export const organs = [
     id: "brain_stem",
     category: "logic",
     type: "point",
+    nodeSize: "small", // STYLE: deep/interior brain node — smaller sphere
     organ: "Brain Stem",
     hardware: "BIOS / Firmware",
     position: [0, 1.592, -0.063],
@@ -391,6 +401,8 @@ export const organs = [
     id: "heart",
     category: "power",
     type: "point",
+    nodeSize: "large", // STYLE: central power node — larger sphere
+    nodeColor: "#ff0a0a", // STYLE: rich crimson — richer than category power red
     organ: "Heart",
     hardware: "Power Supply Unit (PSU)",
     position: [-0.04, 1.3, 0.06],
@@ -507,6 +519,7 @@ export const organs = [
     id: "liver",
     category: "digestive",
     type: "point",
+    nodeSize: "large", // STYLE: largest internal organ — larger node
     organ: "Liver",
     hardware: "Firewall / Data Filter",
     position: [-0.07, 1.13, 0.08],

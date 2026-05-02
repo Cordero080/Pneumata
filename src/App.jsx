@@ -16,9 +16,9 @@ const IS_STANDALONE =
   window.matchMedia("(display-mode: standalone)").matches;
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
-    ? { panY: 0.48, zoom: 0.22, globalScale: 0.88, offsetX: 0, offsetY: 0.15 }
-    : { panY: 0.48, zoom: 0.22, globalScale: 0.92, offsetX: 0, offsetY: 0.16 }
-  : { panY: 0.5, zoom: 0.33, globalScale: 0.9, offsetX: 0, offsetY: 0.1 };
+    ? { panY: 0.48, zoom: 0.22, globalScale: 0.906, offsetX: 0, offsetY: 0.17 }
+    : { panY: 0.48, zoom: 0.22, globalScale: 0.948, offsetX: 0, offsetY: 0.18 }
+  : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.12 };
 
 function App() {
   const [selectedOrgan, setSelectedOrgan] = useState(null);
@@ -153,6 +153,18 @@ function App() {
         >
           {showAnimation ? "✕" : "▶"}
         </button>
+        {!showAnimation && (
+          <VerticalControls
+            panY={panY}
+            onPanChange={setPanY}
+            zoom={zoom}
+            onZoomChange={setZoom}
+            scale={globalScale}
+            onScaleChange={setGlobalScale}
+            offsetX={offsetX}
+            onOffsetXChange={setOffsetX}
+          />
+        )}
       </div>
 
       {/* About — top-right, used infrequently */}
@@ -172,7 +184,7 @@ function App() {
         <Scene
           globalScale={globalScale}
           offsetX={offsetX}
-          offsetY={offsetY}
+          offsetY={offsetY + (viewPanelOpen ? 0.04 : 0)}
           onSelect={(organ) => {
             setSelectedOrgan(organ);
             if (organ && !organ.brainPosition && organ.type !== "line") {
@@ -200,18 +212,6 @@ function App() {
         />
       )}
 
-      {!showAnimation && (
-        <VerticalControls
-          panY={panY}
-          onPanChange={setPanY}
-          zoom={zoom}
-          onZoomChange={setZoom}
-          scale={globalScale}
-          onScaleChange={setGlobalScale}
-          offsetX={offsetX}
-          onOffsetXChange={setOffsetX}
-        />
-      )}
       {(brainZoom || cellZoom) && (
         <button
           className="brain-back-btn"

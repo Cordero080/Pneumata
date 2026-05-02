@@ -51,6 +51,10 @@ function DiscMarkers({
       {pts.map((pt, i) => {
         const levelData = SPINAL_LEVELS[Math.min(i, SPINAL_LEVELS.length - 1)];
         const color = CATEGORY_COLORS[levelData.category];
+        // Graduate disc radius: cervical small → lumbar large → sacral taper
+        // 24 levels: 0=C2, ~18=L1, ~23=S2. Peak at L1-L3 (index 18-20).
+        const t = i / 23;
+        const discRadius = 0.013 + 0.009 * Math.sin(t * Math.PI * 0.88 + 0.1);
         return (
           <mesh
             key={`disc-${i}`}
@@ -69,7 +73,7 @@ function DiscMarkers({
               document.body.style.cursor = "default";
             }}
           >
-            <cylinderGeometry args={[0.018, 0.018, 0.006, 12]} />
+            <cylinderGeometry args={[discRadius, discRadius, 0.006, 12]} />
             <meshStandardMaterial
               color={color}
               emissive={color}

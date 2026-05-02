@@ -1,234 +1,298 @@
 @use "variables" as v;
 
-// === Wrapper — anchors tab + panel to right edge ===
-
 .vcontrols-wrapper {
-  position: fixed;
-  right: 0;
-  top: 35%;
-  transform: translateY(-50%);
-  z-index: 50;
+  position: relative;
+  flex-shrink: 0;
   display: flex;
-  align-items: center;
-
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-// === Pull tab ===
+// === Trigger button — matches chamfered toggle style ===
 
-.vcontrols-tab {
-  flex-shrink: 0;
-  width: 18px;
-  height: 88px;
-  background: rgba(200, 210, 222, 0.38);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+.vcontrols-trigger {
+  font-family: v.$font-hud;
+  font-size: 13px;
+  padding: 6px 12px 6px 24px;
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: none;
+  border-top: 2px solid rgba(255, 255, 255, 0.35);
+  border-right: 3px solid rgba(0, 0, 0, 0.18);
+  border-bottom: 5px solid rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  margin-left: -11px;
+  background: linear-gradient(
+    135deg,
+    rgba(222, 228, 234, 0.96) 0%,
+    rgba(200, 210, 218, 0.92) 25%,
+    rgba(232, 238, 244, 0.96) 50%,
+    rgba(195, 206, 214, 0.92) 75%,
+    rgba(215, 222, 229, 0.96) 100%
+  );
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.07);
+  color: rgba(55, 72, 88, 0.55);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    14px 14px
+  );
+  transition: color 0.2s ease, filter 0.2s ease, transform 0.2s ease;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  clip-path: polygon(
-    #{v.$chamfer-sm} 0,
-    100% 0,
-    100% 100%,
-    0 100%,
-    0 #{v.$chamfer-sm}
-  );
-  transition: background 0.2s ease;
+  min-width: 38px;
 
   &:hover {
-    background: rgba(200, 210, 222, 0.62);
+    color: rgba(22, 36, 52, 0.9);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+    transform: perspective(400px) rotateX(-2deg) scale(1.04);
+    border-bottom-width: 6px;
   }
 
-  &__arrow {
-    font-size: 13px;
-    color: rgba(55, 72, 88, 0.55);
-    line-height: 1;
-    transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
-
-    .vcontrols-tab:hover & {
-      color: rgba(22, 36, 52, 0.8);
-    }
-
-    .vcontrols-wrapper--open & {
-      transform: rotate(180deg);
-    }
+  .vcontrols-wrapper--open & {
+    color: rgba(22, 36, 52, 0.9);
   }
 }
 
-// === Vertical camera controls panel ===
+// === Dropdown panel ===
 
-.vertical-controls {
+.vcontrols-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1.4rem;
-  padding: 1.2rem 0.8rem;
+  gap: 8px;
+  padding: 8px 10px;
 
-  // Hidden by default — slides in from the right
+  @media (min-width: 769px) {
+    gap: 10px;
+    padding: 12px 14px;
+  }
+  background: linear-gradient(
+    135deg,
+    rgba(222, 228, 234, 0.96) 0%,
+    rgba(200, 210, 218, 0.92) 50%,
+    rgba(215, 222, 229, 0.96) 100%
+  );
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 3px solid rgba(0, 0, 0, 0.14);
+  border-bottom: 5px solid rgba(0, 0, 0, 0.18);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+
   opacity: 0;
   visibility: hidden;
-  transform: translateX(12px);
   pointer-events: none;
+  transform: translateY(-6px);
   transition:
-    opacity 0.38s ease,
-    visibility 0.38s,
-    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.3s ease,
+    visibility 0.3s,
+    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 
   .vcontrols-wrapper--open & {
     opacity: 1;
     visibility: visible;
-    transform: translateX(0);
     pointer-events: auto;
-  }
-
-  @media (min-width: 769px) {
-    gap: 2rem;
-    padding: 1.8rem 0.8rem;
-    margin-right: 5rem;
+    transform: translateY(0);
   }
 }
 
-// === Individual slider ===
+// === Horizontal slider ===
 
-.vslider {
+.hslider {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   user-select: none;
 }
 
-.vslider__label {
+.hslider__label {
   font-family: v.$font-hud;
-  font-size: 8px;
+  font-size: 6px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: rgba(55, 72, 88, 0.5);
-}
-
-.vslider__track {
-  position: relative;
-  width: 4px;
-  height: 120px;
-  cursor: ns-resize;
-  display: flex;
-  justify-content: center;
+  width: 20px;
+  flex-shrink: 0;
+  text-align: right;
 
   @media (min-width: 769px) {
-    height: 16vh;
+    font-size: 7px;
+    width: 26px;
+    letter-spacing: 0.18em;
+  }
+}
+
+.hslider__track {
+  position: relative;
+  width: 80px;
+  height: 4px;
+  cursor: ew-resize;
+
+  @media (min-width: 769px) {
+    width: 130px;
   }
 
-  // Center rail
   &::before {
     content: "";
     position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 5px;
-    transform: translateX(-50%);
+    inset: 0;
     border-radius: 4px;
     background: rgba(80, 100, 130, 0.3);
     border-top: 1px solid rgba(255, 255, 255, 0.25);
-    border-right: 1px solid rgba(0, 0, 0, 0.15);
     border-bottom: 2px solid rgba(0, 0, 0, 0.2);
-    border-left: none;
   }
 }
 
-.vslider__fill {
+.hslider__fill {
   position: absolute;
-  left: 50%;
+  left: 0;
   top: 0;
-  width: 8px;
+  height: 100%;
   border-radius: 4px;
-  transform: translateX(-50%);
-  background: rgba(242, 247, 255, 0.736);
+  background: rgba(242, 247, 255, 0.8);
   pointer-events: none;
 }
 
-.vslider__knob {
+.hslider__knob {
   position: absolute;
-  left: 50%;
-  width: 15px;
-  height: 5px;
+  top: 50%;
+  width: 5px;
+  height: 14px;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
+  border-radius: 2px;
   background: rgba(210, 220, 232, 0.95);
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  border-right: 2px solid rgba(0, 0, 0, 0.15);
-  border-bottom: 3px solid rgba(0, 0, 0, 0.2);
-  border-left: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  border-right: 2px solid rgba(0, 0, 0, 0.18);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.22);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
   pointer-events: none;
   transition: box-shadow 0.15s ease;
 
-  .vslider__track:hover & {
-    box-shadow:
-      0 1px 6px rgba(0, 0, 0, 0.22),
-      0 0 8px rgba(80, 140, 220, 0.35);
+  .hslider__track:hover & {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.22), 0 0 8px rgba(80, 140, 220, 0.35);
   }
 }
 
 // === Dark mode ===
 
-.app--dark .vcontrols-tab {
-  background: rgba(20, 30, 50, 0.55);
-  border-top-color: rgba(100, 150, 220, 0.2);
-  border-left-color: rgba(100, 150, 220, 0.15);
-  border-bottom-color: rgba(0, 0, 0, 0.4);
+.app--dark .vcontrols-trigger {
+  @include v.dark-surface;
+  box-shadow: none;
+  color: v.$dark-text-dim;
 
   &:hover {
-    background: rgba(30, 45, 75, 0.75);
-  }
-
-  &__arrow {
-    color: v.$dark-text-dim;
-  }
-
-  &:hover &__arrow {
+    filter: drop-shadow(0 0 8px v.$dark-glow);
     color: v.$dark-text;
-    filter: drop-shadow(0 0 6px v.$dark-glow);
+  }
+
+  .vcontrols-wrapper--open & {
+    color: v.$dark-text;
   }
 }
 
-.app--dark .vertical-controls {
-  background: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+.app--dark .vcontrols-panel {
+  @include v.dark-surface;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   box-shadow: none;
-  filter: none;
 }
 
-.app--dark .vslider__label {
+.app--dark .hslider__label {
   color: v.$dark-text-dim;
 }
 
-.app--dark .vslider__track::before {
+.app--dark .hslider__track::before {
   background: rgba(100, 140, 200, 0.25);
-  border-radius: 4px;
 }
 
-.app--dark .vslider__fill {
-  background: rgba(157, 188, 226, 0.967);
+.app--dark .hslider__fill {
+  background: rgba(157, 188, 226, 0.97);
 }
 
-.app--dark .vslider__knob {
+.app--dark .hslider__knob {
   background: rgba(30, 40, 60, 0.9);
   box-shadow:
     0 1px 4px rgba(0, 0, 0, 0.5),
     0 0 6px rgba(0, 180, 255, 0.2),
     inset 0 1px 0 rgba(100, 160, 255, 0.2);
 
-  .vslider__track:hover & {
+  .hslider__track:hover & {
     box-shadow:
       0 1px 6px rgba(0, 0, 0, 0.6),
       0 0 12px rgba(0, 212, 255, 0.45),
       inset 0 1px 0 rgba(100, 180, 255, 0.3);
+  }
+}
+
+// === Female mode — light ===
+
+.app--female:not(.app--dark) {
+  .vcontrols-trigger {
+    @include v.female-light-surface;
+    color: rgba(100, 20, 65, 0.75);
+    &:hover { color: rgba(60, 5, 40, 0.95); }
+  }
+
+  .vcontrols-panel {
+    @include v.female-light-surface;
+  }
+
+  .hslider__label { color: rgba(140, 50, 100, 0.55); }
+  .hslider__track::before { background: rgba(180, 60, 130, 0.3); }
+  .hslider__fill { background: rgba(240, 180, 220, 0.85); }
+  .hslider__knob {
+    background: rgba(230, 200, 220, 0.95);
+    box-shadow: 0 1px 4px rgba(80, 0, 50, 0.2), inset 0 1px 0 rgba(255, 240, 250, 0.8);
+  }
+}
+
+// === Female mode — dark ===
+
+.app--dark.app--female {
+  .vcontrols-trigger {
+    @include v.female-dark-surface;
+    box-shadow: none;
+    color: v.$female-text-dim;
+    &:hover {
+      filter: drop-shadow(0 0 8px v.$female-glow);
+      color: v.$female-text;
+    }
+  }
+
+  .vcontrols-panel {
+    @include v.female-dark-surface;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: none;
+  }
+
+  .hslider__label { color: v.$female-text-dim; }
+  .hslider__track::before { background: rgba(200, 60, 140, 0.3); border-radius: 4px; }
+  .hslider__fill { background: rgba(240, 140, 200, 0.92); }
+  .hslider__knob {
+    background: rgba(35, 5, 25, 0.9);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5), 0 0 6px rgba(220, 0, 140, 0.2),
+      inset 0 1px 0 rgba(255, 80, 160, 0.2);
+    .hslider__track:hover & {
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 20, 160, 0.5),
+        inset 0 1px 0 rgba(255, 120, 180, 0.3);
+    }
   }
 }

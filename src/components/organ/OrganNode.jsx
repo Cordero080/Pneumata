@@ -33,6 +33,8 @@ function OrganNode({
   const auraRef = useRef();
   const groupRef = useRef();
   const [hovered, setHovered] = useState(false);
+  const isEye = organ.id === "right_eye" || organ.id === "left_eye";
+  const glitchRef = useRef({ nextGlitch: 3 + Math.random() * 6, duration: 0 });
 
   // Resolve position: explicit override → landmark-mapped → raw male position
   const femalePos =
@@ -72,14 +74,29 @@ function OrganNode({
     }
   }, [femaleMode, femalePositions]);
 
-  const color = CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
-  const emissive = CATEGORY_EMISSIVE[organ.category] ?? CATEGORY_EMISSIVE.logic;
+  const color =
+    organ.nodeColor ?? CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
+  const emissive =
+    organ.nodeColor ??
+    CATEGORY_EMISSIVE[organ.category] ??
+    CATEGORY_EMISSIVE.logic;
   const isSpirit = organ.category === "spirit";
+
+  // STYLE: node size hierarchy — set nodeSize in organs.js to "small" | "large" | (default)
+  // Sizes: glow outer / main sphere / inner core / hit target
+  // "small" ~65% — deep/interior brain nodes. "large" ~130% — heart, liver, hemispheres.
+  // Color variant idea for small nodes: blood-sunset tone like #c04030 or #e05020
+  const sz =
+    organ.nodeSize === "small"
+      ? { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.015 }
+      : organ.nodeSize === "large"
+        ? { glow: 0.016, main: 0.021, inner: 0.009, hit: 0.026 }
+        : { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.02 };
   const isPreview = previewedOrganId === organ.id;
   const isExternallyHighlighted =
     !hovered && hoveredCategory === organ.category;
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     // Lerp group position — nodes live in male-GLB coordinate space and never relocate
     if (groupRef.current) {
       const target =
@@ -93,7 +110,40 @@ function OrganNode({
     const phase = organ.position[0];
 
     const brainFade = cellZoom || (brainZoom && !organ.brainPosition) ? 0 : 1;
-    const base = hovered ? 4 : isExternallyHighlighted ? 3.5 : 2;
+
+    // Eye glitch — occasional rapid color flicker
+    if (isEye && meshRef.current) {
+      const g = glitchRef.current;
+      g.nextGlitch -= delta;
+      if (g.nextGlitch <= 0) {
+        g.duration = 0.35 + Math.random() * 0.3;
+        g.nextGlitch = 4 + Math.random() * 8;
+      }
+      if (g.duration > 0) {
+        g.duration -= delta;
+        const glitchColors = [
+          "#ff0040",
+          "#00ffff",
+          "#39ff14",
+          "#ffffff",
+          "#ff8c00",
+          "#cc00ff",
+        ];
+        const c = glitchColors[Math.floor(t * 24) % glitchColors.length];
+        meshRef.current.material.color.set(c);
+        meshRef.current.material.emissive.set(c);
+        meshRef.current.material.emissiveIntensity = 4 + Math.random() * 4;
+        if (glowRef.current) glowRef.current.material.color.set(c);
+        if (innerRef.current) innerRef.current.material.emissive.set(c);
+      } else {
+        meshRef.current.material.color.set(color);
+        meshRef.current.material.emissive.set(color);
+        if (glowRef.current) glowRef.current.material.color.set(color);
+        if (innerRef.current) innerRef.current.material.emissive.set(color);
+      }
+    }
+
+    const base = hovered ? 2.8 : isExternallyHighlighted ? 2.2 : 1.1;
     meshRef.current.material.emissiveIntensity =
       base + Math.sin(t * 3 + phase) * 0.5;
 
@@ -125,9 +175,9 @@ function OrganNode({
     }
 
     if (innerRef.current) {
-      const innerBase = isSpirit ? 12 : 6;
+      const innerBase = isSpirit ? 9 : 3.5;
       innerRef.current.material.emissiveIntensity =
-        innerBase + Math.sin(t * 5 + phase) * (isSpirit ? 4 : 2);
+        innerBase + Math.sin(t * 5 + phase) * (isSpirit ? 3 : 1.2);
       innerRef.current.material.opacity +=
         (nodeOpacity * brainFade - innerRef.current.material.opacity) * 0.08;
     }
@@ -181,7 +231,7 @@ function OrganNode({
 
       {/* Soft outer halo */}
       <mesh ref={glowRef} renderOrder={5}>
-        <sphereGeometry args={[0.012, 12, 12]} />
+        <sphereGeometry args={[sz.glow, 12, 12]} />
         <meshStandardMaterial
           color={color}
           emissive={emissive}
@@ -196,7 +246,7 @@ function OrganNode({
 
       {/* Main node sphere */}
       <mesh ref={meshRef} renderOrder={5}>
-        <sphereGeometry args={[0.016, 16, 16]} />
+        <sphereGeometry args={[sz.main, 16, 16]} />
         <meshStandardMaterial
           color={color}
           emissive={emissive}
@@ -232,7 +282,7 @@ function OrganNode({
           }
         }}
       >
-        <sphereGeometry args={[0.02, 8, 8]} />
+        <sphereGeometry args={[sz.hit, 8, 8]} />
         <meshBasicMaterial
           transparent
           opacity={0}
@@ -243,7 +293,7 @@ function OrganNode({
 
       {/* Small bright inner core */}
       <mesh ref={innerRef} renderOrder={6}>
-        <sphereGeometry args={[0.007, 12, 12]} />
+        <sphereGeometry args={[sz.inner, 12, 12]} />
         <meshStandardMaterial
           color="#ffffff"
           emissive={isSpirit ? "#ffffff" : color}
