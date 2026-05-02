@@ -1,0 +1,91 @@
+@use '../../../styles/variables' as v;
+
+// =============================================================================
+// Male Theme — .app--male dark mode color overrides.
+// Light mode base styles in App.scss ARE the male defaults (no overrides needed).
+// Only dark mode needs explicit values here since dark-surface is blue-steel toned.
+// =============================================================================
+
+.app--male.app--dark {
+
+  // Header
+  .header-accent {
+    @include v.dark-surface;
+    filter: drop-shadow(0 0 0.5px rgba(180, 200, 230, 0.35));
+  }
+
+  .header-panel {
+    @include v.dark-surface;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: none;
+    filter: drop-shadow(0 0 0.5px rgba(180, 200, 230, 0.35));
+    h1 { color: rgb(210, 225, 255); }
+    p   { color: rgba(150, 175, 215, 0.769); }
+  }
+
+  // About, back, and dark-toggle buttons
+  .about-btn,
+  .brain-back-btn,
+  .dark-toggle-btn {
+    @include v.dark-surface;
+    box-shadow: none;
+    color: v.$dark-text-dim;
+    &:hover {
+      color: rgba(220, 235, 255, 0.95);
+      filter: drop-shadow(0 0 8px v.$dark-glow);
+    }
+  }
+
+  // Top-left utility buttons
+  .mesh-toggle-btn {
+    @include v.dark-surface;
+    box-shadow: none;
+    color: rgba(160, 185, 220, 0.5);
+
+    &.mesh-toggle-btn--solid {
+      color: rgba(220, 235, 255, 0.9);
+    }
+
+    &:hover {
+      filter: drop-shadow(0 0 8px v.$dark-glow);
+      color: rgba(220, 235, 255, 0.95);
+    }
+  }
+
+  .reset-btn {
+    @include v.dark-surface;
+    box-shadow: none;
+    color: rgba(160, 185, 220, 0.5);
+    &:hover {
+      filter: drop-shadow(0 0 8px v.$dark-glow);
+      color: rgba(220, 235, 255, 0.95);
+    }
+  }
+
+  .body-toggle-btn {
+    @include v.dark-surface;
+    box-shadow: none;
+    color: rgba(160, 185, 220, 0.5);
+    &.body-toggle-btn--active {
+      color: rgba(180, 210, 255, 0.9);
+    }
+    &:hover {
+      filter: drop-shadow(0 0 8px v.$dark-glow);
+      color: rgba(220, 235, 255, 0.95);
+    }
+  }
+
+  .anim-toggle-btn {
+    @include v.dark-surface;
+    box-shadow: none;
+    color: rgba(160, 185, 220, 0.5);
+    &.anim-toggle-btn--active {
+      color: rgba(255, 180, 120, 0.9);
+    }
+    &:hover {
+      filter: drop-shadow(0 0 8px v.$dark-glow);
+      color: rgba(220, 235, 255, 0.95);
+    }
+  }
+}

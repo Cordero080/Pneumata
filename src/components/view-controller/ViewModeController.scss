@@ -237,34 +237,3 @@
   }
 }
 
-// === Female mode — light ===
-
-.app--female:not(.app--dark) {
-  .view-btn {
-    @include v.female-light-surface;
-    color: rgba(120, 30, 80, 0.65);
-    &--active {
-      @include v.female-light-surface;
-      background: v.$female-light-surface-active;
-      color: rgba(60, 5, 40, 0.95);
-    }
-    &:hover:not(.view-btn--active) { color: rgba(60, 5, 40, 0.9); }
-  }
-}
-
-// === Female mode — dark ===
-
-.app--dark.app--female {
-  .view-btn {
-    @include v.female-dark-surface;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: none;
-    color: v.$female-text-dim;
-    &--active { color: v.$female-text; }
-    &:hover:not(.view-btn--active) {
-      filter: drop-shadow(0 0 8px v.$female-glow);
-      color: v.$female-text;
-    }
-  }
-}

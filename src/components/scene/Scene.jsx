@@ -5,7 +5,7 @@ import SceneLights from "./SceneLights";
 import OrganNode from "../organ/OrganNode";
 import SpinalCord from "../spine/SpinalCord";
 import LungVolume from "../LungVolume";
-import AnatomyModel from "../AnatomyModel";
+import AnatomyModel from "../anatomy/AnatomyModel";
 import BodyCirculation from "../BodyCirculation";
 import NerveRoots from "../NerveRoots";
 import NerveSystem from "../spine/NerveSystem";
@@ -131,6 +131,7 @@ function Scene({
           brainZoom={brainZoom}
           cellZoom={cellZoom}
           darkMode={darkMode}
+          femaleMode={femaleMode}
           onBrainClick={() => setBrainZoom(true)}
         />
 

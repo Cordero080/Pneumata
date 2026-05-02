@@ -89,12 +89,3 @@
   }
 }
 
-// === Female mode overrides ===
-
-.app--female:not(.app--dark) .legend-tag {
-  background: rgba(90, 20, 65, 0.55);
-}
-
-.app--dark.app--female .legend-tag {
-  background: rgba(80, 5, 55, 0.65);
-}

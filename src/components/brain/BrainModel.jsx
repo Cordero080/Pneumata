@@ -3,11 +3,20 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const BRAIN_CENTER_Y = 1.665;
+const BRAIN_CENTER_Y = 1.665; // tweak to move brain mesh up/down in male mode
+const FEMALE_BRAIN_CENTER_Y = 1.615; // tweak to move brain mesh up/down in female mode
 const BRAIN_Z_OFFSET = -0.015;
-const TARGET_HEIGHT = 0.165;
+const TARGET_HEIGHT = 0.165; // tweak to resize brain mesh
+const FEMALE_TARGET_HEIGHT = TARGET_HEIGHT * 0.94; // 2% smaller for female
 
-function BrainModel({ meshMode, brainZoom, cellZoom, darkMode, onBrainClick }) {
+function BrainModel({
+  meshMode,
+  brainZoom,
+  cellZoom,
+  darkMode,
+  femaleMode,
+  onBrainClick,
+}) {
   const gltf = useGLTF("/platinum-brain.glb");
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
   // Collect original materials so we can drive their opacity each frame
@@ -24,11 +33,12 @@ function BrainModel({ meshMode, brainZoom, cellZoom, darkMode, onBrainClick }) {
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
 
-    const s = TARGET_HEIGHT / size.y;
+    const s = (femaleMode ? FEMALE_TARGET_HEIGHT : TARGET_HEIGHT) / size.y;
     scene.scale.setScalar(s);
+    const centerY = femaleMode ? FEMALE_BRAIN_CENTER_Y : BRAIN_CENTER_Y;
     scene.position.set(
       -center.x * s,
-      BRAIN_CENTER_Y - center.y * s,
+      centerY - center.y * s,
       -center.z * s + BRAIN_Z_OFFSET,
     );
 
@@ -46,7 +56,7 @@ function BrainModel({ meshMode, brainZoom, cellZoom, darkMode, onBrainClick }) {
       }
     });
     matsRef.current = mats;
-  }, [scene]);
+  }, [scene, femaleMode]);
 
   useFrame(() => {
     const mats = matsRef.current;

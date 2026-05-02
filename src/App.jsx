@@ -91,7 +91,7 @@ function App() {
 
   return (
     <div
-      className={`app${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""}`}
+      className={`app app--${bodyModel}${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""}`}
     >
       <header className="app-header">
         <div className="header-strip">
@@ -185,7 +185,10 @@ function App() {
         <Scene
           globalScale={globalScale}
           offsetX={offsetX}
-          offsetY={offsetY + (viewPanelOpen ? 0.04 : -0.008)}
+          offsetY={
+            offsetY +
+            (viewPanelOpen ? (bodyModel === "female" ? 0.09 : 0.06) : 0.03)
+          }
           onSelect={(organ) => {
             setSelectedOrgan(organ);
             if (organ && !organ.brainPosition && organ.type !== "line") {

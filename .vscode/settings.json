@@ -1,4 +1,6 @@
 {
+  "editor.colorDecorators": true,
+  "editor.colorDecoratorsLimit": 500,
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": "active",
   "editor.guides.highlightActiveBracketPair": true,

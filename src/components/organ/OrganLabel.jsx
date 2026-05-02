@@ -38,7 +38,6 @@ function OrganLabel({ organ, color, darkMode, onSelect }) {
       <div
         style={{
           position: "absolute",
-          whiteSpace: "nowrap",
           left: isLeft ? "auto" : "10px",
           right: isLeft ? "10px" : "auto",
           top: "50%",
@@ -56,6 +55,7 @@ function OrganLabel({ organ, color, darkMode, onSelect }) {
             alignItems: "center",
             flexDirection: isLeft ? "row-reverse" : "row",
             flexShrink: 0,
+            whiteSpace: "nowrap",
           }}
         >
           <div
@@ -83,6 +83,7 @@ function OrganLabel({ organ, color, darkMode, onSelect }) {
           style={{
             ...panel,
             padding: "6px 10px",
+            maxWidth: "130px",
             clipPath:
               "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
             textAlign: isLeft ? "right" : "left",

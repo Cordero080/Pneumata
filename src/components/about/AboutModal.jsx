@@ -5,22 +5,37 @@ const CATEGORIES = [
   {
     color: "#ffd700",
     label: "Logic",
-    desc: "Brain, cerebellum, spinal cord — the CPU, firmware, and data bus.",
+    desc: "Brain, cerebellum, spinal cord — CPU, firmware, and data bus.",
   },
   {
     color: "#ff3131",
     label: "Power",
-    desc: "Heart, lungs, diaphragm — the PSU, cooling system, and power rail.",
+    desc: "Heart, thyroid, adrenals — PSU, system clock, and overclock mechanism.",
   },
   {
     color: "#00f2ff",
     label: "Thermal",
-    desc: "Kidneys, skin, lymph — the heat sink, liquid loop, and exhaust.",
+    desc: "Lungs, diaphragm — heat sink and fan controller.",
   },
   {
     color: "#39ff14",
     label: "Digestive",
-    desc: "Stomach, liver, intestines — storage, compiler, and I/O buffer.",
+    desc: "Stomach, liver, intestines — parser, firewall, and I/O pipeline.",
+  },
+  {
+    color: "#ff8c00",
+    label: "Sensory",
+    desc: "Eyes, ears, skin, vocal cords — camera, microphone, sensor array, and speaker.",
+  },
+  {
+    color: "#b06bff",
+    label: "Renal",
+    desc: "Kidneys, bladder — virtual memory and output buffer.",
+  },
+  {
+    color: "#00e5cc",
+    label: "Immune",
+    desc: "Spleen, lymph nodes, bone marrow — SIEM, perimeter nodes, and definition engine.",
   },
   {
     color: "#ffffff",
@@ -59,6 +74,21 @@ const NAV_ITEMS = [
     icon: "◼\uFE0E",
     action: "Mesh toggle",
     desc: "Cycles the body model through rendering styles: solid, semi-transparent, wireframe, and more. Dark mode unlocks additional variants.",
+  },
+  {
+    icon: "♂\uFE0E / ♀\uFE0E",
+    action: "Body toggle",
+    desc: "Switches between male and female anatomical models. Each has independently tuned proportions, brain positioning, and color theme.",
+  },
+  {
+    icon: "☾ / ✦",
+    action: "Dark mode",
+    desc: "Toggles between light and dark rendering. Dark mode shifts the palette to neon-on-void and unlocks additional mesh variants.",
+  },
+  {
+    icon: "▶ / ✕",
+    action: "Animation",
+    desc: "Plays the circulatory animation — energy nodes leaving the heart and tracing the full circuit through the body.",
   },
 ];
 
