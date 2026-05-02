@@ -89,10 +89,10 @@ function OrganNode({
   // Color variant idea for small nodes: blood-sunset tone like #c04030 or #e05020
   const sz =
     organ.nodeSize === "small"
-      ? { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.015 }
+      ? { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.007 }
       : organ.nodeSize === "large"
-        ? { glow: 0.016, main: 0.021, inner: 0.009, hit: 0.026 }
-        : { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.02 };
+        ? { glow: 0.016, main: 0.021, inner: 0.009, hit: 0.012 }
+        : { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.009 };
   const isPreview = previewedOrganId === organ.id;
   const isExternallyHighlighted =
     !hovered && hoveredCategory === organ.category;
@@ -269,6 +269,7 @@ function OrganNode({
 
       {/* Invisible enlarged hit target — easier to tap on mobile */}
       <mesh
+        visible={!cellZoom}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
         onClick={(e) => {

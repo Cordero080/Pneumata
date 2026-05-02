@@ -191,7 +191,12 @@ function App() {
           }
           onSelect={(organ) => {
             setSelectedOrgan(organ);
-            if (organ && !organ.brainPosition && organ.type !== "line") {
+            if (
+              organ &&
+              !organ.brainPosition &&
+              organ.type !== "line" &&
+              organ.position
+            ) {
               setOrganFocusY(organ.position[1] * globalScale + offsetY);
             } else {
               setOrganFocusY(null);

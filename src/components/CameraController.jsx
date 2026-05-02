@@ -5,8 +5,11 @@ import * as THREE from "three";
 const LERP = 0.055;
 const SETTLED = 0.0008;
 
-const BRAIN_TARGET = new THREE.Vector3(0, 1.55, 0);
-const CELL_TARGET = new THREE.Vector3(0, 1.61, 0);
+const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.55, 0);
+const MALE_CELL_TARGET = new THREE.Vector3(0, 1.61, 0);
+const FEMALE_Y_OFFSET = 1.615 - 1.672;
+const FEMALE_BRAIN_TARGET = new THREE.Vector3(0, 1.55 + FEMALE_Y_OFFSET, 0);
+const FEMALE_CELL_TARGET = new THREE.Vector3(0, 1.61 + FEMALE_Y_OFFSET, 0);
 
 // Slider value 0 (knob top) = viewing head, 1 (knob bottom) = viewing legs
 const PAN_Y_TOP = 1.65;
@@ -30,6 +33,7 @@ function CameraController({
   resetKey = 0,
   organFocusY = null,
   viewPanelOpen = false,
+  femaleMode = false,
 }) {
   const { camera } = useThree();
   const animating = useRef(false);
@@ -53,19 +57,21 @@ function CameraController({
     animating.current = true;
     const ctrl = controlsRef.current;
     if (!ctrl) return;
-    ctrl.minDistance = cellZoom ? 0.1 : brainZoom ? 0.12 : ZOOM_NEAR;
+    ctrl.minDistance = cellZoom ? 0.01 : brainZoom ? 0.12 : ZOOM_NEAR;
     ctrl.maxDistance = cellZoom ? 0.8 : brainZoom ? 0.6 : ZOOM_FAR;
+    camera.near = cellZoom ? 0.001 : 0.1;
+    camera.updateProjectionMatrix();
+    const yo = femaleMode ? FEMALE_Y_OFFSET : 0;
     if (cellZoom) {
-      camera.position.set(0, 1.61, 0.5);
-      ctrl.target.set(0, 1.61, 0);
+      camera.position.set(0, 1.61 + yo, 0.22);
+      ctrl.target.set(0, 1.61 + yo, 0);
       ctrl.update();
     } else if (brainZoom) {
-      // Snap to frontal position — directly in front of brain at eye level
-      camera.position.set(0, 1.62, 0.55);
-      ctrl.target.set(0, 1.55, 0);
+      camera.position.set(0, 1.62 + yo, 0.55);
+      ctrl.target.set(0, 1.55 + yo, 0);
       ctrl.update();
     }
-  }, [brainZoom, cellZoom, controlsRef, camera]);
+  }, [brainZoom, cellZoom, femaleMode, controlsRef, camera]);
 
   // On reset: directly snap camera back to initial position + target.
   // This works regardless of how the user moved the camera (slider, scroll,
@@ -86,6 +92,8 @@ function CameraController({
     if (!ctrl) return;
 
     if (cellZoom || brainZoom) {
+      const BRAIN_TARGET = femaleMode ? FEMALE_BRAIN_TARGET : MALE_BRAIN_TARGET;
+      const CELL_TARGET = femaleMode ? FEMALE_CELL_TARGET : MALE_CELL_TARGET;
       const target =
         cellZoom && cellTarget
           ? cellTargetVec.current.set(...cellTarget)

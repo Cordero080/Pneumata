@@ -12,6 +12,7 @@ import NerveSystem from "../spine/NerveSystem";
 import CameraController from "../CameraController";
 import BrainModel from "../brain/BrainModel";
 import CellularView from "../brain/CellularView";
+import NeuralActivity from "../brain/NeuralActivity";
 import { organs } from "../../data/organs";
 
 const CELL_ZOOM_IDS = new Set(["pituitary"]);
@@ -135,11 +136,27 @@ function Scene({
           onBrainClick={() => setBrainZoom(true)}
         />
 
+        <NeuralActivity
+          brainZoom={brainZoom}
+          cellZoom={cellZoom}
+          femaleMode={femaleMode}
+        />
         <CellularView
+          brainZoom={brainZoom}
           cellZoom={cellZoom}
           darkMode={darkMode}
           meshMode={meshMode}
-          onCellSelect={(pos) => setCellTarget(pos)}
+          femaleMode={femaleMode}
+          onCellSelect={(node) =>
+            onSelect({
+              id: node.id,
+              organ: node.organ ?? node.label,
+              hardware: node.hardware,
+              bio_function: node.bio_function,
+              hard_function: node.hard_function,
+              synthesis: node.synthesis,
+            })
+          }
         />
 
         <LungVolume
@@ -231,6 +248,7 @@ function Scene({
         resetKey={resetKey}
         organFocusY={organFocusY}
         viewPanelOpen={viewPanelOpen}
+        femaleMode={femaleMode}
       />
       <OrbitControls
         ref={controlsRef}
