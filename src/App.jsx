@@ -187,7 +187,7 @@ function App() {
           offsetX={offsetX}
           offsetY={
             offsetY +
-            (viewPanelOpen ? (bodyModel === "female" ? 0.09 : 0.06) : 0.03)
+            (viewPanelOpen ? (bodyModel === "female" ? 0.09 : 0.06) : -0.02)
           }
           onSelect={(organ) => {
             setSelectedOrgan(organ);

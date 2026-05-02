@@ -16,7 +16,7 @@ function AnimatedScene({ darkMode, meshMode }) {
         powerPreference: "high-performance",
       }}
       dpr={[1, 2]}
-      performance={{ min: 0.5 }} // this
+      performance={{ min: 0.5 }}
     >
       <SceneLights darkMode={darkMode} meshMode={meshMode} femaleMode={false} />
       <AnimatedModel darkMode={darkMode} meshMode={meshMode} />

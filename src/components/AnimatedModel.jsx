@@ -3,7 +3,7 @@ import { useFBX, useAnimations } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-function AnimatedModel({ darkMode, meshMode }) {
+function AnimatedModel({ darkMode, meshMode, fbxRef }) {
   const fbx = useFBX("/animations/pneumata_swing.fbx");
   const standingFbx = useFBX("/animations/Standing.fbx");
   const matRef = useRef(null);
@@ -43,7 +43,8 @@ function AnimatedModel({ darkMode, meshMode }) {
   const { actions, mixer } = useAnimations(clips, fbx);
 
   useEffect(() => {
-    fbx.scale.setScalar(0.045);
+    fbx.scale.setScalar(0.047);
+    if (fbxRef) fbxRef.current = fbx;
   }, [fbx]);
 
   useEffect(() => {
@@ -52,12 +53,20 @@ function AnimatedModel({ darkMode, meshMode }) {
     if (!swing || !mixer) return;
     swing.setLoop(THREE.LoopOnce);
     swing.clampWhenFinished = true;
+    if (standing) {
+      standing.setLoop(THREE.LoopOnce);
+      standing.clampWhenFinished = true;
+    }
     swing.play();
     const onFinished = (e) => {
       if (e.action === swing && standing) {
-        standing.setLoop(THREE.LoopRepeat, Infinity);
+        standing.reset();
         standing.play();
         swing.crossFadeTo(standing, 0.8, true);
+      } else if (e.action === standing) {
+        standing.stop();
+        swing.reset();
+        swing.play();
       }
     };
     mixer.addEventListener("finished", onFinished);
