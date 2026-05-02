@@ -23,7 +23,7 @@ const CATEGORIES = [
   },
   {
     color: "#ffffff",
-    label: "Spirit",
+    label: "Consciousness",
     desc: "Pneuma — the emergent field where information density becomes self-aware.",
   },
 ];

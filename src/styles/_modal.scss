@@ -159,7 +159,7 @@
 .about-overlay {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -373,18 +373,19 @@
 .about-btn {
   position: fixed;
   top: 1rem;
-  right: 1rem;
-  z-index: 50;
+  right: 0.4rem;
+  z-index: 60;
   font-family: 'Orbitron', sans-serif;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 14px 30px;
+  padding: 8px 18px;
 
   @media (max-width: 768px) {
     font-size: 8px;
     padding: 8px 14px;
+    top: 0.6rem;
   }
   border-left: none;
   border-top: 2px solid rgba(255, 255, 255, 0.35);

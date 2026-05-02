@@ -289,7 +289,7 @@
 
 .category-legend {
   position: fixed;
-  bottom: 3.5rem;
+  bottom: 2.5rem;
   right: 2rem;
   display: flex;
   flex-direction: column;
@@ -369,8 +369,13 @@
   height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  opacity: 0.5;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
   z-index: 1;
+
+  .legend-row:hover & {
+    opacity: 1;
+  }
 }
 
 // === Dark Mode Toggle ===

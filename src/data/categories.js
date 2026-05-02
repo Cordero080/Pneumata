@@ -33,7 +33,7 @@ export function darkenForLight(hex, factor = 0.62) {
 }
 
 export const CATEGORIES = [
-  { key: "spirit", label: "Spirit", desc: "Emergence & Consciousness" },
+  { key: "spirit", label: "Consciousness", desc: "Emergence & Awareness" },
   { key: "logic", label: "Logic", desc: "Cognition & Control" },
   { key: "power", label: "Power", desc: "Energy & Regulation" },
   { key: "thermal", label: "Thermal", desc: "Exchange & Cooling" },
