@@ -5,10 +5,9 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  will-change: left, top;
 }
 
-// === Trigger button — matches chamfered toggle style ===
+// === Trigger button ===
 
 .vcontrols-trigger {
   font-family: v.$font-hud;
@@ -33,7 +32,6 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
     inset 0 -1px 0 rgba(0, 0, 0, 0.07);
   color: rgba(55, 72, 88, 0.55);
-  // chamfer bottom-left only — top connects flush to About button
   clip-path: polygon(
     0 0,
     100% 0,
@@ -66,16 +64,15 @@
   position: absolute;
   top: 100%;
   right: 0;
-  margin-top: 4px;
   z-index: 100;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 8px 10px;
+  flex-direction: row;
+  gap: 10px;
+  padding: 12px 12px 10px;
 
   @media (min-width: 769px) {
-    gap: 10px;
-    padding: 12px 14px;
+    gap: 14px;
+    padding: 14px 14px 12px;
   }
   background: linear-gradient(
     135deg,
@@ -88,8 +85,7 @@
   border-bottom: 5px solid rgba(0, 0, 0, 0.18);
   clip-path: polygon(
     0 0,
-    calc(100% - 10px) 0,
-    100% 10px,
+    100% 0,
     100% 100%,
     10px 100%,
     0 calc(100% - 10px)
@@ -103,6 +99,7 @@
     opacity 0.3s ease,
     visibility 0.3s,
     transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+
   .vcontrols-wrapper--open & {
     opacity: 1;
     visibility: visible;
@@ -111,42 +108,29 @@
   }
 }
 
+// === Vertical slider (fader) ===
 
-// === Horizontal slider ===
-
-.hslider {
+.vslider {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   user-select: none;
-}
-
-.hslider__label {
-  font-family: v.$font-hud;
-  font-size: 6px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(55, 72, 88, 0.5);
-  width: 20px;
-  flex-shrink: 0;
-  text-align: right;
+  width: 28px;
 
   @media (min-width: 769px) {
-    font-size: 7px;
-    width: 26px;
-    letter-spacing: 0.18em;
+    width: 32px;
   }
 }
 
-.hslider__track {
+.vslider__track {
   position: relative;
-  width: 80px;
-  height: 4px;
-  cursor: ew-resize;
+  width: 4px;
+  height: 110px;
+  cursor: ns-resize;
 
   @media (min-width: 769px) {
-    width: 130px;
+    height: 140px;
   }
 
   &::before {
@@ -155,26 +139,26 @@
     inset: 0;
     border-radius: 4px;
     background: rgba(80, 100, 130, 0.3);
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    border-right: 2px solid rgba(0, 0, 0, 0.2);
   }
 }
 
-.hslider__fill {
+.vslider__fill {
   position: absolute;
+  bottom: 0;
   left: 0;
-  top: 0;
-  height: 100%;
+  width: 100%;
   border-radius: 4px;
   background: rgba(242, 247, 255, 0.8);
   pointer-events: none;
 }
 
-.hslider__knob {
+.vslider__knob {
   position: absolute;
-  top: 50%;
-  width: 5px;
-  height: 14px;
+  left: 50%;
+  width: 14px;
+  height: 5px;
   transform: translate(-50%, -50%);
   border-radius: 2px;
   background: rgba(210, 220, 232, 0.95);
@@ -185,8 +169,23 @@
   pointer-events: none;
   transition: box-shadow 0.15s ease;
 
-  .hslider__track:hover & {
+  .vslider__track:hover & {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.22), 0 0 8px rgba(80, 140, 220, 0.35);
+  }
+}
+
+.vslider__label {
+  font-family: v.$font-hud;
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(55, 72, 88, 0.5);
+  text-align: center;
+
+  @media (min-width: 769px) {
+    font-size: 7px;
+    letter-spacing: 0.18em;
   }
 }
 
@@ -214,26 +213,26 @@
   box-shadow: none;
 }
 
-.app--dark .hslider__label {
+.app--dark .vslider__label {
   color: v.$dark-text-dim;
 }
 
-.app--dark .hslider__track::before {
+.app--dark .vslider__track::before {
   background: rgba(100, 140, 200, 0.25);
 }
 
-.app--dark .hslider__fill {
+.app--dark .vslider__fill {
   background: rgba(157, 188, 226, 0.97);
 }
 
-.app--dark .hslider__knob {
+.app--dark .vslider__knob {
   background: rgba(30, 40, 60, 0.9);
   box-shadow:
     0 1px 4px rgba(0, 0, 0, 0.5),
     0 0 6px rgba(0, 180, 255, 0.2),
     inset 0 1px 0 rgba(100, 160, 255, 0.2);
 
-  .hslider__track:hover & {
+  .vslider__track:hover & {
     box-shadow:
       0 1px 6px rgba(0, 0, 0, 0.6),
       0 0 12px rgba(0, 212, 255, 0.45),
@@ -254,10 +253,10 @@
     @include v.female-light-surface;
   }
 
-  .hslider__label { color: rgba(140, 50, 100, 0.55); }
-  .hslider__track::before { background: rgba(180, 60, 130, 0.3); }
-  .hslider__fill { background: rgba(240, 180, 220, 0.85); }
-  .hslider__knob {
+  .vslider__label { color: rgba(140, 50, 100, 0.55); }
+  .vslider__track::before { background: rgba(180, 60, 130, 0.3); }
+  .vslider__fill { background: rgba(240, 180, 220, 0.85); }
+  .vslider__knob {
     background: rgba(230, 200, 220, 0.95);
     box-shadow: 0 1px 4px rgba(80, 0, 50, 0.2), inset 0 1px 0 rgba(255, 240, 250, 0.8);
   }
@@ -283,14 +282,14 @@
     box-shadow: none;
   }
 
-  .hslider__label { color: v.$female-text-dim; }
-  .hslider__track::before { background: rgba(200, 60, 140, 0.3); border-radius: 4px; }
-  .hslider__fill { background: rgba(240, 140, 200, 0.92); }
-  .hslider__knob {
+  .vslider__label { color: v.$female-text-dim; }
+  .vslider__track::before { background: rgba(200, 60, 140, 0.3); }
+  .vslider__fill { background: rgba(240, 140, 200, 0.92); }
+  .vslider__knob {
     background: rgba(35, 5, 25, 0.9);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5), 0 0 6px rgba(220, 0, 140, 0.2),
       inset 0 1px 0 rgba(255, 80, 160, 0.2);
-    .hslider__track:hover & {
+    .vslider__track:hover & {
       box-shadow: 0 1px 6px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 20, 160, 0.5),
         inset 0 1px 0 rgba(255, 120, 180, 0.3);
     }

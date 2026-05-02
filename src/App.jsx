@@ -172,8 +172,6 @@ function App() {
             onPanChange={setPanY}
             zoom={zoom}
             onZoomChange={setZoom}
-            scale={globalScale}
-            onScaleChange={setGlobalScale}
             offsetX={offsetX}
             onOffsetXChange={setOffsetX}
           />

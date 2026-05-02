@@ -18,21 +18,23 @@ export function sliderToX(v) {
   return X_MIN + v * (X_MAX - X_MIN);
 }
 
-function HSlider({ label, value, onChange }) {
+function VSlider({ label, value, onChange }) {
   const trackRef = useRef();
   const dragging = useRef(false);
 
   const updateFromPointer = (e) => {
     const rect = trackRef.current.getBoundingClientRect();
-    onChange(Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)));
+    // top = 1 (max), bottom = 0 (min)
+    onChange(
+      Math.max(0, Math.min(1, 1 - (e.clientY - rect.top) / rect.height)),
+    );
   };
 
   return (
-    <div className="hslider">
-      <span className="hslider__label">{label}</span>
+    <div className="vslider">
       <div
         ref={trackRef}
-        className="hslider__track"
+        className="vslider__track"
         onPointerDown={(e) => {
           e.preventDefault();
           dragging.current = true;
@@ -49,9 +51,13 @@ function HSlider({ label, value, onChange }) {
           dragging.current = false;
         }}
       >
-        <div className="hslider__fill" style={{ width: `${value * 100}%` }} />
-        <div className="hslider__knob" style={{ left: `${value * 100}%` }} />
+        <div className="vslider__fill" style={{ height: `${value * 100}%` }} />
+        <div
+          className="vslider__knob"
+          style={{ top: `${(1 - value) * 100}%` }}
+        />
       </div>
+      <span className="vslider__label">{label}</span>
     </div>
   );
 }
@@ -61,8 +67,6 @@ function VerticalControls({
   onPanChange,
   zoom,
   onZoomChange,
-  scale,
-  onScaleChange,
   offsetX,
   onOffsetXChange,
 }) {
@@ -80,18 +84,13 @@ function VerticalControls({
         ⊞
       </button>
       <div className="vcontrols-panel">
-        <HSlider
-          label="SIZE"
-          value={scaleToSlider(scale)}
-          onChange={(v) => onScaleChange(sliderToScale(v))}
-        />
-        <HSlider
+        <VSlider
           label="X"
           value={xToSlider(offsetX)}
           onChange={(v) => onOffsetXChange(sliderToX(v))}
         />
-        <HSlider label="PAN" value={panY} onChange={onPanChange} />
-        <HSlider label="ZOOM" value={zoom} onChange={onZoomChange} />
+        <VSlider label="PAN" value={panY} onChange={onPanChange} />
+        <VSlider label="ZOOM" value={zoom} onChange={onZoomChange} />
       </div>
     </div>
   );
