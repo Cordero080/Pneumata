@@ -184,7 +184,7 @@ function App() {
         <Scene
           globalScale={globalScale}
           offsetX={offsetX}
-          offsetY={offsetY + (viewPanelOpen ? 0.04 : 0)}
+          offsetY={offsetY + (viewPanelOpen ? 0.04 : -0.008)}
           onSelect={(organ) => {
             setSelectedOrgan(organ);
             if (organ && !organ.brainPosition && organ.type !== "line") {

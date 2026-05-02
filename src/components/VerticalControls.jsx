@@ -1,14 +1,5 @@
 import { useRef, useState } from "react";
 
-export const SCALE_MIN = 0.5;
-export const SCALE_MAX = 1.5;
-export function scaleToSlider(s) {
-  return (s - SCALE_MIN) / (SCALE_MAX - SCALE_MIN);
-}
-export function sliderToScale(v) {
-  return SCALE_MIN + v * (SCALE_MAX - SCALE_MIN);
-}
-
 export const X_MIN = -0.3;
 export const X_MAX = 0.3;
 export function xToSlider(x) {
