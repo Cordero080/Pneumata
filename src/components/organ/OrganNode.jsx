@@ -1,7 +1,30 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CATEGORY_COLORS, CATEGORY_EMISSIVE } from "../../data/categories";
+
+function makeGlowTexture() {
+  const size = 128;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  const g = ctx.createRadialGradient(
+    size / 2,
+    size / 2,
+    0,
+    size / 2,
+    size / 2,
+    size / 2,
+  );
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.12, "rgba(255,255,255,0.85)");
+  g.addColorStop(0.4, "rgba(255,255,255,0.2)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  return new THREE.CanvasTexture(canvas);
+}
 
 const IS_MOBILE = window.innerWidth <= 768;
 
@@ -33,6 +56,11 @@ function OrganNode({
   const innerRef = useRef();
   const auraRef = useRef();
   const groupRef = useRef();
+  const heartVisualRef = useRef();
+  const heartBeat = useRef({ last: 0, scale: 1 });
+  const heartGlowMatRef = useRef();
+  const heartCoreMatRef = useRef();
+  const glowTex = useMemo(() => (pulseRef ? makeGlowTexture() : null), []);
   const [hovered, setHovered] = useState(false);
   const isEye = organ.id === "right_eye" || organ.id === "left_eye";
   const glitchRef = useRef({ nextGlitch: 3 + Math.random() * 6, duration: 0 });
@@ -87,12 +115,13 @@ function OrganNode({
   // Sizes: glow outer / main sphere / inner core / hit target
   // "small" ~65% — deep/interior brain nodes. "large" ~130% — heart, liver, hemispheres.
   // Color variant idea for small nodes: blood-sunset tone like #c04030 or #e05020
+  const hitMult = IS_MOBILE ? 2.5 : 1;
   const sz =
     organ.nodeSize === "small"
-      ? { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.007 }
+      ? { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.007 * hitMult }
       : organ.nodeSize === "large"
-        ? { glow: 0.016, main: 0.021, inner: 0.009, hit: 0.012 }
-        : { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.009 };
+        ? { glow: 0.016, main: 0.021, inner: 0.009, hit: 0.012 * hitMult }
+        : { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.009 * hitMult };
   const isPreview = previewedOrganId === organ.id;
   const isExternallyHighlighted =
     !hovered && hoveredCategory === organ.category;
@@ -198,6 +227,29 @@ function OrganNode({
       auraRef.current.material.opacity +=
         (targetOpacity - auraRef.current.material.opacity) * 0.06;
     }
+
+    // Heart beat scale + sprite glow
+    if (pulseRef) {
+      const b = heartBeat.current;
+      if (pulseRef.current !== b.last) {
+        b.last = pulseRef.current;
+        b.scale = 0.72;
+      }
+      b.scale += (1.0 - b.scale) * 0.14;
+      if (heartVisualRef.current)
+        heartVisualRef.current.scale.setScalar(b.scale);
+
+      if (heartGlowMatRef.current && heartCoreMatRef.current) {
+        const baseGlow =
+          (hovered ? 0.55 : 0.35) * nodeOpacity * brainFade * selectionDim;
+        const baseCore =
+          (hovered ? 0.9 : 0.7) * nodeOpacity * brainFade * selectionDim;
+        heartGlowMatRef.current.opacity +=
+          (baseGlow - heartGlowMatRef.current.opacity) * 0.12;
+        heartCoreMatRef.current.opacity +=
+          (baseCore - heartCoreMatRef.current.opacity) * 0.12;
+      }
+    }
   });
 
   const handlePointerOver = (e) => {
@@ -218,56 +270,109 @@ function OrganNode({
 
   return (
     <group ref={groupRef}>
-      {/* Spirit expanding aura */}
-      {isSpirit && (
-        <mesh ref={auraRef} scale={1}>
-          <sphereGeometry args={[0.016, 16, 16]} />
+      {/* Visual sub-group — scaled on heartbeat */}
+      <group ref={pulseRef ? heartVisualRef : undefined}>
+        {/* Spirit expanding aura */}
+        {isSpirit && (
+          <mesh ref={auraRef} scale={1}>
+            <sphereGeometry args={[0.016, 16, 16]} />
+            <meshStandardMaterial
+              color="#ffffff"
+              emissive="#ffffff"
+              emissiveIntensity={0.3}
+              transparent
+              opacity={0}
+              depthWrite={false}
+              toneMapped={false}
+            />
+          </mesh>
+        )}
+
+        {/* Heartbeat rings — only on heart node */}
+        {pulseRef && (
+          <HeartRings pulseRef={pulseRef} nodeOpacity={nodeOpacity} />
+        )}
+
+        {/* Heart sprite glow — additive layered sprites like neural particles */}
+        {pulseRef && glowTex && (
+          <>
+            <sprite renderOrder={7} scale={[0.072, 0.072, 1]}>
+              <spriteMaterial
+                ref={heartGlowMatRef}
+                map={glowTex}
+                color={color}
+                transparent
+                opacity={0.35}
+                depthWrite={false}
+                depthTest={false}
+                toneMapped={false}
+                blending={THREE.AdditiveBlending}
+              />
+            </sprite>
+            <sprite renderOrder={8} scale={[0.028, 0.028, 1]}>
+              <spriteMaterial
+                ref={heartCoreMatRef}
+                map={glowTex}
+                color={color}
+                transparent
+                opacity={0.7}
+                depthWrite={false}
+                depthTest={false}
+                toneMapped={false}
+                blending={THREE.AdditiveBlending}
+              />
+            </sprite>
+          </>
+        )}
+
+        {/* Soft outer halo */}
+        <mesh ref={glowRef} renderOrder={5}>
+          <sphereGeometry args={[sz.glow, 12, 12]} />
           <meshStandardMaterial
-            color="#ffffff"
-            emissive="#ffffff"
-            emissiveIntensity={0.3}
-            transparent
-            opacity={0}
-            depthWrite={false}
+            color={color}
+            emissive={emissive}
+            emissiveIntensity={1}
             toneMapped={false}
+            transparent
+            opacity={0.1}
+            depthWrite={false}
+            depthTest={false}
           />
         </mesh>
-      )}
 
-      {/* Heartbeat rings — only on heart node */}
-      {pulseRef && <HeartRings pulseRef={pulseRef} nodeOpacity={nodeOpacity} />}
+        {/* Main node sphere */}
+        <mesh ref={meshRef} renderOrder={5}>
+          <sphereGeometry args={[sz.main, 16, 16]} />
+          <meshStandardMaterial
+            color={color}
+            emissive={emissive}
+            emissiveIntensity={1}
+            toneMapped={false}
+            transparent
+            opacity={0.18}
+            depthWrite={false}
+            depthTest={false}
+          />
+        </mesh>
 
-      {/* Soft outer halo */}
-      <mesh ref={glowRef} renderOrder={5}>
-        <sphereGeometry args={[sz.glow, 12, 12]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={emissive}
-          emissiveIntensity={1}
-          toneMapped={false}
-          transparent
-          opacity={0.1}
-          depthWrite={false}
-          depthTest={false}
-        />
-      </mesh>
+        {/* Small bright inner core */}
+        <mesh ref={innerRef} renderOrder={6}>
+          <sphereGeometry args={[sz.inner, 12, 12]} />
+          <meshStandardMaterial
+            color={isSpirit ? "#ffffff" : color}
+            emissive={isSpirit ? "#ffffff" : color}
+            emissiveIntensity={isSpirit ? 12 : 6}
+            toneMapped={false}
+            transparent
+            opacity={1}
+            depthWrite={false}
+            depthTest={false}
+          />
+        </mesh>
+      </group>
+      {/* end visual sub-group */}
 
-      {/* Main node sphere */}
-      <mesh ref={meshRef} renderOrder={5}>
-        <sphereGeometry args={[sz.main, 16, 16]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={emissive}
-          emissiveIntensity={1}
-          toneMapped={false}
-          transparent
-          opacity={0.18}
-          depthWrite={false}
-          depthTest={false}
-        />
-      </mesh>
-
-      {/* Invisible enlarged hit target — easier to tap on mobile */}
+      {/* Invisible enlarged hit target — outside visual group so click area never shrinks */}
       <mesh
         visible={!cellZoom}
         onPointerOver={handlePointerOver}
@@ -297,21 +402,6 @@ function OrganNode({
           opacity={0}
           depthTest={false}
           depthWrite={false}
-        />
-      </mesh>
-
-      {/* Small bright inner core */}
-      <mesh ref={innerRef} renderOrder={6}>
-        <sphereGeometry args={[sz.inner, 12, 12]} />
-        <meshStandardMaterial
-          color="#ffffff"
-          emissive={isSpirit ? "#ffffff" : color}
-          emissiveIntensity={isSpirit ? 12 : 6}
-          toneMapped={false}
-          transparent
-          opacity={1}
-          depthWrite={false}
-          depthTest={false}
         />
       </mesh>
 
