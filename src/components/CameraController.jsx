@@ -5,10 +5,10 @@ import * as THREE from "three";
 const LERP = 0.055;
 const SETTLED = 0.0008;
 
-const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.55, 0);
+const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.52, 0);
 const MALE_CELL_TARGET = new THREE.Vector3(0, 1.61, 0);
 const FEMALE_Y_OFFSET = 1.615 - 1.672;
-const FEMALE_BRAIN_TARGET = new THREE.Vector3(0, 1.55 + FEMALE_Y_OFFSET, 0);
+const FEMALE_BRAIN_TARGET = new THREE.Vector3(0, 1.52 + FEMALE_Y_OFFSET, 0);
 const FEMALE_CELL_TARGET = new THREE.Vector3(0, 1.61 + FEMALE_Y_OFFSET, 0);
 
 // Slider value 0 (knob top) = viewing head, 1 (knob bottom) = viewing legs
@@ -63,12 +63,12 @@ function CameraController({
     camera.updateProjectionMatrix();
     const yo = femaleMode ? FEMALE_Y_OFFSET : 0;
     if (cellZoom) {
-      camera.position.set(0, 1.61 + yo, 0.22);
+      camera.position.set(0, 1.61 + yo, 0.32);
       ctrl.target.set(0, 1.61 + yo, 0);
       ctrl.update();
     } else if (brainZoom) {
-      camera.position.set(0, 1.62 + yo, 0.55);
-      ctrl.target.set(0, 1.55 + yo, 0);
+      camera.position.set(0, 1.57 + yo, 0.65);
+      ctrl.target.set(0, 1.52 + yo, 0);
       ctrl.update();
     }
   }, [brainZoom, cellZoom, femaleMode, controlsRef, camera]);

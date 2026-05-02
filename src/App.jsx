@@ -43,6 +43,8 @@ function App() {
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const handleReset = () => {
+    setBrainZoom(false);
+    setCellZoom(false);
     setPanY(DEFAULTS.panY);
     setZoom(DEFAULTS.zoom);
     setGlobalScale(DEFAULTS.globalScale);
