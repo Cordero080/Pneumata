@@ -422,13 +422,13 @@ function AnatomyModel({
     if (!mat) return;
 
     // ✏️ OBSIDIAN base color (male | female)
-    const obsColor = femaleMode ? "#08041a" : "#030306";
-    // ✏️ OBSIDIAN inner glow color — red for male, violet for female
-    const obsEmissive = femaleMode ? "#5533cc" : "#880000";
+    const obsColor = femaleMode ? "#060305" : "#030306";
+    // ✏️ OBSIDIAN inner glow color — red for male, deep magenta for female
+    const obsEmissive = femaleMode ? "#880044" : "#880000";
     // ✏️ GHOST body color (light mode)
-    const ghostColor = femaleMode ? "#f5eaf0" : "#eef2f6";
-    // ✏️ ALUMINUM layer color (light mode)
-    const alColor = femaleMode ? "#d4a0b8" : "#c8d5e0";
+    const ghostColor = femaleMode ? "#f0edf2" : "#eef2f6";
+    // ✏️ ALUMINUM layer color — blue-steel for male, barely-pink silver for female
+    const alColor = femaleMode ? "#d0c8d8" : "#c8d5e0";
 
     if (darkMode) {
       // ✏️ DARK MODE BASE — obsidian shell
@@ -476,23 +476,25 @@ function AnatomyModel({
     const al = aluminumMatRef.current;
     if (!mat || !al) return;
 
-    // Dark female = indigo/violet tint; light female = rose/blush tint
-    const obsColor = femaleMode ? "#08041a" : "#030306";
-    const obsEmissive = femaleMode ? "#5533cc" : "#880000";
-    const alColor = femaleMode ? (darkMode ? "#b0a0d4" : "#d4a0b8") : "#c8d5e0";
-    const ghostColor = femaleMode ? "#f5eaf0" : "#eef2f6";
-    const ghostDark = femaleMode ? "#130a2a" : "#1a1a2a";
-    const whiteColor = femaleMode ? "#f8f0ff" : "#f0f4ff";
+    // Female = same metallic quality as male, hue shifted from blue to barely-pink
+    const obsColor = femaleMode ? "#060305" : "#030306";
+    const obsEmissive = femaleMode ? "#880044" : "#880000";
+    const alColor = femaleMode ? (darkMode ? "#c4bcd0" : "#d0c8d8") : "#c8d5e0";
+    const ghostColor = femaleMode ? "#f0edf2" : "#eef2f6";
+    const ghostDark = femaleMode ? "#1c1520" : "#1a1a2a";
+    const whiteColor = femaleMode ? "#f4f0f8" : "#f0f4ff";
     const whiteAlColor = femaleMode
       ? darkMode
-        ? "#9988cc"
-        : "#c8a0b5"
+        ? "#b8b0c4"
+        : "#bab0c0"
       : "#a8bcd4";
     const whiteEmissive = femaleMode
       ? darkMode
+        ? "#cc4488"
+        : "#c06080"
+      : darkMode
         ? "#9966ff"
-        : "#c86090"
-      : "#c8a060";
+        : "#c8a060";
 
     if (darkMode) {
       // Dark mode: 0=dark ghost, 1=semi obsidian, 2=solid obsidian, 3=white ghost, 4=semi silver, 5=solid silver
@@ -621,14 +623,14 @@ function AnatomyModel({
     }
 
     const sheenMat = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color("#e14791"),
-      metalness: 0.2,
-      roughness: 0.35,
-      sheen: 1.0,
-      sheenColor: new THREE.Color("#88a8ff"),
-      sheenRoughness: 0.18,
+      color: new THREE.Color("#d8c0d0"),
+      metalness: 0.1,
+      roughness: 0.4,
+      sheen: 0.6,
+      sheenColor: new THREE.Color("#e0c8d8"),
+      sheenRoughness: 0.3,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.12,
       depthWrite: false,
     });
 

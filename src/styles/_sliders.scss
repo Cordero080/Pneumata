@@ -125,7 +125,7 @@
 
 .vslider__track {
   position: relative;
-  width: 4px;
+  width: 24px;
   height: 110px;
   cursor: ns-resize;
 
@@ -136,7 +136,11 @@
   &::before {
     content: "";
     position: absolute;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    transform: translateX(-50%);
     border-radius: 4px;
     background: rgba(80, 100, 130, 0.3);
     border-left: 1px solid rgba(255, 255, 255, 0.25);
@@ -147,8 +151,9 @@
 .vslider__fill {
   position: absolute;
   bottom: 0;
-  left: 0;
-  width: 100%;
+  left: 50%;
+  width: 4px;
+  transform: translateX(-50%);
   border-radius: 4px;
   background: rgba(242, 247, 255, 0.8);
   pointer-events: none;

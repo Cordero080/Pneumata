@@ -6,7 +6,7 @@ const LERP = 0.055;
 const SETTLED = 0.0008;
 
 const BRAIN_TARGET = new THREE.Vector3(0, 1.55, 0);
-const CELL_TARGET = new THREE.Vector3(0, 1.6, 0);
+const CELL_TARGET = new THREE.Vector3(0, 1.72, 0);
 
 // Slider value 0 (knob top) = viewing head, 1 (knob bottom) = viewing legs
 const PAN_Y_TOP = 1.65;
@@ -56,8 +56,8 @@ function CameraController({
     ctrl.minDistance = cellZoom ? 0.05 : brainZoom ? 0.12 : ZOOM_NEAR;
     ctrl.maxDistance = cellZoom ? 0.35 : brainZoom ? 0.6 : ZOOM_FAR;
     if (cellZoom) {
-      camera.position.set(0, 1.58, 0.22);
-      ctrl.target.set(0, 1.6, 0);
+      camera.position.set(0, 1.72, 0.22);
+      ctrl.target.set(0, 1.72, 0);
       ctrl.update();
     } else if (brainZoom) {
       // Snap to frontal position — directly in front of brain at eye level
@@ -92,19 +92,17 @@ function CameraController({
           : cellZoom
             ? CELL_TARGET
             : BRAIN_TARGET;
-      ctrl.target.lerp(target, LERP);
-      ctrl.autoRotateSpeed = cellZoom ? 0 : 1.2;
-      ctrl.update();
-      if (!animating.current) return;
-      if (ctrl.target.distanceTo(BRAIN_TARGET) < SETTLED) {
-        ctrl.target.copy(BRAIN_TARGET);
-        ctrl.update();
-        animating.current = false;
+      ctrl.target.x += (target.x - ctrl.target.x) * LERP;
+      ctrl.target.z += (target.z - ctrl.target.z) * LERP;
+      // Y only lerped during initial entry animation; after that pan controls it
+      if (animating.current) {
+        ctrl.target.y += (target.y - ctrl.target.y) * LERP;
+        if (ctrl.target.distanceTo(target) < SETTLED) animating.current = false;
       }
-      return;
+      ctrl.autoRotateSpeed = cellZoom ? 0 : 1.2;
     }
 
-    // Pan — focus on selected organ or use slider; shift down when panel hidden
+    // Pan — always active in all modes
     const panelOffset = viewPanelOpen ? 0.06 : 0.07;
     const targetY =
       organFocusY !== null
@@ -112,10 +110,14 @@ function CameraController({
         : PAN_Y_TOP -
           panYRef.current * (PAN_Y_TOP - PAN_Y_BOTTOM) +
           panelOffset;
-    ctrl.target.y += (targetY - ctrl.target.y) * LERP;
+    if (!animating.current || (!cellZoom && !brainZoom)) {
+      ctrl.target.y += (targetY - ctrl.target.y) * LERP;
+    }
 
-    // Zoom — pull toward organ focus distance, or use slider
-    if (organFocusY !== null) {
+    // Zoom — map slider to the active mode's distance range
+    const zoomMin = cellZoom ? 0.05 : brainZoom ? 0.12 : ZOOM_NEAR;
+    const zoomMax = cellZoom ? 0.35 : brainZoom ? 0.6 : ZOOM_FAR;
+    if (!cellZoom && !brainZoom && organFocusY !== null) {
       const currentDist = camera.position.distanceTo(ctrl.target);
       if (Math.abs(currentDist - TORSO_FOCUS_DIST) > 0.01) {
         const dir = camera.position.clone().sub(ctrl.target).normalize();
@@ -123,7 +125,7 @@ function CameraController({
         camera.position.copy(ctrl.target).addScaledVector(dir, newDist);
       }
     } else if (zoomDirty.current) {
-      const targetDist = ZOOM_NEAR + zoomRef.current * (ZOOM_FAR - ZOOM_NEAR);
+      const targetDist = zoomMin + zoomRef.current * (zoomMax - zoomMin);
       const currentDist = camera.position.distanceTo(ctrl.target);
       if (Math.abs(currentDist - targetDist) < 0.015) {
         zoomDirty.current = false;
