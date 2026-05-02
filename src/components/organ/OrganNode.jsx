@@ -23,6 +23,7 @@ function OrganNode({
   darkMode,
   femaleMode,
   femalePositions,
+  selectedOrganId,
   previewedOrganId,
   onPreview,
   onClearPreview,
@@ -110,6 +111,8 @@ function OrganNode({
     const phase = organ.position[0];
 
     const brainFade = cellZoom || (brainZoom && !organ.brainPosition) ? 0 : 1;
+    const selectionDim =
+      selectedOrganId && selectedOrganId !== organ.id ? 0.18 : 1;
 
     // Eye glitch — occasional rapid color flicker
     if (isEye && meshRef.current) {
@@ -148,7 +151,8 @@ function OrganNode({
       base + Math.sin(t * 3 + phase) * 0.5;
 
     meshRef.current.material.opacity +=
-      (0.18 * nodeOpacity * brainFade - meshRef.current.material.opacity) *
+      (0.18 * nodeOpacity * brainFade * selectionDim -
+        meshRef.current.material.opacity) *
       0.08;
 
     // Breathing scale pulse — lungs in power mode, spirit node always
@@ -166,7 +170,9 @@ function OrganNode({
 
     if (glowRef.current) {
       const glowTarget =
-        (hovered ? 0.22 : isExternallyHighlighted ? 0.18 : 0.1) * nodeOpacity;
+        (hovered ? 0.22 : isExternallyHighlighted ? 0.18 : 0.1) *
+        nodeOpacity *
+        selectionDim;
       glowRef.current.scale.setScalar(
         hovered ? 3.5 : isExternallyHighlighted ? 3.0 : 2.5,
       );
@@ -179,7 +185,9 @@ function OrganNode({
       innerRef.current.material.emissiveIntensity =
         innerBase + Math.sin(t * 5 + phase) * (isSpirit ? 3 : 1.2);
       innerRef.current.material.opacity +=
-        (nodeOpacity * brainFade - innerRef.current.material.opacity) * 0.08;
+        (nodeOpacity * brainFade * selectionDim -
+          innerRef.current.material.opacity) *
+        0.08;
     }
 
     if (isSpirit && auraRef.current) {

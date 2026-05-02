@@ -14,17 +14,7 @@ import BrainModel from "../brain/BrainModel";
 import CellularView from "../brain/CellularView";
 import { organs } from "../../data/organs";
 
-const CELL_ZOOM_IDS = new Set([
-  "frontal_lobe",
-  "left_hemisphere",
-  "right_hemisphere",
-  "thalamus",
-  "hippocampus",
-  "amygdala",
-  "hypothalamus",
-  "pituitary",
-  "brain_stem",
-]);
+const CELL_ZOOM_IDS = new Set(["pituitary"]);
 
 const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
 const RIGHT_LUNG_POS = [0.12, 1.22, 0.05];
@@ -222,6 +212,7 @@ function Scene({
               brainZoom={brainZoom}
               cellZoom={cellZoom}
               darkMode={darkMode}
+              selectedOrganId={selectedOrgan?.id}
               previewedOrganId={previewedOrgan?.id}
               onPreview={handlePreview}
               onClearPreview={handleClearPreview}
@@ -245,7 +236,7 @@ function Scene({
         enableZoom
         enablePan
         autoRotate
-        autoRotateSpeed={1.2}
+        autoRotateSpeed={0.5}
         minDistance={0.9}
         maxDistance={7}
         target={ORBIT_TARGET}

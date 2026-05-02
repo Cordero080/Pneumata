@@ -6,7 +6,7 @@ const LERP = 0.055;
 const SETTLED = 0.0008;
 
 const BRAIN_TARGET = new THREE.Vector3(0, 1.55, 0);
-const CELL_TARGET = new THREE.Vector3(0, 1.72, 0);
+const CELL_TARGET = new THREE.Vector3(0, 1.61, 0);
 
 // Slider value 0 (knob top) = viewing head, 1 (knob bottom) = viewing legs
 const PAN_Y_TOP = 1.65;
@@ -53,11 +53,11 @@ function CameraController({
     animating.current = true;
     const ctrl = controlsRef.current;
     if (!ctrl) return;
-    ctrl.minDistance = cellZoom ? 0.05 : brainZoom ? 0.12 : ZOOM_NEAR;
-    ctrl.maxDistance = cellZoom ? 0.35 : brainZoom ? 0.6 : ZOOM_FAR;
+    ctrl.minDistance = cellZoom ? 0.1 : brainZoom ? 0.12 : ZOOM_NEAR;
+    ctrl.maxDistance = cellZoom ? 0.8 : brainZoom ? 0.6 : ZOOM_FAR;
     if (cellZoom) {
-      camera.position.set(0, 1.72, 0.22);
-      ctrl.target.set(0, 1.72, 0);
+      camera.position.set(0, 1.61, 0.5);
+      ctrl.target.set(0, 1.61, 0);
       ctrl.update();
     } else if (brainZoom) {
       // Snap to frontal position — directly in front of brain at eye level
@@ -94,23 +94,21 @@ function CameraController({
             : BRAIN_TARGET;
       ctrl.target.x += (target.x - ctrl.target.x) * LERP;
       ctrl.target.z += (target.z - ctrl.target.z) * LERP;
-      // Y only lerped during initial entry animation; after that pan controls it
-      if (animating.current) {
-        ctrl.target.y += (target.y - ctrl.target.y) * LERP;
-        if (ctrl.target.distanceTo(target) < SETTLED) animating.current = false;
-      }
-      ctrl.autoRotateSpeed = cellZoom ? 0 : 1.2;
-    }
-
-    // Pan — always active in all modes
-    const panelOffset = viewPanelOpen ? 0.06 : 0.07;
-    const targetY =
-      organFocusY !== null
-        ? organFocusY
-        : PAN_Y_TOP -
-          panYRef.current * (PAN_Y_TOP - PAN_Y_BOTTOM) +
-          panelOffset;
-    if (!animating.current || (!cellZoom && !brainZoom)) {
+      // Pan offsets Y relative to cell/brain target. Default pan (0.5) = zero offset.
+      const panOffset = (0.5 - panYRef.current) * 0.4;
+      ctrl.target.y += (target.y + panOffset - ctrl.target.y) * LERP;
+      if (animating.current && ctrl.target.distanceTo(target) < SETTLED)
+        animating.current = false;
+      ctrl.autoRotateSpeed = cellZoom ? 0 : 0.5;
+    } else {
+      // Normal mode — pan targets absolute Y on the body
+      const panelOffset = viewPanelOpen ? 0.06 : 0.07;
+      const targetY =
+        organFocusY !== null
+          ? organFocusY
+          : PAN_Y_TOP -
+            panYRef.current * (PAN_Y_TOP - PAN_Y_BOTTOM) +
+            panelOffset;
       ctrl.target.y += (targetY - ctrl.target.y) * LERP;
     }
 
