@@ -405,7 +405,7 @@ export const organs = [
     nodeColor: "#ff0a0a", // STYLE: rich crimson — richer than category power red
     organ: "Heart",
     hardware: "Power Supply Unit (PSU)",
-    position: [-0.04, 1.3, 0.06],
+    position: [0.01, 1.32, 0.06],
     bio_function:
       "The muscular pump delivering oxygenated blood to every cell in the body. Not because it thinks, but because everything that thinks requires continuous power delivery. It beats 100,000 times per day without instruction. Four minutes without it and the cortex begins to die.",
     hard_function:

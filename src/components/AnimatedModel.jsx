@@ -3,6 +3,30 @@ import { useFBX, useAnimations } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+// Fade the chest region so the heart node is visible through the mesh.
+// FBX sits at world Y+0.45, so heart world-y 1.30 → local ~0.85.
+// Band: local y 0.6–1.1 covers the full chest/heart area.
+function applyChestWindow(mat) {
+  mat.onBeforeCompile = (shader) => {
+    shader.vertexShader =
+      "varying float vChestFade;\n" + shader.vertexShader;
+    shader.vertexShader = shader.vertexShader.replace(
+      "#include <project_vertex>",
+      `#include <project_vertex>
+float _wy = (modelMatrix * vec4(transformed, 1.0)).y;
+vChestFade = smoothstep(0.58, 0.78, _wy) * (1.0 - smoothstep(1.05, 1.22, _wy));`,
+    );
+    shader.fragmentShader =
+      "varying float vChestFade;\n" + shader.fragmentShader;
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <output_fragment>",
+      `#include <output_fragment>
+gl_FragColor.a *= 1.0 - vChestFade * 0.85;`,
+    );
+  };
+  mat.customProgramCacheKey = () => "chest-window";
+}
+
 function AnimatedModel({ darkMode, meshMode, fbxRef }) {
   const fbx = useFBX("/animations/pneumata_swing.fbx");
   const standingFbx = useFBX("/animations/Standing.fbx");
@@ -111,21 +135,21 @@ function AnimatedModel({ darkMode, meshMode, fbxRef }) {
           depthWrite: false,
         });
       } else {
-        const solid = meshMode === 2;
         mat = new THREE.MeshPhysicalMaterial({
           color: "#030306",
           emissive: "#880000",
           metalness: 0.92,
           roughness: 0.08,
-          transparent: !solid,
-          opacity: solid ? 1.0 : 0.82,
+          transparent: true,
+          opacity: meshMode === 2 ? 0.92 : 0.82,
           iridescence: 0.45,
           iridescenceIOR: 1.32,
           iridescenceThicknessRange: [120, 280],
           clearcoat: 0.9,
           clearcoatRoughness: 0.08,
-          depthWrite: solid,
+          depthWrite: false,
         });
+        applyChestWindow(mat);
       }
     } else {
       if (meshMode === 0) {
@@ -149,15 +173,15 @@ function AnimatedModel({ darkMode, meshMode, fbxRef }) {
           depthWrite: false,
         });
       } else {
-        const solid = meshMode === 2;
         mat = new THREE.MeshStandardMaterial({
           color: "#d8dde2",
           metalness: 0.88,
           roughness: 0.15,
-          transparent: !solid,
-          opacity: solid ? 1.0 : 0.82,
-          depthWrite: solid,
+          transparent: true,
+          opacity: meshMode === 2 ? 0.92 : 0.82,
+          depthWrite: false,
         });
+        applyChestWindow(mat);
       }
     }
     if (matRef.current) matRef.current.dispose();

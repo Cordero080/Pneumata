@@ -9,8 +9,10 @@ import AnatomyModel from "../anatomy/AnatomyModel";
 import BodyCirculation from "../BodyCirculation";
 import NerveRoots from "../NerveRoots";
 import NerveSystem from "../spine/NerveSystem";
+import SpinalFibers from "../spine/SpinalFibers";
 import CameraController from "../CameraController";
 import BrainModel from "../brain/BrainModel";
+import HeartModel from "../heart/HeartModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import { organs } from "../../data/organs";
@@ -127,6 +129,12 @@ function Scene({
           femaleMode={femaleMode}
         />
 
+        <HeartModel
+          meshMode={meshMode}
+          viewMode={viewMode}
+          hoveredOrganId={hoveredOrganId}
+        />
+
         <BrainModel
           meshMode={meshMode}
           brainZoom={brainZoom}
@@ -180,6 +188,8 @@ function Scene({
           viewMode={viewMode}
           showNerves={showNerves}
         />
+
+        <SpinalFibers spinePoints={spinePoints} viewMode={viewMode} />
 
         <NerveSystem
           spinePoints={spinePoints}
