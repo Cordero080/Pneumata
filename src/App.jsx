@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import "./App.scss";
 import Scene from "./components/scene/Scene";
+import LandingOverlay from "./components/landing/LandingOverlay";
 import AnimatedScene from "./components/scene/AnimatedScene";
 import GlassModal from "./components/modal/GlassModal";
 import AboutModal from "./components/about/AboutModal";
@@ -42,6 +43,9 @@ function App() {
   const [showAnimation, setShowAnimation] = useState(false);
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  const [showLanding, setShowLanding] = useState(
+    () => !localStorage.getItem("pneumata_subscribed"),
+  );
   const handleReset = () => {
     setBrainZoom(false);
     setCellZoom(false);
@@ -260,6 +264,8 @@ function App() {
       )}
 
       <p className="app-copyright">© 2026 Pablo Cordero</p>
+
+      {showLanding && <LandingOverlay onEnter={() => setShowLanding(false)} />}
     </div>
   );
 }

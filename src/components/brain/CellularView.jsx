@@ -4,6 +4,8 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { organs } from "../../data/organs";
 
+const IS_MOBILE = window.innerWidth <= 768;
+
 const pituitaryOrgan = organs.find((o) => o.id === "pituitary");
 
 function makeMatcap(hexColor) {
@@ -191,6 +193,7 @@ function CellMesh({
   const matsRef = useRef([]);
   const glowSpriteRef = useRef();
   const [hovered, setHovered] = useState(false);
+  const [isPreview, setIsPreview] = useState(false);
   const activeRef = useRef(false);
   activeRef.current = brainZoom || cellZoom;
 
@@ -271,7 +274,15 @@ function CellMesh({
         onClick={(e) => {
           if (!activeRef.current) return;
           e.stopPropagation();
-          if (clickNode) onCellSelect?.(clickNode);
+          if (!clickNode) return;
+          if (IS_MOBILE) {
+            if (isPreview) {
+              setIsPreview(false);
+              onCellSelect?.(clickNode);
+            } else setIsPreview(true);
+          } else {
+            onCellSelect?.(clickNode);
+          }
         }}
         onPointerOver={(e) => {
           if (!activeRef.current || !clickNode) return;
@@ -284,7 +295,7 @@ function CellMesh({
           document.body.style.cursor = "default";
         }}
       >
-        <sphereGeometry args={[0.016, 8, 8]} />
+        <sphereGeometry args={[IS_MOBILE ? 0.03 : 0.016, 8, 8]} />
         <meshBasicMaterial
           transparent
           opacity={0}
@@ -309,7 +320,7 @@ function CellMesh({
           blending={THREE.AdditiveBlending}
         />
       </sprite>
-      {(brainZoom || cellZoom) && hovered && labelText && (
+      {(brainZoom || cellZoom) && (hovered || isPreview) && labelText && (
         <Html
           position={[posX, posY, posZ]}
           center
