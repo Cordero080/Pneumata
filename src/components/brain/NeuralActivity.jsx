@@ -25,8 +25,9 @@ function makeGlowTexture() {
   return new THREE.CanvasTexture(canvas);
 }
 
-// Safe inner volume only: y 1.628–1.728, x ±0.038, z –0.044 to +0.028
-// No paths end near pituitary — all endpoints stay in mid-brain
+// Confirmed world bounds (male): x ±0.0706, y 1.558–1.723, z -0.1048–+0.0769
+// Safe inner volume: y 1.568–1.718, x ±0.062, z -0.092–+0.062
+// Extend in z (not y) to reach frontal (+z) and occipital (-z) lobes
 const PATHS = [
   // Corpus callosum — left to right
   [
@@ -126,19 +127,19 @@ const PATHS = [
   ],
   // Frontal lobe sweep — mid y, deep positive z (into forehead)
   [
-    [-0.042, 1.696, 0.036],
-    [-0.02, 1.708, 0.048],
-    [0.0, 1.712, 0.052],
-    [0.022, 1.708, 0.048],
-    [0.042, 1.696, 0.036],
+    [-0.044, 1.692, 0.04],
+    [-0.022, 1.706, 0.054],
+    [0.0, 1.71, 0.062],
+    [0.022, 1.706, 0.054],
+    [0.044, 1.692, 0.04],
   ],
-  // Upper parietal — modest y rise, wider x (crown area)
+  // Upper parietal — crown area, y capped at real mesh top
   [
-    [-0.036, 1.722, -0.008],
-    [-0.016, 1.728, 0.004],
-    [0.0, 1.728, 0.01],
-    [0.018, 1.726, 0.004],
-    [0.036, 1.72, -0.008],
+    [-0.036, 1.714, -0.008],
+    [-0.016, 1.718, 0.004],
+    [0.0, 1.718, 0.01],
+    [0.018, 1.716, 0.004],
+    [0.036, 1.712, -0.008],
   ],
   // Left lateral sweep — outer hemisphere, mid to upper
   [
@@ -158,35 +159,51 @@ const PATHS = [
   ],
   // Occipital arc — mid y, deep negative z (back of brain)
   [
-    [-0.03, 1.69, -0.042],
-    [-0.014, 1.702, -0.054],
-    [0.0, 1.706, -0.058],
-    [0.016, 1.7, -0.054],
-    [0.03, 1.688, -0.042],
+    [-0.034, 1.688, -0.056],
+    [-0.016, 1.698, -0.072],
+    [0.0, 1.702, -0.082],
+    [0.018, 1.696, -0.072],
+    [0.032, 1.684, -0.056],
   ],
   // Left frontal relay — outer upper-left down to center
   [
-    [-0.054, 1.718, 0.018],
-    [-0.038, 1.722, 0.028],
-    [-0.018, 1.718, 0.038],
-    [0.002, 1.708, 0.044],
-    [0.016, 1.694, 0.036],
+    [-0.054, 1.714, 0.018],
+    [-0.038, 1.716, 0.032],
+    [-0.018, 1.712, 0.05],
+    [0.002, 1.704, 0.058],
+    [0.016, 1.692, 0.046],
   ],
   // Right frontal relay
   [
-    [0.054, 1.718, 0.018],
-    [0.038, 1.722, 0.028],
-    [0.018, 1.718, 0.038],
-    [-0.002, 1.708, 0.044],
-    [-0.016, 1.694, 0.036],
+    [0.054, 1.714, 0.018],
+    [0.038, 1.716, 0.032],
+    [0.018, 1.712, 0.05],
+    [-0.002, 1.704, 0.058],
+    [-0.016, 1.692, 0.046],
   ],
   // Wide upper commissure — full left to right at upper level
   [
     [-0.06, 1.706, -0.004],
-    [-0.03, 1.718, 0.002],
-    [0.0, 1.722, 0.006],
-    [0.03, 1.718, 0.002],
+    [-0.03, 1.714, 0.002],
+    [0.0, 1.718, 0.006],
+    [0.03, 1.714, 0.002],
     [0.06, 1.706, -0.004],
+  ],
+  // Deep occipital descent — center, reaches far back
+  [
+    [0.004, 1.672, -0.052],
+    [0.002, 1.658, -0.068],
+    [0.0, 1.644, -0.08],
+    [-0.002, 1.632, -0.088],
+    [0.0, 1.622, -0.092],
+  ],
+  // Deep occipital sweep — left to right across back of brain
+  [
+    [-0.03, 1.648, -0.07],
+    [-0.014, 1.638, -0.082],
+    [0.0, 1.632, -0.09],
+    [0.016, 1.638, -0.082],
+    [0.028, 1.648, -0.07],
   ],
 ];
 
@@ -285,6 +302,17 @@ const BASE_SPARKS = [
   // Wide upper commissure (19)
   { pathIndex: 19, speed: 0.38, phase: 0.0, color: new THREE.Color("#00ffff") },
   { pathIndex: 19, speed: 0.38, phase: 0.5, color: new THREE.Color("#ffaa44") },
+  // Deep occipital descent (20)
+  { pathIndex: 20, speed: 0.24, phase: 0.1, color: new THREE.Color("#4488ff") },
+  { pathIndex: 20, speed: 0.24, phase: 0.6, color: new THREE.Color("#aa44ff") },
+  // Deep occipital sweep (21)
+  { pathIndex: 21, speed: 0.27, phase: 0.3, color: new THREE.Color("#00aaff") },
+  {
+    pathIndex: 21,
+    speed: 0.27,
+    phase: 0.75,
+    color: new THREE.Color("#cc66ff"),
+  },
 ];
 
 // Expand each base spark into main + 2 trailing particles for action-potential trail effect
@@ -408,14 +436,14 @@ const TIPS = [
   },
   // Frontal lobe peak
   {
-    pos: [0.0, 1.712, 0.052],
+    pos: [0.0, 1.71, 0.062],
     color: new THREE.Color("#ff88ff"),
     freq: 1.1,
     phase: 0.6,
   },
   // Crown parietal
   {
-    pos: [0.0, 1.728, 0.01],
+    pos: [0.0, 1.718, 0.01],
     color: new THREE.Color("#ffffff"),
     freq: 0.9,
     phase: 1.3,
@@ -434,12 +462,26 @@ const TIPS = [
     freq: 1.3,
     phase: 1.1,
   },
-  // Occipital peak
+  // Occipital mid
   {
-    pos: [0.0, 1.706, -0.058],
+    pos: [0.0, 1.702, -0.082],
     color: new THREE.Color("#00b3ff"),
     freq: 1.2,
     phase: 0.7,
+  },
+  // Deep occipital bottom
+  {
+    pos: [0.0, 1.622, -0.092],
+    color: new THREE.Color("#4488ff"),
+    freq: 1.0,
+    phase: 0.3,
+  },
+  // Deep occipital sweep mid
+  {
+    pos: [0.0, 1.632, -0.09],
+    color: new THREE.Color("#cc66ff"),
+    freq: 1.3,
+    phase: 1.6,
   },
   // Wide upper commissure center
   {

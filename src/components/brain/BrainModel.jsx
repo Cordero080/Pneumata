@@ -42,6 +42,19 @@ function BrainModel({
       -center.z * s + BRAIN_Z_OFFSET,
     );
 
+    // After positioning, recompute box in final world-space coords.
+    // These are the real bounds for placing neural paths, tips, etc.
+    scene.updateMatrixWorld(true);
+    const worldBox = new THREE.Box3().setFromObject(scene);
+    const worldMin = worldBox.min;
+    const worldMax = worldBox.max;
+    console.log(
+      `[BrainModel] world bounds (${femaleMode ? "female" : "male"}):\n` +
+        `  x: ${worldMin.x.toFixed(4)} → ${worldMax.x.toFixed(4)}\n` +
+        `  y: ${worldMin.y.toFixed(4)} → ${worldMax.y.toFixed(4)}\n` +
+        `  z: ${worldMin.z.toFixed(4)} → ${worldMax.z.toFixed(4)}`,
+    );
+
     // Preserve original GLB materials — just enable transparency on each
     const mats = [];
     scene.traverse((child) => {
