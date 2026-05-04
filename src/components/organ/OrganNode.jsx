@@ -1,6 +1,30 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+
+function makeGlowTexture() {
+  const size = 128;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  const g = ctx.createRadialGradient(
+    size / 2,
+    size / 2,
+    0,
+    size / 2,
+    size / 2,
+    size / 2,
+  );
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.12, "rgba(255,255,255,0.85)");
+  g.addColorStop(0.4, "rgba(255,255,255,0.2)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  return new THREE.CanvasTexture(canvas);
+}
+
 import { CATEGORY_COLORS, CATEGORY_EMISSIVE } from "../../data/categories";
 
 const IS_MOBILE = window.innerWidth <= 768;
@@ -35,6 +59,13 @@ function OrganNode({
   const groupRef = useRef();
   const heartVisualRef = useRef();
   const heartBeat = useRef({ last: 0, scale: 1 });
+  const heartSpriteOuterRef = useRef();
+  const heartSpriteInnerRef = useRef();
+  const heartGlowFlash = useRef(0);
+  const glowTex = useMemo(
+    () => (pulseRef ? makeGlowTexture() : null),
+    [pulseRef],
+  );
   const [hovered, setHovered] = useState(false);
   const isEye = organ.id === "right_eye" || organ.id === "left_eye";
   const glitchRef = useRef({ nextGlitch: 3 + Math.random() * 6, duration: 0 });
@@ -115,7 +146,9 @@ function OrganNode({
 
     const brainFade = cellZoom || (brainZoom && !organ.brainPosition) ? 0 : 1;
     // Heart is always fully lit — never dimmed by selection or view mode
-    const effectiveNodeOpacity = pulseRef ? Math.max(nodeOpacity, 0.7) : nodeOpacity;
+    const effectiveNodeOpacity = pulseRef
+      ? Math.max(nodeOpacity, 0.7)
+      : nodeOpacity;
     const selectionDim =
       pulseRef || !selectedOrganId || selectedOrganId === organ.id ? 1 : 0.18;
 
@@ -204,16 +237,26 @@ function OrganNode({
         (targetOpacity - auraRef.current.material.opacity) * 0.06;
     }
 
-    // Heart beat scale pulse
+    // Heart beat scale pulse + sprite glow
     if (pulseRef) {
       const b = heartBeat.current;
       if (pulseRef.current !== b.last) {
         b.last = pulseRef.current;
         b.scale = 0.72;
+        heartGlowFlash.current = 1.0;
       }
       b.scale += (1.0 - b.scale) * 0.14;
       if (heartVisualRef.current)
         heartVisualRef.current.scale.setScalar(b.scale);
+
+      heartGlowFlash.current *= 0.84;
+      const flash = heartGlowFlash.current;
+      if (heartSpriteOuterRef.current)
+        heartSpriteOuterRef.current.opacity +=
+          (flash * 0.55 - heartSpriteOuterRef.current.opacity) * 0.2;
+      if (heartSpriteInnerRef.current)
+        heartSpriteInnerRef.current.opacity +=
+          (flash * 1.0 - heartSpriteInnerRef.current.opacity) * 0.2;
     }
   });
 
@@ -256,6 +299,38 @@ function OrganNode({
         {/* Heartbeat rings — only on heart node */}
         {pulseRef && (
           <HeartRings pulseRef={pulseRef} nodeOpacity={nodeOpacity} />
+        )}
+
+        {/* Heart sprite glow — neurotransmitter-style additive halo */}
+        {pulseRef && glowTex && (
+          <>
+            <sprite renderOrder={8} scale={[0.038, 0.038, 1]}>
+              <spriteMaterial
+                ref={heartSpriteOuterRef}
+                map={glowTex}
+                color="#ff1100"
+                transparent
+                opacity={0}
+                depthWrite={false}
+                depthTest={false}
+                toneMapped={false}
+                blending={THREE.AdditiveBlending}
+              />
+            </sprite>
+            <sprite renderOrder={9} scale={[0.012, 0.012, 1]}>
+              <spriteMaterial
+                ref={heartSpriteInnerRef}
+                map={glowTex}
+                color="#ff4422"
+                transparent
+                opacity={0}
+                depthWrite={false}
+                depthTest={false}
+                toneMapped={false}
+                blending={THREE.AdditiveBlending}
+              />
+            </sprite>
+          </>
         )}
 
         {/* Soft outer halo */}

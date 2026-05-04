@@ -133,6 +133,7 @@ function Scene({
           meshMode={meshMode}
           viewMode={viewMode}
           hoveredOrganId={hoveredOrganId}
+          heartbeatRef={heartbeatRef}
         />
 
         <BrainModel

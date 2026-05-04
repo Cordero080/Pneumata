@@ -8,10 +8,11 @@ const HEART_CENTER_Y = 1.32;
 const HEART_CENTER_Z = 0.06;
 const TARGET_HEIGHT = 0.13;
 
-function HeartModel({ meshMode, viewMode, hoveredOrganId }) {
+function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
   const gltf = useGLTF("/rose-heart.glb");
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
   const matsRef = useRef([]);
+  const beatRef = useRef({ last: 0, flash: 0 });
 
   useEffect(() => {
     scene.scale.set(1, 1, 1);
@@ -34,11 +35,19 @@ function HeartModel({ meshMode, viewMode, hoveredOrganId }) {
     const mats = [];
     scene.traverse((child) => {
       if (child.isMesh) {
-        const m = child.material;
-        m.transparent = true;
-        m.opacity = 0;
-        m.depthWrite = false;
-        m.needsUpdate = true;
+        const prev = child.material;
+        const m = new THREE.MeshStandardMaterial({
+          color: prev.color ?? new THREE.Color("#c04040"),
+          map: prev.map ?? null,
+          transparent: true,
+          opacity: 0,
+          depthWrite: false,
+          emissive: new THREE.Color("#ff2200"),
+          emissiveIntensity: 0,
+          roughness: 0.55,
+          metalness: 0.25,
+        });
+        child.material = m;
         child.renderOrder = 4;
         if (!mats.includes(m)) mats.push(m);
       }
@@ -54,21 +63,35 @@ function HeartModel({ meshMode, viewMode, hoveredOrganId }) {
     const hovered = hoveredOrganId === "heart";
     const powerMode = viewMode === "power";
 
-    let targetOpacity;
+    let baseOpacity;
     if (hovered) {
-      targetOpacity = 0.95;
+      baseOpacity = 0.95;
     } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
-      targetOpacity = powerMode ? 0.88 : 0.65;
+      baseOpacity = powerMode ? 0.88 : 0.65;
     } else if (ghostMode) {
-      targetOpacity = powerMode ? 0.82 : 0.45;
+      baseOpacity = powerMode ? 0.82 : 0.45;
     } else if (meshMode === 1) {
-      targetOpacity = 0.55;
+      baseOpacity = 0.55;
     } else {
-      targetOpacity = 0.0;
+      baseOpacity = 0.0;
     }
 
+    const b = beatRef.current;
+    if (heartbeatRef && heartbeatRef.current !== b.last) {
+      b.last = heartbeatRef.current;
+      b.flash = 1.0;
+    }
+    b.flash *= 0.88;
+
     for (const m of mats) {
-      m.opacity += (targetOpacity - m.opacity) * 0.06;
+      m.opacity += (baseOpacity - m.opacity) * 0.06;
+      if (m.emissive !== undefined) {
+        m.emissive.set("#ff2200");
+      }
+      if (m.emissiveIntensity !== undefined) {
+        m.emissiveIntensity += (b.flash * 8.0 - m.emissiveIntensity) * 0.2;
+        m.needsUpdate = true;
+      }
     }
   });
 

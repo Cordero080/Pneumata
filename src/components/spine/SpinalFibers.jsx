@@ -5,141 +5,255 @@ import * as THREE from "three";
 
 const CURVE_SAMPLES = 80;
 
-const FIBERS = [
+const TRACTS = [
   {
-    id: "sensory",
-    xOff: -0.004,
-    zOff: 0.0,
-    color: "#00d4ff",
+    id: "dorsal_l",
+    xOff: -0.005, // this
+    color: new THREE.Color("#00d4ff"),
     dir: 1,
-    speed: 0.28,
-    pulses: 4,
-    opacity: 0.9,
-    width: 2.0,
+    speed: 0.09,
+    pulses: 3,
   },
   {
-    id: "core",
-    xOff: 0.0,
-    zOff: 0.0,
-    color: "#d0e8ff",
-    dir: 0,
-    speed: 0,
-    pulses: 0,
-    opacity: 0.5,
-    width: 1.4,
+    id: "dorsal_r",
+    xOff: 0.005,
+    color: new THREE.Color("#00aaff"),
+    dir: 1,
+    speed: 0.1,
+    pulses: 3,
   },
   {
-    id: "motor",
-    xOff: 0.004,
-    zOff: 0.0,
-    color: "#ff5533",
+    id: "spinothal_a",
+    xOff: -0.003,
+    color: new THREE.Color("#cc55ff"),
+    dir: 1,
+    speed: 0.07,
+    pulses: 3,
+  },
+  {
+    id: "spinothal_l",
+    xOff: 0.003,
+    color: new THREE.Color("#aa33ee"),
+    dir: 1,
+    speed: 0.08,
+    pulses: 3,
+  },
+  {
+    id: "spinocereb_a",
+    xOff: -0.001,
+    color: new THREE.Color("#22dd88"),
+    dir: 1,
+    speed: 0.06,
+    pulses: 2,
+  },
+  {
+    id: "spinocereb_a",
+    xOff: -0.001,
+    color: new THREE.Color("#c7dd22"),
+    dir: 1,
+    speed: 0.06,
+    pulses: 2,
+  },
+  {
+    id: "spinocereb_a",
+    xOff: -0.001,
+    color: new THREE.Color("#22dd88"),
+    dir: 1,
+    speed: 0.06,
+    pulses: 2,
+  },
+  {
+    id: "spinocereb_p",
+    xOff: 0.001,
+    color: new THREE.Color("#dcf78b"),
+    dir: 1,
+    speed: 0.05,
+    pulses: 2,
+  },
+  {
+    id: "cortico_l",
+    xOff: -0.004,
+    color: new THREE.Color("#fe7159"),
     dir: -1,
-    speed: 0.22,
-    pulses: 4,
-    opacity: 0.9,
-    width: 2.0,
+    speed: 0.09,
+    pulses: 3,
+  },
+  {
+    id: "cortico_r",
+    xOff: 0.004,
+    color: new THREE.Color("#ff6600"),
+    dir: -1,
+    speed: 0.08,
+    pulses: 3,
+  },
+  {
+    id: "cortico_ant",
+    xOff: 0.0,
+    color: new THREE.Color("#ffaa22"),
+    dir: -1,
+    speed: 0.06,
+    pulses: 2,
+  },
+  {
+    id: "rubrospinal",
+    xOff: -0.002,
+    color: new THREE.Color("#ff8833"),
+    dir: -1,
+    speed: 0.07,
+    pulses: 2,
+  },
+  {
+    id: "vestibulo",
+    xOff: 0.002,
+    color: new THREE.Color("#ffe044"),
+    dir: -1,
+    speed: 0.05,
+    pulses: 2,
+  },
+  {
+    id: "reticulo",
+    xOff: 0.0,
+    color: new THREE.Color("#aaddff"),
+    dir: -1,
+    speed: 0.04,
+    pulses: 2,
   },
 ];
 
-// Trail segments per comet: [tOffset behind head, scale, opacity multiplier]
+// Trail: head + N fading steps behind it
 const TRAIL = [
-  [0.0, 1.0, 1.0],
-  [0.012, 0.7, 0.55],
-  [0.022, 0.45, 0.28],
-  [0.03, 0.25, 0.12],
+  { tOff: 0.0, size: 0.0034, opacity: 1.0 },
+  { tOff: 0.008, size: 0.0033, opacity: 0.8 },
+  { tOff: 0.016, size: 0.0032, opacity: 0.62 },
+  { tOff: 0.024, size: 0.0030, opacity: 0.46 },
+  { tOff: 0.032, size: 0.0023, opacity: 0.32 },
+  { tOff: 0.032, size: 0.0023, opacity: 0.32 },
+  { tOff: 0.032, size: 0.0023, opacity: 0.32 },
+  { tOff: 0.04, size: 0.0021, opacity: 0.2 },
+  { tOff: 0.04, size: 0.0021, opacity: 0.2 },
+  { tOff: 0.04, size: 0.0021, opacity: 0.2 },
+  { tOff: 0.05, size: 0.00017, opacity: 0.12 },
+  { tOff: 0.062, size: 0.0005, opacity: 0.06 },
+  { tOff: 0.062, size: 0.0005, opacity: 0.06 },
+  { tOff: 0.062, size: 0.0005, opacity: 0.06 },
+  { tOff: 0.076, size: 0.0003, opacity: 0.06 },
+  { tOff: 0.076, size: 0.0003, opacity: 0.06 },
+  { tOff: 0.076, size: 0.0003, opacity: 0.06 },
+  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
+  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
+  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
+  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
+  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
+  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
 ];
 
 export default function SpinalFibers({ spinePoints, viewMode }) {
-  const trailRefs = useRef({});
+  const meshRefs = useRef({});
   const pulseT = useRef({});
 
   const { curves, linePoints } = useMemo(() => {
     if (!spinePoints || spinePoints.length < 2)
-      return { curves: {}, linePoints: {} };
+      return { curves: null, linePoints: null };
     const curves = {};
     const linePoints = {};
-    for (const fiber of FIBERS) {
+    for (const tract of TRACTS) {
       const pts = spinePoints.map(
-        (p) => new THREE.Vector3(p[0] + fiber.xOff, p[1], p[2] + fiber.zOff),
+        (p) => new THREE.Vector3(p[0] + tract.xOff, p[1], p[2]),
       );
-      const curve = new THREE.CatmullRomCurve3(pts, false, "centripetal", 0.5);
-      curves[fiber.id] = curve;
-      linePoints[fiber.id] = curve.getPoints(CURVE_SAMPLES);
+      curves[tract.id] = new THREE.CatmullRomCurve3(
+        pts,
+        false,
+        "centripetal",
+        0.5,
+      );
+      linePoints[tract.id] = curves[tract.id].getPoints(CURVE_SAMPLES);
     }
     return { curves, linePoints };
   }, [spinePoints]);
 
   useFrame((_, delta) => {
-    for (const fiber of FIBERS) {
-      if (!fiber.pulses || fiber.dir === 0) continue;
-      const curve = curves[fiber.id];
+    if (!curves) return;
+    const mult =
+      viewMode === "breathing" ? 0.15 : viewMode === "unified" ? 0.5 : 1.0;
+
+    for (const tract of TRACTS) {
+      const curve = curves[tract.id];
       if (!curve) continue;
 
-      if (pulseT.current[fiber.id] === undefined) {
-        pulseT.current[fiber.id] = Math.random();
-      }
-      pulseT.current[fiber.id] =
-        (((pulseT.current[fiber.id] + fiber.dir * fiber.speed * delta) % 1) +
+      if (pulseT.current[tract.id] === undefined)
+        pulseT.current[tract.id] = Math.random();
+      pulseT.current[tract.id] =
+        (((pulseT.current[tract.id] + tract.dir * tract.speed * delta) % 1) +
           1) %
         1;
-      const t0 = pulseT.current[fiber.id];
+      const t0 = pulseT.current[tract.id];
 
-      for (let pi = 0; pi < fiber.pulses; pi++) {
-        const tHead = (((t0 + pi / fiber.pulses) % 1) + 1) % 1;
+      for (let pi = 0; pi < tract.pulses; pi++) {
+        const tHead = (((t0 + pi / tract.pulses) % 1) + 1) % 1;
         for (let ti = 0; ti < TRAIL.length; ti++) {
-          const [tOff] = TRAIL[ti];
-          // trail flows opposite to direction of travel
-          const tTrail = (((tHead - fiber.dir * tOff) % 1) + 1) % 1;
-          const ref = trailRefs.current[`${fiber.id}_${pi}_${ti}`];
-          if (ref) ref.position.copy(curve.getPoint(tTrail));
+          const step = TRAIL[ti];
+          const t = Math.max(0, Math.min(1, tHead - tract.dir * step.tOff));
+          const ref = meshRefs.current[`${tract.id}_${pi}_${ti}`];
+          if (ref) {
+            ref.position.copy(curve.getPoint(t));
+            ref.material.opacity = step.opacity * mult;
+          }
         }
       }
     }
   });
 
-  if (!spinePoints) return null;
+  if (!spinePoints || !curves) return null;
 
-  const modeOpacityMult =
-    viewMode === "breathing" ? 0.25 : viewMode === "unified" ? 0.6 : 1.0;
+  const mult =
+    viewMode === "breathing" ? 0.15 : viewMode === "unified" ? 0.5 : 1.0;
 
   return (
-    <>
-      {FIBERS.map((fiber) => {
-        const pts = linePoints[fiber.id];
-        if (!pts) return null;
-        const baseOpacity = fiber.opacity * modeOpacityMult;
-
-        return (
-          <group key={fiber.id}>
+    <group>
+      {/* Background tract lines — thick and visible */}
+      {linePoints &&
+        TRACTS.map((tract) => (
+          <group key={tract.id}>
             <Line
-              points={pts}
-              color={fiber.color}
-              lineWidth={fiber.width}
-              opacity={baseOpacity}
+              points={linePoints[tract.id]}
+              color={tract.color}
+              lineWidth={4}
+              opacity={0.12 * mult}
               transparent
             />
-            {Array.from({ length: fiber.pulses }, (_, pi) =>
-              TRAIL.map(([, scale, opMult], ti) => (
-                <mesh
-                  key={`${pi}_${ti}`}
-                  ref={(el) => {
-                    if (el) trailRefs.current[`${fiber.id}_${pi}_${ti}`] = el;
-                  }}
-                  renderOrder={3}
-                >
-                  <sphereGeometry args={[0.004 * scale, 6, 6]} />
-                  <meshBasicMaterial
-                    color={fiber.color}
-                    transparent
-                    opacity={baseOpacity * opMult * 1.3}
-                    toneMapped={false}
-                  />
-                </mesh>
-              )),
-            )}
+            <Line
+              points={linePoints[tract.id]}
+              color={tract.color}
+              lineWidth={1.5}
+              opacity={0.45 * mult}
+              transparent
+            />
           </group>
-        );
-      })}
-    </>
+        ))}
+
+      {/* Animated comet trails */}
+      {TRACTS.map((tract) =>
+        Array.from({ length: tract.pulses }, (_, pi) =>
+          TRAIL.map((step, ti) => (
+            <mesh
+              key={`${tract.id}_${pi}_${ti}`}
+              ref={(el) => {
+                if (el) meshRefs.current[`${tract.id}_${pi}_${ti}`] = el;
+              }}
+              renderOrder={7}
+            >
+              <sphereGeometry args={[step.size, 7, 7]} />
+              <meshBasicMaterial
+                color={tract.color}
+                transparent
+                opacity={step.opacity * mult}
+                depthWrite={false}
+                toneMapped={false}
+              />
+            </mesh>
+          )),
+        ),
+      )}
+    </group>
   );
 }

@@ -401,7 +401,6 @@ export const organs = [
     id: "heart",
     category: "power",
     type: "point",
-    nodeSize: "large", // STYLE: central power node — larger sphere
     nodeColor: "#ff0a0a", // STYLE: rich crimson — richer than category power red
     organ: "Heart",
     hardware: "Power Supply Unit (PSU)",
