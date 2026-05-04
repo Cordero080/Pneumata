@@ -67,11 +67,11 @@ function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
     if (hovered) {
       baseOpacity = 0.95;
     } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
-      baseOpacity = powerMode ? 0.88 : 0.65;
+      baseOpacity = powerMode ? 0.88 : 0.35;
     } else if (ghostMode) {
       baseOpacity = powerMode ? 0.82 : 0.45;
     } else if (meshMode === 1) {
-      baseOpacity = 0.55;
+      baseOpacity = 0.25;
     } else {
       baseOpacity = 0.0;
     }
@@ -86,10 +86,11 @@ function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
     for (const m of mats) {
       m.opacity += (baseOpacity - m.opacity) * 0.06;
       if (m.emissive !== undefined) {
-        m.emissive.set("#ff2200");
+        m.emissive.set("#cc0011");
       }
       if (m.emissiveIntensity !== undefined) {
-        m.emissiveIntensity += (b.flash * 8.0 - m.emissiveIntensity) * 0.2;
+        const target = (powerMode ? 0.8 : 0.0) + b.flash * 8.0;
+        m.emissiveIntensity += (target - m.emissiveIntensity) * 0.2;
         m.needsUpdate = true;
       }
     }
