@@ -8,8 +8,7 @@ import * as THREE from "three";
 // Band: local y 0.6–1.1 covers the full chest/heart area.
 function applyChestWindow(mat) {
   mat.onBeforeCompile = (shader) => {
-    shader.vertexShader =
-      "varying float vChestFade;\n" + shader.vertexShader;
+    shader.vertexShader = "varying float vChestFade;\n" + shader.vertexShader;
     shader.vertexShader = shader.vertexShader.replace(
       "#include <project_vertex>",
       `#include <project_vertex>

@@ -65,7 +65,7 @@ function BrainModel({
     const ghostMode = meshMode === 0 || meshMode === 3;
 
     const targetOpacity = cellZoom
-      ? 0.15
+      ? 0.28
       : ghostMode
         ? brainZoom
           ? 0.88

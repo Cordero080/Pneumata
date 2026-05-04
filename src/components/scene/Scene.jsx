@@ -156,6 +156,7 @@ function Scene({
           darkMode={darkMode}
           meshMode={meshMode}
           femaleMode={femaleMode}
+          onCellZoom={() => setCellZoom(true)}
           onCellSelect={(node) =>
             onSelect({
               id: node.id,

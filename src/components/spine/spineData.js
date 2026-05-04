@@ -102,7 +102,7 @@ export const DISC_STYLES = {
 // Brain stem sits at z = -0.052 — top disc should be near this value to connect underneath it
 export const MALE_SPINE_POINTS = [
   [0, 1.58, -0.035], // C2 — top disc, sits just below brain stem (z ≈ brain stem z)
-  [0, 1.554, -0.01], // C3 — nudge z to curve neck
+  [0, 1.554, -0.028], // C3 — gentle cervical lordosis (was -0.01, caused visible fiber overshoot)
   [0, 1.523, -0.035], // C4 — cervical curve continues back
   [0, 1.493, -0.033], // C5
   [0, 1.462, -0.042], // C6

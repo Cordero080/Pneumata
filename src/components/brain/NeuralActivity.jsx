@@ -92,9 +92,106 @@ const PATHS = [
     [-0.006, 1.654, -0.025],
     [-0.014, 1.634, -0.036],
   ],
+  // Thalamo-prefrontal relay
+  [
+    [0.0, 1.668, -0.008],
+    [-0.01, 1.676, 0.002],
+    [-0.018, 1.688, 0.014],
+    [-0.028, 1.698, 0.018],
+    [-0.034, 1.71, 0.02],
+  ],
+  // Left temporal arc
+  [
+    [-0.034, 1.722, 0.0],
+    [-0.038, 1.708, -0.01],
+    [-0.036, 1.69, -0.022],
+    [-0.03, 1.672, -0.03],
+    [-0.022, 1.652, -0.038],
+  ],
+  // Right temporal arc
+  [
+    [0.034, 1.722, 0.0],
+    [0.038, 1.708, -0.01],
+    [0.036, 1.69, -0.022],
+    [0.03, 1.672, -0.03],
+    [0.022, 1.652, -0.038],
+  ],
+  // Deep cross commissure
+  [
+    [-0.022, 1.636, -0.038],
+    [-0.01, 1.648, -0.03],
+    [0.0, 1.656, -0.024],
+    [0.012, 1.648, -0.018],
+    [0.024, 1.636, -0.012],
+  ],
+  // Frontal lobe sweep — mid y, deep positive z (into forehead)
+  [
+    [-0.042, 1.696, 0.036],
+    [-0.02, 1.708, 0.048],
+    [0.0, 1.712, 0.052],
+    [0.022, 1.708, 0.048],
+    [0.042, 1.696, 0.036],
+  ],
+  // Upper parietal — modest y rise, wider x (crown area)
+  [
+    [-0.036, 1.722, -0.008],
+    [-0.016, 1.728, 0.004],
+    [0.0, 1.728, 0.01],
+    [0.018, 1.726, 0.004],
+    [0.036, 1.72, -0.008],
+  ],
+  // Left lateral sweep — outer hemisphere, mid to upper
+  [
+    [-0.064, 1.668, 0.008],
+    [-0.06, 1.686, -0.01],
+    [-0.054, 1.7, -0.022],
+    [-0.044, 1.712, -0.028],
+    [-0.03, 1.72, -0.032],
+  ],
+  // Right lateral sweep
+  [
+    [0.064, 1.668, 0.008],
+    [0.06, 1.686, -0.01],
+    [0.054, 1.7, -0.022],
+    [0.044, 1.712, -0.028],
+    [0.03, 1.72, -0.032],
+  ],
+  // Occipital arc — mid y, deep negative z (back of brain)
+  [
+    [-0.03, 1.69, -0.042],
+    [-0.014, 1.702, -0.054],
+    [0.0, 1.706, -0.058],
+    [0.016, 1.7, -0.054],
+    [0.03, 1.688, -0.042],
+  ],
+  // Left frontal relay — outer upper-left down to center
+  [
+    [-0.054, 1.718, 0.018],
+    [-0.038, 1.722, 0.028],
+    [-0.018, 1.718, 0.038],
+    [0.002, 1.708, 0.044],
+    [0.016, 1.694, 0.036],
+  ],
+  // Right frontal relay
+  [
+    [0.054, 1.718, 0.018],
+    [0.038, 1.722, 0.028],
+    [0.018, 1.718, 0.038],
+    [-0.002, 1.708, 0.044],
+    [-0.016, 1.694, 0.036],
+  ],
+  // Wide upper commissure — full left to right at upper level
+  [
+    [-0.06, 1.706, -0.004],
+    [-0.03, 1.718, 0.002],
+    [0.0, 1.722, 0.006],
+    [0.03, 1.718, 0.002],
+    [0.06, 1.706, -0.004],
+  ],
 ];
 
-const SPARKS = [
+// Base spark definitions — each expands into main + 2 trailing particles
+const BASE_SPARKS = [
   { pathIndex: 0, speed: 0.3, phase: 0.0, color: new THREE.Color("#00ffff") },
   { pathIndex: 0, speed: 0.3, phase: 0.55, color: new THREE.Color("#ff00ff") },
   { pathIndex: 1, speed: 0.26, phase: 0.1, color: new THREE.Color("#00ffff") },
@@ -106,10 +203,122 @@ const SPARKS = [
   { pathIndex: 4, speed: 0.42, phase: 0.0, color: new THREE.Color("#00b3ff") },
   { pathIndex: 4, speed: 0.42, phase: 0.5, color: new THREE.Color("#ffee00") },
   { pathIndex: 5, speed: 0.22, phase: 0.15, color: new THREE.Color("#c300ff") },
+  { pathIndex: 5, speed: 0.22, phase: 0.65, color: new THREE.Color("#ffffff") },
   { pathIndex: 6, speed: 0.28, phase: 0.35, color: new THREE.Color("#00ffff") },
   { pathIndex: 6, speed: 0.28, phase: 0.75, color: new THREE.Color("#ffee00") },
   { pathIndex: 7, speed: 0.34, phase: 0.45, color: new THREE.Color("#00ff88") },
+  { pathIndex: 7, speed: 0.34, phase: 0.85, color: new THREE.Color("#ff6633") },
+  { pathIndex: 8, speed: 0.32, phase: 0.1, color: new THREE.Color("#ffaa00") },
+  { pathIndex: 8, speed: 0.32, phase: 0.6, color: new THREE.Color("#ff44ff") },
+  { pathIndex: 9, speed: 0.25, phase: 0.2, color: new THREE.Color("#00ffcc") },
+  { pathIndex: 9, speed: 0.25, phase: 0.7, color: new THREE.Color("#ff0066") },
+  {
+    pathIndex: 10,
+    speed: 0.25,
+    phase: 0.45,
+    color: new THREE.Color("#00ccff"),
+  },
+  { pathIndex: 10, speed: 0.25, phase: 0.9, color: new THREE.Color("#aaff00") },
+  {
+    pathIndex: 11,
+    speed: 0.35,
+    phase: 0.05,
+    color: new THREE.Color("#ff9900"),
+  },
+  {
+    pathIndex: 11,
+    speed: 0.35,
+    phase: 0.55,
+    color: new THREE.Color("#00ffff"),
+  },
+  // Upper frontal arc (12)
+  { pathIndex: 12, speed: 0.36, phase: 0.0, color: new THREE.Color("#00ffff") },
+  { pathIndex: 12, speed: 0.36, phase: 0.5, color: new THREE.Color("#ff88ff") },
+  // Crown (13)
+  { pathIndex: 13, speed: 0.28, phase: 0.2, color: new THREE.Color("#ffffff") },
+  { pathIndex: 13, speed: 0.28, phase: 0.7, color: new THREE.Color("#aaffff") },
+  // Left parietal (14)
+  { pathIndex: 14, speed: 0.31, phase: 0.1, color: new THREE.Color("#ff00ff") },
+  { pathIndex: 14, speed: 0.31, phase: 0.6, color: new THREE.Color("#ffee00") },
+  // Right parietal (15)
+  {
+    pathIndex: 15,
+    speed: 0.31,
+    phase: 0.35,
+    color: new THREE.Color("#00ff88"),
+  },
+  {
+    pathIndex: 15,
+    speed: 0.31,
+    phase: 0.82,
+    color: new THREE.Color("#ff4400"),
+  },
+  // Upper occipital (16)
+  {
+    pathIndex: 16,
+    speed: 0.29,
+    phase: 0.15,
+    color: new THREE.Color("#00b3ff"),
+  },
+  {
+    pathIndex: 16,
+    speed: 0.29,
+    phase: 0.65,
+    color: new THREE.Color("#cc00ff"),
+  },
+  // Left frontal relay (17)
+  {
+    pathIndex: 17,
+    speed: 0.33,
+    phase: 0.05,
+    color: new THREE.Color("#ffcc00"),
+  },
+  {
+    pathIndex: 17,
+    speed: 0.33,
+    phase: 0.55,
+    color: new THREE.Color("#00ffcc"),
+  },
+  // Right frontal relay (18)
+  { pathIndex: 18, speed: 0.33, phase: 0.3, color: new THREE.Color("#ff6688") },
+  { pathIndex: 18, speed: 0.33, phase: 0.8, color: new THREE.Color("#88ff44") },
+  // Wide upper commissure (19)
+  { pathIndex: 19, speed: 0.38, phase: 0.0, color: new THREE.Color("#00ffff") },
+  { pathIndex: 19, speed: 0.38, phase: 0.5, color: new THREE.Color("#ffaa44") },
 ];
+
+// Expand each base spark into main + 2 trailing particles for action-potential trail effect
+function withTrails(sparks) {
+  const result = [];
+  for (let i = 0; i < sparks.length; i++) {
+    const s = sparks[i];
+    const parentIdx = result.length;
+    result.push({
+      ...s,
+      trailOff: 0,
+      maxOpacity: 1.0,
+      scale: 1.0,
+      parentIdx: null,
+    });
+    result.push({
+      ...s,
+      trailOff: 0.022,
+      maxOpacity: 0.42,
+      scale: 0.65,
+      parentIdx,
+    });
+    result.push({
+      ...s,
+      trailOff: 0.042,
+      maxOpacity: 0.18,
+      scale: 0.38,
+      parentIdx,
+    });
+  }
+  return result;
+}
+
+const SPARKS = withTrails(BASE_SPARKS);
 
 // Tips at mesh extremities — displaced by ~mesh-radius from each center
 const TIPS = [
@@ -167,6 +376,92 @@ const TIPS = [
     freq: 1.6,
     phase: 1.8,
   },
+  {
+    pos: [-0.034, 1.71, 0.02],
+    color: new THREE.Color("#ffaa22"),
+    freq: 1.1,
+    phase: 0.5,
+  },
+  {
+    pos: [-0.022, 1.652, -0.038],
+    color: new THREE.Color("#00ffcc"),
+    freq: 1.3,
+    phase: 0.9,
+  },
+  {
+    pos: [0.022, 1.652, -0.038],
+    color: new THREE.Color("#00ccff"),
+    freq: 1.0,
+    phase: 1.4,
+  },
+  {
+    pos: [-0.022, 1.636, -0.038],
+    color: new THREE.Color("#ff9900"),
+    freq: 1.5,
+    phase: 0.3,
+  },
+  {
+    pos: [0.024, 1.636, -0.012],
+    color: new THREE.Color("#aaff00"),
+    freq: 1.2,
+    phase: 2.1,
+  },
+  // Frontal lobe peak
+  {
+    pos: [0.0, 1.712, 0.052],
+    color: new THREE.Color("#ff88ff"),
+    freq: 1.1,
+    phase: 0.6,
+  },
+  // Crown parietal
+  {
+    pos: [0.0, 1.728, 0.01],
+    color: new THREE.Color("#ffffff"),
+    freq: 0.9,
+    phase: 1.3,
+  },
+  // Left lateral outer
+  {
+    pos: [-0.064, 1.668, 0.008],
+    color: new THREE.Color("#ff00ff"),
+    freq: 1.3,
+    phase: 0.2,
+  },
+  // Right lateral outer
+  {
+    pos: [0.064, 1.668, 0.008],
+    color: new THREE.Color("#00ff88"),
+    freq: 1.3,
+    phase: 1.1,
+  },
+  // Occipital peak
+  {
+    pos: [0.0, 1.706, -0.058],
+    color: new THREE.Color("#00b3ff"),
+    freq: 1.2,
+    phase: 0.7,
+  },
+  // Wide upper commissure center
+  {
+    pos: [0.0, 1.722, 0.006],
+    color: new THREE.Color("#ffaa44"),
+    freq: 1.4,
+    phase: 1.8,
+  },
+  // Left frontal lobe
+  {
+    pos: [-0.018, 1.718, 0.038],
+    color: new THREE.Color("#ffcc00"),
+    freq: 1.0,
+    phase: 0.4,
+  },
+  // Right frontal lobe
+  {
+    pos: [0.018, 1.718, 0.038],
+    color: new THREE.Color("#ff6688"),
+    freq: 1.0,
+    phase: 1.5,
+  },
 ];
 
 const FEMALE_Y_OFFSET = 1.615 - 1.672;
@@ -197,34 +492,35 @@ function NeuralActivity({ brainZoom, cellZoom, femaleMode }) {
   );
 
   useFrame((state, delta) => {
-    const active = brainZoom || cellZoom;
     const t = state.clock.getElapsedTime();
 
-    const tubeTarget = active ? 0.09 : 0;
     tubeRefs.current.forEach((m) => {
-      if (m) m.opacity += (tubeTarget - m.opacity) * 0.05;
+      if (m) m.opacity += (0.12 - m.opacity) * 0.05;
     });
 
     SPARKS.forEach((spark, i) => {
       const d = sparkRefs.current[i];
       if (!d.group) return;
-      d.t = (d.t + delta * spark.speed) % 1;
-      const pt = curves[spark.pathIndex].getPoint(d.t);
+      if (spark.parentIdx === null) {
+        d.t = (d.t + delta * spark.speed) % 1;
+      } else {
+        d.t = sparkRefs.current[spark.parentIdx].t;
+      }
+      const tSelf = (((d.t - spark.trailOff) % 1) + 1) % 1;
+      const pt = curves[spark.pathIndex].getPoint(tSelf);
       d.group.position.copy(pt);
-      const target = active ? 1.0 : 0;
-      if (d.mat) d.mat.opacity += (target - d.mat.opacity) * 0.07;
+      if (d.mat) d.mat.opacity += (spark.maxOpacity - d.mat.opacity) * 0.07;
       if (d.glowMat)
-        d.glowMat.opacity += (target * 0.4 - d.glowMat.opacity) * 0.07;
+        d.glowMat.opacity +=
+          (spark.maxOpacity * 0.4 - d.glowMat.opacity) * 0.07;
     });
 
     TIPS.forEach((tip, i) => {
       const ref = tipRefs.current[i];
       if (!ref.mat) return;
       const pulse = (Math.sin(t * tip.freq * Math.PI * 2 + tip.phase) + 1) / 2;
-      ref.mat.opacity +=
-        ((active ? 0.4 + pulse * 0.6 : 0) - ref.mat.opacity) * 0.08;
-      ref.glowMat.opacity +=
-        ((active ? pulse * 0.3 : 0) - ref.glowMat.opacity) * 0.08;
+      ref.mat.opacity += (0.4 + pulse * 0.6 - ref.mat.opacity) * 0.08;
+      ref.glowMat.opacity += (pulse * 0.3 - ref.glowMat.opacity) * 0.08;
     });
   });
 
@@ -236,7 +532,7 @@ function NeuralActivity({ brainZoom, cellZoom, femaleMode }) {
             ref={(m) => {
               if (m) tubeRefs.current[i] = m;
             }}
-            color="#003344"
+            color="#0077aa"
             transparent
             opacity={0}
             depthWrite={false}
@@ -254,7 +550,10 @@ function NeuralActivity({ brainZoom, cellZoom, femaleMode }) {
             if (g) sparkRefs.current[i].group = g;
           }}
         >
-          <sprite renderOrder={8} scale={[0.014, 0.014, 1]}>
+          <sprite
+            renderOrder={8}
+            scale={[0.014 * spark.scale, 0.014 * spark.scale, 1]}
+          >
             <spriteMaterial
               ref={(m) => {
                 if (m) sparkRefs.current[i].glowMat = m;
@@ -269,7 +568,10 @@ function NeuralActivity({ brainZoom, cellZoom, femaleMode }) {
               blending={THREE.AdditiveBlending}
             />
           </sprite>
-          <sprite renderOrder={9} scale={[0.004, 0.004, 1]}>
+          <sprite
+            renderOrder={9}
+            scale={[0.004 * spark.scale, 0.004 * spark.scale, 1]}
+          >
             <spriteMaterial
               ref={(m) => {
                 if (m) sparkRefs.current[i].mat = m;

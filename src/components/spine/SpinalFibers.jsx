@@ -2,13 +2,14 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Line } from "@react-three/drei";
 import * as THREE from "three";
+import { smoothPoints } from "./spineData";
 
 const CURVE_SAMPLES = 80;
 
 const TRACTS = [
   {
     id: "dorsal_l",
-    xOff: -0.005, // this
+    xOff: -0.002,
     color: new THREE.Color("#00d4ff"),
     dir: 1,
     speed: 0.09,
@@ -16,7 +17,7 @@ const TRACTS = [
   },
   {
     id: "dorsal_r",
-    xOff: 0.005,
+    xOff: 0.002,
     color: new THREE.Color("#00aaff"),
     dir: 1,
     speed: 0.1,
@@ -24,7 +25,7 @@ const TRACTS = [
   },
   {
     id: "spinothal_a",
-    xOff: -0.003,
+    xOff: -0.0012,
     color: new THREE.Color("#cc55ff"),
     dir: 1,
     speed: 0.07,
@@ -32,7 +33,7 @@ const TRACTS = [
   },
   {
     id: "spinothal_l",
-    xOff: 0.003,
+    xOff: 0.0012,
     color: new THREE.Color("#aa33ee"),
     dir: 1,
     speed: 0.08,
@@ -40,23 +41,23 @@ const TRACTS = [
   },
   {
     id: "spinocereb_a",
-    xOff: -0.001,
+    xOff: -0.0004,
     color: new THREE.Color("#22dd88"),
     dir: 1,
     speed: 0.06,
     pulses: 2,
   },
   {
-    id: "spinocereb_a",
-    xOff: -0.001,
+    id: "spinocereb_b",
+    xOff: -0.0004,
     color: new THREE.Color("#c7dd22"),
     dir: 1,
     speed: 0.06,
     pulses: 2,
   },
   {
-    id: "spinocereb_a",
-    xOff: -0.001,
+    id: "spinocereb_c",
+    xOff: -0.0004,
     color: new THREE.Color("#22dd88"),
     dir: 1,
     speed: 0.06,
@@ -64,7 +65,7 @@ const TRACTS = [
   },
   {
     id: "spinocereb_p",
-    xOff: 0.001,
+    xOff: 0.0004,
     color: new THREE.Color("#dcf78b"),
     dir: 1,
     speed: 0.05,
@@ -72,7 +73,7 @@ const TRACTS = [
   },
   {
     id: "cortico_l",
-    xOff: -0.004,
+    xOff: -0.0016,
     color: new THREE.Color("#fe7159"),
     dir: -1,
     speed: 0.09,
@@ -80,7 +81,7 @@ const TRACTS = [
   },
   {
     id: "cortico_r",
-    xOff: 0.004,
+    xOff: 0.0016,
     color: new THREE.Color("#ff6600"),
     dir: -1,
     speed: 0.08,
@@ -96,7 +97,7 @@ const TRACTS = [
   },
   {
     id: "rubrospinal",
-    xOff: -0.002,
+    xOff: -0.0008,
     color: new THREE.Color("#ff8833"),
     dir: -1,
     speed: 0.07,
@@ -104,7 +105,7 @@ const TRACTS = [
   },
   {
     id: "vestibulo",
-    xOff: 0.002,
+    xOff: 0.0008,
     color: new THREE.Color("#ffe044"),
     dir: -1,
     speed: 0.05,
@@ -122,10 +123,10 @@ const TRACTS = [
 
 // Trail: head + N fading steps behind it
 const TRAIL = [
-  { tOff: 0.0, size: 0.0034, opacity: 1.0 },
-  { tOff: 0.008, size: 0.0033, opacity: 0.8 },
-  { tOff: 0.016, size: 0.0032, opacity: 0.62 },
-  { tOff: 0.024, size: 0.0030, opacity: 0.46 },
+  { tOff: 0.0, size: 0.003, opacity: 1.0 },
+  { tOff: 0.008, size: 0.003, opacity: 0.8 },
+  { tOff: 0.016, size: 0.003, opacity: 0.62 },
+  { tOff: 0.024, size: 0.0028, opacity: 0.46 },
   { tOff: 0.032, size: 0.0023, opacity: 0.32 },
   { tOff: 0.032, size: 0.0023, opacity: 0.32 },
   { tOff: 0.032, size: 0.0023, opacity: 0.32 },
@@ -154,12 +155,15 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
   const { curves, linePoints } = useMemo(() => {
     if (!spinePoints || spinePoints.length < 2)
       return { curves: null, linePoints: null };
+    // Use the same smoothed data that DiscMarkers uses so fiber paths
+    // pass through disc centers instead of deviating from them.
+    const smoothed = smoothPoints(spinePoints);
     const curves = {};
     const linePoints = {};
     for (const tract of TRACTS) {
-      const pts = spinePoints.map(
-        (p) => new THREE.Vector3(p[0] + tract.xOff, p[1], p[2]),
-      );
+      const pts = smoothed.map((p) => {
+        return new THREE.Vector3(p[0] + tract.xOff, p[1], p[2]);
+      });
       curves[tract.id] = new THREE.CatmullRomCurve3(
         pts,
         false,

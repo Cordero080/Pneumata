@@ -83,16 +83,17 @@ function makeGlowTex() {
 }
 const glowTexSingleton = makeGlowTex();
 
-const LOGIC_COLOR = "#64c8ff";
+const LOGIC_COLOR = "#cc88ff";
 const INFRA_COLOR = "#ffb347";
 
 const CELL_NODES = [
-  // On neuron.glb — center [0.02, 1.70, 0.03]
+  // Neuron cluster — three somas in a loose triangle
+  // Primary neuron (top-center): [0.014, 1.702, 0.026]
   {
     id: "neuron",
     label: "Neuron",
     hardware: "Transistor",
-    position: [0.02, 1.706, 0.034],
+    position: [0.014, 1.708, 0.03],
     color: LOGIC_COLOR,
     bio_function:
       "Receives electrochemical signals through dendrites, integrates them in the cell body, and fires an electrical impulse down the axon when threshold is reached.",
@@ -105,7 +106,7 @@ const CELL_NODES = [
     id: "synapse",
     label: "Synapse",
     hardware: "Logic Gate",
-    position: [0.026, 1.694, 0.028],
+    position: [0.02, 1.696, 0.024],
     color: LOGIC_COLOR,
     bio_function:
       "The junction between two neurons where neurotransmitters cross the synaptic cleft and bind to receptors — passing or blocking the signal based on chemical conditions.",
@@ -114,12 +115,12 @@ const CELL_NODES = [
     synthesis:
       "Both evaluate inputs and make a pass or block decision. The synapse is the original logic gate.",
   },
-  // On axon-single.glb — center [-0.02, 1.645, -0.02]
+  // Axon extends downward from primary neuron soma
   {
     id: "axon",
     label: "Axon",
     hardware: "Data Bus",
-    position: [-0.02, 1.651, -0.016],
+    position: [0.012, 1.678, 0.018],
     color: LOGIC_COLOR,
     bio_function:
       "The long fiber extending from the neuron cell body that carries the electrical impulse to the synaptic terminals — pure transmission, no processing.",
@@ -132,7 +133,7 @@ const CELL_NODES = [
     id: "myelin",
     label: "Myelin",
     hardware: "Signal Insulation",
-    position: [-0.026, 1.639, -0.024],
+    position: [0.008, 1.666, 0.012],
     color: LOGIC_COLOR,
     bio_function:
       "Fatty segments wrapped around the axon that insulate the signal and enable saltatory conduction — the signal jumps between nodes of Ranvier at high speed.",
@@ -171,6 +172,9 @@ const CELL_NODES = [
 
 const neuronNode = CELL_NODES.find((n) => n.id === "neuron");
 const axonNode = CELL_NODES.find((n) => n.id === "axon");
+// Reuse neuronNode data for the two flanking neurons — same cell type, different position
+const neuron2Node = { ...neuronNode, id: "neuron_b" };
+const neuron3Node = { ...neuronNode, id: "neuron_c" };
 
 function CellMesh({
   path,
@@ -185,6 +189,7 @@ function CellMesh({
   cellZoom,
   clickNode,
   onCellSelect,
+  onCellZoom,
   hoverLabel,
   hoverHardware,
 }) {
@@ -251,7 +256,8 @@ function CellMesh({
     for (const m of matsRef.current) {
       m.opacity += (target - m.opacity) * 0.06;
     }
-    const glowTarget = activeRef.current && hovered ? 0.55 : 0;
+    // Subtle resting glow; brighter on hover
+    const glowTarget = hovered ? 0.45 : 0.15;
     if (glowSpriteRef.current) {
       glowSpriteRef.current.material.opacity +=
         (glowTarget - glowSpriteRef.current.material.opacity) * 0.08;
@@ -275,6 +281,11 @@ function CellMesh({
           if (!activeRef.current) return;
           e.stopPropagation();
           if (!clickNode) return;
+          // First click while only in brainZoom: zoom into cellular view
+          if (brainZoom && !cellZoom) {
+            onCellZoom?.();
+            return;
+          }
           if (IS_MOBILE) {
             if (isPreview) {
               setIsPreview(false);
@@ -295,7 +306,7 @@ function CellMesh({
           document.body.style.cursor = "default";
         }}
       >
-        <sphereGeometry args={[IS_MOBILE ? 0.03 : 0.016, 8, 8]} />
+        <sphereGeometry args={[IS_MOBILE ? 0.05 : 0.032, 8, 8]} />
         <meshBasicMaterial
           transparent
           opacity={0}
@@ -307,7 +318,7 @@ function CellMesh({
         ref={glowSpriteRef}
         position={[posX, posY, posZ]}
         renderOrder={4}
-        scale={[0.06, 0.06, 1]}
+        scale={[0.09, 0.09, 1]}
       >
         <spriteMaterial
           map={glowTexSingleton}
@@ -324,13 +335,12 @@ function CellMesh({
         <Html
           position={[posX, posY, posZ]}
           center
-          distanceFactor={0.1}
           style={{ pointerEvents: "none" }}
         >
           <div
             style={{
               color,
-              fontSize: "17px",
+              fontSize: "13px",
               fontFamily: "monospace",
               whiteSpace: "nowrap",
               textShadow: `0 0 10px ${color}`,
@@ -444,11 +454,11 @@ function CellNode({ node, cellZoom, onCellSelect, flash }) {
         />
       </mesh>
       {cellZoom && hovered && (
-        <Html center distanceFactor={0.1} style={{ pointerEvents: "none" }}>
+        <Html center style={{ pointerEvents: "none" }}>
           <div
             style={{
               color: node.color,
-              fontSize: "17px",
+              fontSize: "13px",
               fontFamily: "monospace",
               whiteSpace: "nowrap",
               textShadow: `0 0 10px ${node.color}`,
@@ -475,36 +485,73 @@ function CellularView({
   meshMode,
   femaleMode,
   onCellSelect,
+  onCellZoom,
 }) {
   return (
     <group position={[0, femaleMode ? FEMALE_Y_OFFSET : 0, 0]}>
+      {/* Primary neuron — top center of cluster */}
       <CellMesh
         path="/neuron.glb"
-        targetHeight={0.03}
-        posX={0.02}
-        posY={1.7}
-        posZ={0.03}
-        color="#64c8ff"
-        emissive="#2288ee"
-        emissiveIntensity={0.7}
+        targetHeight={0.055}
+        posX={0.014}
+        posY={1.702}
+        posZ={0.026}
+        color="#cc88ff"
+        emissive="#9933ff"
+        emissiveIntensity={1.4}
         brainZoom={brainZoom}
         cellZoom={cellZoom}
         clickNode={neuronNode}
         onCellSelect={onCellSelect}
+        onCellZoom={onCellZoom}
       />
+      {/* Neuron B — left, slightly lower (receiving signals from A's axon) */}
+      <CellMesh
+        path="/neuron.glb"
+        targetHeight={0.042}
+        posX={-0.018}
+        posY={1.685}
+        posZ={0.014}
+        color="#cc88ff"
+        emissive="#9933ff"
+        emissiveIntensity={1.1}
+        brainZoom={brainZoom}
+        cellZoom={cellZoom}
+        clickNode={neuron2Node}
+        onCellSelect={onCellSelect}
+        onCellZoom={onCellZoom}
+      />
+      {/* Neuron C — right, lower and slightly deeper */}
+      <CellMesh
+        path="/neuron.glb"
+        targetHeight={0.038}
+        posX={0.034}
+        posY={1.674}
+        posZ={-0.004}
+        color="#cc88ff"
+        emissive="#9933ff"
+        emissiveIntensity={1.0}
+        brainZoom={brainZoom}
+        cellZoom={cellZoom}
+        clickNode={neuron3Node}
+        onCellSelect={onCellSelect}
+        onCellZoom={onCellZoom}
+      />
+      {/* Axon — emerges below primary neuron soma, extends toward neuron B */}
       <CellMesh
         path="/axon-single.glb"
-        targetHeight={0.03}
-        posX={-0.02}
-        posY={1.645}
-        posZ={-0.02}
+        targetHeight={0.05}
+        posX={0.002}
+        posY={1.682}
+        posZ={0.018}
         color="#a8ff80"
         emissive="#44cc44"
-        emissiveIntensity={0.6}
+        emissiveIntensity={0.9}
         brainZoom={brainZoom}
         cellZoom={cellZoom}
         clickNode={axonNode}
         onCellSelect={onCellSelect}
+        onCellZoom={onCellZoom}
       />
       <CellMesh
         path="/pituitary.glb"
@@ -519,6 +566,7 @@ function CellularView({
         cellZoom={cellZoom}
         clickNode={pituitaryOrgan}
         onCellSelect={onCellSelect}
+        onCellZoom={onCellZoom}
       />
       {CELL_NODES.map((node) => (
         <CellNode
