@@ -45,34 +45,77 @@ const BRAIN_TRACTS = [
   ["thalamus", "brain_stem", "corticospinal descending"],
 ];
 
+// Body half-width at key Y levels for arc-peak clamping.
+// Prevents lower thoracic arcs from grazing the body silhouette edge.
+const TORSO_HALF_WIDTH = [
+  [1.45, 0.11], // collar / T1
+  [1.30, 0.14], // upper thorax
+  [1.15, 0.15], // lower thorax / diaphragm
+  [1.00, 0.13], // upper abdomen
+  [0.88, 0.10], // lower abdomen
+];
+function torsoHalfWidthAt(y) {
+  const tw = TORSO_HALF_WIDTH;
+  if (y >= tw[0][0]) return tw[0][1];
+  if (y <= tw[tw.length - 1][0]) return tw[tw.length - 1][1];
+  for (let i = 0; i < tw.length - 1; i++) {
+    const [y0, w0] = tw[i];
+    const [y1, w1] = tw[i + 1];
+    if (y >= y1) return w0 + (w1 - w0) * ((y0 - y) / (y0 - y1));
+  }
+  return 0.12;
+}
+
 function buildPath(discPt, organPos, side, discIdx) {
   const [dx, dy, dz] = discPt;
   const [ox, oy, oz] = organPos;
+  const p0x = dx + side * 0.016;
 
-  // Thoracic (T1–T12, disc idx 6–17): QuadraticBezier arcing through the rib cage.
-  // cx derived so the arc peak lands exactly on the rib edge: peak ≈ 0.5*cx + 0.25*(P0.x+P2.x)
-  // Solving for peak=rx: cx = 2*rx - 0.5*ox (organ-position-aware, no flat multiplier)
+  // Thoracic (T1–T12, disc idx 6–17): QuadraticBezier with derived control point.
+  // Full formula: cx = 2*rx - 0.5*ox - 0.5*p0x  (accounts for both endpoints).
+  // Then two clamps:
+  //   (a) Midline guard — cx must stay on the same side as `side` so the arc
+  //       cannot cross the spine for mid-X organs like stomach/adrenals.
+  //   (b) Silhouette clamp — arc peak at t=0.5 ≈ 0.25*p0x + 0.5*cx + 0.25*ox
+  //       is clamped to torso half-width at the rib Y level.
   if (discIdx >= 6 && discIdx <= 17) {
     const ribKey = side < 0 ? "L" : "R";
     const [rx, ry, rz] = RIB_EDGES[discIdx][ribKey];
-    const cx = 2 * rx - 0.5 * ox;
+    let cx = 2 * rx - 0.5 * ox - 0.5 * p0x;
+
+    // (a) midline guard
+    cx = side < 0 ? Math.min(cx, -0.01) : Math.max(cx, 0.01);
+
+    // (b) silhouette clamp
+    const maxW = torsoHalfWidthAt(ry) - 0.01;
+    const peak = 0.25 * p0x + 0.5 * cx + 0.25 * ox;
+    if (Math.abs(peak) > maxW) {
+      cx = 2 * Math.sign(side) * maxW - 0.5 * p0x - 0.5 * ox;
+    }
+
     return new THREE.QuadraticBezierCurve3(
-      new THREE.Vector3(dx + side * 0.016, dy, dz),
+      new THREE.Vector3(p0x, dy, dz),
       new THREE.Vector3(cx, ry, rz),
       new THREE.Vector3(ox, oy, oz),
     ).getPoints(28);
   }
 
-  // Cervical (0–5) and lumbar/sacral (18–23): original quadratic Bezier
-  const p0 = new THREE.Vector3(dx + side * 0.016, dy, dz);
-  const lateralX = side * Math.max(0.065, Math.abs(ox) * 1.3);
+  // Cervical (0–5): lateral spread increases with disc index so arcs don't converge.
+  // C2 (idx 0) → baseLatX 0.040 (narrow neck); C7-T1 (idx 5) → 0.080 (wider base).
+  // Lumbar/sacral (18–23): fixed 0.065 floor, unchanged.
+  const baseLatX =
+    discIdx <= 5 ? 0.04 + discIdx * 0.008 : 0.065;
+  const lateralX = side * Math.max(baseLatX, Math.abs(ox) * 1.3);
   const p1 = new THREE.Vector3(
     lateralX,
     dy * 0.5 + oy * 0.5,
     dz * 0.3 + oz * 0.7,
   );
-  const p2 = new THREE.Vector3(ox, oy, oz);
-  return new THREE.QuadraticBezierCurve3(p0, p1, p2).getPoints(24);
+  return new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(p0x, dy, dz),
+    p1,
+    new THREE.Vector3(ox, oy, oz),
+  ).getPoints(24);
 }
 
 function NerveRoots({ spinePoints, hoveredCategory, viewMode, showNerves }) {

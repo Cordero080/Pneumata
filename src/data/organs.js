@@ -521,7 +521,7 @@ export const organs = [
     nodeSize: "large", // STYLE: largest internal organ — larger node
     organ: "Liver",
     hardware: "Firewall / Data Filter",
-    position: [-0.1, 1.13, 0.08],
+    position: [-0.07, 1.18, 0.08],
     bio_function:
       "Filters the entire blood supply — neutralizing toxins, metabolizing drugs, breaking down hormones, synthesizing proteins, and maintaining chemical balance. Everything absorbed from digestion passes through it before reaching circulation.",
     hard_function:
@@ -537,8 +537,8 @@ export const organs = [
     type: "point",
     organ: "Gallbladder",
     hardware: "Capacitor Bank / Crypto-Coprocessor",
-    position: [-0.045, 1.11, 0.07],
-    femalePosition: [-0.045, 1.06, 0.07],
+    position: [-0.045, 1.15, 0.07],
+    femalePosition: [-0.045, 1.10, 0.07],
     bio_function:
       "Stores concentrated bile produced by the liver. When the small intestine encounters dense fat — the hardest material to break down — the gallbladder contracts and injects its concentrated charge directly into the pipeline to emulsify the load. It does not manufacture — it stores and discharges on demand.",
     hard_function:
