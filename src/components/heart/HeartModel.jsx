@@ -42,7 +42,7 @@ function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
           transparent: true,
           opacity: 0,
           depthWrite: false,
-          emissive: new THREE.Color("#ff2200"),
+          emissive: new THREE.Color("#cc0011"),
           emissiveIntensity: 0,
           roughness: 0.55,
           metalness: 0.25,
@@ -85,13 +85,9 @@ function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
 
     for (const m of mats) {
       m.opacity += (baseOpacity - m.opacity) * 0.06;
-      if (m.emissive !== undefined) {
-        m.emissive.set("#cc0011");
-      }
       if (m.emissiveIntensity !== undefined) {
         const target = (powerMode ? 0.8 : 0.0) + b.flash * 8.0;
         m.emissiveIntensity += (target - m.emissiveIntensity) * 0.2;
-        m.needsUpdate = true;
       }
     }
   });

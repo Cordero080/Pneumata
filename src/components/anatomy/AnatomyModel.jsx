@@ -654,10 +654,9 @@ function AnatomyModel({
 
     if (darkMode && materialRef.current.iridescence > 0) {
       materialRef.current.iridescenceIOR = 1.2 + Math.sin(t * 0.4) * 0.25;
-      materialRef.current.iridescenceThicknessRange = [
-        100 + Math.sin(t * 0.3) * 60,
-        260 + Math.cos(t * 0.35) * 80,
-      ];
+      const iriRange = materialRef.current.iridescenceThicknessRange;
+      iriRange[0] = 100 + Math.sin(t * 0.3) * 60;
+      iriRange[1] = 260 + Math.cos(t * 0.35) * 80;
     }
 
     let base = 0;

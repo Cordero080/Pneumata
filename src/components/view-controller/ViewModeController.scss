@@ -225,6 +225,7 @@
 
     &:hover:not(.view-btn--active) {
       @include v.dark-surface-hover;
+      color: v.$dark-text;
     }
   }
 

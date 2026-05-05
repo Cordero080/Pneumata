@@ -6,6 +6,11 @@
   z-index: 50;
   font-size: 14px;
   padding: 7px 13px;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
   border-left: none;
   border-top: 2px solid rgba(255, 255, 255, 0.35);
   border-right: 3px solid rgba(0, 0, 0, 0.18);
@@ -351,6 +356,7 @@
     left: 0;
   }
 
+  .top-nav-trigger,
   .mesh-toggle-btn,
   .reset-btn,
   .body-toggle-btn,
@@ -359,6 +365,43 @@
     position: static;
     flex-shrink: 0;
     transition: opacity 0.2s ease, color 0.2s ease, filter 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .top-nav-trigger {
+    clip-path: polygon(
+      0 0,
+      calc(100% - 14px) 0,
+      100% 14px,
+      100% 100%,
+      0 100%
+    );
+    opacity: 1 !important;
+  }
+
+  .top-nav-drawer {
+    display: flex;
+    flex-direction: row;
+    max-width: 0;
+    overflow: hidden;
+    margin-left: -11px;
+    transition: max-width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    &--open {
+      max-width: 600px;
+    }
+  }
+
+  .mesh-toggle-btn {
+    margin-left: 0;
+    padding-left: 24px;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 14px) 0,
+      100% 14px,
+      100% 100%,
+      14px 100%,
+      14px 14px
+    );
   }
 
   .reset-btn,
@@ -426,6 +469,21 @@
       14px 14px
     );
   }
+}
+
+.top-nav-trigger {
+  @extend %chamfer-btn;
+  font-size: 13px;
+  padding: 6px 10px;
+  color: rgba(55, 72, 88, 0.55);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    0 100%
+  );
+  opacity: 1 !important;
 }
 
 .mesh-toggle-btn {
@@ -561,6 +619,38 @@
   text-transform: uppercase;
   color: rgba(0, 0, 0, 0.25);
   pointer-events: none;
+}
+
+// === Dark mode — chamfer button overrides ===
+
+.app--dark {
+  .mode-toggle-btn,
+  .body-toggle-btn,
+  .anim-toggle-btn,
+  .bg-toggle-btn,
+  .top-nav-trigger,
+  .mesh-toggle-btn {
+    background:
+      linear-gradient(135deg,
+        rgba(30, 36, 48, 0.96) 0%,
+        rgba(20, 26, 38, 0.92) 25%,
+        rgba(36, 44, 58, 0.96) 50%,
+        rgba(18, 24, 36, 0.92) 75%,
+        rgba(28, 34, 46, 0.96) 100%
+      );
+    border-top-color: rgba(100, 130, 180, 0.25);
+    border-right-color: rgba(0, 0, 0, 0.4);
+    border-bottom-color: rgba(0, 0, 0, 0.5);
+    color: rgba(160, 190, 230, 0.7);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(100, 140, 220, 0.12),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      color: rgba(200, 220, 255, 0.95);
+    }
+  }
 }
 
 // === Dark mode — see anatomy/male/MaleModel.scss and anatomy/female/FemaleModel.scss ===

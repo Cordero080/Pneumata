@@ -1,6 +1,6 @@
 .category-legend {
   position: fixed;
-  bottom: 8rem;
+  bottom: 5rem;
   right: 2rem;
   display: flex;
   flex-direction: column;
@@ -10,7 +10,7 @@
   @media (max-width: 768px) {
     right: 1rem;
     gap: 10px;
-    bottom: 8rem;
+    bottom: 3rem;
   }
 }
 
@@ -82,16 +82,18 @@
 }
 
 .legend-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 0;
+  transform: rotate(45deg);
   flex-shrink: 0;
-  opacity: 0.5;
+  opacity: 0.55;
   transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
   z-index: 1;
 
   .legend-row:hover & {
     opacity: 1;
+    transform: rotate(45deg) scale(1.25);
   }
 }
 

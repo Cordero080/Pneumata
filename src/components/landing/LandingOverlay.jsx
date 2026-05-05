@@ -1,21 +1,12 @@
-import { useState, useEffect } from "react";
-import AnimatedScene from "../scene/AnimatedScene";
+import { useState } from "react";
 import "./LandingOverlay.scss";
 
 const ENDPOINT = "https://pneumata-backend.onrender.com/subscribe";
-// Fallback: show content after this many ms even if animation hasn't fired
-const FALLBACK_MS = 12000;
 
-function LandingOverlay({ onEnter, darkMode, meshMode }) {
-  const [animDone, setAnimDone] = useState(false);
+function LandingOverlay({ onEnter }) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | sending | done | error
+  const [status, setStatus] = useState("idle");
   const hasInput = email.length > 0;
-
-  useEffect(() => {
-    const t = setTimeout(() => setAnimDone(true), FALLBACK_MS);
-    return () => clearTimeout(t);
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,19 +32,7 @@ function LandingOverlay({ onEnter, darkMode, meshMode }) {
 
   return (
     <div className="landing-overlay">
-      {/* Full-screen 3D canvas background */}
-      <div className="landing-bg">
-        <AnimatedScene
-          darkMode={darkMode ?? true}
-          meshMode={meshMode ?? 2}
-          onSecondLoop={() => setAnimDone(true)}
-        />
-      </div>
-
-      {/* Content panel — fades in after animation completes */}
-      <div
-        className={`landing-content${animDone ? " landing-content--visible" : ""}`}
-      >
+      <div className="landing-content landing-content--visible">
         <div className="landing-panel">
           <div className="landing-title">
             <h1>Pneumata</h1>

@@ -44,6 +44,7 @@ function App() {
   const [offsetX, setOffsetX] = useState(DEFAULTS.offsetX);
   const [offsetY, setOffsetY] = useState(DEFAULTS.offsetY);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [showTopNav, setShowTopNav] = useState(false);
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const [showLanding, setShowLanding] = useState(
@@ -126,58 +127,66 @@ function App() {
         </div>
       </header>
 
-      {/* Utility controls — top-left, used frequently */}
+      {/* Utility controls — top-left, collapsible */}
       <div className="top-left-strip">
         <button
-          className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
-          onClick={() =>
-            setMeshMode((m) => {
-              if (darkMode) {
-                return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 5, 5: 6, 6: 2 }[m] ?? 2;
-              }
-              return (m + 1) % 7;
-            })
-          }
+          className={`top-nav-trigger${showTopNav ? " top-nav-trigger--open" : ""}`}
+          onClick={() => setShowTopNav((v) => !v)}
         >
-          {meshMode === 0
-            ? "◻\uFE0E"
-            : meshMode === 1
-              ? "◈\uFE0E"
-              : meshMode === 2
-                ? "◼\uFE0E"
-                : meshMode === 3
-                  ? "◇\uFE0E"
-                  : meshMode === 4
-                    ? "◎\uFE0E"
-                    : meshMode === 5
-                      ? "⬤\uFE0E"
-                      : "⬛\uFE0E"}
+          {showTopNav ? "✕" : "⊞\uFE0E"}
         </button>
-        <button className="reset-btn" onClick={handleReset}>
-          ↺
-        </button>
-        <button
-          className={`body-toggle-btn${bodyModel === "female" ? " body-toggle-btn--active" : ""}`}
-          onClick={() => {
-            setBodyModel((m) => (m === "male" ? "female" : "male"));
-            handleReset();
-          }}
-        >
-          {bodyModel === "male" ? "♂\uFE0E" : "♀\uFE0E"}
-        </button>
-        <button
-          className={`anim-toggle-btn${showAnimation ? " anim-toggle-btn--active" : ""}`}
-          onClick={() => setShowAnimation((v) => !v)}
-        >
-          {showAnimation ? "✕" : "▶"}
-        </button>
-        <button
-          className={`bg-toggle-btn${bgMode > 0 ? " bg-toggle-btn--active" : ""}`}
-          onClick={() => setBgMode((m) => (m + 1) % BG_MODES.length)}
-          title={`Background: ${BG_MODES[bgMode]}`}
-        >
-          {BG_ICONS[bgMode]}
-        </button>
+        <div className={`top-nav-drawer${showTopNav ? " top-nav-drawer--open" : ""}`}>
+          <button
+            className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
+            onClick={() =>
+              setMeshMode((m) => {
+                if (darkMode) {
+                  return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 5, 5: 6, 6: 2 }[m] ?? 2;
+                }
+                return (m + 1) % 7;
+              })
+            }
+          >
+            {meshMode === 0
+              ? "◻\uFE0E"
+              : meshMode === 1
+                ? "◈\uFE0E"
+                : meshMode === 2
+                  ? "◼\uFE0E"
+                  : meshMode === 3
+                    ? "◇\uFE0E"
+                    : meshMode === 4
+                      ? "◎\uFE0E"
+                      : meshMode === 5
+                        ? "⬤\uFE0E"
+                        : "⬛\uFE0E"}
+          </button>
+          <button className="reset-btn" onClick={handleReset}>
+            ↺
+          </button>
+          <button
+            className={`body-toggle-btn${bodyModel === "female" ? " body-toggle-btn--active" : ""}`}
+            onClick={() => {
+              setBodyModel((m) => (m === "male" ? "female" : "male"));
+              handleReset();
+            }}
+          >
+            {bodyModel === "male" ? "♂\uFE0E" : "♀\uFE0E"}
+          </button>
+          <button
+            className={`anim-toggle-btn${showAnimation ? " anim-toggle-btn--active" : ""}`}
+            onClick={() => setShowAnimation((v) => !v)}
+          >
+            {showAnimation ? "✕" : "▶"}
+          </button>
+          <button
+            className={`bg-toggle-btn${bgMode > 0 ? " bg-toggle-btn--active" : ""}`}
+            onClick={() => setBgMode((m) => (m + 1) % BG_MODES.length)}
+            title={`Background: ${BG_MODES[bgMode]}`}
+          >
+            {BG_ICONS[bgMode]}
+          </button>
+        </div>
       </div>
 
       {/* About + Adjust — top-right stack */}
@@ -303,11 +312,7 @@ function App() {
       <p className="app-copyright">© 2026 Pablo Cordero</p>
 
       {showLanding && (
-        <LandingOverlay
-          onEnter={() => setShowLanding(false)}
-          darkMode={darkMode}
-          meshMode={meshMode}
-        />
+        <LandingOverlay onEnter={() => setShowLanding(false)} />
       )}
     </div>
   );
