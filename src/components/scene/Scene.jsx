@@ -15,6 +15,7 @@ import BrainModel from "../brain/BrainModel";
 import HeartModel from "../heart/HeartModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
+import SceneOrbs from "./SceneOrbs";
 import { organs } from "../../data/organs";
 
 const CELL_ZOOM_IDS = new Set(["pituitary"]);
@@ -48,6 +49,7 @@ function Scene({
   offsetX,
   offsetY,
   onSelect,
+  onFocus,
   selectedOrgan,
   viewMode,
   showNerves,
@@ -64,6 +66,8 @@ function Scene({
   femaleMode,
   organFocusY,
   viewPanelOpen,
+  bgMode,
+  bgModeName,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -244,6 +248,7 @@ function Scene({
               darkMode={darkMode}
               selectedOrganId={selectedOrgan?.id}
               previewedOrganId={previewedOrgan?.id}
+              onFocus={onFocus}
               onPreview={handlePreview}
               onClearPreview={handleClearPreview}
             />
@@ -272,6 +277,7 @@ function Scene({
         maxDistance={7}
         target={ORBIT_TARGET}
       />
+      {bgMode > 0 && <SceneOrbs theme={bgModeName} />}
     </Canvas>
   );
 }

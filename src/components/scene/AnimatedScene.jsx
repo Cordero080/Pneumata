@@ -5,7 +5,7 @@ import AnimatedModel from "../AnimatedModel";
 
 const ORBIT_TARGET = [0, 0.85, 0];
 
-function AnimatedScene({ darkMode, meshMode }) {
+function AnimatedScene({ darkMode, meshMode, onSecondLoop }) {
   return (
     <Canvas
       camera={{ position: [0, 0.82, 2.1], fov: 48 }}
@@ -19,7 +19,11 @@ function AnimatedScene({ darkMode, meshMode }) {
       performance={{ min: 0.5 }}
     >
       <SceneLights darkMode={darkMode} meshMode={meshMode} femaleMode={false} />
-      <AnimatedModel darkMode={darkMode} meshMode={meshMode} />
+      <AnimatedModel
+        darkMode={darkMode}
+        meshMode={meshMode}
+        onSecondLoop={onSecondLoop}
+      />
       <OrbitControls
         enableZoom
         enablePan

@@ -29,8 +29,8 @@ export const HAS_SHEEN = true;
 
 // Material colors — shifted to a pink/mauve palette vs the blue-steel male defaults
 export const COLORS = {
-  obsColor: "#060305", // dark mode: base surface tint (warm dark)
-  obsEmissive: "#880044", // dark mode: inner glow (deep magenta)
+  obsColor: "#030306", // dark mode: base surface tint (matches male, violet-black)
+  obsEmissive: "#5500aa", // dark mode: inner glow (violet — female variant of male crimson)
   ghostColor: "#f0edf2", // light mode: ghost shell tint (warm white)
   ghostDark: "#1c1520", // light ghost mode 0: warm charcoal
   alColor: "#d0c8d8", // aluminum layer (light mode) — barely-pink silver
@@ -40,4 +40,7 @@ export const COLORS = {
   whiteAlColorDark: "#b8b0c4", // aluminum in white ghost mode (dark)
   whiteEmissiveLight: "#c06080", // emissive in white ghost mode (light)
   whiteEmissiveDark: "#cc4488", // emissive in white ghost mode (dark)
+  onyxColor: "#030306fa", // onyx skin: light mode
+  onyxColorDark: "#030306fa", // onyx skin: dark mode
+  onyxEmissive: "#330044", // onyx skin: emissive glow (warm dark violet)
 };

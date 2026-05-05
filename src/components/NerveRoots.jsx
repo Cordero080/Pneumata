@@ -49,10 +49,10 @@ const BRAIN_TRACTS = [
 // Prevents lower thoracic arcs from grazing the body silhouette edge.
 const TORSO_HALF_WIDTH = [
   [1.45, 0.11], // collar / T1
-  [1.30, 0.14], // upper thorax
+  [1.3, 0.14], // upper thorax
   [1.15, 0.15], // lower thorax / diaphragm
-  [1.00, 0.13], // upper abdomen
-  [0.88, 0.10], // lower abdomen
+  [1.0, 0.13], // upper abdomen
+  [0.88, 0.1], // lower abdomen
 ];
 function torsoHalfWidthAt(y) {
   const tw = TORSO_HALF_WIDTH;
@@ -103,8 +103,7 @@ function buildPath(discPt, organPos, side, discIdx) {
   // Cervical (0–5): lateral spread increases with disc index so arcs don't converge.
   // C2 (idx 0) → baseLatX 0.040 (narrow neck); C7-T1 (idx 5) → 0.080 (wider base).
   // Lumbar/sacral (18–23): fixed 0.065 floor, unchanged.
-  const baseLatX =
-    discIdx <= 5 ? 0.04 + discIdx * 0.008 : 0.065;
+  const baseLatX = discIdx <= 5 ? 0.04 + discIdx * 0.008 : 0.065;
   const lateralX = side * Math.max(baseLatX, Math.abs(ox) * 1.3);
   const p1 = new THREE.Vector3(
     lateralX,

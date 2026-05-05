@@ -1,15 +1,59 @@
 @use "../../styles/variables" as v;
 
+// ── Layout ────────────────────────────────────────────────────────────────────
+
 .landing-overlay {
   position: fixed;
   inset: 0;
   z-index: 200;
+  overflow: hidden;
+  // Nebula background — same look as .app--bg-nebula
+  background:
+    conic-gradient(
+      from 180deg at 54% 90%,
+      rgba(255, 0, 255, 0.334) 15deg,
+      rgba(0, 21, 255, 0.4) 20deg,
+      rgba(6, 95, 95, 0.5) 100deg,
+      rgba(15, 129, 236, 0.525) 120deg,
+      rgba(113, 51, 77, 0.799) 206deg,
+      rgba(27, 1, 18, 0.644) 60deg
+    ),
+    linear-gradient(5deg, #380523 22%, #760d4e 25%, #b3008e 50%, #af006e 5%, rgba(40, 3, 24, 0.31) 55%);
+  box-shadow:
+    0 0 200px rgba(255, 50, 255, 1),
+    inset 0 0 120px rgba(255, 180, 0, 1),
+    0 0 100px rgba(9, 218, 218, 0.9);
+  filter: contrast(1.5) brightness(1);
+  animation: landing-nebula-move 7s ease-in-out infinite;
+}
+
+@keyframes landing-nebula-move {
+  0%, 100% { filter: contrast(1.5) brightness(1) hue-rotate(0deg); }
+  50%       { filter: contrast(1.6) brightness(1.05) hue-rotate(12deg); }
+}
+
+// Full-screen 3D canvas background
+.landing-bg {
+  position: absolute;
+  inset: 0;
+  // canvas fills this via AnimatedScene style={{ width:"100%", height:"100%" }}
+}
+
+// Content overlay — invisible until animation completes
+.landing-content {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 10, 22, 0.72);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.4s ease;
+
+  &--visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 .landing-panel {
@@ -18,7 +62,9 @@
   align-items: center;
   gap: 1.6rem;
   padding: 3rem 3.5rem;
-  background: v.$glass-bg;
+  background: rgba(8, 4, 20, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-top: 2px solid v.$glass-border;
   border-right: 3px solid rgba(0, 0, 0, 0.25);
   border-bottom: 5px solid rgba(0, 0, 0, 0.3);
@@ -104,11 +150,12 @@
 
 .landing-sub {
   font-family: v.$font-hud;
-  font-size: 0.5rem;
+  font-size: 0.62rem;
   font-weight: 400;
-  letter-spacing: 0.5em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: v.$text-secondary;
+  text-align: center;
 }
 
 .landing-divider {

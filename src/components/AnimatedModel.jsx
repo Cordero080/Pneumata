@@ -26,7 +26,7 @@ gl_FragColor.a *= 1.0 - vChestFade * 0.85;`,
   mat.customProgramCacheKey = () => "chest-window";
 }
 
-function AnimatedModel({ darkMode, meshMode, fbxRef }) {
+function AnimatedModel({ darkMode, meshMode, fbxRef, onSecondLoop }) {
   const fbx = useFBX("/animations/pneumata_swing.fbx");
   const standingFbx = useFBX("/animations/Standing.fbx");
   const matRef = useRef(null);
@@ -70,6 +70,11 @@ function AnimatedModel({ darkMode, meshMode, fbxRef }) {
     if (fbxRef) fbxRef.current = fbx;
   }, [fbx]);
 
+  const onSecondLoopRef = useRef(onSecondLoop);
+  useEffect(() => {
+    onSecondLoopRef.current = onSecondLoop;
+  }, [onSecondLoop]);
+
   useEffect(() => {
     const swing = actions["Swing"];
     const standing = actions["Standing"];
@@ -81,15 +86,22 @@ function AnimatedModel({ darkMode, meshMode, fbxRef }) {
       standing.clampWhenFinished = true;
     }
     swing.play();
+    let standingCount = 0;
     const onFinished = (e) => {
       if (e.action === swing && standing) {
         standing.reset();
         standing.play();
         swing.crossFadeTo(standing, 0.8, true);
       } else if (e.action === standing) {
-        standing.stop();
-        swing.reset();
-        swing.play();
+        standingCount++;
+        if (standingCount >= 2) {
+          // End of second loop — hold final pose and signal completion
+          if (onSecondLoopRef.current) onSecondLoopRef.current();
+        } else {
+          standing.stop();
+          swing.reset();
+          swing.play();
+        }
       }
     };
     mixer.addEventListener("finished", onFinished);

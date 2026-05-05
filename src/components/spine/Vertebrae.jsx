@@ -33,7 +33,7 @@ function Vertebrae({ pts, SC }) {
         .add(posterior.clone().multiplyScalar(radius + spinousLen * 0.5));
 
       // Transverse processes
-      const canalHalf = radius * 0.7;
+      const canalHalf = radius * 0.9;
       const p = tNorm;
       const baseProfile =
         0.62 +
@@ -44,9 +44,9 @@ function Vertebrae({ pts, SC }) {
 
       const isLumbar = p > 0.62 && p <= 0.82;
       const isSacral = p > 0.82;
-      const transRadiusTip = isLumbar ? radius * 0.4 : isSacral ? 0.001 : 0.004;
+      const transRadiusTip = isLumbar ? radius * 0.4 : isSacral ? 0.001 : 0.012;
       const transRadiusBase = isLumbar
-        ? radius * 0.12
+        ? radius * 0.13
         : isSacral
           ? 0.001
           : 0.002;

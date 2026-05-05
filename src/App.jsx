@@ -18,9 +18,9 @@ const IS_STANDALONE =
   window.matchMedia("(display-mode: standalone)").matches;
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
-    ? { panY: 0.48, zoom: 0.22, globalScale: 0.906, offsetX: 0, offsetY: 0.17 }
-    : { panY: 0.48, zoom: 0.22, globalScale: 0.948, offsetX: 0, offsetY: 0.18 }
-  : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.12 };
+    ? { panY: 0.48, zoom: 0.22, globalScale: 0.906, offsetX: 0, offsetY: 0.2 }
+    : { panY: 0.48, zoom: 0.22, globalScale: 0.948, offsetX: 0, offsetY: 0.21 }
+  : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.21 };
 
 function App() {
   const [selectedOrgan, setSelectedOrgan] = useState(null);
@@ -29,6 +29,9 @@ function App() {
   const [showNerves, setShowNerves] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [bgMode, setBgMode] = useState(0); // 0=default, 1=nebula, 2=space, 3=sunset, 4=matrix
+  const BG_MODES = ["default", "nebula", "space", "sunset", "matrix"];
+  const BG_ICONS = ["⬡\uFE0E", "✵\uFE0E", "✦\uFE0E", "◐\uFE0E", "⊞\uFE0E"];
   const [meshMode, setMeshMode] = useState(2); // 0=ghost, 1=semi-transparent silver, 2=solid silver
   const [bodyModel, setBodyModel] = useState("male");
   const modelPath =
@@ -70,6 +73,12 @@ function App() {
   }, [brainZoom, cellZoom]);
 
   useEffect(() => {
+    // When entering dark mode, silver/aluminum light-mode skin (modes > 2 light-only) don't apply
+    // Reset to solid obsidian (2) only if currently on a mode with no dark-mode branch (none currently)
+    // — no reset needed, all modes have dark branches now
+  }, [darkMode]);
+
+  useEffect(() => {
     document.body.classList.toggle("body--female", bodyModel === "female");
     // Reset transform values to defaults so female scale/offset doesn't bleed into male view
     setPanY(DEFAULTS.panY);
@@ -97,7 +106,7 @@ function App() {
 
   return (
     <div
-      className={`app app--${bodyModel}${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""}`}
+      className={`app app--${bodyModel}${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""}${bgMode > 0 ? ` app--bg-${BG_MODES[bgMode]}` : ""}`}
     >
       <header className="app-header">
         <div className="header-strip">
@@ -124,9 +133,9 @@ function App() {
           onClick={() =>
             setMeshMode((m) => {
               if (darkMode) {
-                return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 5, 5: 2 }[m] ?? 0;
+                return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 5, 5: 6, 6: 2 }[m] ?? 2;
               }
-              return (m + 1) % 4;
+              return (m + 1) % 7;
             })
           }
         >
@@ -140,7 +149,9 @@ function App() {
                   ? "◇\uFE0E"
                   : meshMode === 4
                     ? "◎\uFE0E"
-                    : "⬤\uFE0E"}
+                    : meshMode === 5
+                      ? "⬤\uFE0E"
+                      : "⬛\uFE0E"}
         </button>
         <button className="reset-btn" onClick={handleReset}>
           ↺
@@ -159,6 +170,13 @@ function App() {
           onClick={() => setShowAnimation((v) => !v)}
         >
           {showAnimation ? "✕" : "▶"}
+        </button>
+        <button
+          className={`bg-toggle-btn${bgMode > 0 ? " bg-toggle-btn--active" : ""}`}
+          onClick={() => setBgMode((m) => (m + 1) % BG_MODES.length)}
+          title={`Background: ${BG_MODES[bgMode]}`}
+        >
+          {BG_ICONS[bgMode]}
         </button>
       </div>
 
@@ -188,43 +206,62 @@ function App() {
       {showAnimation ? (
         <AnimatedScene darkMode={darkMode} meshMode={meshMode} />
       ) : (
-        <Scene
-          globalScale={globalScale}
-          offsetX={offsetX}
-          offsetY={
-            offsetY +
-            (viewPanelOpen ? (bodyModel === "female" ? 0.09 : 0.06) : -0.02)
-          }
-          onSelect={(organ) => {
-            setSelectedOrgan(organ);
-            if (
-              organ &&
-              !organ.brainPosition &&
-              organ.type !== "line" &&
-              organ.position
-            ) {
-              setOrganFocusY(organ.position[1] * globalScale + offsetY);
-            } else {
-              setOrganFocusY(null);
+        !showLanding && (
+          <Scene
+            globalScale={globalScale}
+            offsetX={offsetX}
+            offsetY={
+              offsetY +
+              (viewPanelOpen
+                ? bodyModel === "female"
+                  ? -0.02
+                  : -0.02
+                : -0.047)
             }
-          }}
-          selectedOrgan={selectedOrgan}
-          viewMode={viewMode}
-          showNerves={showNerves}
-          darkMode={darkMode}
-          meshMode={meshMode}
-          brainZoom={brainZoom}
-          setBrainZoom={setBrainZoom}
-          cellZoom={cellZoom}
-          setCellZoom={setCellZoom}
-          panY={panY}
-          zoom={zoom}
-          resetKey={resetKey}
-          modelPath={modelPath}
-          femaleMode={bodyModel === "female"}
-          organFocusY={organFocusY}
-          viewPanelOpen={viewPanelOpen}
-        />
+            onSelect={(organ) => {
+              setSelectedOrgan(organ);
+              if (
+                organ &&
+                !organ.brainPosition &&
+                organ.type !== "line" &&
+                organ.position
+              ) {
+                setOrganFocusY(organ.position[1] * globalScale + offsetY);
+              } else {
+                setOrganFocusY(null);
+              }
+            }}
+            onFocus={(organ) => {
+              // Camera zoom only — no modal
+              if (
+                organ &&
+                !organ.brainPosition &&
+                organ.type !== "line" &&
+                organ.position
+              ) {
+                setOrganFocusY(organ.position[1] * globalScale + offsetY);
+              }
+            }}
+            selectedOrgan={selectedOrgan}
+            viewMode={viewMode}
+            showNerves={showNerves}
+            darkMode={darkMode}
+            meshMode={meshMode}
+            brainZoom={brainZoom}
+            setBrainZoom={setBrainZoom}
+            cellZoom={cellZoom}
+            setCellZoom={setCellZoom}
+            panY={panY}
+            zoom={zoom}
+            resetKey={resetKey}
+            modelPath={modelPath}
+            femaleMode={bodyModel === "female"}
+            organFocusY={organFocusY}
+            viewPanelOpen={viewPanelOpen}
+            bgMode={bgMode}
+            bgModeName={BG_MODES[bgMode]}
+          />
+        )
       )}
 
       {(brainZoom || cellZoom) && (
@@ -265,7 +302,13 @@ function App() {
 
       <p className="app-copyright">© 2026 Pablo Cordero</p>
 
-      {showLanding && <LandingOverlay onEnter={() => setShowLanding(false)} />}
+      {showLanding && (
+        <LandingOverlay
+          onEnter={() => setShowLanding(false)}
+          darkMode={darkMode}
+          meshMode={meshMode}
+        />
+      )}
     </div>
   );
 }

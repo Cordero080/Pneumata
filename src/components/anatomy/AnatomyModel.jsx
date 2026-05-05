@@ -356,7 +356,7 @@ function AnatomyModel({
       mat.emissive.set(config.COLORS.obsEmissive);
       mat.metalness = 0.92;
       mat.roughness = 0.08;
-      mat.opacity = 0.82;
+      mat.opacity = 0.2;
       mat.iridescence = 0.45;
       mat.iridescenceIOR = 1.32;
       mat.iridescenceThicknessRange = [120, 280];
@@ -429,6 +429,9 @@ function AnatomyModel({
       whiteAlColorDark,
       whiteEmissiveLight,
       whiteEmissiveDark,
+      onyxColor,
+      onyxColorDark,
+      onyxEmissive,
     } = config.COLORS;
 
     const alColorResolved = darkMode ? alColorDark : alColor;
@@ -436,7 +439,30 @@ function AnatomyModel({
     const whiteEmissive = darkMode ? whiteEmissiveDark : whiteEmissiveLight;
 
     if (darkMode) {
-      if (meshMode === 4 || meshMode === 5) {
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 6 — ONYX
+      if (meshMode === 6) {
+        // Onyx — solid near-black with violet emissive
+        mat.color.set(onyxColorDark);
+        mat.emissive.set(onyxEmissive);
+        mat.emissiveIntensity = 0.12;
+        mat.transparent = false;
+        mat.transmission = 0;
+        mat.opacity = 1.0;
+        mat.metalness = 0.95;
+        mat.roughness = 0.05;
+        mat.iridescence = 0.3;
+        mat.iridescenceIOR = 1.4;
+        mat.iridescenceThicknessRange = [80, 200];
+        mat.clearcoat = 1.0;
+        mat.clearcoatRoughness = 0.05;
+        mat.depthWrite = true;
+        mat.needsUpdate = true;
+        al.transparent = true;
+        al.opacity = 0;
+        al.depthWrite = false;
+        al.needsUpdate = true;
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 4/5 — GHOST + AL
+      } else if (meshMode === 4 || meshMode === 5) {
         const solid = meshMode === 5;
         mat.color.set(ghostColor);
         mat.emissive.set("#ffffff");
@@ -456,6 +482,7 @@ function AnatomyModel({
         al.opacity = solid ? 1.0 : 0.82;
         al.depthWrite = solid;
         al.needsUpdate = true;
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 3 — XRAY
       } else if (meshMode === 3) {
         mat.color.set(whiteColor);
         mat.transparent = true;
@@ -468,6 +495,7 @@ function AnatomyModel({
         mat.iridescence = 0;
         mat.depthWrite = false;
         mat.needsUpdate = true;
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 0 — OBSIDIAN GHOST
       } else if (meshMode === 0) {
         mat.color.set(obsColor);
         mat.emissive.set(obsEmissive);
@@ -479,6 +507,7 @@ function AnatomyModel({
         mat.iridescence = 0;
         mat.depthWrite = false;
         mat.needsUpdate = true;
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 1/2 — OBSIDIAN SEMI / OBSIDIAN SOLID
       } else {
         const solid = meshMode === 2;
         mat.color.set(obsColor);
@@ -497,7 +526,30 @@ function AnatomyModel({
         al.needsUpdate = true;
       }
     } else {
-      if (meshMode === 0) {
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 6 — ONYX
+      if (meshMode === 6) {
+        // Onyx — solid near-black, works same in light and dark mode
+        mat.color.set(darkMode ? onyxColorDark : onyxColor);
+        mat.emissive.set(onyxEmissive);
+        mat.emissiveIntensity = 0.12;
+        mat.transparent = false;
+        mat.transmission = 0;
+        mat.opacity = 1.0;
+        mat.metalness = 0.95;
+        mat.roughness = 0.05;
+        mat.iridescence = 0.3;
+        mat.iridescenceIOR = 1.4;
+        mat.iridescenceThicknessRange = [80, 200];
+        mat.clearcoat = 1.0;
+        mat.clearcoatRoughness = 0.05;
+        mat.depthWrite = true;
+        mat.needsUpdate = true;
+        al.transparent = true;
+        al.opacity = 0;
+        al.depthWrite = false;
+        al.needsUpdate = true;
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 0 — GHOST DARK
+      } else if (meshMode === 0) {
         al.transparent = true;
         al.opacity = 0;
         al.depthWrite = false;
@@ -511,6 +563,7 @@ function AnatomyModel({
         mat.emissiveIntensity = 0;
         mat.depthWrite = false;
         mat.needsUpdate = true;
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 3 — XRAY
       } else if (meshMode === 3) {
         mat.color.set(whiteColor);
         mat.transparent = true;
@@ -529,6 +582,7 @@ function AnatomyModel({
         al.opacity = 0.55;
         al.depthWrite = false;
         al.needsUpdate = true;
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 1/2/4/5 — GHOST + AL
       } else {
         mat.color.set(ghostColor);
         mat.transmission = 0;

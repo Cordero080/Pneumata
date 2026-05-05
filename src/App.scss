@@ -356,7 +356,8 @@
   .mesh-toggle-btn,
   .reset-btn,
   .body-toggle-btn,
-  .anim-toggle-btn {
+  .anim-toggle-btn,
+  .bg-toggle-btn {
     position: static;
     flex-shrink: 0;
     transition: opacity 0.2s ease, color 0.2s ease, filter 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
@@ -364,13 +365,15 @@
 
   .reset-btn,
   .body-toggle-btn,
-  .anim-toggle-btn {
+  .anim-toggle-btn,
+  .bg-toggle-btn {
     opacity: 0.38;
     &:hover { opacity: 1; }
   }
 
   .body-toggle-btn--active,
-  .anim-toggle-btn--active {
+  .anim-toggle-btn--active,
+  .bg-toggle-btn--active {
     opacity: 1;
   }
 
@@ -401,6 +404,19 @@
   }
 
   .anim-toggle-btn {
+    margin-left: -11px;
+    padding-left: 24px;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 14px) 0,
+      100% 14px,
+      100% 100%,
+      14px 100%,
+      14px 14px
+    );
+  }
+
+  .bg-toggle-btn {
     margin-left: -11px;
     padding-left: 24px;
     clip-path: polygon(
@@ -467,6 +483,21 @@
 
   &--active {
     color: #e86030;
+  }
+}
+
+.bg-toggle-btn {
+  @extend %chamfer-btn;
+  font-size: 13px;
+  padding: 6px 12px 6px 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+
+  &--active {
+    color: rgba(90, 50, 180, 0.9);
   }
 }
 

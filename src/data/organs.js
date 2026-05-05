@@ -538,7 +538,7 @@ export const organs = [
     organ: "Gallbladder",
     hardware: "Capacitor Bank / Crypto-Coprocessor",
     position: [-0.045, 1.15, 0.07],
-    femalePosition: [-0.045, 1.10, 0.07],
+    femalePosition: [-0.045, 1.1, 0.07],
     bio_function:
       "Stores concentrated bile produced by the liver. When the small intestine encounters dense fat — the hardest material to break down — the gallbladder contracts and injects its concentrated charge directly into the pipeline to emulsify the load. It does not manufacture — it stores and discharges on demand.",
     hard_function:

@@ -29,13 +29,16 @@ export const HAS_SHEEN = false;
 export const COLORS = {
   obsColor: "#030306", // dark mode: base surface tint
   obsEmissive: "#880000", // dark mode: inner glow (crimson)
-  ghostColor: "#eef2f6", // light mode: ghost shell tint
+  ghostColor: "#afc1d4", // light mode: ghost shell tint
   ghostDark: "#1a1a2a", // light ghost mode 0: charcoal
-  alColor: "#c8d5e0", // aluminum layer (light mode)
+  alColor: "#bdd1e2", // aluminum layer (light mode)
   alColorDark: "#c8d5e0", // aluminum layer (dark mode) — same for male
-  whiteColor: "#f0f4ff", // white ghost mode 3 tint
+  whiteColor: "#e2e2f0", // white ghost mode 3 tint
   whiteAlColor: "#a8bcd4", // aluminum in white ghost mode (light)
   whiteAlColorDark: "#a8bcd4", // aluminum in white ghost mode (dark) — same for male
   whiteEmissiveLight: "#c8a060", // emissive in white ghost mode (light)
   whiteEmissiveDark: "#9966ff", // emissive in white ghost mode (dark)
+  onyxColor: "#030306fa", // onyx skin: light mode
+  onyxColorDark: "#030306fa", // onyx skin: dark mode
+  onyxEmissive: "#220055", // onyx skin: emissive glow (dark violet)
 };

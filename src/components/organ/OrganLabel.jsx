@@ -1,7 +1,7 @@
 import { Html } from "@react-three/drei";
 import { darkenForLight } from "../../data/categories";
 
-function OrganLabel({ organ, color, darkMode, onSelect }) {
+function OrganLabel({ organ, color, darkMode, onSelect, labelReady }) {
   const isLeft = organ.position[0] <= 0;
   // Light mode: darken neons so they read on silvery panel
   // Dark mode: use raw neon — it pops on the dark surface
@@ -41,11 +41,16 @@ function OrganLabel({ organ, color, darkMode, onSelect }) {
           left: isLeft ? "auto" : "10px",
           right: isLeft ? "10px" : "auto",
           top: "50%",
-          transform: "translateY(-50%)",
+          transform: labelReady
+            ? "translateY(-50%) perspective(300px) rotateX(-8deg) scale(1.06)"
+            : "translateY(-50%)",
           display: "flex",
           flexDirection: isLeft ? "row-reverse" : "row",
           alignItems: "center",
-          animation: "scanReveal 0.22s ease-out both",
+          animation: labelReady
+            ? "labelReadyPulse 1s ease-in-out infinite"
+            : "scanReveal 0.22s ease-out both",
+          transition: "transform 0.3s ease",
         }}
       >
         {/* Connector line + tick */}
@@ -82,6 +87,12 @@ function OrganLabel({ organ, color, darkMode, onSelect }) {
           }
           style={{
             ...panel,
+            ...(labelReady
+              ? {
+                  border: `1px solid ${color}cc`,
+                  boxShadow: `0 0 18px ${color}55, 0 0 6px ${color}88, inset 0 1px 0 rgba(255,255,255,0.1)`,
+                }
+              : {}),
             padding: "6px 10px",
             maxWidth: "130px",
             clipPath:
@@ -126,6 +137,10 @@ function OrganLabel({ organ, color, darkMode, onSelect }) {
         @keyframes scanReveal {
           from { opacity: 0; clip-path: inset(0 100% 0 0); }
           to   { opacity: 1; clip-path: inset(0 0% 0 0); }
+        }
+        @keyframes labelReadyPulse {
+          0%, 100% { opacity: 1; filter: brightness(1); }
+          50%       { opacity: 0.75; filter: brightness(1.4); }
         }
       `}</style>
     </Html>

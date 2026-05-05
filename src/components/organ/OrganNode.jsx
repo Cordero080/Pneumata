@@ -35,6 +35,7 @@ import OrganLabel from "./OrganLabel";
 function OrganNode({
   organ,
   onSelect,
+  onFocus,
   onHover,
   nodeOpacity = 1,
   pulseRef,
@@ -67,6 +68,7 @@ function OrganNode({
     [pulseRef],
   );
   const [hovered, setHovered] = useState(false);
+  const [labelReady, setLabelReady] = useState(false);
   const isEye = organ.id === "right_eye" || organ.id === "left_eye";
   const glitchRef = useRef({ nextGlitch: 3 + Math.random() * 6, duration: 0 });
 
@@ -157,7 +159,7 @@ function OrganNode({
       const g = glitchRef.current;
       g.nextGlitch -= delta;
       if (g.nextGlitch <= 0) {
-        g.duration = 0.35 + Math.random() * 0.3;
+        g.duration = 0.25 + Math.random() * 0.3;
         g.nextGlitch = 4 + Math.random() * 8;
       }
       if (g.duration > 0) {
@@ -390,11 +392,13 @@ function OrganNode({
           if (cellZoom || (brainZoom && !organ.brainPosition)) return;
           if (IS_MOBILE) {
             if (isPreview) {
-              // Second tap — open modal
+              // Second tap on node while label is showing — open modal
               onClearPreview?.();
+              setLabelReady(false);
               onSelect(organ);
             } else {
               // First tap — preview: show label + highlight category
+              setLabelReady(false);
               onPreview?.(organ);
               onCategoryHover?.(organ.category);
             }
@@ -421,10 +425,20 @@ function OrganNode({
             organ={organ}
             color={color}
             darkMode={darkMode}
-            onSelect={() => {
-              onClearPreview?.();
-              onSelect(organ);
-            }}
+            labelReady={labelReady}
+            onSelect={
+              IS_MOBILE && isPreview && !labelReady
+                ? () => {
+                    // Step 2 on mobile: zoom camera, activate "tap to open" cue
+                    onFocus?.(organ);
+                    setLabelReady(true);
+                  }
+                : () => {
+                    onClearPreview?.();
+                    setLabelReady(false);
+                    onSelect(organ);
+                  }
+            }
           />
         )}
     </group>
