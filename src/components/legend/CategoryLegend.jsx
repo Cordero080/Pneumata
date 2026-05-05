@@ -14,8 +14,8 @@ function CategoryLegend() {
             <span
               className="legend-label"
               style={{
-                color,
-                textShadow: `0 0 8px ${color}99, 0 1px 3px rgba(0,0,0,0.6)`,
+                color: "#ffffff",
+                textShadow: `0 0 10px ${color}, 0 0 20px ${color}88`,
               }}
             >
               {label}

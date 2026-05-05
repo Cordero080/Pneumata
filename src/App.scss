@@ -55,7 +55,7 @@
   position: absolute;
   left: -14rem;
   top: 50%;
-  transform: translateY(-62%);
+  transform: translateY(-38%) scale(0.85);
   z-index: 10;
   pointer-events: none;
 
@@ -334,7 +334,7 @@
 
 .top-left-strip {
   position: fixed;
-  top: 1rem;
+  top: 0;
   left: 0;
   z-index: 50;
   display: flex;
@@ -492,9 +492,6 @@
   align-items: center;
   justify-content: center;
   min-width: 44px;
-  opacity: 0.25 !important;
-  filter: grayscale(1);
-  pointer-events: none;
 
   &--active {
     color: rgba(90, 50, 180, 0.9);
