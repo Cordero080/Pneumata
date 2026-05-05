@@ -89,6 +89,7 @@
     width: 50px;
     margin-right: -11px;
     position: relative;
+    pointer-events: auto;
     clip-path: polygon(
       0 0,
       calc(100% - 14px) 0,
@@ -223,16 +224,13 @@
 
 .top-right-stack {
   position: fixed;
-  top: 1rem;
-  right: 0.4rem;
+  top: 0;
+  right: 0;
   z-index: 60;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-
-  @media (max-width: 768px) {
-    top: 0.6rem;
-  }
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.18));
 }
 
 .about-btn {
@@ -241,13 +239,14 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 8px 18px;
+  padding: 8px 36px;
 
   @media (max-width: 768px) {
     font-size: 8px;
-    padding: 8px 14px;
+    padding: 8px 24px;
   }
   border-left: none;
+  border-right: none;
   border-top: 2px solid rgba(255, 255, 255, 0.1);
   border-right: 3px solid rgba(0, 0, 0, 0.06);
   border-bottom: none;
@@ -267,8 +266,7 @@
 
   clip-path: polygon(
     0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
+    100% 0,
     100% 100%,
     0 100%
   );
@@ -337,20 +335,20 @@
 .top-left-strip {
   position: fixed;
   top: 1rem;
-  left: 13rem;
+  left: 0;
   z-index: 50;
   display: flex;
   flex-direction: row;
   gap: 0;
-  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.12));
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.18));
 
   @media (min-width: 1920px) {
-    left: 13.5rem;
+    left: 0;
   }
 
   @media (max-width: 768px) {
-    top: 0.6rem;
-    left: 0.6rem;
+    top: 0;
+    left: 0;
   }
 
   .mesh-toggle-btn,
@@ -433,15 +431,14 @@
 .mesh-toggle-btn {
   @extend %chamfer-btn;
   font-size: 13px;
-  padding: 6px 14px;
+  padding: 6px 10px;
   color: rgba(55, 72, 88, 0.55);
   clip-path: polygon(
     0 0,
     calc(100% - 14px) 0,
     100% 14px,
     100% 100%,
-    14px 100%,
-    0 calc(100% - 14px)
+    0 100%
   );
 }
 
@@ -495,6 +492,9 @@
   align-items: center;
   justify-content: center;
   min-width: 44px;
+  opacity: 0.25 !important;
+  filter: grayscale(1);
+  pointer-events: none;
 
   &--active {
     color: rgba(90, 50, 180, 0.9);

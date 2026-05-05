@@ -189,7 +189,7 @@ function App() {
           onMouseMove={handleTilt}
           onMouseLeave={resetTilt}
         >
-          About
+          Info
         </button>
         {!showAnimation && (
           <VerticalControls
