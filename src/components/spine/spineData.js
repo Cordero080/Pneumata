@@ -96,6 +96,25 @@ export const DISC_STYLES = {
   },
 };
 
+// Thoracic nerve arc waypoints — X capped at ±0.12 to keep all arcs inside the body silhouette.
+// Y and Z sampled from lateral rib peak of male-body.glb (Y and Z remain accurate).
+// disc index 6=T1 … 17=T12. L=x<0 (body right side), R=x>0 (body left side).
+// Used as `rx` in buildPath: cx = 2*rx - 0.5*ox, so arc peak ≈ rx regardless of organ X.
+export const RIB_EDGES = {
+  6: { L: [-0.12, 1.427, -0.054], R: [0.12, 1.427, -0.056] },
+  7: { L: [-0.12, 1.399, -0.057], R: [0.12, 1.398, -0.059] },
+  8: { L: [-0.12, 1.363, -0.058], R: [0.12, 1.363, -0.058] },
+  9: { L: [-0.12, 1.329, -0.057], R: [0.12, 1.33, -0.058] },
+  10: { L: [-0.12, 1.299, -0.055], R: [0.12, 1.299, -0.055] },
+  11: { L: [-0.12, 1.266, -0.056], R: [0.12, 1.266, -0.056] },
+  12: { L: [-0.12, 1.231, -0.057], R: [0.12, 1.232, -0.056] },
+  13: { L: [-0.12, 1.195, -0.055], R: [0.12, 1.195, -0.056] },
+  14: { L: [-0.12, 1.16, -0.052], R: [0.12, 1.161, -0.053] },
+  15: { L: [-0.12, 1.129, -0.048], R: [0.12, 1.129, -0.048] },
+  16: { L: [-0.12, 1.099, -0.045], R: [0.12, 1.098, -0.046] },
+  17: { L: [-0.12, 1.065, -0.048], R: [0.12, 1.066, -0.047] },
+};
+
 // Format: [x, y, z] — x is always 0 (spine is centered)
 // y = height (1.585 = top near skull base, 0.877 = bottom of lumbar)
 // z = forward/back depth — less negative = closer to viewer/forward, more negative = further back

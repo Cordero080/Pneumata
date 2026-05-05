@@ -3,6 +3,7 @@ import { Line } from "@react-three/drei";
 import * as THREE from "three";
 import { organs } from "../data/organs";
 import { CATEGORY_COLORS } from "../data/categories";
+import { RIB_EDGES } from "./spine/spineData";
 
 // Primary disc index for each organ's spinal connection.
 // Indices map to SPINAL_LEVELS order: 0=C2-C3, 5=C7-T1, 10=T5-T6 … 23=S1-S2.
@@ -20,7 +21,7 @@ const NERVE_DISC = {
   liver: 13, // T7-T9 (greater splanchnic) → T8-T9
   spleen: 13, // T6-T10 (celiac plexus)
   pancreas: 13, // T6-T10 (splanchnic)
-  adrenals: 15, // T8-T12 (splanchnic) → T10-T11
+  adrenals: 13, // T5-T11 (greater splanchnic); disc 13=T8 gives vertical drop to organ — T10 was same Y as adrenal, producing horizontal arc
   small_intestine: 14, // T9-T11 (lesser splanchnic)
   large_intestine: 17, // T11-L2 (lumbar splanchnic)
   right_kidney: 15, // T10-T12 (least splanchnic)
@@ -44,11 +45,25 @@ const BRAIN_TRACTS = [
   ["thalamus", "brain_stem", "corticospinal descending"],
 ];
 
-// Build a 3-point CatmullRom curve from disc → lateral arc → organ.
-function buildPath(discPt, organPos, side) {
+function buildPath(discPt, organPos, side, discIdx) {
   const [dx, dy, dz] = discPt;
   const [ox, oy, oz] = organPos;
 
+  // Thoracic (T1–T12, disc idx 6–17): QuadraticBezier arcing through the rib cage.
+  // cx derived so the arc peak lands exactly on the rib edge: peak ≈ 0.5*cx + 0.25*(P0.x+P2.x)
+  // Solving for peak=rx: cx = 2*rx - 0.5*ox (organ-position-aware, no flat multiplier)
+  if (discIdx >= 6 && discIdx <= 17) {
+    const ribKey = side < 0 ? "L" : "R";
+    const [rx, ry, rz] = RIB_EDGES[discIdx][ribKey];
+    const cx = 2 * rx - 0.5 * ox;
+    return new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(dx + side * 0.016, dy, dz),
+      new THREE.Vector3(cx, ry, rz),
+      new THREE.Vector3(ox, oy, oz),
+    ).getPoints(28);
+  }
+
+  // Cervical (0–5) and lumbar/sacral (18–23): original quadratic Bezier
   const p0 = new THREE.Vector3(dx + side * 0.016, dy, dz);
   const lateralX = side * Math.max(0.065, Math.abs(ox) * 1.3);
   const p1 = new THREE.Vector3(
@@ -57,7 +72,6 @@ function buildPath(discPt, organPos, side) {
     dz * 0.3 + oz * 0.7,
   );
   const p2 = new THREE.Vector3(ox, oy, oz);
-
   return new THREE.QuadraticBezierCurve3(p0, p1, p2).getPoints(24);
 }
 
@@ -82,7 +96,7 @@ function NerveRoots({ spinePoints, hoveredCategory, viewMode, showNerves }) {
 
         return sides.map((side) => ({
           id: `${organ.id}_${side > 0 ? "r" : "l"}`,
-          points: buildPath(discPt, organ.position, side),
+          points: buildPath(discPt, organ.position, side, discIdx),
           color,
           category: organ.category,
           isBrain: false,

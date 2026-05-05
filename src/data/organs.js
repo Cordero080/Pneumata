@@ -488,7 +488,7 @@ export const organs = [
     type: "point",
     organ: "Esophagus",
     hardware: "Input Queue / Data Bus",
-    position: [0, 1.35, -0.03],
+    position: [0, 1.26, -0.03],
     bio_function:
       "A muscular tube that moves food from the mouth to the stomach via rhythmic contraction. It performs no digestion — its sole function is controlled, sequential delivery of raw input to the processing organ.",
     hard_function:
@@ -521,7 +521,7 @@ export const organs = [
     nodeSize: "large", // STYLE: largest internal organ — larger node
     organ: "Liver",
     hardware: "Firewall / Data Filter",
-    position: [-0.07, 1.13, 0.08],
+    position: [-0.1, 1.13, 0.08],
     bio_function:
       "Filters the entire blood supply — neutralizing toxins, metabolizing drugs, breaking down hormones, synthesizing proteins, and maintaining chemical balance. Everything absorbed from digestion passes through it before reaching circulation.",
     hard_function:
@@ -537,8 +537,8 @@ export const organs = [
     type: "point",
     organ: "Gallbladder",
     hardware: "Capacitor Bank / Crypto-Coprocessor",
-    position: [-0.045, 1.08, 0.07],
-    femalePosition: [-0.045, 1.03, 0.07],
+    position: [-0.045, 1.11, 0.07],
+    femalePosition: [-0.045, 1.06, 0.07],
     bio_function:
       "Stores concentrated bile produced by the liver. When the small intestine encounters dense fat — the hardest material to break down — the gallbladder contracts and injects its concentrated charge directly into the pipeline to emulsify the load. It does not manufacture — it stores and discharges on demand.",
     hard_function:
@@ -636,7 +636,7 @@ export const organs = [
     type: "point",
     organ: "Bladder",
     hardware: "Output Buffer",
-    position: [0, 0.86, 0.04],
+    position: [0, 0.91, 0.04],
     bio_function:
       "Stores liquid waste filtered by the kidneys, accumulating it until voluntary release. It is a scheduled output operation, not a continuous stream.",
     hard_function:

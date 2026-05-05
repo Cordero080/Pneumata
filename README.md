@@ -6,17 +6,17 @@
 
 ![Power mode — full body red emissive glow, circulatory system at peak](public/screenshots/new-shots/power-mode-red.png)
 
-| Unified — ghost mesh                                                                                          | Breathing — inhalation                                                                                              |
-| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Unified — ghost mesh                                                                                                   | Breathing — inhalation                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | ![Unified mode — ghost mesh, all systems active, full circulatory layer](public/screenshots/new-shots/dark-mode-1.png) | ![Breathing mode — lung inhalation, semi-transparent mesh, right lung label](public/screenshots/new-shots/breathing-inhalation.png) |
 
-| Light mode — node hover                                                                                           | Brain zoom — Logic view                                                                                              |
-| ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Light mode — node hover                                                                                         | Brain zoom — Logic view                                                                                                  |
+| --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | ![Light mode — liver hovered, green category highlight on spine](public/screenshots/new-shots/light-mode-7.png) | ![Brain zoom — Logic mode with cranial nodes clustered, vocal cords label](public/screenshots/new-shots/dark-mode-4.png) |
 
-| About modal                                                                                              |   |
-| -------------------------------------------------------------------------------------------------------- | - |
-| ![About modal — Philosophy tab with category breakdown](public/screenshots/new-shots/dark-mode-about.png) |   |
+| About modal                                                                                               |     |
+| --------------------------------------------------------------------------------------------------------- | --- |
+| ![About modal — Philosophy tab with category breakdown](public/screenshots/new-shots/dark-mode-about.png) |     |
 
 ---
 

@@ -263,11 +263,11 @@ function CellMesh({
     }
     let glowOpacity, glowScale;
     if (pulse) {
-      glowOpacity = hovered ? 0.65 : 0.10 + p * 0.38;
-      glowScale   = hovered ? 0.14 : 0.080 + p * 0.072;
+      glowOpacity = hovered ? 0.65 : 0.1 + p * 0.38;
+      glowScale = hovered ? 0.14 : 0.08 + p * 0.072;
     } else {
       glowOpacity = hovered ? 0.45 : 0.15;
-      glowScale   = 0.09;
+      glowScale = 0.09;
     }
     if (glowSpriteRef.current) {
       glowSpriteRef.current.material.opacity +=
