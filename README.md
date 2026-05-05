@@ -46,6 +46,22 @@ The philosophical source of truth is [`docs/analog.md`](docs/analog.md), which c
 
 ---
 
+## Anatomical Accuracy
+
+The hardware analogy is creative interpretation. The anatomy underneath it is not.
+
+**Spinal innervation levels** — every vertebral disc marker's organ assignment was verified against anatomical sources. Common misconceptions were explicitly corrected: the thyroid's preganglionic origin is thoracic (T1–T3 via superior cervical ganglion), not cervical; the vocal cords are innervated by CN X (vagus, brainstem origin), not the spinal cord. Full table in [`docs/medical-accuracy.md`](docs/medical-accuracy.md).
+
+**Peripheral nerves** — spinal origins, plexus membership, and clinical correlates (carpal tunnel, sciatica, foot drop, Saturday night palsy) are all verified. Visual paths are Catmull-Rom curves through anatomical landmarks — correct structure, simplified spatial route.
+
+**Spine geometry** — the spinal curve is auto-traced at runtime by sampling actual vertex positions from the GLB mesh. The path is not hardcoded; it follows the real cervical lordosis, thoracic kyphosis, and lumbar lordosis of the model. Vertebral bodies use a LatheGeometry barrel profile with anatomically correct flared endplates. Spinous process lengths peak at T5–T8 via a sine curve — the longest, most posteriorly angled processes in the human spine.
+
+**Brain coordinates** — neural paths and cellular models inside the brain use coordinates derived from the real bounding box of the brain GLB at runtime (`x ±0.0706`, `y 1.558–1.723`, `z −0.1048–+0.0769`). Brains lobes are reached via the z-axis (frontal ↔ occipital), not by extending y beyond the skull.
+
+**Neural activity** — the 198 spark particles follow paths approximating real white-matter tracts (corpus callosum, corticospinal, thalamocortical, frontal-occipital). Trail geometry represents an action potential wavefront. Current simplifications: sparks are bidirectional (real APs are unidirectional), all speeds are equal (real myelinated axons fire 70–120 m/s vs unmyelinated 0.5–2 m/s), and phase randomization doesn't model oscillatory synchrony (gamma ~40 Hz, alpha ~10 Hz). These are documented as future improvements.
+
+---
+
 ## Tech Stack
 
 - [Vite](https://vitejs.dev/) + [React](https://react.dev/)

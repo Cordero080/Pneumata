@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Line } from "@react-three/drei";
 import * as THREE from "three";
-import { smoothPoints } from "./spineData";
+import { smoothPoints, MALE_SPINE_POINTS } from "./spineData";
 
 const CURVE_SAMPLES = 80;
 
@@ -123,29 +123,29 @@ const TRACTS = [
 
 // Trail: head + N fading steps behind it
 const TRAIL = [
-  { tOff: 0.0, size: 0.003, opacity: 1.0 },
-  { tOff: 0.008, size: 0.003, opacity: 0.8 },
-  { tOff: 0.016, size: 0.003, opacity: 0.62 },
-  { tOff: 0.024, size: 0.0028, opacity: 0.46 },
-  { tOff: 0.032, size: 0.0023, opacity: 0.32 },
-  { tOff: 0.032, size: 0.0023, opacity: 0.32 },
-  { tOff: 0.032, size: 0.0023, opacity: 0.32 },
-  { tOff: 0.04, size: 0.0021, opacity: 0.2 },
-  { tOff: 0.04, size: 0.0021, opacity: 0.2 },
-  { tOff: 0.04, size: 0.0021, opacity: 0.2 },
-  { tOff: 0.05, size: 0.00017, opacity: 0.12 },
-  { tOff: 0.062, size: 0.0005, opacity: 0.06 },
-  { tOff: 0.062, size: 0.0005, opacity: 0.06 },
-  { tOff: 0.062, size: 0.0005, opacity: 0.06 },
-  { tOff: 0.076, size: 0.0003, opacity: 0.06 },
-  { tOff: 0.076, size: 0.0003, opacity: 0.06 },
-  { tOff: 0.076, size: 0.0003, opacity: 0.06 },
-  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
-  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
-  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
-  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
-  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
-  { tOff: 0.076, size: 0.0003, opacity: 0.02 },
+  { tOff: 0.0, size: 0.002, opacity: 1.0 },
+  { tOff: 0.008, size: 0.002, opacity: 0.8 },
+  { tOff: 0.016, size: 0.002, opacity: 0.62 },
+  { tOff: 0.024, size: 0.002, opacity: 0.46 },
+  { tOff: 0.032, size: 0.002, opacity: 0.32 },
+  { tOff: 0.032, size: 0.002, opacity: 0.32 },
+  { tOff: 0.032, size: 0.002, opacity: 0.32 },
+  { tOff: 0.04, size: 0.002, opacity: 0.2 },
+  { tOff: 0.04, size: 0.002, opacity: 0.2 },
+  { tOff: 0.04, size: 0.002, opacity: 0.2 },
+  { tOff: 0.05, size: 0.002, opacity: 0.12 },
+  { tOff: 0.062, size: 0.002, opacity: 0.06 },
+  { tOff: 0.062, size: 0.002, opacity: 0.06 },
+  { tOff: 0.062, size: 0.002, opacity: 0.06 },
+  { tOff: 0.076, size: 0.002, opacity: 0.06 },
+  { tOff: 0.076, size: 0.002, opacity: 0.06 },
+  { tOff: 0.076, size: 0.002, opacity: 0.06 },
+  { tOff: 0.076, size: 0.002, opacity: 0.02 },
+  { tOff: 0.076, size: 0.002, opacity: 0.02 },
+  { tOff: 0.076, size: 0.002, opacity: 0.02 },
+  { tOff: 0.076, size: 0.002, opacity: 0.02 },
+  { tOff: 0.076, size: 0.002, opacity: 0.02 },
+  { tOff: 0.076, size: 0.002, opacity: 0.02 },
 ];
 
 export default function SpinalFibers({ spinePoints, viewMode }) {
@@ -153,11 +153,7 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
   const pulseT = useRef({});
 
   const { curves, linePoints } = useMemo(() => {
-    if (!spinePoints || spinePoints.length < 2)
-      return { curves: null, linePoints: null };
-    // Use the same smoothed data that DiscMarkers uses so fiber paths
-    // pass through disc centers instead of deviating from them.
-    const smoothed = smoothPoints(spinePoints);
+    const smoothed = smoothPoints(MALE_SPINE_POINTS);
     const curves = {};
     const linePoints = {};
     for (const tract of TRACTS) {
@@ -173,7 +169,7 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
       linePoints[tract.id] = curves[tract.id].getPoints(CURVE_SAMPLES);
     }
     return { curves, linePoints };
-  }, [spinePoints]);
+  }, []);
 
   useFrame((_, delta) => {
     if (!curves) return;
@@ -207,7 +203,7 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
     }
   });
 
-  if (!spinePoints || !curves) return null;
+  if (!curves) return null;
 
   const mult =
     viewMode === "breathing" ? 0.15 : viewMode === "unified" ? 0.5 : 1.0;

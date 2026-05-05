@@ -209,110 +209,82 @@ const PATHS = [
 
 // Base spark definitions — each expands into main + 2 trailing particles
 const BASE_SPARKS = [
-  { pathIndex: 0, speed: 0.3, phase: 0.0, color: new THREE.Color("#00ffff") },
-  { pathIndex: 0, speed: 0.3, phase: 0.55, color: new THREE.Color("#ff00ff") },
-  { pathIndex: 1, speed: 0.26, phase: 0.1, color: new THREE.Color("#00ffff") },
-  { pathIndex: 1, speed: 0.26, phase: 0.6, color: new THREE.Color("#ff003c") },
-  { pathIndex: 2, speed: 0.26, phase: 0.3, color: new THREE.Color("#00ffff") },
-  { pathIndex: 2, speed: 0.26, phase: 0.8, color: new THREE.Color("#00ff88") },
-  { pathIndex: 3, speed: 0.38, phase: 0.2, color: new THREE.Color("#00ffff") },
-  { pathIndex: 3, speed: 0.38, phase: 0.7, color: new THREE.Color("#ff00ff") },
-  { pathIndex: 4, speed: 0.42, phase: 0.0, color: new THREE.Color("#00b3ff") },
-  { pathIndex: 4, speed: 0.42, phase: 0.5, color: new THREE.Color("#ffee00") },
+  { pathIndex: 0, speed: 0.3,  phase: 0.0,  color: new THREE.Color("#00ffff") },
+  { pathIndex: 0, speed: 0.3,  phase: 0.55, color: new THREE.Color("#ff00ff") },
+  { pathIndex: 0, speed: 0.3,  phase: 0.28, color: new THREE.Color("#aaffff") },
+  { pathIndex: 1, speed: 0.26, phase: 0.1,  color: new THREE.Color("#00ffff") },
+  { pathIndex: 1, speed: 0.26, phase: 0.6,  color: new THREE.Color("#ff003c") },
+  { pathIndex: 1, speed: 0.26, phase: 0.38, color: new THREE.Color("#00ff88") },
+  { pathIndex: 2, speed: 0.26, phase: 0.3,  color: new THREE.Color("#00ffff") },
+  { pathIndex: 2, speed: 0.26, phase: 0.8,  color: new THREE.Color("#00ff88") },
+  { pathIndex: 2, speed: 0.26, phase: 0.55, color: new THREE.Color("#ff003c") },
+  { pathIndex: 3, speed: 0.38, phase: 0.2,  color: new THREE.Color("#00ffff") },
+  { pathIndex: 3, speed: 0.38, phase: 0.7,  color: new THREE.Color("#ff00ff") },
+  { pathIndex: 3, speed: 0.38, phase: 0.45, color: new THREE.Color("#ffffff") },
+  { pathIndex: 4, speed: 0.42, phase: 0.0,  color: new THREE.Color("#00b3ff") },
+  { pathIndex: 4, speed: 0.42, phase: 0.5,  color: new THREE.Color("#ffee00") },
+  { pathIndex: 4, speed: 0.42, phase: 0.25, color: new THREE.Color("#00ffcc") },
   { pathIndex: 5, speed: 0.22, phase: 0.15, color: new THREE.Color("#c300ff") },
   { pathIndex: 5, speed: 0.22, phase: 0.65, color: new THREE.Color("#ffffff") },
+  { pathIndex: 5, speed: 0.22, phase: 0.4,  color: new THREE.Color("#8800ff") },
   { pathIndex: 6, speed: 0.28, phase: 0.35, color: new THREE.Color("#00ffff") },
   { pathIndex: 6, speed: 0.28, phase: 0.75, color: new THREE.Color("#ffee00") },
+  { pathIndex: 6, speed: 0.28, phase: 0.55, color: new THREE.Color("#ff88ff") },
   { pathIndex: 7, speed: 0.34, phase: 0.45, color: new THREE.Color("#00ff88") },
   { pathIndex: 7, speed: 0.34, phase: 0.85, color: new THREE.Color("#ff6633") },
-  { pathIndex: 8, speed: 0.32, phase: 0.1, color: new THREE.Color("#ffaa00") },
-  { pathIndex: 8, speed: 0.32, phase: 0.6, color: new THREE.Color("#ff44ff") },
-  { pathIndex: 9, speed: 0.25, phase: 0.2, color: new THREE.Color("#00ffcc") },
-  { pathIndex: 9, speed: 0.25, phase: 0.7, color: new THREE.Color("#ff0066") },
-  {
-    pathIndex: 10,
-    speed: 0.25,
-    phase: 0.45,
-    color: new THREE.Color("#00ccff"),
-  },
-  { pathIndex: 10, speed: 0.25, phase: 0.9, color: new THREE.Color("#aaff00") },
-  {
-    pathIndex: 11,
-    speed: 0.35,
-    phase: 0.05,
-    color: new THREE.Color("#ff9900"),
-  },
-  {
-    pathIndex: 11,
-    speed: 0.35,
-    phase: 0.55,
-    color: new THREE.Color("#00ffff"),
-  },
+  { pathIndex: 7, speed: 0.34, phase: 0.65, color: new THREE.Color("#ffff44") },
+  { pathIndex: 8, speed: 0.32, phase: 0.1,  color: new THREE.Color("#ffaa00") },
+  { pathIndex: 8, speed: 0.32, phase: 0.6,  color: new THREE.Color("#ff44ff") },
+  { pathIndex: 8, speed: 0.32, phase: 0.35, color: new THREE.Color("#00ffcc") },
+  { pathIndex: 9, speed: 0.25, phase: 0.2,  color: new THREE.Color("#00ffcc") },
+  { pathIndex: 9, speed: 0.25, phase: 0.7,  color: new THREE.Color("#ff0066") },
+  { pathIndex: 9, speed: 0.25, phase: 0.45, color: new THREE.Color("#44ffff") },
+  { pathIndex: 10, speed: 0.25, phase: 0.45, color: new THREE.Color("#00ccff") },
+  { pathIndex: 10, speed: 0.25, phase: 0.9,  color: new THREE.Color("#aaff00") },
+  { pathIndex: 10, speed: 0.25, phase: 0.68, color: new THREE.Color("#ff88cc") },
+  { pathIndex: 11, speed: 0.35, phase: 0.05, color: new THREE.Color("#ff9900") },
+  { pathIndex: 11, speed: 0.35, phase: 0.55, color: new THREE.Color("#00ffff") },
+  { pathIndex: 11, speed: 0.35, phase: 0.30, color: new THREE.Color("#ffff00") },
   // Upper frontal arc (12)
-  { pathIndex: 12, speed: 0.36, phase: 0.0, color: new THREE.Color("#00ffff") },
-  { pathIndex: 12, speed: 0.36, phase: 0.5, color: new THREE.Color("#ff88ff") },
+  { pathIndex: 12, speed: 0.36, phase: 0.0,  color: new THREE.Color("#00ffff") },
+  { pathIndex: 12, speed: 0.36, phase: 0.5,  color: new THREE.Color("#ff88ff") },
+  { pathIndex: 12, speed: 0.36, phase: 0.25, color: new THREE.Color("#aaffff") },
   // Crown (13)
-  { pathIndex: 13, speed: 0.28, phase: 0.2, color: new THREE.Color("#ffffff") },
-  { pathIndex: 13, speed: 0.28, phase: 0.7, color: new THREE.Color("#aaffff") },
+  { pathIndex: 13, speed: 0.28, phase: 0.2,  color: new THREE.Color("#ffffff") },
+  { pathIndex: 13, speed: 0.28, phase: 0.7,  color: new THREE.Color("#aaffff") },
+  { pathIndex: 13, speed: 0.28, phase: 0.45, color: new THREE.Color("#ff88ff") },
   // Left parietal (14)
-  { pathIndex: 14, speed: 0.31, phase: 0.1, color: new THREE.Color("#ff00ff") },
-  { pathIndex: 14, speed: 0.31, phase: 0.6, color: new THREE.Color("#ffee00") },
+  { pathIndex: 14, speed: 0.31, phase: 0.1,  color: new THREE.Color("#ff00ff") },
+  { pathIndex: 14, speed: 0.31, phase: 0.6,  color: new THREE.Color("#ffee00") },
+  { pathIndex: 14, speed: 0.31, phase: 0.35, color: new THREE.Color("#ff88aa") },
   // Right parietal (15)
-  {
-    pathIndex: 15,
-    speed: 0.31,
-    phase: 0.35,
-    color: new THREE.Color("#00ff88"),
-  },
-  {
-    pathIndex: 15,
-    speed: 0.31,
-    phase: 0.82,
-    color: new THREE.Color("#ff4400"),
-  },
+  { pathIndex: 15, speed: 0.31, phase: 0.35, color: new THREE.Color("#00ff88") },
+  { pathIndex: 15, speed: 0.31, phase: 0.82, color: new THREE.Color("#ff4400") },
+  { pathIndex: 15, speed: 0.31, phase: 0.58, color: new THREE.Color("#88ffcc") },
   // Upper occipital (16)
-  {
-    pathIndex: 16,
-    speed: 0.29,
-    phase: 0.15,
-    color: new THREE.Color("#00b3ff"),
-  },
-  {
-    pathIndex: 16,
-    speed: 0.29,
-    phase: 0.65,
-    color: new THREE.Color("#cc00ff"),
-  },
+  { pathIndex: 16, speed: 0.29, phase: 0.15, color: new THREE.Color("#00b3ff") },
+  { pathIndex: 16, speed: 0.29, phase: 0.65, color: new THREE.Color("#cc00ff") },
+  { pathIndex: 16, speed: 0.29, phase: 0.4,  color: new THREE.Color("#4466ff") },
   // Left frontal relay (17)
-  {
-    pathIndex: 17,
-    speed: 0.33,
-    phase: 0.05,
-    color: new THREE.Color("#ffcc00"),
-  },
-  {
-    pathIndex: 17,
-    speed: 0.33,
-    phase: 0.55,
-    color: new THREE.Color("#00ffcc"),
-  },
+  { pathIndex: 17, speed: 0.33, phase: 0.05, color: new THREE.Color("#ffcc00") },
+  { pathIndex: 17, speed: 0.33, phase: 0.55, color: new THREE.Color("#00ffcc") },
+  { pathIndex: 17, speed: 0.33, phase: 0.30, color: new THREE.Color("#ffaa44") },
   // Right frontal relay (18)
-  { pathIndex: 18, speed: 0.33, phase: 0.3, color: new THREE.Color("#ff6688") },
-  { pathIndex: 18, speed: 0.33, phase: 0.8, color: new THREE.Color("#88ff44") },
+  { pathIndex: 18, speed: 0.33, phase: 0.3,  color: new THREE.Color("#ff6688") },
+  { pathIndex: 18, speed: 0.33, phase: 0.8,  color: new THREE.Color("#88ff44") },
+  { pathIndex: 18, speed: 0.33, phase: 0.55, color: new THREE.Color("#ffccaa") },
   // Wide upper commissure (19)
-  { pathIndex: 19, speed: 0.38, phase: 0.0, color: new THREE.Color("#00ffff") },
-  { pathIndex: 19, speed: 0.38, phase: 0.5, color: new THREE.Color("#ffaa44") },
+  { pathIndex: 19, speed: 0.38, phase: 0.0,  color: new THREE.Color("#00ffff") },
+  { pathIndex: 19, speed: 0.38, phase: 0.5,  color: new THREE.Color("#ffaa44") },
+  { pathIndex: 19, speed: 0.38, phase: 0.25, color: new THREE.Color("#ffffff") },
   // Deep occipital descent (20)
-  { pathIndex: 20, speed: 0.24, phase: 0.1, color: new THREE.Color("#4488ff") },
-  { pathIndex: 20, speed: 0.24, phase: 0.6, color: new THREE.Color("#aa44ff") },
+  { pathIndex: 20, speed: 0.24, phase: 0.1,  color: new THREE.Color("#4488ff") },
+  { pathIndex: 20, speed: 0.24, phase: 0.6,  color: new THREE.Color("#aa44ff") },
+  { pathIndex: 20, speed: 0.24, phase: 0.35, color: new THREE.Color("#2255cc") },
   // Deep occipital sweep (21)
-  { pathIndex: 21, speed: 0.27, phase: 0.3, color: new THREE.Color("#00aaff") },
-  {
-    pathIndex: 21,
-    speed: 0.27,
-    phase: 0.75,
-    color: new THREE.Color("#cc66ff"),
-  },
+  { pathIndex: 21, speed: 0.27, phase: 0.3,  color: new THREE.Color("#00aaff") },
+  { pathIndex: 21, speed: 0.27, phase: 0.75, color: new THREE.Color("#cc66ff") },
+  { pathIndex: 21, speed: 0.27, phase: 0.52, color: new THREE.Color("#6644ff") },
 ];
 
 // Expand each base spark into main + 2 trailing particles for action-potential trail effect
@@ -594,7 +566,7 @@ function NeuralActivity({ brainZoom, cellZoom, femaleMode }) {
         >
           <sprite
             renderOrder={8}
-            scale={[0.014 * spark.scale, 0.014 * spark.scale, 1]}
+            scale={[0.0133 * spark.scale, 0.0133 * spark.scale, 1]}
           >
             <spriteMaterial
               ref={(m) => {
@@ -612,7 +584,7 @@ function NeuralActivity({ brainZoom, cellZoom, femaleMode }) {
           </sprite>
           <sprite
             renderOrder={9}
-            scale={[0.004 * spark.scale, 0.004 * spark.scale, 1]}
+            scale={[0.0038 * spark.scale, 0.0038 * spark.scale, 1]}
           >
             <spriteMaterial
               ref={(m) => {

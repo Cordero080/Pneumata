@@ -192,6 +192,7 @@ function CellMesh({
   onCellZoom,
   hoverLabel,
   hoverHardware,
+  pulse = false,
 }) {
   const gltf = useGLTF(path);
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
@@ -251,16 +252,29 @@ function CellMesh({
     emissiveIntensity,
   ]);
 
-  useFrame(() => {
-    const target = 0.9;
+  useFrame((state) => {
+    const p = pulse
+      ? 0.5 + 0.5 * Math.sin(state.clock.getElapsedTime() * 0.9)
+      : null;
+    // Opacity breathes between dim and full — the matcap highlight shifts with it
+    const opacityTarget = pulse ? 0.62 + p * 0.38 : 0.9;
     for (const m of matsRef.current) {
-      m.opacity += (target - m.opacity) * 0.06;
+      m.opacity += (opacityTarget - m.opacity) * 0.06;
     }
-    // Subtle resting glow; brighter on hover
-    const glowTarget = hovered ? 0.45 : 0.15;
+    let glowOpacity, glowScale;
+    if (pulse) {
+      glowOpacity = hovered ? 0.65 : 0.10 + p * 0.38;
+      glowScale   = hovered ? 0.14 : 0.080 + p * 0.072;
+    } else {
+      glowOpacity = hovered ? 0.45 : 0.15;
+      glowScale   = 0.09;
+    }
     if (glowSpriteRef.current) {
       glowSpriteRef.current.material.opacity +=
-        (glowTarget - glowSpriteRef.current.material.opacity) * 0.08;
+        (glowOpacity - glowSpriteRef.current.material.opacity) * 0.08;
+      const s = glowSpriteRef.current.scale;
+      s.x += (glowScale - s.x) * 0.05;
+      s.y += (glowScale - s.y) * 0.05;
     }
   });
 
@@ -567,6 +581,7 @@ function CellularView({
         clickNode={pituitaryOrgan}
         onCellSelect={onCellSelect}
         onCellZoom={onCellZoom}
+        pulse
       />
       {CELL_NODES.map((node) => (
         <CellNode
