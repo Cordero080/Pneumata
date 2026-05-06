@@ -16,6 +16,7 @@ import HeartModel from "../heart/HeartModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
+import WaveBackground from "./WaveBackground";
 import { organs } from "../../data/organs";
 
 const CELL_ZOOM_IDS = new Set(["pituitary"]);
@@ -68,6 +69,7 @@ function Scene({
   viewPanelOpen,
   bgMode,
   bgModeName,
+  legendCategory,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -76,6 +78,7 @@ function Scene({
     hoveredCategory ??
     selectedOrgan?.category ??
     previewedOrgan?.category ??
+    legendCategory ??
     null;
   const [spinePoints, setSpinePoints] = useState(null);
   const [bodyLandmarks, setBodyLandmarks] = useState(null);
@@ -97,6 +100,11 @@ function Scene({
   const handleCategoryHover = useCallback((cat) => setHoveredCategory(cat), []);
   const handlePreview = useCallback((organ) => setPreviewedOrgan(organ), []);
   const handleClearPreview = useCallback(() => setPreviewedOrgan(null), []);
+
+  // Clear any lingering preview label when entering brain/cell zoom
+  useEffect(() => {
+    if (brainZoom || cellZoom) setPreviewedOrgan(null);
+  }, [brainZoom, cellZoom]);
 
   const circOpacity = CIRC_OPACITY[viewMode] ?? 0.0;
 
@@ -217,6 +225,7 @@ function Scene({
               dynamicPoints={spinePoints}
               hoveredCategory={activeCategory}
               onCategoryHover={handleCategoryHover}
+              legendCategory={legendCategory}
             />
           ) : (
             <OrganNode
@@ -251,6 +260,7 @@ function Scene({
               onFocus={onFocus}
               onPreview={handlePreview}
               onClearPreview={handleClearPreview}
+              legendCategory={legendCategory}
             />
           ),
         )}
@@ -277,7 +287,10 @@ function Scene({
         maxDistance={7}
         target={ORBIT_TARGET}
       />
-      {bgMode > 0 && <SceneOrbs theme={bgModeName} />}
+      {bgMode > 0 && bgMode <= 4 && <SceneOrbs theme={bgModeName} />}
+      {bgMode === 5 && <WaveBackground theme="wave" />}
+      {bgMode === 6 && <WaveBackground theme="grid" />}
+      {bgMode === 7 && <WaveBackground theme="pulse" />}
     </Canvas>
   );
 }

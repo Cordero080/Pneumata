@@ -148,43 +148,56 @@ const TRAIL = [
   { tOff: 0.076, size: 0.002, opacity: 0.02 },
 ];
 
+// Fast lookup: given t in [0,1], interpolate between pre-sampled points
+function sampleLUT(lut, t) {
+  const last = lut.length - 1;
+  const scaled = Math.max(0, Math.min(1, t)) * last;
+  const i = Math.floor(scaled);
+  const f = scaled - i;
+  if (i >= last) return lut[last];
+  const a = lut[i];
+  const b = lut[i + 1];
+  return _lutTmp.set(
+    a.x + (b.x - a.x) * f,
+    a.y + (b.y - a.y) * f,
+    a.z + (b.z - a.z) * f,
+  );
+}
+const _lutTmp = new THREE.Vector3();
+
 export default function SpinalFibers({ spinePoints, viewMode }) {
   const meshRefs = useRef({});
   const pulseT = useRef({});
 
-  const { curves, linePoints } = useMemo(() => {
+  const { luts, linePoints } = useMemo(() => {
     const smoothed = smoothPoints(MALE_SPINE_POINTS);
-    const curves = {};
+    const luts = {};
     const linePoints = {};
     for (const tract of TRACTS) {
-      const pts = smoothed.map((p) => {
-        return new THREE.Vector3(p[0] + tract.xOff, p[1], p[2]);
-      });
-      curves[tract.id] = new THREE.CatmullRomCurve3(
-        pts,
-        false,
-        "centripetal",
-        0.5,
+      const pts = smoothed.map(
+        (p) => new THREE.Vector3(p[0] + tract.xOff, p[1], p[2]),
       );
-      linePoints[tract.id] = curves[tract.id].getPoints(CURVE_SAMPLES);
+      const curve = new THREE.CatmullRomCurve3(pts, false, "centripetal", 0.5);
+      luts[tract.id] = curve.getPoints(CURVE_SAMPLES);
+      linePoints[tract.id] = luts[tract.id];
     }
-    return { curves, linePoints };
+    return { luts, linePoints };
   }, []);
 
   useFrame((_, delta) => {
-    if (!curves) return;
+    if (!luts) return;
+    const d = Math.min(delta, 0.05); // clamp delta — prevents spiral-of-death on slow frames
     const mult =
       viewMode === "breathing" ? 0.15 : viewMode === "unified" ? 0.5 : 1.0;
 
     for (const tract of TRACTS) {
-      const curve = curves[tract.id];
-      if (!curve) continue;
+      const lut = luts[tract.id];
+      if (!lut) continue;
 
       if (pulseT.current[tract.id] === undefined)
         pulseT.current[tract.id] = Math.random();
       pulseT.current[tract.id] =
-        (((pulseT.current[tract.id] + tract.dir * tract.speed * delta) % 1) +
-          1) %
+        (((pulseT.current[tract.id] + tract.dir * tract.speed * d) % 1) + 1) %
         1;
       const t0 = pulseT.current[tract.id];
 
@@ -195,7 +208,7 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
           const t = Math.max(0, Math.min(1, tHead - tract.dir * step.tOff));
           const ref = meshRefs.current[`${tract.id}_${pi}_${ti}`];
           if (ref) {
-            ref.position.copy(curve.getPoint(t));
+            ref.position.copy(sampleLUT(lut, t));
             ref.material.opacity = step.opacity * mult;
           }
         }
@@ -203,7 +216,7 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
     }
   });
 
-  if (!curves) return null;
+  if (!luts) return null;
 
   const mult =
     viewMode === "breathing" ? 0.15 : viewMode === "unified" ? 0.5 : 1.0;

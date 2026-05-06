@@ -602,26 +602,28 @@ function NeuralActivity({ brainZoom, cellZoom, femaleMode }) {
 
   useFrame((state, delta) => {
     const t = state.clock.getElapsedTime();
+    const d = Math.min(delta, 0.05); // clamp delta
 
     tubeRefs.current.forEach((m) => {
       if (m) m.opacity += (0.12 - m.opacity) * 0.05;
     });
 
     SPARKS.forEach((spark, i) => {
-      const d = sparkRefs.current[i];
-      if (!d.group) return;
+      const ref = sparkRefs.current[i];
+      if (!ref.group) return;
       if (spark.parentIdx === null) {
-        d.t = (d.t + delta * spark.speed) % 1;
+        ref.t = (ref.t + d * spark.speed) % 1;
       } else {
-        d.t = sparkRefs.current[spark.parentIdx].t;
+        ref.t = sparkRefs.current[spark.parentIdx].t;
       }
-      const tSelf = (((d.t - spark.trailOff) % 1) + 1) % 1;
+      const tSelf = (((ref.t - spark.trailOff) % 1) + 1) % 1;
       const pt = curves[spark.pathIndex].getPoint(tSelf);
-      d.group.position.copy(pt);
-      if (d.mat) d.mat.opacity += (spark.maxOpacity - d.mat.opacity) * 0.07;
-      if (d.glowMat)
-        d.glowMat.opacity +=
-          (spark.maxOpacity * 0.4 - d.glowMat.opacity) * 0.07;
+      ref.group.position.copy(pt);
+      if (ref.mat)
+        ref.mat.opacity += (spark.maxOpacity - ref.mat.opacity) * 0.07;
+      if (ref.glowMat)
+        ref.glowMat.opacity +=
+          (spark.maxOpacity * 0.4 - ref.glowMat.opacity) * 0.07;
     });
 
     TIPS.forEach((tip, i) => {

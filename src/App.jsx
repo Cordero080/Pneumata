@@ -29,9 +29,28 @@ function App() {
   const [showNerves, setShowNerves] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [bgMode, setBgMode] = useState(0); // 0=default, 1=nebula, 2=space, 3=sunset, 4=matrix
-  const BG_MODES = ["default", "nebula", "space", "sunset", "matrix"];
-  const BG_ICONS = ["⬡\uFE0E", "✵\uFE0E", "✦\uFE0E", "◐\uFE0E", "⊞\uFE0E"];
+  const [bgMode, setBgMode] = useState(0);
+  const [bgPanelOpen, setBgPanelOpen] = useState(false);
+  const BG_MODES = [
+    "default",
+    "nebula",
+    "space",
+    "sunset",
+    "matrix",
+    "wave",
+    "grid",
+    "pulse",
+  ];
+  const BG_ICONS = [
+    "⬡\uFE0E",
+    "✵\uFE0E",
+    "✦\uFE0E",
+    "◐\uFE0E",
+    "⊞\uFE0E",
+    "≋\uFE0E",
+    "⊟\uFE0E",
+    "◎\uFE0E",
+  ];
   const [meshMode, setMeshMode] = useState(2); // 0=ghost, 1=semi-transparent silver, 2=solid silver
   const [bodyModel, setBodyModel] = useState("male");
   const modelPath =
@@ -46,6 +65,7 @@ function App() {
   const [showAnimation, setShowAnimation] = useState(false);
   const [showTopNav, setShowTopNav] = useState(false);
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
+  const [legendCategory, setLegendCategory] = useState(null);
   const [resetKey, setResetKey] = useState(0);
   const [showLanding, setShowLanding] = useState(
     () => !localStorage.getItem("pneumata_subscribed"),
@@ -61,6 +81,17 @@ function App() {
     setResetKey((k) => k + 1);
   };
   const aboutRef = useRef(null);
+  const bgPickerRef = useRef(null);
+
+  useEffect(() => {
+    if (!bgPanelOpen) return;
+    const handler = (e) => {
+      if (bgPickerRef.current && !bgPickerRef.current.contains(e.target))
+        setBgPanelOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [bgPanelOpen]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -135,7 +166,9 @@ function App() {
         >
           {showTopNav ? "✕" : "⊞\uFE0E"}
         </button>
-        <div className={`top-nav-drawer${showTopNav ? " top-nav-drawer--open" : ""}`}>
+        <div
+          className={`top-nav-drawer${showTopNav ? " top-nav-drawer--open" : ""}`}
+        >
           <button
             className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
             onClick={() =>
@@ -179,13 +212,32 @@ function App() {
           >
             {showAnimation ? "✕" : "▶"}
           </button>
-          <button
-            className={`bg-toggle-btn${bgMode > 0 ? " bg-toggle-btn--active" : ""}`}
-            onClick={() => setBgMode((m) => (m + 1) % BG_MODES.length)}
-            title={`Background: ${BG_MODES[bgMode]}`}
-          >
-            {BG_ICONS[bgMode]}
-          </button>
+          <div className="bg-picker-wrap" ref={bgPickerRef}>
+            <button
+              className={`bg-toggle-btn${bgMode > 0 ? " bg-toggle-btn--active" : ""}`}
+              onClick={() => setBgPanelOpen((v) => !v)}
+              title="Background"
+            >
+              {BG_ICONS[bgMode]}
+            </button>
+            {bgPanelOpen && (
+              <div className="bg-picker-panel">
+                {BG_MODES.map((name, i) => (
+                  <button
+                    key={name}
+                    className={`bg-picker-opt${bgMode === i ? " bg-picker-opt--active" : ""}`}
+                    onClick={() => {
+                      setBgMode(i);
+                      setBgPanelOpen(false);
+                    }}
+                    title={name}
+                  >
+                    {BG_ICONS[i]}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -269,6 +321,7 @@ function App() {
             viewPanelOpen={viewPanelOpen}
             bgMode={bgMode}
             bgModeName={BG_MODES[bgMode]}
+            legendCategory={legendCategory}
           />
         )
       )}
@@ -296,7 +349,7 @@ function App() {
 
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
 
-      {!showAnimation && <CategoryLegend />}
+      {!showAnimation && <CategoryLegend onCategoryHover={setLegendCategory} />}
 
       {!showAnimation && (
         <ViewModeController
@@ -311,9 +364,7 @@ function App() {
 
       <p className="app-copyright">© 2026 Pablo Cordero</p>
 
-      {showLanding && (
-        <LandingOverlay onEnter={() => setShowLanding(false)} />
-      )}
+      {showLanding && <LandingOverlay onEnter={() => setShowLanding(false)} />}
     </div>
   );
 }

@@ -52,6 +52,7 @@ function OrganNode({
   previewedOrganId,
   onPreview,
   onClearPreview,
+  legendCategory,
 }) {
   const meshRef = useRef();
   const glowRef = useRef();
@@ -133,6 +134,15 @@ function OrganNode({
   const isExternallyHighlighted =
     !hovered && hoveredCategory === organ.category;
 
+  // Clear stuck hover/label state when entering zoomed modes
+  useEffect(() => {
+    if (brainZoom || cellZoom) {
+      setHovered(false);
+      setLabelReady(false);
+      document.body.style.cursor = "default";
+    }
+  }, [brainZoom, cellZoom]);
+
   useFrame((state, delta) => {
     // Lerp group position — nodes live in male-GLB coordinate space and never relocate
     if (groupRef.current) {
@@ -153,6 +163,8 @@ function OrganNode({
       : nodeOpacity;
     const selectionDim =
       pulseRef || !selectedOrganId || selectedOrganId === organ.id ? 1 : 0.18;
+    const legendDim =
+      !legendCategory || organ.category === legendCategory ? 1 : 0.12;
 
     // Eye glitch — occasional rapid color flicker
     if (isEye && meshRef.current) {
@@ -191,7 +203,7 @@ function OrganNode({
       base + Math.sin(t * 3 + phase) * 0.5;
 
     meshRef.current.material.opacity +=
-      (0.18 * effectiveNodeOpacity * brainFade * selectionDim -
+      (0.18 * effectiveNodeOpacity * brainFade * selectionDim * legendDim -
         meshRef.current.material.opacity) *
       0.08;
 
@@ -212,7 +224,8 @@ function OrganNode({
       const glowTarget =
         (hovered ? 0.22 : isExternallyHighlighted ? 0.18 : 0.1) *
         effectiveNodeOpacity *
-        selectionDim;
+        selectionDim *
+        legendDim;
       glowRef.current.scale.setScalar(
         hovered ? 3.5 : isExternallyHighlighted ? 3.0 : 2.5,
       );
@@ -225,7 +238,7 @@ function OrganNode({
       innerRef.current.material.emissiveIntensity =
         innerBase + Math.sin(t * 5 + phase) * (isSpirit ? 3 : 1.2);
       innerRef.current.material.opacity +=
-        (effectiveNodeOpacity * brainFade * selectionDim -
+        (effectiveNodeOpacity * brainFade * selectionDim * legendDim -
           innerRef.current.material.opacity) *
         0.08;
     }

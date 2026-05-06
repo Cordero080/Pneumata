@@ -4,11 +4,16 @@ import "./CategoryLegend.scss";
 // Merge colors into the shared CATEGORIES array for rendering
 const CATEGORIES = _BASE.map((c) => ({ ...c, color: CATEGORY_COLORS[c.key] }));
 
-function CategoryLegend() {
+function CategoryLegend({ onCategoryHover }) {
   return (
     <div className="category-legend">
       {CATEGORIES.map(({ key, color, label, desc }) => (
-        <div key={key} className="legend-row">
+        <div
+          key={key}
+          className="legend-row"
+          onMouseEnter={() => onCategoryHover?.(key)}
+          onMouseLeave={() => onCategoryHover?.(null)}
+        >
           {/* Chamfered tag slides out on hover */}
           <div className="legend-tag">
             <span
