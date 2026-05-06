@@ -167,7 +167,7 @@ function App() {
           {showTopNav ? "✕" : "⊞\uFE0E"}
         </button>
         <div
-          className={`top-nav-drawer${showTopNav ? " top-nav-drawer--open" : ""}`}
+          className={`top-nav-drawer${showTopNav ? " top-nav-drawer--open" : ""}${bgPanelOpen ? " top-nav-drawer--picker-open" : ""}`}
         >
           <button
             className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
@@ -212,32 +212,13 @@ function App() {
           >
             {showAnimation ? "✕" : "▶"}
           </button>
-          <div className="bg-picker-wrap" ref={bgPickerRef}>
-            <button
-              className={`bg-toggle-btn${bgMode > 0 ? " bg-toggle-btn--active" : ""}`}
-              onClick={() => setBgPanelOpen((v) => !v)}
-              title="Background"
-            >
-              {BG_ICONS[bgMode]}
-            </button>
-            {bgPanelOpen && (
-              <div className="bg-picker-panel">
-                {BG_MODES.map((name, i) => (
-                  <button
-                    key={name}
-                    className={`bg-picker-opt${bgMode === i ? " bg-picker-opt--active" : ""}`}
-                    onClick={() => {
-                      setBgMode(i);
-                      setBgPanelOpen(false);
-                    }}
-                    title={name}
-                  >
-                    {BG_ICONS[i]}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <button
+            className={`bg-toggle-btn${bgMode > 0 ? " bg-toggle-btn--active" : ""}`}
+            onClick={() => setBgMode((m) => (m + 1) % BG_MODES.length)}
+            title={`Background: ${BG_MODES[bgMode]}`}
+          >
+            {BG_ICONS[bgMode]}
+          </button>
         </div>
       </div>
 

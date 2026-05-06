@@ -16,7 +16,6 @@ import HeartModel from "../heart/HeartModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
-import WaveBackground from "./WaveBackground";
 import { organs } from "../../data/organs";
 
 const CELL_ZOOM_IDS = new Set(["pituitary"]);
@@ -289,9 +288,6 @@ function Scene({
         target={ORBIT_TARGET}
       />
       {bgMode > 0 && bgMode <= 4 && <SceneOrbs theme={bgModeName} />}
-      {bgMode === 5 && <WaveBackground theme="wave" />}
-      {bgMode === 6 && <WaveBackground theme="grid" />}
-      {bgMode === 7 && <WaveBackground theme="pulse" />}
     </Canvas>
   );
 }
