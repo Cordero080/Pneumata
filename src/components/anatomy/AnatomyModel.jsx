@@ -218,7 +218,19 @@ function AnatomyModel({
   const config = femaleMode ? femaleConfig : maleConfig;
 
   const gltf = useGLTF(modelPath);
-  const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
+  const scene = useMemo(() => {
+    const cloned = gltf.scene.clone(true);
+    // Apply scale/position immediately so the first render is already correct (no flash)
+    const raw = config.RAW;
+    const s = (TARGET_HEIGHT * config.HEIGHT_SCALE) / raw.height;
+    cloned.scale.setScalar(s);
+    cloned.position.set(
+      -raw.centerX * s,
+      -raw.yMin * s + config.Y_OFFSET,
+      -raw.centerZ * s,
+    );
+    return cloned;
+  }, [gltf.scene]);
   const materialRef = useRef(null);
   const bloodMatRef = useRef(null);
   const bloodPulseRef = useRef(0);
@@ -239,15 +251,15 @@ function AnatomyModel({
     const raw = config.RAW;
     const s = (TARGET_HEIGHT * config.HEIGHT_SCALE) / raw.height;
 
-    scene.scale.set(1, 1, 1);
-    scene.position.set(0, 0, 0);
-    scene.updateMatrixWorld(true);
+    // Scale/position already applied in useMemo; re-apply here in case effect runs
+    // after a hot-reload or future change that resets the scene transform.
     scene.scale.setScalar(s);
     scene.position.set(
       -raw.centerX * s,
       -raw.yMin * s + config.Y_OFFSET,
       -raw.centerZ * s,
     );
+    scene.updateMatrixWorld(true);
 
     let emissiveMap = null;
     scene.traverse((child) => {

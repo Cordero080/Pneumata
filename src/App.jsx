@@ -272,57 +272,57 @@ function App() {
           offsetX={offsetX}
           offsetY={
             offsetY +
-            (viewPanelOpen
-              ? bodyModel === "female"
-                ? -0.02
-                : -0.02
-              : -0.047)
+            (viewPanelOpen ? (bodyModel === "female" ? -0.02 : -0.02) : -0.047)
           }
-          style={showLanding ? { visibility: "hidden", pointerEvents: "none" } : undefined}
+          style={
+            showLanding
+              ? { visibility: "hidden", pointerEvents: "none" }
+              : undefined
+          }
           onSelect={(organ) => {
-              setSelectedOrgan(organ);
-              if (
-                organ &&
-                !organ.brainPosition &&
-                organ.type !== "line" &&
-                organ.position
-              ) {
-                setOrganFocusY(organ.position[1] * globalScale + offsetY);
-              } else {
-                setOrganFocusY(null);
-              }
-            }}
-            onFocus={(organ) => {
-              // Camera zoom only — no modal
-              if (
-                organ &&
-                !organ.brainPosition &&
-                organ.type !== "line" &&
-                organ.position
-              ) {
-                setOrganFocusY(organ.position[1] * globalScale + offsetY);
-              }
-            }}
-            selectedOrgan={selectedOrgan}
-            viewMode={viewMode}
-            showNerves={showNerves}
-            darkMode={darkMode}
-            meshMode={meshMode}
-            brainZoom={brainZoom}
-            setBrainZoom={setBrainZoom}
-            cellZoom={cellZoom}
-            setCellZoom={setCellZoom}
-            panY={panY}
-            zoom={zoom}
-            resetKey={resetKey}
-            modelPath={modelPath}
-            femaleMode={bodyModel === "female"}
-            organFocusY={organFocusY}
-            viewPanelOpen={viewPanelOpen}
-            bgMode={bgMode}
-            bgModeName={BG_MODES[bgMode]}
-            legendCategory={legendCategory}
-          />
+            setSelectedOrgan(organ);
+            if (
+              organ &&
+              !organ.brainPosition &&
+              organ.type !== "line" &&
+              organ.position
+            ) {
+              setOrganFocusY(organ.position[1] * globalScale + offsetY);
+            } else {
+              setOrganFocusY(null);
+            }
+          }}
+          onFocus={(organ) => {
+            // Camera zoom only — no modal
+            if (
+              organ &&
+              !organ.brainPosition &&
+              organ.type !== "line" &&
+              organ.position
+            ) {
+              setOrganFocusY(organ.position[1] * globalScale + offsetY);
+            }
+          }}
+          selectedOrgan={selectedOrgan}
+          viewMode={viewMode}
+          showNerves={showNerves}
+          darkMode={darkMode}
+          meshMode={meshMode}
+          brainZoom={brainZoom}
+          setBrainZoom={setBrainZoom}
+          cellZoom={cellZoom}
+          setCellZoom={setCellZoom}
+          panY={panY}
+          zoom={zoom}
+          resetKey={resetKey}
+          modelPath={modelPath}
+          femaleMode={bodyModel === "female"}
+          organFocusY={organFocusY}
+          viewPanelOpen={viewPanelOpen}
+          bgMode={bgMode}
+          bgModeName={BG_MODES[bgMode]}
+          legendCategory={legendCategory}
+        />
       )}
 
       {(brainZoom || cellZoom) && (
