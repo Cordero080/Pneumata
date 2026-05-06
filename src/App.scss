@@ -146,16 +146,24 @@
     0 calc(100% - 14px)
   );
   transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  animation: moonPulse 3s ease-in-out infinite;
 
   &:hover {
+    animation: none;
     color: rgba(200, 220, 255, 0.9);
     background: rgba(55, 70, 95, 0.4);
     transform: perspective(400px) rotateX(-2deg) scale(1.04);
   }
 
   &--active {
+    animation: none;
     color: rgba(230, 240, 255, 0.95);
   }
+}
+
+@keyframes moonPulse {
+  0%, 100% { filter: drop-shadow(0 0 0px rgba(160, 200, 255, 0)); }
+  50%       { filter: drop-shadow(0 0 6px rgba(160, 200, 255, 0.55)); }
 }
 
 .header-panel {
