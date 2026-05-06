@@ -8,7 +8,7 @@
 
 // Buttons slide up when panel opens
 @keyframes btn-construct {
-  from { transform: translateY(6px); }
+  from { transform: translateY(10px); }
   to   { transform: translateY(0); }
 }
 
@@ -37,9 +37,9 @@
   pointer-events: none;
   transform: translateY(8px);
   transition:
-    opacity 0.35s ease,
-    visibility 0.35s,
-    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.3s ease-out,
+    visibility 0.3s,
+    transform 0.3s ease-out;
 
   .view-controller--open & {
     opacity: 1;
@@ -48,15 +48,6 @@
     pointer-events: auto;
   }
 
-  // Staggered slide-up for each button on open
-  .view-controller--open & .view-btn {
-    animation: btn-construct 0.28s ease forwards;
-    &:nth-child(1) { animation-delay: 0.04s; }
-    &:nth-child(2) { animation-delay: 0.10s; }
-    &:nth-child(3) { animation-delay: 0.16s; }
-    &:nth-child(4) { animation-delay: 0.22s; }
-    &:nth-child(5) { animation-delay: 0.28s; }
-  }
 }
 
 // The clickable strip at the very bottom (the "v" handle)
