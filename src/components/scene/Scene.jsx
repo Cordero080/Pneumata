@@ -70,6 +70,7 @@ function Scene({
   bgMode,
   bgModeName,
   legendCategory,
+  style,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -111,7 +112,7 @@ function Scene({
   return (
     <Canvas
       camera={{ position: [0, 0.82, 2.1], fov: 48 }}
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: "100%", height: "100%", ...style }}
       gl={{
         alpha: true,
         powerPreference: "high-performance",

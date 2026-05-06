@@ -267,19 +267,19 @@ function App() {
       {showAnimation ? (
         <AnimatedScene darkMode={darkMode} meshMode={meshMode} />
       ) : (
-        !showLanding && (
-          <Scene
-            globalScale={globalScale}
-            offsetX={offsetX}
-            offsetY={
-              offsetY +
-              (viewPanelOpen
-                ? bodyModel === "female"
-                  ? -0.02
-                  : -0.02
-                : -0.047)
-            }
-            onSelect={(organ) => {
+        <Scene
+          globalScale={globalScale}
+          offsetX={offsetX}
+          offsetY={
+            offsetY +
+            (viewPanelOpen
+              ? bodyModel === "female"
+                ? -0.02
+                : -0.02
+              : -0.047)
+          }
+          style={showLanding ? { visibility: "hidden", pointerEvents: "none" } : undefined}
+          onSelect={(organ) => {
               setSelectedOrgan(organ);
               if (
                 organ &&
@@ -323,7 +323,6 @@ function App() {
             bgModeName={BG_MODES[bgMode]}
             legendCategory={legendCategory}
           />
-        )
       )}
 
       {(brainZoom || cellZoom) && (
