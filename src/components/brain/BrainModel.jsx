@@ -18,30 +18,30 @@ function BrainModel({
   onBrainClick,
 }) {
   const gltf = useGLTF("/platinum-brain.glb");
-  const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
-  // Collect original materials so we can drive their opacity each frame
-  const matsRef = useRef([]);
-
-  useEffect(() => {
-    // Reset any baked transforms before measuring
-    scene.scale.set(1, 1, 1);
-    scene.position.set(0, 0, 0);
-    scene.rotation.set(0, 0, 0);
-    scene.updateMatrixWorld(true);
-
-    const box = new THREE.Box3().setFromObject(scene);
+  const scene = useMemo(() => {
+    const cloned = gltf.scene.clone(true);
+    cloned.scale.set(1, 1, 1);
+    cloned.position.set(0, 0, 0);
+    cloned.rotation.set(0, 0, 0);
+    cloned.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(cloned);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
-
     const s = (femaleMode ? FEMALE_TARGET_HEIGHT : TARGET_HEIGHT) / size.y;
-    scene.scale.setScalar(s);
+    cloned.scale.setScalar(s);
     const centerY = femaleMode ? FEMALE_BRAIN_CENTER_Y : BRAIN_CENTER_Y;
-    scene.position.set(
+    cloned.position.set(
       -center.x * s,
       centerY - center.y * s,
       -center.z * s + BRAIN_Z_OFFSET,
     );
+    cloned.visible = false;
+    return cloned;
+  }, [gltf.scene, femaleMode]);
+  // Collect original materials so we can drive their opacity each frame
+  const matsRef = useRef([]);
 
+  useEffect(() => {
     // After positioning, recompute box in final world-space coords.
     // These are the real bounds for placing neural paths, tips, etc.
     scene.updateMatrixWorld(true);
@@ -69,6 +69,7 @@ function BrainModel({
       }
     });
     matsRef.current = mats;
+    scene.visible = true;
   }, [scene, femaleMode]);
 
   useFrame(() => {

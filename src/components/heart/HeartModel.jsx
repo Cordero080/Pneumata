@@ -10,28 +10,29 @@ const TARGET_HEIGHT = 0.13;
 
 function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
   const gltf = useGLTF("/rose-heart.glb");
-  const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
-  const matsRef = useRef([]);
-  const beatRef = useRef({ last: 0, flash: 0 });
-
-  useEffect(() => {
-    scene.scale.set(1, 1, 1);
-    scene.position.set(0, 0, 0);
-    scene.rotation.set(0, 0, 0.25);
-    scene.updateMatrixWorld(true);
-
-    const box = new THREE.Box3().setFromObject(scene);
+  const scene = useMemo(() => {
+    const cloned = gltf.scene.clone(true);
+    cloned.scale.set(1, 1, 1);
+    cloned.position.set(0, 0, 0);
+    cloned.rotation.set(0, 0, 0.25);
+    cloned.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(cloned);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
-
     const s = TARGET_HEIGHT / size.y;
-    scene.scale.setScalar(s);
-    scene.position.set(
+    cloned.scale.setScalar(s);
+    cloned.position.set(
       HEART_CENTER_X - center.x * s,
       HEART_CENTER_Y - center.y * s,
       HEART_CENTER_Z - center.z * s,
     );
+    cloned.visible = false;
+    return cloned;
+  }, [gltf.scene]);
+  const matsRef = useRef([]);
+  const beatRef = useRef({ last: 0, flash: 0 });
 
+  useEffect(() => {
     const mats = [];
     scene.traverse((child) => {
       if (child.isMesh) {
@@ -53,6 +54,7 @@ function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
       }
     });
     matsRef.current = mats;
+    scene.visible = true;
   }, [scene]);
 
   useFrame(() => {
