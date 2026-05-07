@@ -82,6 +82,11 @@
   filter: drop-shadow(0 0 4px rgba(140, 171, 255, 0.434));
 }
 
+@keyframes toggle-pulse {
+  0%, 100% { opacity: 0; }
+  50%       { opacity: 1; text-shadow: 0 0 8px #fff, 0 0 20px rgba(200, 220, 255, 1), 0 0 40px rgba(140, 180, 255, 0.9), 0 0 70px rgba(100, 160, 255, 0.6); }
+}
+
 .header-accent {
   background: rgba(40, 55, 80, 0.45);
   border-left: none;
@@ -91,7 +96,7 @@
   cursor: default;
 
   &--top {
-    width: 50px;
+    width: 58px;
     margin-right: -11px;
     position: relative;
     pointer-events: auto;
@@ -131,7 +136,7 @@
   justify-content: center;
   padding-bottom: 10px;
   font-family: 'Orbitron', sans-serif;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 400;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -145,9 +150,8 @@
     14px 100%,
     0 calc(100% - 14px)
   );
+  animation: toggle-pulse 2.8s ease-in-out infinite;
   transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
-  animation: moonPulse 3s ease-in-out infinite;
-
   &:hover {
     animation: none;
     color: rgba(200, 220, 255, 0.9);
@@ -156,14 +160,8 @@
   }
 
   &--active {
-    animation: none;
     color: rgba(230, 240, 255, 0.95);
   }
-}
-
-@keyframes moonPulse {
-  0%, 100% { filter: drop-shadow(0 0 0px rgba(160, 200, 255, 0)); }
-  50%       { filter: drop-shadow(0 0 6px rgba(160, 200, 255, 0.55)); }
 }
 
 .header-panel {
