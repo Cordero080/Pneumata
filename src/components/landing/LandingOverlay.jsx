@@ -37,7 +37,8 @@ function LandingOverlay({ onEnter }) {
           <div className="landing-title">
             <h1>Pneumata</h1>
             <p className="landing-sub">
-              An interactive 3D model mapping every human organ to its hardware analog
+              An interactive 3D model mapping every human organ to its hardware
+              analog. Your body is hardware. Now see the blueprint.
             </p>
           </div>
 
