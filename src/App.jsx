@@ -174,9 +174,9 @@ function App() {
             onClick={() =>
               setMeshMode((m) => {
                 if (darkMode) {
-                  return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 5, 5: 6, 6: 2 }[m] ?? 2;
+                  return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 6, 6: 2 }[m] ?? 2;
                 }
-                return (m + 1) % 7;
+                return m === 4 ? 6 : m === 6 ? 0 : (m + 1) % 6;
               })
             }
           >
@@ -190,9 +190,7 @@ function App() {
                     ? "◇\uFE0E"
                     : meshMode === 4
                       ? "◎\uFE0E"
-                      : meshMode === 5
-                        ? "⬤\uFE0E"
-                        : "⬛\uFE0E"}
+                      : "⬛\uFE0E"}
           </button>
           <button className="reset-btn" onClick={handleReset}>
             ↺

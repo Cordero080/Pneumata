@@ -1,8 +1,16 @@
 import { Html } from "@react-three/drei";
 import { darkenForLight } from "../../data/categories";
 
-function OrganLabel({ organ, color, darkMode, onSelect, labelReady }) {
+function OrganLabel({
+  organ,
+  color,
+  darkMode,
+  onSelect,
+  labelReady,
+  screenX = 0,
+}) {
   const isLeft = organ.position[0] <= 0;
+  const isVertical = Math.abs(screenX) > 0.65;
   // Light mode: darken neons so they read on silvery panel
   // Dark mode: use raw neon — it pops on the dark surface
   const nameColor = darkMode ? color : darkenForLight(color);
@@ -38,14 +46,28 @@ function OrganLabel({ organ, color, darkMode, onSelect, labelReady }) {
       <div
         style={{
           position: "absolute",
-          left: isLeft ? "auto" : "10px",
-          right: isLeft ? "10px" : "auto",
-          top: "50%",
-          transform: labelReady
-            ? "translateY(-50%) perspective(300px) rotateX(-8deg) scale(1.06)"
-            : "translateY(-50%)",
+          ...(isVertical
+            ? {
+                left: "50%",
+                bottom: "10px",
+                transform: labelReady
+                  ? "translateX(-50%) scale(1.06)"
+                  : "translateX(-50%)",
+              }
+            : {
+                left: isLeft ? "auto" : "10px",
+                right: isLeft ? "10px" : "auto",
+                top: "50%",
+                transform: labelReady
+                  ? "translateY(-50%) perspective(300px) rotateX(-8deg) scale(1.06)"
+                  : "translateY(-50%)",
+              }),
           display: "flex",
-          flexDirection: isLeft ? "row-reverse" : "row",
+          flexDirection: isVertical
+            ? "column-reverse"
+            : isLeft
+              ? "row-reverse"
+              : "row",
           alignItems: "center",
           animation: labelReady
             ? "labelReadyPulse 1s ease-in-out infinite"
@@ -58,20 +80,36 @@ function OrganLabel({ organ, color, darkMode, onSelect, labelReady }) {
           style={{
             display: "flex",
             alignItems: "center",
-            flexDirection: isLeft ? "row-reverse" : "row",
+            flexDirection: isVertical
+              ? "column"
+              : isLeft
+                ? "row-reverse"
+                : "row",
             flexShrink: 0,
             whiteSpace: "nowrap",
           }}
         >
           <div
-            style={{
-              width: "52px",
-              height: "1px",
-              background: `linear-gradient(${isLeft ? "to left" : "to right"}, ${color}00, ${color}dd)`,
-            }}
+            style={
+              isVertical
+                ? {
+                    width: "1px",
+                    height: "40px",
+                    background: `linear-gradient(to bottom, ${color}00, ${color}dd)`,
+                  }
+                : {
+                    width: "52px",
+                    height: "1px",
+                    background: `linear-gradient(${isLeft ? "to left" : "to right"}, ${color}00, ${color}dd)`,
+                  }
+            }
           />
           <div
-            style={{ width: "1px", height: "10px", background: `${color}dd` }}
+            style={
+              isVertical
+                ? { width: "10px", height: "1px", background: `${color}dd` }
+                : { width: "1px", height: "10px", background: `${color}dd` }
+            }
           />
         </div>
 
@@ -105,7 +143,7 @@ function OrganLabel({ organ, color, darkMode, onSelect, labelReady }) {
           <div
             style={{
               fontFamily: "'Orbitron', system-ui, sans-serif",
-              fontSize: "10px",
+              fontSize: "clamp(10px, 3vw, 13px)",
               fontWeight: 700,
               letterSpacing: "0.14em",
               color: nameColor,
@@ -119,7 +157,7 @@ function OrganLabel({ organ, color, darkMode, onSelect, labelReady }) {
           <div
             style={{
               fontFamily: "'Orbitron', system-ui, sans-serif",
-              fontSize: "7px",
+              fontSize: "clamp(7px, 2.2vw, 9px)",
               fontWeight: 500,
               letterSpacing: "0.12em",
               color: subtitleColor,

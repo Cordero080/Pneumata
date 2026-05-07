@@ -476,15 +476,8 @@ function AnatomyModel({
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 4/5 — GHOST + AL
       } else if (meshMode === 4 || meshMode === 5) {
         const solid = meshMode === 5;
-        mat.color.set(ghostColor);
-        mat.emissive.set("#ffffff");
-        mat.emissiveIntensity = 0;
         mat.transparent = true;
-        mat.transmission = 0;
-        mat.opacity = 0.13;
-        mat.metalness = 0;
-        mat.roughness = 0.2;
-        mat.iridescence = 0;
+        mat.opacity = 0;
         mat.depthWrite = false;
         mat.needsUpdate = true;
         al.transparent = !solid;
