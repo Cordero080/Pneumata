@@ -37,7 +37,7 @@ function LandingOverlay({ onEnter }) {
           <div className="landing-title">
             <h1>Pneumata</h1>
             <p className="landing-sub">
-              An interactive system for exploring human cognition
+              An interactive 3D model mapping every human organ to its hardware analog
             </p>
           </div>
 
