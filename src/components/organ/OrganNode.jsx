@@ -70,8 +70,7 @@ function OrganNode({
   );
   const [hovered, setHovered] = useState(false);
   const [labelReady, setLabelReady] = useState(false);
-  const [screenX, setScreenX] = useState(0);
-  const lastScreenX = useRef(0);
+  const screenXRef = useRef(0);
   const isEye = organ.id === "right_eye" || organ.id === "left_eye";
   const glitchRef = useRef({ nextGlitch: 3 + Math.random() * 6, duration: 0 });
 
@@ -146,14 +145,10 @@ function OrganNode({
   }, [brainZoom, cellZoom]);
 
   useFrame((state, delta) => {
-    // Track screen X for edge-detection in label
+    // Track screen X for edge-detection in label (ref only — no setState)
     if (IS_MOBILE && (hovered || previewedOrganId === organ.id)) {
       const ndc = currentPos.current.clone().project(state.camera);
-      const nx = ndc.x;
-      if (Math.abs(nx - lastScreenX.current) > 0.05) {
-        lastScreenX.current = nx;
-        setScreenX(nx);
-      }
+      screenXRef.current = ndc.x;
     }
 
     // Lerp group position — nodes live in male-GLB coordinate space and never relocate
@@ -451,7 +446,7 @@ function OrganNode({
             color={color}
             darkMode={darkMode}
             labelReady={labelReady}
-            screenX={screenX}
+            screenX={screenXRef.current}
             onSelect={
               IS_MOBILE && isPreview && !labelReady
                 ? () => {

@@ -8,7 +8,6 @@ const PULSES = [
   { delay: 0.13, inner: 0.014, outer: 0.0148, speed: 11 },
   { delay: 0.2, inner: 0.014, outer: 0.0145, speed: 9.5 },
   { delay: 0.3, inner: 0.014, outer: 0.015, speed: 8.5 },
-  // lub-dub second beat
   { delay: 0.38, inner: 0.014, outer: 0.0172, speed: 9 },
   { delay: 0.44, inner: 0.014, outer: 0.0152, speed: 10 },
 ];
@@ -17,20 +16,27 @@ function HeartRings({ pulseRef, nodeOpacity }) {
   const refs = useRef([]);
   const states = useRef(PULSES.map(() => ({ scale: 0, opacity: 0 })));
   const lastBeatCount = useRef(0);
+  const beatTime = useRef(-1);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (pulseRef.current !== lastBeatCount.current) {
       lastBeatCount.current = pulseRef.current;
-      PULSES.forEach((p, i) => {
-        setTimeout(() => {
-          states.current[i].scale = 1.0;
-          states.current[i].opacity = 0.9;
-        }, p.delay * 1000);
-      });
+      beatTime.current = state.clock.getElapsedTime();
     }
+
+    const t = state.clock.getElapsedTime();
 
     states.current.forEach((s, i) => {
       if (!refs.current[i]) return;
+
+      const elapsed = beatTime.current >= 0 ? t - beatTime.current : -1;
+      const shouldFire = elapsed >= PULSES[i].delay;
+
+      if (shouldFire && s.opacity <= 0 && elapsed < PULSES[i].delay + 0.05) {
+        s.scale = 1.0;
+        s.opacity = 0.9;
+      }
+
       if (s.opacity <= 0.01) {
         s.opacity = 0;
         s.scale = 0;
@@ -38,6 +44,7 @@ function HeartRings({ pulseRef, nodeOpacity }) {
         refs.current[i].material.opacity = 0;
         return;
       }
+
       s.scale += delta * PULSES[i].speed;
       s.opacity *= 0.91;
       refs.current[i].scale.setScalar(s.scale);
