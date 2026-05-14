@@ -4,19 +4,27 @@
 
 ---
 
-![Power mode — full body red emissive glow, circulatory system at peak](public/screenshots/new-shots/power-mode-red.png)
+![Power mode — full body red emissive circulatory system](public/screenshots/new-shots/power-mode-hero.png)
 
-| Unified — ghost mesh                                                                                                   | Breathing — inhalation                                                                                                              |
-| ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| ![Unified mode — ghost mesh, all systems active, full circulatory layer](public/screenshots/new-shots/dark-mode-1.png) | ![Breathing mode — lung inhalation, semi-transparent mesh, right lung label](public/screenshots/new-shots/breathing-inhalation.png) |
+| Dark mode — obsidian                                                                                | Dark mode — female figure                                                                              |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| ![Dark mode — obsidian body with glowing organ nodes](public/screenshots/new-shots/dark-mode-obsidian.png) | ![Female figure — dark mode close-up with vibrant spine](public/screenshots/new-shots/female-darkmode-closup.png) |
 
-| Light mode — node hover                                                                                         | Brain zoom — Logic view                                                                                                  |
-| --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| ![Light mode — liver hovered, green category highlight on spine](public/screenshots/new-shots/light-mode-7.png) | ![Brain zoom — Logic mode with cranial nodes clustered, vocal cords label](public/screenshots/new-shots/dark-mode-4.png) |
+| Female — power mode                                                                                       | Back view — all systems                                                                            |
+| --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| ![Female figure — power mode full body](public/screenshots/new-shots/female-darkmode-power.png) | ![Back view — transparent mesh, all organ systems](public/screenshots/new-shots/DarkModeLightMode.png) |
 
-| About modal                                                                                               |     |
-| --------------------------------------------------------------------------------------------------------- | --- |
-| ![About modal — Philosophy tab with category breakdown](public/screenshots/new-shots/dark-mode-about.png) |     |
+| Back detail — vertebral discs                                                                      | Heart — Power Supply Unit modal                                                                  |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| ![Back detail — vertebral disc markers and connections](public/screenshots/new-shots/back-disks.png) | ![Heart node — Heart = PSU modal open](public/screenshots/new-shots/dark-mode-2.png) |
+
+| Neuron vs Transistor                                                                                              | Brain zoom — Axon / Data Bus                                                                         |
+| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| ![Neuron vs Transistor — hardware analog comparison](public/screenshots/new-shots/neuron-transistor-modal.png) | ![Axon vs Data Bus — brain detail modal](public/screenshots/new-shots/axon-data-bus-modal.png) |
+
+| Brain zoom — cranial nodes                                                                     |     |
+| ---------------------------------------------------------------------------------------------- | --- |
+| ![Brain zoom — cranial nodes clustered with colorful spine](public/screenshots/new-shots/brain-zoom.png) |     |
 
 ---
 
