@@ -70,9 +70,20 @@ function LandingOverlay({ onEnter }) {
             <p className="landing-error">Transmission failed. Try again.</p>
           )}
 
-          <button className="landing-enter" onClick={handleEnter}>
-            Explore
-          </button>
+          {status === "done" && (
+            <button className="landing-enter" onClick={handleEnter}>
+              Explore
+            </button>
+          )}
+
+          {status === "error" && (
+            <button
+              className="landing-enter landing-enter--bypass"
+              onClick={handleEnter}
+            >
+              Enter without subscribing
+            </button>
+          )}
         </div>
       </div>
     </div>

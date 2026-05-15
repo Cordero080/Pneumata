@@ -382,4 +382,12 @@
     filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
     transform: perspective(400px) rotateX(-2deg) scale(1.04);
   }
+
+  &--bypass {
+    font-size: 9px;
+    opacity: 0.4;
+    padding: 7px 18px;
+    margin-top: -4px;
+    &:hover { opacity: 0.7; }
+  }
 }
