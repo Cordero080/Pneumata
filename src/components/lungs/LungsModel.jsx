@@ -3,6 +3,8 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+const IS_MOBILE = window.innerWidth <= 768;
+
 const LUNGS_CENTER_X = 0.0; // tweak to shift left (-) or right (+)
 const LUNGS_CENTER_Y = 1.33; // tweak to move lungs up (+) or down (-)
 const LUNGS_CENTER_Z = 0.02; // tweak to move forward (+) or back (-)
@@ -59,7 +61,8 @@ function LungsModel({
       if (!child.isMesh) return;
       meshBox.setFromObject(child);
       meshBox.getCenter(meshCenter);
-      const isRight = meshCenter.x > 0; // viewer's right, positive x in scene
+      // On mobile skip hardware split — single bucket saves half the draw calls
+      const isRight = !IS_MOBILE && meshCenter.x > 0;
       const prev = child.material;
       const c = prev.color ?? new THREE.Color(1, 1, 1);
       const isBronchi = c.r > 0.45 && c.g < 0.35;
@@ -249,26 +252,26 @@ function LungsModel({
           ? 0.03
           : 0.0;
 
-    for (const m of hwTissue) {
-      m.opacity += (tissueOpacity - m.opacity) * 0.06;
-      m.emissive.setHSL(hwHue, hwSat, hwLight);
-      m.emissiveIntensity += (hwTissueEmissive - m.emissiveIntensity) * 0.06;
-    }
+    if (!IS_MOBILE) {
+      for (const m of hwTissue) {
+        m.opacity += (tissueOpacity - m.opacity) * 0.06;
+        m.emissive.setHSL(hwHue, hwSat, hwLight);
+        m.emissiveIntensity += (hwTissueEmissive - m.emissiveIntensity) * 0.06;
+      }
 
-    // Hardware bronchi — copper traces, flash gold on heartbeat
-    const hwBronchiEmissive =
-      powerMode || unifiedMode
-        ? 0.25 + beatFlash.current * 1.0
-        : breathingMode
-          ? 0.08 + beatFlash.current * 0.7
-          : beatFlash.current * 0.7;
-    // Copper (0.07) → bright gold (0.12) on beat flash
-    const hwBronchiHue = 0.07 + beatFlash.current * 0.05;
+      const hwBronchiEmissive =
+        powerMode || unifiedMode
+          ? 0.25 + beatFlash.current * 1.0
+          : breathingMode
+            ? 0.08 + beatFlash.current * 0.7
+            : beatFlash.current * 0.7;
+      const hwBronchiHue = 0.07 + beatFlash.current * 0.05;
 
-    for (const m of hwBronchi) {
-      m.opacity += (bronchiOpacity - m.opacity) * 0.06;
-      m.emissive.setHSL(hwBronchiHue, 1.0, 0.5);
-      m.emissiveIntensity += (hwBronchiEmissive - m.emissiveIntensity) * 0.12;
+      for (const m of hwBronchi) {
+        m.opacity += (bronchiOpacity - m.opacity) * 0.06;
+        m.emissive.setHSL(hwBronchiHue, 1.0, 0.5);
+        m.emissiveIntensity += (hwBronchiEmissive - m.emissiveIntensity) * 0.12;
+      }
     }
 
     // Breathing scale — expand/contract with breath
