@@ -501,6 +501,12 @@ function CellularView({
   onCellSelect,
   onCellZoom,
 }) {
+  const [pituitaryReady, setPituitaryReady] = useState(false);
+  useEffect(() => {
+    const id = setTimeout(() => setPituitaryReady(true), 1500);
+    return () => clearTimeout(id);
+  }, []);
+
   return (
     <group position={[0, femaleMode ? FEMALE_Y_OFFSET : 0, 0]}>
       {/* Primary neuron — top center of cluster */}
@@ -567,22 +573,24 @@ function CellularView({
         onCellSelect={onCellSelect}
         onCellZoom={onCellZoom}
       />
-      <CellMesh
-        path="/pituitary.glb"
-        targetHeight={0.025}
-        posX={0}
-        posY={1.62}
-        posZ={0.005}
-        color="#ffe080"
-        emissive="#ffaa00"
-        emissiveIntensity={1.2}
-        brainZoom={brainZoom}
-        cellZoom={cellZoom}
-        clickNode={pituitaryOrgan}
-        onCellSelect={onCellSelect}
-        onCellZoom={onCellZoom}
-        pulse
-      />
+      {pituitaryReady && (
+        <CellMesh
+          path="/pituitary.glb"
+          targetHeight={0.025}
+          posX={0}
+          posY={1.62}
+          posZ={0.005}
+          color="#ffe080"
+          emissive="#ffaa00"
+          emissiveIntensity={1.2}
+          brainZoom={brainZoom}
+          cellZoom={cellZoom}
+          clickNode={pituitaryOrgan}
+          onCellSelect={onCellSelect}
+          onCellZoom={onCellZoom}
+          pulse
+        />
+      )}
       {CELL_NODES.map((node) => (
         <CellNode
           key={node.id}

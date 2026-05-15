@@ -13,6 +13,7 @@ import SpinalFibers from "../spine/SpinalFibers";
 import CameraController from "../CameraController";
 import BrainModel from "../brain/BrainModel";
 import HeartModel from "../heart/HeartModel";
+import LungsModel from "../lungs/LungsModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
@@ -145,6 +146,14 @@ function Scene({
           meshMode={meshMode}
           viewMode={viewMode}
           hoveredOrganId={hoveredOrganId}
+          heartbeatRef={heartbeatRef}
+        />
+
+        <LungsModel
+          meshMode={meshMode}
+          viewMode={viewMode}
+          hoveredOrganId={hoveredOrganId}
+          breathingRef={breathingRef}
           heartbeatRef={heartbeatRef}
         />
 
