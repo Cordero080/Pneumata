@@ -501,105 +501,103 @@ function CellularView({
   onCellSelect,
   onCellZoom,
 }) {
-  const [pituitaryReady, setPituitaryReady] = useState(false);
+  const [cellsReady, setCellsReady] = useState(false);
   useEffect(() => {
-    const id = setTimeout(() => setPituitaryReady(true), 1500);
+    const id = setTimeout(() => setCellsReady(true), 1500);
     return () => clearTimeout(id);
   }, []);
 
   return (
     <group position={[0, femaleMode ? FEMALE_Y_OFFSET : 0, 0]}>
-      {/* Primary neuron — top center of cluster */}
-      <CellMesh
-        path="/neuron.glb"
-        targetHeight={0.055}
-        posX={0.014}
-        posY={1.702}
-        posZ={0.026}
-        color="#cc88ff"
-        emissive="#9933ff"
-        emissiveIntensity={1.4}
-        brainZoom={brainZoom}
-        cellZoom={cellZoom}
-        clickNode={neuronNode}
-        onCellSelect={onCellSelect}
-        onCellZoom={onCellZoom}
-      />
-      {/* Neuron B — left, slightly lower (receiving signals from A's axon) */}
-      <CellMesh
-        path="/neuron.glb"
-        targetHeight={0.042}
-        posX={-0.018}
-        posY={1.685}
-        posZ={0.014}
-        color="#cc88ff"
-        emissive="#9933ff"
-        emissiveIntensity={1.1}
-        brainZoom={brainZoom}
-        cellZoom={cellZoom}
-        clickNode={neuron2Node}
-        onCellSelect={onCellSelect}
-        onCellZoom={onCellZoom}
-      />
-      {/* Neuron C — right, lower and slightly deeper */}
-      <CellMesh
-        path="/neuron.glb"
-        targetHeight={0.038}
-        posX={0.034}
-        posY={1.674}
-        posZ={-0.004}
-        color="#cc88ff"
-        emissive="#9933ff"
-        emissiveIntensity={1.0}
-        brainZoom={brainZoom}
-        cellZoom={cellZoom}
-        clickNode={neuron3Node}
-        onCellSelect={onCellSelect}
-        onCellZoom={onCellZoom}
-      />
-      {/* Axon — emerges below primary neuron soma, extends toward neuron B */}
-      <CellMesh
-        path="/axon-single.glb"
-        targetHeight={0.05}
-        posX={0.002}
-        posY={1.682}
-        posZ={0.018}
-        color="#a8ff80"
-        emissive="#44cc44"
-        emissiveIntensity={0.9}
-        brainZoom={brainZoom}
-        cellZoom={cellZoom}
-        clickNode={axonNode}
-        onCellSelect={onCellSelect}
-        onCellZoom={onCellZoom}
-      />
-      {pituitaryReady && (
-        <CellMesh
-          path="/pituitary.glb"
-          targetHeight={0.025}
-          posX={0}
-          posY={1.62}
-          posZ={0.005}
-          color="#ffe080"
-          emissive="#ffaa00"
-          emissiveIntensity={1.2}
-          brainZoom={brainZoom}
-          cellZoom={cellZoom}
-          clickNode={pituitaryOrgan}
-          onCellSelect={onCellSelect}
-          onCellZoom={onCellZoom}
-          pulse
-        />
+      {cellsReady && (
+        <>
+          <CellMesh
+            path="/neuron.glb"
+            targetHeight={0.055}
+            posX={0.014}
+            posY={1.702}
+            posZ={0.026}
+            color="#cc88ff"
+            emissive="#9933ff"
+            emissiveIntensity={1.4}
+            brainZoom={brainZoom}
+            cellZoom={cellZoom}
+            clickNode={neuronNode}
+            onCellSelect={onCellSelect}
+            onCellZoom={onCellZoom}
+          />
+          <CellMesh
+            path="/neuron.glb"
+            targetHeight={0.042}
+            posX={-0.018}
+            posY={1.685}
+            posZ={0.014}
+            color="#cc88ff"
+            emissive="#9933ff"
+            emissiveIntensity={1.1}
+            brainZoom={brainZoom}
+            cellZoom={cellZoom}
+            clickNode={neuron2Node}
+            onCellSelect={onCellSelect}
+            onCellZoom={onCellZoom}
+          />
+          <CellMesh
+            path="/neuron.glb"
+            targetHeight={0.038}
+            posX={0.034}
+            posY={1.674}
+            posZ={-0.004}
+            color="#cc88ff"
+            emissive="#9933ff"
+            emissiveIntensity={1.0}
+            brainZoom={brainZoom}
+            cellZoom={cellZoom}
+            clickNode={neuron3Node}
+            onCellSelect={onCellSelect}
+            onCellZoom={onCellZoom}
+          />
+          <CellMesh
+            path="/axon-single.glb"
+            targetHeight={0.05}
+            posX={0.002}
+            posY={1.682}
+            posZ={0.018}
+            color="#a8ff80"
+            emissive="#44cc44"
+            emissiveIntensity={0.9}
+            brainZoom={brainZoom}
+            cellZoom={cellZoom}
+            clickNode={axonNode}
+            onCellSelect={onCellSelect}
+            onCellZoom={onCellZoom}
+          />
+          <CellMesh
+            path="/pituitary.glb"
+            targetHeight={0.025}
+            posX={0}
+            posY={1.62}
+            posZ={0.005}
+            color="#ffe080"
+            emissive="#ffaa00"
+            emissiveIntensity={1.2}
+            brainZoom={brainZoom}
+            cellZoom={cellZoom}
+            clickNode={pituitaryOrgan}
+            onCellSelect={onCellSelect}
+            onCellZoom={onCellZoom}
+            pulse
+          />
+          {CELL_NODES.map((node) => (
+            <CellNode
+              key={node.id}
+              node={node}
+              cellZoom={cellZoom}
+              onCellSelect={onCellSelect}
+              flash={node.id === "neuron" || node.id === "synapse"}
+            />
+          ))}
+        </>
       )}
-      {CELL_NODES.map((node) => (
-        <CellNode
-          key={node.id}
-          node={node}
-          cellZoom={cellZoom}
-          onCellSelect={onCellSelect}
-          flash={node.id === "neuron" || node.id === "synapse"}
-        />
-      ))}
     </group>
   );
 }
