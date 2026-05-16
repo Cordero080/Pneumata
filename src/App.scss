@@ -16,6 +16,10 @@
   border-right: 3px solid rgba(0, 0, 0, 0.18);
   border-bottom: 5px solid rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   background:
     linear-gradient(135deg,
       rgba(222, 228, 234, 0.96) 0%,
@@ -537,7 +541,17 @@
   min-width: 38px;
 
   &--active {
-    color: #5a8fd0;
+    color: #c060a0;
+    background: linear-gradient(
+      135deg,
+      rgba(234, 210, 226, 0.96) 0%,
+      rgba(218, 195, 212, 0.92) 25%,
+      rgba(242, 220, 234, 0.96) 50%,
+      rgba(210, 190, 206, 0.92) 75%,
+      rgba(226, 205, 220, 0.96) 100%
+    );
+    border-top-color: rgba(255, 220, 240, 0.5);
+    border-bottom-color: rgba(160, 80, 130, 0.3);
   }
 }
 
@@ -670,9 +684,32 @@
   pointer-events: none;
 }
 
+// === Female mode — rose tint on all chamfer buttons (light mode only) ===
+
+.app--female:not(.app--dark) {
+  .top-nav-trigger,
+  .mesh-toggle-btn,
+  .reset-btn,
+  .body-toggle-btn,
+  .anim-toggle-btn,
+  .bg-toggle-btn,
+  .about-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(234, 214, 226, 0.96) 0%,
+      rgba(218, 198, 212, 0.92) 25%,
+      rgba(242, 222, 234, 0.96) 50%,
+      rgba(210, 192, 206, 0.92) 75%,
+      rgba(226, 208, 220, 0.96) 100%
+    );
+    border-top-color: rgba(255, 210, 230, 0.5);
+    border-bottom-color: rgba(160, 80, 130, 0.3);
+  }
+}
+
 // === Dark mode — chamfer button overrides ===
 
-.app--dark {
+.app--dark:not(.app--female) {
   .mode-toggle-btn,
   .body-toggle-btn,
   .anim-toggle-btn,
@@ -702,6 +739,20 @@
     &:hover {
       color: rgba(200, 220, 255, 0.95);
     }
+  }
+
+  .body-toggle-btn--active {
+    color: #e080c0;
+    background: linear-gradient(
+      135deg,
+      rgba(72, 32, 56, 0.98) 0%,
+      rgba(56, 24, 44, 0.96) 25%,
+      rgba(80, 36, 64, 0.98) 50%,
+      rgba(52, 22, 42, 0.96) 75%,
+      rgba(68, 28, 52, 0.98) 100%
+    );
+    border-top-color: rgba(220, 120, 180, 0.4);
+    border-bottom-color: rgba(160, 60, 120, 0.3);
   }
 }
 

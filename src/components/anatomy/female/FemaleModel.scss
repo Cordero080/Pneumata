@@ -39,7 +39,8 @@ body.body--female {
   .mesh-toggle-btn,
   .reset-btn,
   .body-toggle-btn,
-  .anim-toggle-btn {
+  .anim-toggle-btn,
+  .bg-toggle-btn {
     @include v.female-light-surface;
     color: rgba(100, 20, 65, 0.75);
     &:hover { color: rgba(60, 5, 40, 0.95); }
@@ -106,13 +107,25 @@ body.body--female {
   }
   .mode-toggle-btn { color: v.$female-text-dim; }
 
-  // Top-left buttons
+  // All chamfer buttons
   .mesh-toggle-btn,
   .reset-btn,
   .body-toggle-btn,
-  .anim-toggle-btn {
+  .anim-toggle-btn,
+  .bg-toggle-btn,
+  .about-btn,
+  .brain-back-btn,
+  .dark-toggle-btn,
+  .top-nav-trigger {
     @include v.female-dark-surface;
-    box-shadow: none;
+    border-top-color: rgba(255, 80, 180, 0.4);
+    border-right-color: rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid rgba(180, 0, 100, 0.2);
+    box-shadow:
+      0 2px 12px rgba(0, 0, 0, 0.5),
+      0 0 8px rgba(200, 0, 120, 0.15),
+      inset 0 1px 0 rgba(255, 80, 160, 0.2),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
     color: v.$female-text-dim;
     &:hover {
       filter: drop-shadow(0 0 8px v.$female-glow);
@@ -120,17 +133,8 @@ body.body--female {
     }
   }
 
-  // About, back, and dark-toggle buttons
-  .about-btn,
-  .brain-back-btn,
-  .dark-toggle-btn {
-    @include v.female-dark-surface;
-    box-shadow: none;
-    color: v.$female-text-dim;
-    &:hover {
-      filter: drop-shadow(0 0 8px v.$female-glow);
-      color: v.$female-text;
-    }
+  .body-toggle-btn--active {
+    color: v.$female-text;
   }
 
   // Sliders

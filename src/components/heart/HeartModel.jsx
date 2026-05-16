@@ -6,10 +6,25 @@ import * as THREE from "three";
 const HEART_CENTER_X = 0.01;
 const HEART_CENTER_Y = 1.32;
 const HEART_CENTER_Z = 0.06;
-const TARGET_HEIGHT = 0.13;
+const TARGET_HEIGHT = 0.13; // heart size — increase to enlarge
 
-function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
+// === FEMALE HEART — tweak these ===
+const HEART_CENTER_X_FEMALE = 0.01; // left (-) / right (+)
+const HEART_CENTER_Y_FEMALE = 1.28; // up (+) / down (-)
+const HEART_CENTER_Z_FEMALE = 0.02; // forward (+) / back into body (-)
+const TARGET_HEIGHT_FEMALE = 0.13; // size — increase to enlarge
+// ===================================
+
+function HeartModel({
+  meshMode,
+  viewMode,
+  hoveredOrganId,
+  heartbeatRef,
+  femaleMode,
+}) {
   const gltf = useGLTF("/rose-heart.glb");
+  const heartCenterRef = useRef(new THREE.Vector3());
+  const heartScaleRef = useRef(1);
   const scene = useMemo(() => {
     const cloned = gltf.scene.clone(true);
     cloned.scale.set(1, 1, 1);
@@ -20,6 +35,8 @@ function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
     const s = TARGET_HEIGHT / size.y;
+    heartScaleRef.current = s;
+    heartCenterRef.current.copy(center);
     cloned.scale.setScalar(s);
     cloned.position.set(
       HEART_CENTER_X - center.x * s,
@@ -29,6 +46,18 @@ function HeartModel({ meshMode, viewMode, hoveredOrganId, heartbeatRef }) {
     cloned.visible = false;
     return cloned;
   }, [gltf.scene]);
+
+  useEffect(() => {
+    const th = femaleMode ? TARGET_HEIGHT_FEMALE : TARGET_HEIGHT;
+    const c = heartCenterRef.current;
+    const rawSize = heartScaleRef.current > 0 ? heartScaleRef.current : 1;
+    const s = (th / TARGET_HEIGHT) * rawSize;
+    scene.scale.setScalar(s);
+    const cx = femaleMode ? HEART_CENTER_X_FEMALE : HEART_CENTER_X;
+    const cy = femaleMode ? HEART_CENTER_Y_FEMALE : HEART_CENTER_Y;
+    const cz = femaleMode ? HEART_CENTER_Z_FEMALE : HEART_CENTER_Z;
+    scene.position.set(cx - c.x * s, cy - c.y * s, cz - c.z * s);
+  }, [femaleMode, scene]);
   const matsRef = useRef([]);
   const beatRef = useRef({ last: 0, flash: 0 });
 

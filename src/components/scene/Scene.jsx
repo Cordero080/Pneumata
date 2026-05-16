@@ -147,6 +147,7 @@ function Scene({
           viewMode={viewMode}
           hoveredOrganId={hoveredOrganId}
           heartbeatRef={heartbeatRef}
+          femaleMode={femaleMode}
         />
 
         <LungsModel
@@ -155,6 +156,7 @@ function Scene({
           hoveredOrganId={hoveredOrganId}
           breathingRef={breathingRef}
           heartbeatRef={heartbeatRef}
+          femaleMode={femaleMode}
         />
 
         <BrainModel

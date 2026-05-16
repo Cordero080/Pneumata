@@ -405,6 +405,7 @@ export const organs = [
     organ: "Heart",
     hardware: "Power Supply Unit (PSU)",
     position: [0.01, 1.32, 0.06],
+    femalePosition: [0.01, 1.3, -0.02],
     bio_function:
       "The muscular pump delivering oxygenated blood to every cell in the body. Not because it thinks, but because everything that thinks requires continuous power delivery. It beats 100,000 times per day without instruction. Four minutes without it and the cortex begins to die.",
     hard_function:
@@ -439,6 +440,7 @@ export const organs = [
     organ: "Left Lung",
     hardware: "Thermal Management (Heat Sink)",
     position: [-0.1, 1.22, 0.05],
+    femalePosition: [-0.1, 1.18, -0.02],
     bio_function:
       "Exchanges carbon dioxide — the metabolic waste product of cellular energy generation — for fresh oxygen. Every cell in the body generates heat and CO₂ as byproducts of work. The lungs clear the exhaust.",
     hard_function:
@@ -455,6 +457,7 @@ export const organs = [
     organ: "Right Lung",
     hardware: "Thermal Management (Heat Sink)",
     position: [0.1, 1.22, 0.05],
+    femalePosition: [0.1, 1.18, -0.02],
     bio_function:
       "Exchanges carbon dioxide — the metabolic waste product of cellular energy generation — for fresh oxygen. The right lung is slightly larger than the left, compensating for the cardiac displacement.",
     hard_function:

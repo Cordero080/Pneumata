@@ -5,10 +5,17 @@ import * as THREE from "three";
 
 const IS_MOBILE = window.innerWidth <= 768;
 
-const LUNGS_CENTER_X = 0.0; // tweak to shift left (-) or right (+)
-const LUNGS_CENTER_Y = 1.33; // tweak to move lungs up (+) or down (-)
-const LUNGS_CENTER_Z = 0.02; // tweak to move forward (+) or back (-)
-const TARGET_HEIGHT = 0.29; // tweak to resize — controls overall lung size
+const LUNGS_CENTER_X = 0.0;
+const LUNGS_CENTER_Y = 1.32;
+const LUNGS_CENTER_Z = 0.02;
+const TARGET_HEIGHT = 0.33; // lung size — increase to enlarge
+
+// === FEMALE LUNGS — tweak these ===
+const LUNGS_CENTER_X_FEMALE = 0.0; // left (-) / right (+)
+const LUNGS_CENTER_Y_FEMALE = 1.28; // up (+) / down (-)
+const LUNGS_CENTER_Z_FEMALE = -0.001; // forward (+) / back into body (-)
+const TARGET_HEIGHT_FEMALE = 0.30; // size — increase to enlarge
+// ===================================
 
 function LungsModel({
   meshMode,
@@ -16,21 +23,25 @@ function LungsModel({
   hoveredOrganId,
   breathingRef,
   heartbeatRef,
+  femaleMode,
 }) {
   const gltf = useGLTF("/lungs-red-hybrid.glb");
   const baseScaleRef = useRef(1);
+  const effectiveScaleRef = useRef(1);
+  const lungsCenterRef = useRef(new THREE.Vector3());
 
   const scene = useMemo(() => {
     const cloned = gltf.scene.clone(true);
     cloned.scale.set(1, 1, 1);
     cloned.position.set(0, 0, 0);
-    cloned.rotation.set(-0.15, 0, 0); // tweak X to tilt back (-) or forward (+)
+    cloned.rotation.set(-0.15, 0, 0);
     cloned.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(cloned);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
     const s = TARGET_HEIGHT / size.y;
     baseScaleRef.current = s;
+    lungsCenterRef.current.copy(center);
     cloned.scale.setScalar(s);
     cloned.position.set(
       LUNGS_CENTER_X - center.x * s,
@@ -40,6 +51,19 @@ function LungsModel({
     cloned.visible = false;
     return cloned;
   }, [gltf.scene]);
+
+  useEffect(() => {
+    const th = femaleMode ? TARGET_HEIGHT_FEMALE : TARGET_HEIGHT;
+    const rawSize = baseScaleRef.current > 0 ? baseScaleRef.current : 1;
+    const s = (th / TARGET_HEIGHT) * rawSize;
+    effectiveScaleRef.current = s;
+    scene.scale.setScalar(s);
+    const c = lungsCenterRef.current;
+    const cx = femaleMode ? LUNGS_CENTER_X_FEMALE : LUNGS_CENTER_X;
+    const cy = femaleMode ? LUNGS_CENTER_Y_FEMALE : LUNGS_CENTER_Y;
+    const cz = femaleMode ? LUNGS_CENTER_Z_FEMALE : LUNGS_CENTER_Z;
+    scene.position.set(cx - c.x * s, cy - c.y * s, cz - c.z * s);
+  }, [femaleMode, scene]);
 
   // Four material buckets — left (bio) vs right (hardware), each split bronchi/tissue
   const bronchiMats = useRef([]); // left lung — red vascular
@@ -276,7 +300,7 @@ function LungsModel({
 
     // Breathing scale — expand/contract with breath
     const breathMult = breathingMode ? 1 + breath * 0.06 : 1;
-    const targetScale = baseScaleRef.current * breathMult;
+    const targetScale = effectiveScaleRef.current * breathMult;
     scene.scale.setScalar(scene.scale.x + (targetScale - scene.scale.x) * 0.04);
   });
 
