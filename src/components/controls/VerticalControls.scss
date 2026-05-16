@@ -62,17 +62,17 @@
 
 .vcontrols-panel {
   position: absolute;
-  top: 100%;
+  top: calc(100% - 14px);
   right: 0;
   z-index: 100;
   display: flex;
   flex-direction: row;
   gap: 10px;
-  padding: 10px 9px 8px;
+  padding: 24px 9px 8px;
 
   @media (min-width: 769px) {
     gap: 9px;
-    padding: 12px 10px 10px;
+    padding: 26px 10px 10px;
   }
   background: linear-gradient(
     135deg,
@@ -80,12 +80,12 @@
     rgba(200, 210, 218, 0.16) 50%,
     rgba(215, 222, 229, 0.22) 100%
   );
-  border-top: 1px solid rgba(255, 255, 255, 0.35);
   border-right: 3px solid rgba(0, 0, 0, 0.14);
   border-bottom: 5px solid rgba(0, 0, 0, 0.18);
   clip-path: polygon(
     0 0,
-    100% 0,
+    14px 14px,
+    100% 14px,
     100% 100%,
     10px 100%,
     0 calc(100% - 10px)
@@ -200,6 +200,7 @@
   @include v.dark-surface;
   box-shadow: none;
   color: v.$dark-text-dim;
+  border-bottom: 2px solid rgba(80, 120, 200, 0.2);
 
   &:hover {
     filter: drop-shadow(0 0 8px v.$dark-glow);
