@@ -67,9 +67,7 @@ function App() {
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
   const [legendCategory, setLegendCategory] = useState(null);
   const [resetKey, setResetKey] = useState(0);
-  const [showLanding, setShowLanding] = useState(
-    () => !localStorage.getItem("pneumata_subscribed"),
-  );
+  const [showLanding, setShowLanding] = useState(true);
   const handleReset = () => {
     setBrainZoom(false);
     setCellZoom(false);
@@ -253,11 +251,7 @@ function App() {
             offsetY +
             (viewPanelOpen ? (bodyModel === "female" ? -0.02 : -0.02) : -0.047)
           }
-          style={
-            showLanding
-              ? { visibility: "hidden", pointerEvents: "none" }
-              : undefined
-          }
+          style={showLanding ? { pointerEvents: "none" } : undefined}
           onSelect={(organ) => {
             setSelectedOrgan(organ);
             if (

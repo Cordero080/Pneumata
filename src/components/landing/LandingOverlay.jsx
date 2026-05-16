@@ -5,7 +5,8 @@ const ENDPOINT = "https://pneumata-backend.onrender.com/subscribe";
 
 function LandingOverlay({ onEnter }) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle");
+  const alreadySubscribed = !!localStorage.getItem("pneumata_subscribed");
+  const [status, setStatus] = useState(alreadySubscribed ? "done" : "idle");
   const hasInput = email.length > 0;
 
   const handleSubmit = async (e) => {
