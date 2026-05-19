@@ -4,9 +4,9 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 const LUNGS_CENTER_X = 0.0;
-const LUNGS_CENTER_Y = 1.32;
-const LUNGS_CENTER_Z = -0.01;
-const TARGET_HEIGHT = 0.33; // lung size — increase to enlarge
+const LUNGS_CENTER_Y = 1.31;
+const LUNGS_CENTER_Z = 0.02;
+const TARGET_HEIGHT = 0.3; // lung size — increase to enlarge
 
 // === FEMALE LUNGS — tweak these ===
 const LUNGS_CENTER_X_FEMALE = 0.0; // left (-) / right (+)
@@ -23,7 +23,7 @@ function LungsModel({
   heartbeatRef,
   femaleMode,
 }) {
-  const gltf = useGLTF("/hybrid-lungs.glb");
+  const gltf = useGLTF("/lungs-red-hybrid.glb");
   const baseScaleRef = useRef(1);
   const effectiveScaleRef = useRef(1);
   const lungsCenterRef = useRef(new THREE.Vector3());
@@ -134,11 +134,11 @@ function LungsModel({
     if (hovered) {
       targetOpacity = 0.85;
     } else if (breathingMode) {
-      targetOpacity = 0.55;
+      targetOpacity = 0.25;
     } else if (powerMode) {
-      targetOpacity = 0.55;
+      targetOpacity = 0.18;
     } else if (unifiedMode) {
-      targetOpacity = 0.22;
+      targetOpacity = 0.14;
     } else if (meshMode === 2 || meshMode === 4) {
       targetOpacity = 0.22;
     } else if (ghostMode) {
@@ -175,6 +175,6 @@ function LungsModel({
   );
 }
 
-useGLTF.preload("/hybrid-lungs.glb");
+useGLTF.preload("/lungs-red-hybrid.glb");
 
 export default LungsModel;
