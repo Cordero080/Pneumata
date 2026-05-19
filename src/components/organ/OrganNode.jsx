@@ -29,6 +29,15 @@ import { CATEGORY_COLORS, CATEGORY_EMISSIVE } from "../../data/categories";
 
 const IS_MOBILE = window.innerWidth <= 768;
 
+const GLITCH_COLORS = [
+  new THREE.Color("#ff0040"),
+  new THREE.Color("#00ffff"),
+  new THREE.Color("#39ff14"),
+  new THREE.Color("#ffffff"),
+  new THREE.Color("#ff8c00"),
+  new THREE.Color("#cc00ff"),
+];
+
 import HeartRings from "./HeartRings";
 import OrganLabel from "./OrganLabel";
 
@@ -183,20 +192,12 @@ function OrganNode({
       }
       if (g.duration > 0) {
         g.duration -= delta;
-        const glitchColors = [
-          "#ff0040",
-          "#00ffff",
-          "#39ff14",
-          "#ffffff",
-          "#ff8c00",
-          "#cc00ff",
-        ];
-        const c = glitchColors[Math.floor(t * 24) % glitchColors.length];
-        meshRef.current.material.color.set(c);
-        meshRef.current.material.emissive.set(c);
+        const c = GLITCH_COLORS[Math.floor(t * 24) % GLITCH_COLORS.length];
+        meshRef.current.material.color.copy(c);
+        meshRef.current.material.emissive.copy(c);
         meshRef.current.material.emissiveIntensity = 4 + Math.random() * 4;
-        if (glowRef.current) glowRef.current.material.color.set(c);
-        if (innerRef.current) innerRef.current.material.emissive.set(c);
+        if (glowRef.current) glowRef.current.material.color.copy(c);
+        if (innerRef.current) innerRef.current.material.emissive.copy(c);
       } else {
         meshRef.current.material.color.set(color);
         meshRef.current.material.emissive.set(color);

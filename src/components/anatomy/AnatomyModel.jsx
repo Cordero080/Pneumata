@@ -201,6 +201,8 @@ const TARGET_HEIGHT = 1.75;
 
 const BREATH_BLUE = new THREE.Color("#334499");
 const BREATH_CYAN = new THREE.Color("#b0e8ff");
+const EMISSIVE_WHITE = new THREE.Color("#ffffff");
+const EMISSIVE_POWER = new THREE.Color("#bd0404");
 
 function AnatomyModel({
   modelPath = "/male-body.glb",
@@ -278,6 +280,9 @@ function AnatomyModel({
       metalness: 0,
       clearcoat: 0.5,
       clearcoatRoughness: 0.1,
+      iridescence: 0.001,
+      iridescenceIOR: 1.32,
+      iridescenceThicknessRange: [120, 280],
       depthWrite: false,
       emissive: new THREE.Color("#ffffff"),
       emissiveIntensity: 0,
@@ -409,7 +414,7 @@ function AnatomyModel({
       mat.roughness = 0.2;
       mat.transmission = 0;
       mat.opacity = 0.13;
-      mat.iridescence = 0;
+      mat.iridescence = 0.001;
       mat.clearcoat = 0.5;
       mat.clearcoatRoughness = 0.1;
       mat.emissive.set("#ffffff");
@@ -497,7 +502,7 @@ function AnatomyModel({
         mat.roughness = 0.1;
         mat.emissive.set(whiteEmissive);
         mat.emissiveIntensity = 0.1;
-        mat.iridescence = 0;
+        mat.iridescence = 0.001;
         mat.depthWrite = false;
         mat.needsUpdate = true;
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 0 — OBSIDIAN GHOST
@@ -509,7 +514,7 @@ function AnatomyModel({
         mat.opacity = 0.45;
         mat.metalness = 0.11;
         mat.roughness = 0.12;
-        mat.iridescence = 0;
+        mat.iridescence = 0.001;
         mat.depthWrite = false;
         mat.needsUpdate = true;
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 1/2 — OBSIDIAN SEMI / OBSIDIAN SOLID
@@ -669,8 +674,10 @@ function AnatomyModel({
     else if (viewMode === "unified") base = darkMode ? 0.25 : 0.15;
 
     if (!darkMode) {
-      materialRef.current.emissive.set(
-        viewMode === "power" || viewMode === "unified" ? "#bd0404" : "#ffffff",
+      materialRef.current.emissive.copy(
+        viewMode === "power" || viewMode === "unified"
+          ? EMISSIVE_POWER
+          : EMISSIVE_WHITE,
       );
     }
 

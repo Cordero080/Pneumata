@@ -1,20 +1,18 @@
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const IS_MOBILE = window.innerWidth <= 768;
-
 const LUNGS_CENTER_X = 0.0;
 const LUNGS_CENTER_Y = 1.32;
-const LUNGS_CENTER_Z = 0.02;
+const LUNGS_CENTER_Z = -0.01;
 const TARGET_HEIGHT = 0.33; // lung size — increase to enlarge
 
 // === FEMALE LUNGS — tweak these ===
 const LUNGS_CENTER_X_FEMALE = 0.0; // left (-) / right (+)
 const LUNGS_CENTER_Y_FEMALE = 1.28; // up (+) / down (-)
-const LUNGS_CENTER_Z_FEMALE = -0.001; // forward (+) / back into body (-)
-const TARGET_HEIGHT_FEMALE = 0.30; // size — increase to enlarge
+const LUNGS_CENTER_Z_FEMALE = -0.02; // forward (+) / back into body (-)
+const TARGET_HEIGHT_FEMALE = 0.28; // size — increase to enlarge
 // ===================================
 
 function LungsModel({
@@ -25,7 +23,7 @@ function LungsModel({
   heartbeatRef,
   femaleMode,
 }) {
-  const gltf = useGLTF("/lungs-red-hybrid.glb");
+  const gltf = useGLTF("/hybrid-lungs.glb");
   const baseScaleRef = useRef(1);
   const effectiveScaleRef = useRef(1);
   const lungsCenterRef = useRef(new THREE.Vector3());
@@ -34,7 +32,7 @@ function LungsModel({
     const cloned = gltf.scene.clone(true);
     cloned.scale.set(1, 1, 1);
     cloned.position.set(0, 0, 0);
-    cloned.rotation.set(-0.15, 0, 0);
+    cloned.rotation.set(-0.1, 0, 0);
     cloned.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(cloned);
     const size = box.getSize(new THREE.Vector3());
@@ -65,119 +63,57 @@ function LungsModel({
     scene.position.set(cx - c.x * s, cy - c.y * s, cz - c.z * s);
   }, [femaleMode, scene]);
 
-  // Four material buckets — left (bio) vs right (hardware), each split bronchi/tissue
-  const bronchiMats = useRef([]); // left lung — red vascular
-  const tissueMats = useRef([]); // left lung — iridescent bio
-  const hwBronchiMats = useRef([]); // right lung — copper circuit traces
-  const hwTissueMats = useRef([]); // right lung — anodized aluminum
+  const tissueMats = useRef([]);
+  const glowMatsRef = useRef([]);
+  const [glowScene, setGlowScene] = useState(null);
   const beatFlash = useRef(0);
   const lastBeat = useRef(0);
 
   useEffect(() => {
-    const bronchi = [],
-      tissue = [],
-      hwBronchi = [],
-      hwTissue = [];
-    scene.updateMatrixWorld(true);
-    const meshBox = new THREE.Box3();
-    const meshCenter = new THREE.Vector3();
+    const tissue = [];
     scene.traverse((child) => {
       if (!child.isMesh) return;
-      meshBox.setFromObject(child);
-      meshBox.getCenter(meshCenter);
-      // On mobile skip hardware split — single bucket saves half the draw calls
-      const isRight = !IS_MOBILE && meshCenter.x > 0;
-      const prev = child.material;
-      const c = prev.color ?? new THREE.Color(1, 1, 1);
-      const isBronchi = c.r > 0.45 && c.g < 0.35;
-
-      if (isRight) {
-        // Hardware lung — anodized aluminum tissue, copper bronchi
-        if (isBronchi) {
-          const m = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#7a3a18"),
-            map: prev.map ?? null,
-            transparent: true,
-            opacity: 0,
-            depthWrite: false,
-            emissive: new THREE.Color("#ff6600"),
-            emissiveIntensity: 0,
-            roughness: 0.3,
-            metalness: 0.8,
-          });
-          child.material = m;
-          child.renderOrder = 4;
-          if (!hwBronchi.includes(m)) hwBronchi.push(m);
-        } else {
-          const m = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#8a9aaa"),
-            map: prev.map ?? null,
-            transparent: true,
-            opacity: 0,
-            depthWrite: false,
-            emissive: new THREE.Color("#00ffaa"),
-            emissiveIntensity: 0,
-            roughness: 0.18,
-            metalness: 0.75,
-          });
-          child.material = m;
-          child.renderOrder = 4;
-          if (!hwTissue.includes(m)) hwTissue.push(m);
-        }
-      } else {
-        // Bio lung — iridescent tissue, red vascular bronchi
-        if (isBronchi) {
-          const m = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#cc1100"),
-            map: prev.map ?? null,
-            transparent: true,
-            opacity: 0,
-            depthWrite: false,
-            emissive: new THREE.Color("#ff0000"),
-            emissiveIntensity: 0,
-            roughness: 0.45,
-            metalness: 0.15,
-          });
-          child.material = m;
-          child.renderOrder = 4;
-          if (!bronchi.includes(m)) bronchi.push(m);
-        } else {
-          const m = new THREE.MeshStandardMaterial({
-            color: prev.color ?? new THREE.Color("#c8d8e0"),
-            map: prev.map ?? null,
-            transparent: true,
-            opacity: 0,
-            depthWrite: false,
-            emissive: new THREE.Color("#00ccff"),
-            emissiveIntensity: 0,
-            roughness: 0.08,
-            metalness: 0.0,
-          });
-          child.material = m;
-          child.renderOrder = 4;
-          if (!tissue.includes(m)) tissue.push(m);
-        }
-      }
+      const m = child.material.clone();
+      m.transparent = true;
+      m.opacity = 0;
+      m.depthWrite = false;
+      child.material = m;
+      child.renderOrder = 4;
+      tissue.push(m);
     });
-    bronchiMats.current = bronchi;
     tissueMats.current = tissue;
-    hwBronchiMats.current = hwBronchi;
-    hwTissueMats.current = hwTissue;
+
+    // Separate glow layer — pure cyan emissive, no base color
+    const glowClone = scene.clone(true);
+    glowClone.visible = true;
+    const glowMats = [];
+    glowClone.traverse((child) => {
+      if (!child.isMesh) return;
+      const gm = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(0, 0.8, 1),
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      });
+      child.material = gm;
+      child.renderOrder = 5;
+      glowMats.push(gm);
+    });
+    glowMatsRef.current = glowMats;
+    setGlowScene(glowClone);
+
     scene.visible = true;
+
+    return () => {
+      tissueMats.current.forEach((m) => m.dispose());
+      glowMatsRef.current.forEach((m) => m.dispose());
+    };
   }, [scene]);
 
   useFrame((state) => {
-    const bronchi = bronchiMats.current;
     const tissue = tissueMats.current;
-    const hwBronchi = hwBronchiMats.current;
-    const hwTissue = hwTissueMats.current;
-    if (
-      !bronchi.length &&
-      !tissue.length &&
-      !hwBronchi.length &&
-      !hwTissue.length
-    )
-      return;
+    if (!tissue.length) return;
 
     const t = state.clock.getElapsedTime();
     const ghostMode = meshMode === 0 || meshMode === 3;
@@ -188,125 +124,57 @@ function LungsModel({
     const unifiedMode = viewMode === "unified";
     const breath = breathingRef ? breathingRef.current : 0;
 
-    // Heartbeat flash on bronchi
     if (heartbeatRef && heartbeatRef.current !== lastBeat.current) {
       lastBeat.current = heartbeatRef.current;
       beatFlash.current = 1.0;
     }
     beatFlash.current *= 0.88;
 
-    let tissueOpacity, bronchiOpacity;
+    let targetOpacity;
     if (hovered) {
-      tissueOpacity = 0.62;
-      bronchiOpacity = 0.75;
+      targetOpacity = 0.85;
     } else if (breathingMode) {
-      tissueOpacity = 0.38;
-      bronchiOpacity = 0.32;
+      targetOpacity = 0.55;
     } else if (powerMode) {
-      tissueOpacity = 0.12;
-      bronchiOpacity = 0.48;
+      targetOpacity = 0.55;
     } else if (unifiedMode) {
-      tissueOpacity = 0.22;
-      bronchiOpacity = 0.32;
+      targetOpacity = 0.22;
     } else if (meshMode === 2 || meshMode === 4) {
-      tissueOpacity = 0.18;
-      bronchiOpacity = 0.22;
+      targetOpacity = 0.22;
     } else if (ghostMode) {
-      tissueOpacity = 0.22;
-      bronchiOpacity = 0.26;
+      targetOpacity = 0.18;
     } else if (meshMode === 1) {
-      tissueOpacity = 0.1;
-      bronchiOpacity = 0.14;
+      targetOpacity = 0.12;
     } else {
-      tissueOpacity = 0.0;
-      bronchiOpacity = 0.0;
+      targetOpacity = 0.0;
     }
-
-    // Tissue iridescent color shift:
-    // exhale (breath=0) → deep violet hue 0.78
-    // full inhale (breath=1) → luminous cyan hue 0.50
-    // + slow independent drift for iridescence
-    const breathHue = 0.78 - breath * 0.28;
-    const drift = Math.sin(t * 0.4) * 0.04 + Math.sin(t * 0.13) * 0.03;
-    const hue = breathHue + drift;
-    const sat = breathingMode ? 0.9 : unifiedMode ? 0.7 : 0.6;
-    const light = breathingMode ? 0.45 + breath * 0.2 : 0.35;
-    const tissueEmissive = breathingMode
-      ? 0.12 + breath * 0.28
-      : unifiedMode
-        ? 0.06
-        : ghostMode
-          ? 0.03
-          : 0.0;
 
     for (const m of tissue) {
-      m.opacity += (tissueOpacity - m.opacity) * 0.06;
-      m.emissive.setHSL(hue, sat, light);
-      m.emissiveIntensity += (tissueEmissive - m.emissiveIntensity) * 0.06;
+      m.opacity += (targetOpacity - m.opacity) * 0.06;
     }
 
-    // Bronchi — iridescent arterial pulse: crimson at rest, warm orange-red on heartbeat
-    const bronchiEmissive =
-      powerMode || unifiedMode
-        ? 0.3 + beatFlash.current * 1.2
-        : breathingMode
-          ? 0.1 + beatFlash.current * 0.8
-          : beatFlash.current * 0.8;
-    // Hue drifts: dark crimson (0.0) → warm arterial orange-red (0.05) on beat flash
-    // Slow breath drift adds a subtle violet-magenta undertone at exhale
-    const bronchiHue = 0.02 + beatFlash.current * 0.03 + (1 - breath) * 0.015;
+    // Glow layer — cyan only on inhale, fades out on exhale
+    const glowTarget = breathingMode ? breath * 0.28 : 0;
 
-    for (const m of bronchi) {
-      m.opacity += (bronchiOpacity - m.opacity) * 0.06;
-      m.emissive.setHSL(bronchiHue, 1.0, 0.5);
-      m.emissiveIntensity += (bronchiEmissive - m.emissiveIntensity) * 0.12;
+    for (const gm of glowMatsRef.current) {
+      gm.opacity += (glowTarget - gm.opacity) * 0.06;
     }
 
-    // Hardware lung — anodized aluminum tissue with PCB-trace emissive glow
-    // Hue cycles: teal (0.48) at exhale → gold-green (0.20) at inhale, slow data-flow drift
-    const hwDrift = Math.sin(t * 0.6) * 0.06 + Math.sin(t * 0.17) * 0.04;
-    const hwHue = 0.48 - breath * 0.28 + hwDrift;
-    const hwSat = breathingMode ? 0.95 : 0.8;
-    const hwLight = breathingMode ? 0.42 + breath * 0.18 : 0.38;
-    const hwTissueEmissive = breathingMode
-      ? 0.1 + breath * 0.22
-      : unifiedMode
-        ? 0.06
-        : ghostMode
-          ? 0.03
-          : 0.0;
-
-    if (!IS_MOBILE) {
-      for (const m of hwTissue) {
-        m.opacity += (tissueOpacity - m.opacity) * 0.06;
-        m.emissive.setHSL(hwHue, hwSat, hwLight);
-        m.emissiveIntensity += (hwTissueEmissive - m.emissiveIntensity) * 0.06;
-      }
-
-      const hwBronchiEmissive =
-        powerMode || unifiedMode
-          ? 0.25 + beatFlash.current * 1.0
-          : breathingMode
-            ? 0.08 + beatFlash.current * 0.7
-            : beatFlash.current * 0.7;
-      const hwBronchiHue = 0.07 + beatFlash.current * 0.05;
-
-      for (const m of hwBronchi) {
-        m.opacity += (bronchiOpacity - m.opacity) * 0.06;
-        m.emissive.setHSL(hwBronchiHue, 1.0, 0.5);
-        m.emissiveIntensity += (hwBronchiEmissive - m.emissiveIntensity) * 0.12;
-      }
-    }
-
-    // Breathing scale — expand/contract with breath
     const breathMult = breathingMode ? 1 + breath * 0.06 : 1;
     const targetScale = effectiveScaleRef.current * breathMult;
     scene.scale.setScalar(scene.scale.x + (targetScale - scene.scale.x) * 0.04);
+    if (glowScene) glowScene.scale.copy(scene.scale);
+    if (glowScene) glowScene.position.copy(scene.position);
   });
 
-  return <primitive object={scene} />;
+  return (
+    <>
+      <primitive object={scene} />
+      {glowScene && <primitive object={glowScene} />}
+    </>
+  );
 }
 
-useGLTF.preload("/lungs-red-hybrid.glb");
+useGLTF.preload("/hybrid-lungs.glb");
 
 export default LungsModel;

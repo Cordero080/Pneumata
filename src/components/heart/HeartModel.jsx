@@ -1,12 +1,12 @@
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 const HEART_CENTER_X = 0.01;
 const HEART_CENTER_Y = 1.32;
-const HEART_CENTER_Z = 0.06;
-const TARGET_HEIGHT = 0.13; // heart size — increase to enlarge
+const HEART_CENTER_Z = 0.03;
+const TARGET_HEIGHT = 0.15; // heart size — increase to enlarge
 
 // === FEMALE HEART — tweak these ===
 const HEART_CENTER_X_FEMALE = 0.01; // left (-) / right (+)
@@ -14,6 +14,8 @@ const HEART_CENTER_Y_FEMALE = 1.28; // up (+) / down (-)
 const HEART_CENTER_Z_FEMALE = 0.02; // forward (+) / back into body (-)
 const TARGET_HEIGHT_FEMALE = 0.13; // size — increase to enlarge
 // ===================================
+
+const BLOOD_RED = new THREE.Color("#aa3018");
 
 function HeartModel({
   meshMode,
@@ -58,7 +60,10 @@ function HeartModel({
     const cz = femaleMode ? HEART_CENTER_Z_FEMALE : HEART_CENTER_Z;
     scene.position.set(cx - c.x * s, cy - c.y * s, cz - c.z * s);
   }, [femaleMode, scene]);
+
   const matsRef = useRef([]);
+  const glowMatRef = useRef(null);
+  const [glowScene, setGlowScene] = useState(null);
   const beatRef = useRef({ last: 0, flash: 0 });
 
   useEffect(() => {
@@ -83,7 +88,33 @@ function HeartModel({
       }
     });
     matsRef.current = mats;
+
+    // Additive blood-red glow layer — fires on each heartbeat
+    const gm = new THREE.MeshBasicMaterial({
+      color: BLOOD_RED,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+      blending: THREE.NormalBlending,
+    });
+    glowMatRef.current = gm;
+
+    const glowClone = scene.clone(true);
+    glowClone.visible = true;
+    glowClone.traverse((child) => {
+      if (child.isMesh) {
+        child.material = gm;
+        child.renderOrder = 5;
+      }
+    });
+    setGlowScene(glowClone);
+
     scene.visible = true;
+
+    return () => {
+      matsRef.current.forEach((m) => m.dispose());
+      if (glowMatRef.current) glowMatRef.current.dispose();
+    };
   }, [scene]);
 
   useFrame(() => {
@@ -98,11 +129,11 @@ function HeartModel({
     if (hovered) {
       baseOpacity = 0.95;
     } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
-      baseOpacity = powerMode ? 0.88 : 0.35;
+      baseOpacity = powerMode ? 0.88 : 0.52;
     } else if (ghostMode) {
-      baseOpacity = powerMode ? 0.82 : 0.45;
+      baseOpacity = powerMode ? 0.82 : 0.6;
     } else if (meshMode === 1) {
-      baseOpacity = 0.25;
+      baseOpacity = 0.4;
     } else {
       baseOpacity = 0.0;
     }
@@ -112,18 +143,34 @@ function HeartModel({
       b.last = heartbeatRef.current;
       b.flash = 1.0;
     }
-    b.flash *= 0.88;
+    b.flash *= 0.93;
 
     for (const m of mats) {
       m.opacity += (baseOpacity - m.opacity) * 0.06;
-      if (m.emissiveIntensity !== undefined) {
-        const target = (powerMode ? 0.8 : 0.0) + b.flash * 8.0;
-        m.emissiveIntensity += (target - m.emissiveIntensity) * 0.2;
+      const baseEmissive = powerMode ? 0.8 : 0.0;
+      m.emissiveIntensity += (baseEmissive - m.emissiveIntensity) * 0.1;
+    }
+
+    // Blood-red additive glow fires on beat, skipped in power mode (already handled there)
+    if (glowMatRef.current) {
+      // Beat glow — tweak multipliers to adjust blood-red flash intensity per mode
+      // power mode: more saturated punch | other modes: subtler flush
+      const glowTarget = b.flash * (powerMode ? 1.0 : 0.75);
+      glowMatRef.current.opacity +=
+        (glowTarget - glowMatRef.current.opacity) * 0.15;
+      if (glowScene) {
+        glowScene.scale.copy(scene.scale);
+        glowScene.position.copy(scene.position);
       }
     }
   });
 
-  return <primitive object={scene} />;
+  return (
+    <>
+      <primitive object={scene} />
+      {glowScene && <primitive object={glowScene} />}
+    </>
+  );
 }
 
 useGLTF.preload("/rose-heart.glb");

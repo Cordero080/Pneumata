@@ -37,7 +37,6 @@ export default function WaveBackground({ theme = "wave" }) {
         Math.sin((x + y) * 0.5 + t * 0.42) * 0.08;
     }
     geometryRef.current.attributes.position.needsUpdate = true;
-    geometryRef.current.computeVertexNormals();
 
     if (meshRef.current) meshRef.current.rotation.z = t * 0.018;
   });

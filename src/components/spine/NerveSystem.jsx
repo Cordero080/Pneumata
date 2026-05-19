@@ -140,6 +140,7 @@ export default function NerveSystem({
   // Pulse animation — one t-value per nerve, advanced in useFrame
   const pulseRefs = useRef({});
   const pulseT = useRef({});
+  const _tmpVec = useRef(new THREE.Vector3());
 
   useFrame((_, delta) => {
     for (const nerve of nerves) {
@@ -160,7 +161,7 @@ export default function NerveSystem({
         for (let pi = 0; pi < nerve.pulseCount; pi++) {
           const t = (t0 + pi / nerve.pulseCount) % 1;
           const ref = pulseRefs.current[`${nerve.id}_${ci}_${pi}`];
-          if (ref) ref.position.copy(curve.getPoint(t));
+          if (ref) ref.position.copy(curve.getPoint(t, _tmpVec.current));
         }
       });
     }
