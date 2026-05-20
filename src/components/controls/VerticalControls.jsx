@@ -93,7 +93,7 @@ function VerticalControls({
         <div className={darkMode ? "app--dark" : ""}>
           <div
             className={`vcontrols-panel${open ? " vcontrols-panel--open" : ""}`}
-            style={{ top: panelPos.top, right: panelPos.right }}
+            style={{ top: panelPos.top, right: panelPos.right - 30 }}
           >
             <VSlider
               label="X"
