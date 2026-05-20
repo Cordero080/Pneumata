@@ -17,6 +17,7 @@ import LungsModel from "../lungs/LungsModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
+import MeridianLayer from "../meridian/MeridianLayer";
 import { organs } from "../../data/organs";
 
 const CELL_ZOOM_IDS = new Set(["pituitary"]);
@@ -70,6 +71,7 @@ function Scene({
   bgMode,
   bgModeName,
   legendCategory,
+  showMeridians,
   style,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
@@ -275,6 +277,7 @@ function Scene({
             />
           ),
         )}
+        {showMeridians && <MeridianLayer scale={globalScale} />}
       </group>
       <CameraController
         brainZoom={brainZoom}

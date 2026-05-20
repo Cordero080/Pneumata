@@ -18,15 +18,16 @@ const IS_STANDALONE =
   window.matchMedia("(display-mode: standalone)").matches;
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
-    ? { panY: 0.48, zoom: 0.22, globalScale: 0.906, offsetX: 0, offsetY: 0.23 }
-    : { panY: 0.48, zoom: 0.22, globalScale: 0.948, offsetX: 0, offsetY: 0.24 }
-  : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.24 };
+    ? { panY: 0.48, zoom: 0.22, globalScale: 0.906, offsetX: 0, offsetY: 0.1 }
+    : { panY: 0.48, zoom: 0.22, globalScale: 0.948, offsetX: 0, offsetY: 0.11 }
+  : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.11 };
 
 function App() {
   const [selectedOrgan, setSelectedOrgan] = useState(null);
   const [organFocusY, setOrganFocusY] = useState(null);
   const [viewMode, setViewMode] = useState("logic");
   const [showNerves, setShowNerves] = useState(false);
+  const [showMeridians, setShowMeridians] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [bgMode, setBgMode] = useState(0);
@@ -142,28 +143,44 @@ function App() {
         <div className="header-strip">
           <div className="header-accent header-accent--top">
             <button
-              className={`mode-toggle-btn${darkMode ? " mode-toggle-btn--active" : ""}`}
-              onClick={() => setDarkMode((d) => !d)}
+              className={`header-nav-trigger${showTopNav ? " header-nav-trigger--open" : ""}`}
+              onClick={() => setShowTopNav((v) => !v)}
             >
-              {darkMode ? "✦" : "☾"}
+              {showTopNav ? "✕" : "⊞︎"}
             </button>
           </div>
           <div className="header-panel">
             <h1>Pneumata</h1>
             <p>Analogical Anatomy</p>
+            <div className="header-panel__actions">
+              <button
+                ref={aboutRef}
+                className="about-btn"
+                onClick={() => setShowAbout(true)}
+                onMouseMove={handleTilt}
+                onMouseLeave={resetTilt}
+              >
+                Info
+              </button>
+              {!showAnimation && (
+                <VerticalControls
+                  panY={panY}
+                  onPanChange={setPanY}
+                  zoom={zoom}
+                  onZoomChange={setZoom}
+                  offsetX={offsetX}
+                  onOffsetXChange={setOffsetX}
+                  darkMode={darkMode}
+                />
+              )}
+            </div>
           </div>
           <div className="header-accent header-accent--bottom" />
         </div>
       </header>
 
-      {/* Utility controls — top-left, collapsible */}
+      {/* Utility controls — dropdown from header-accent trigger */}
       <div className="top-left-strip">
-        <button
-          className={`top-nav-trigger${showTopNav ? " top-nav-trigger--open" : ""}`}
-          onClick={() => setShowTopNav((v) => !v)}
-        >
-          {showTopNav ? "✕" : "⊞\uFE0E"}
-        </button>
         <div
           className={`top-nav-drawer${showTopNav ? " top-nav-drawer--open" : ""}${bgPanelOpen ? " top-nav-drawer--picker-open" : ""}`}
         >
@@ -215,30 +232,14 @@ function App() {
           >
             {BG_ICONS[bgMode]}
           </button>
+          <button
+            className={`meridian-toggle-btn${showMeridians ? " meridian-toggle-btn--active" : ""}`}
+            onClick={() => setShowMeridians((v) => !v)}
+            title="Meridian points"
+          >
+            ☯︎
+          </button>
         </div>
-      </div>
-
-      {/* About + Adjust — top-right stack */}
-      <div className="top-right-stack">
-        <button
-          ref={aboutRef}
-          className="about-btn"
-          onClick={() => setShowAbout(true)}
-          onMouseMove={handleTilt}
-          onMouseLeave={resetTilt}
-        >
-          Info
-        </button>
-        {!showAnimation && (
-          <VerticalControls
-            panY={panY}
-            onPanChange={setPanY}
-            zoom={zoom}
-            onZoomChange={setZoom}
-            offsetX={offsetX}
-            onOffsetXChange={setOffsetX}
-          />
-        )}
       </div>
 
       {showAnimation ? (
@@ -247,10 +248,7 @@ function App() {
         <Scene
           globalScale={globalScale}
           offsetX={offsetX}
-          offsetY={
-            offsetY +
-            (viewPanelOpen ? (bodyModel === "female" ? -0.02 : -0.02) : -0.047)
-          }
+          offsetY={offsetY + -0.02}
           style={showLanding ? { pointerEvents: "none" } : undefined}
           onSelect={(organ) => {
             setSelectedOrgan(organ);
@@ -295,6 +293,7 @@ function App() {
           bgMode={bgMode}
           bgModeName={BG_MODES[bgMode]}
           legendCategory={legendCategory}
+          showMeridians={showMeridians}
         />
       )}
 
@@ -333,6 +332,21 @@ function App() {
           onToggle={setViewPanelOpen}
         />
       )}
+
+      <div className="dark-capsule">
+        <button
+          className={`dark-capsule__opt${!darkMode ? " dark-capsule__opt--active" : ""}`}
+          onClick={() => setDarkMode(false)}
+        >
+          ☾
+        </button>
+        <button
+          className={`dark-capsule__opt${darkMode ? " dark-capsule__opt--active" : ""}`}
+          onClick={() => setDarkMode(true)}
+        >
+          ✦
+        </button>
+      </div>
 
       <p className="app-copyright">© 2026 Pablo Cordero</p>
 

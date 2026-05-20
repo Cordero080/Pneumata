@@ -11,7 +11,7 @@
 
 .vcontrols-trigger {
   font-family: v.$font-hud;
-  font-size: 14px;
+  font-size: 1px;
   padding: 3px 10px;
   border: none;
   border-left: none;
@@ -61,10 +61,8 @@
 // === Dropdown panel ===
 
 .vcontrols-panel {
-  position: absolute;
-  top: calc(100% - 14px);
-  right: 0;
-  z-index: 100;
+  position: fixed;
+  z-index: 200;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -80,12 +78,12 @@
     rgba(200, 210, 218, 0.16) 50%,
     rgba(215, 222, 229, 0.22) 100%
   );
-  border-right: 3px solid rgba(0, 0, 0, 0.14);
+  border-left: 3px solid rgba(0, 0, 0, 0.14);
   border-bottom: 5px solid rgba(0, 0, 0, 0.18);
   clip-path: polygon(
-    0 0,
-    14px 14px,
-    100% 14px,
+    0 14px,
+    calc(100% - 14px) 14px,
+    100% 0,
     100% 100%,
     10px 100%,
     0 calc(100% - 10px)
@@ -100,7 +98,7 @@
     visibility 0.3s,
     transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 
-  .vcontrols-wrapper--open & {
+  &--open {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;

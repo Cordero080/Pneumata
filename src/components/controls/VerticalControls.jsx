@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import "./VerticalControls.scss";
 
 export const X_MIN = -0.3;
@@ -61,29 +62,50 @@ function VerticalControls({
   onZoomChange,
   offsetX,
   onOffsetXChange,
+  darkMode,
 }) {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef(null);
+  const [panelPos, setPanelPos] = useState({ top: 44, right: 0 });
+
+  useEffect(() => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    setPanelPos({
+      top: rect.bottom,
+      right: window.innerWidth - rect.right,
+    });
+  }, [open]);
 
   return (
     <div
       className={`vcontrols-wrapper${open ? " vcontrols-wrapper--open" : ""}`}
     >
       <button
+        ref={triggerRef}
         className="vcontrols-trigger"
         onClick={() => setOpen((o) => !o)}
         aria-label="Toggle controls"
       >
         ⊞
       </button>
-      <div className="vcontrols-panel">
-        <VSlider
-          label="X"
-          value={xToSlider(offsetX)}
-          onChange={(v) => onOffsetXChange(sliderToX(v))}
-        />
-        <VSlider label="PAN" value={panY} onChange={onPanChange} />
-        <VSlider label="ZOOM" value={zoom} onChange={onZoomChange} />
-      </div>
+      {createPortal(
+        <div className={darkMode ? "app--dark" : ""}>
+          <div
+            className={`vcontrols-panel${open ? " vcontrols-panel--open" : ""}`}
+            style={{ top: panelPos.top, right: panelPos.right }}
+          >
+            <VSlider
+              label="X"
+              value={xToSlider(offsetX)}
+              onChange={(v) => onOffsetXChange(sliderToX(v))}
+            />
+            <VSlider label="PAN" value={panY} onChange={onPanChange} />
+            <VSlider label="ZOOM" value={zoom} onChange={onZoomChange} />
+          </div>
+        </div>,
+        document.body,
+      )}
     </div>
   );
 }

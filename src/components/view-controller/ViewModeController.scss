@@ -12,17 +12,23 @@
   to   { transform: translateY(0); }
 }
 
-// Outer wrapper — glued to bottom center of screen
+// Outer wrapper — rotated 90° and pinned to left edge, mid-screen
 .view-controller {
   position: fixed;
-  bottom: 0;           // distance from bottom of screen
-  left: 50%;
-  transform: translateX(-50%);
+  left: -40px;
+  top: calc(50% + 60px);
+  bottom: auto;
+  right: auto;
+  transform: rotate(90deg);
+  transform-origin: center bottom;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   z-index: 50;
-  transition: width 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 44px;
+  min-height: 18px;
+  width: auto !important;
+  transition: none;
 }
 
 // The row of LOGIC / POWER / BREATHING / UNIFIED / NET buttons
@@ -50,13 +56,16 @@
 
 }
 
-// The clickable strip at the very bottom (the "v" handle)
+// The clickable tab — fixed independently so it's always visible at the left edge
 .view-controller-tab {
-  width: 52px;         // closed width
-  height: 14px;        // tab height
-  position: relative;
-  left: 6.7px;         // closed left offset (aligns with first button)
-  background: rgba(200, 210, 222, 0.38);   // tab background opacity
+  position: fixed;
+  left: -20px;
+  top: calc(50% + 15px);
+  width: 52px;
+  height: 18px;
+  transform: rotate(90deg);
+  transform-origin: center center;
+  background: rgba(200, 210, 222, 0.38);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: none;
@@ -67,30 +76,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease, width 0.42s cubic-bezier(0.16, 1, 0.3, 1), left 0.42s cubic-bezier(0.16, 1, 0.3, 1);
-
-  // When panel is open — left pulls the LEFT edge in, width keeps the RIGHT edge fixed
-  // Change both values together and keep them the same number
-  .view-controller--open & {
-    left: 6px;                    // left edge position when open
-    width: calc(100% - 14px);      // right edge stays fixed (must match left value)
-  }
+  z-index: 51;
+  transition: background 0.2s ease;
 
   &:hover {
     background: rgba(200, 210, 222, 0.62);
   }
 
-  // The "v" arrow inside the tab
   &__arrow {
-    font-size: 14px;     // arrow size
+    font-size: 14px;
     color: rgba(255, 255, 255, 0.85);
     line-height: 1;
     margin-bottom: 4px;
     animation: arrow-pulse 2s ease-in-out infinite;
     transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
 
-    // Arrow flips to "^" when open
-    .view-controller--open & {
+    .view-controller-tab--open & {
       transform: rotate(180deg) translateY(-3px);
       animation: none;
       text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
@@ -116,7 +117,10 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 5px 16px;   // button height/width via padding
+  padding: 16px 16px;  // top/bottom become visual width after 90° rotation
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-left: none;
   border-top: 2px solid rgba(255, 255, 255, 0.35);
   border-right: 3px solid rgba(0, 0, 0, 0.18);
@@ -191,9 +195,30 @@
   // NET button is smaller text
   &--net {
     font-size: 6.5px;
-    padding: 2px 18px 2px 24px;
+    padding: 16px 18px 16px 24px;
     letter-spacing: 0.2em;
     color: rgba(55, 72, 88, 0.6);
+  }
+}
+
+// === Mobile height breakpoints — shift wrapper + tab up so buttons don't clip ===
+
+@media (max-height: 620px) {
+  .view-controller { top: calc(50% + 36px); }
+  .view-controller-tab { top: calc(50% - 4px); }
+}
+
+@media (max-height: 560px) {
+  .view-controller { top: calc(50% + 16px); }
+  .view-controller-tab { top: calc(50% - 24px); }
+}
+
+@media (max-height: 480px) {
+  .view-controller { top: calc(50% - 10px); }
+  .view-controller-tab { top: calc(50% - 50px); }
+  .view-btn {
+    padding: 16px 10px;
+    font-size: 6.5px;
   }
 }
 

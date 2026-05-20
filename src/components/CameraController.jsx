@@ -110,7 +110,7 @@ function CameraController({
       ctrl.autoRotateSpeed = cellZoom ? 0 : 0.5;
     } else {
       // Normal mode — pan targets absolute Y on the body
-      const panelOffset = viewPanelOpen ? 0.06 : 0.07;
+      const panelOffset = 0.02;
       const targetY =
         organFocusY !== null
           ? organFocusY

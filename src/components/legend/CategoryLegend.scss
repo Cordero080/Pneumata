@@ -1,6 +1,6 @@
 .category-legend {
   position: fixed;
-  bottom: 5rem;
+  bottom: 2.2rem;
   right: 2rem;
   display: flex;
   flex-direction: column;
@@ -10,7 +10,7 @@
   @media (max-width: 768px) {
     right: 1rem;
     gap: 10px;
-    bottom: 3rem;
+    bottom: 1.8rem;
   }
 }
 
