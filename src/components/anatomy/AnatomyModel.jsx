@@ -279,9 +279,9 @@ function AnatomyModel({
       opacity: 0.13,
       roughness: 0.2,
       metalness: 0,
-      clearcoat: IS_MOBILE ? 0 : 0.5,
-      clearcoatRoughness: IS_MOBILE ? 0 : 0.1,
-      iridescence: 0,
+      clearcoat: 0.5,
+      clearcoatRoughness: 0.1,
+      iridescence: 0.001,
       iridescenceIOR: 1.32,
       iridescenceThicknessRange: [120, 280],
       depthWrite: false,
@@ -663,7 +663,7 @@ function AnatomyModel({
     if (!materialRef.current) return;
     const t = state.clock.getElapsedTime();
 
-    if (!IS_MOBILE && darkMode && materialRef.current.iridescence > 0) {
+    if (darkMode && materialRef.current.iridescence > 0) {
       materialRef.current.iridescenceIOR = 1.2 + Math.sin(t * 0.4) * 0.25;
       const iriRange = materialRef.current.iridescenceThicknessRange;
       iriRange[0] = 100 + Math.sin(t * 0.3) * 60;

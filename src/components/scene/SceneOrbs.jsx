@@ -72,11 +72,80 @@ function buildParticleParams(spectralColors) {
   return list;
 }
 
-const _matrix = new THREE.Matrix4();
-const _pos = new THREE.Vector3();
-const _scale = new THREE.Vector3(1, 1, 1);
-const _quat = new THREE.Quaternion();
-const _color = new THREE.Color();
+function Particle({ d }) {
+  const meshRef = useRef();
+  const glowRef = useRef();
+  const coreMatRef = useRef();
+  const glowMatRef = useRef();
+  const angleRef = useRef(d.angle);
+
+  useFrame((state, delta) => {
+    if (!meshRef.current) return;
+    const t = state.clock.getElapsedTime();
+
+    angleRef.current += delta * d.orbitSpeed;
+    const a = angleRef.current;
+
+    const x =
+      Math.cos(a) * d.orbitR +
+      Math.sin(t * d.wobbleFreq + d.wobblePhase) * d.wobbleAmp;
+    const z =
+      Math.sin(a) * d.orbitR +
+      Math.cos(t * d.wobbleFreq + d.wobblePhase + 0.9) * d.wobbleAmp;
+    const y =
+      d.initY + Math.sin(t * d.yDriftFreq + d.yDriftPhase) * d.yDriftAmp;
+
+    meshRef.current.position.set(x, y, z);
+    if (glowRef.current) glowRef.current.position.set(x, y, z);
+
+    const pulse = Math.sin(t * d.pulseSpeed + d.pulseOffset) * 0.5 + 0.5;
+    if (coreMatRef.current)
+      coreMatRef.current.opacity = d.baseOpacity * (0.35 + pulse * 0.65);
+    if (glowMatRef.current) glowMatRef.current.opacity = 0.1 + pulse * 0.18;
+  });
+
+  const glowR = d.radius * 2;
+
+  return (
+    <>
+      <mesh
+        ref={meshRef}
+        position={[
+          Math.cos(d.angle) * d.orbitR,
+          d.initY,
+          Math.sin(d.angle) * d.orbitR,
+        ]}
+      >
+        <sphereGeometry args={[d.radius, 6, 6]} />
+        <meshBasicMaterial
+          ref={coreMatRef}
+          color={d.colorHex}
+          transparent
+          opacity={d.baseOpacity}
+          depthWrite={false}
+        />
+      </mesh>
+      <mesh
+        ref={glowRef}
+        position={[
+          Math.cos(d.angle) * d.orbitR,
+          d.initY,
+          Math.sin(d.angle) * d.orbitR,
+        ]}
+      >
+        <sphereGeometry args={[glowR, 6, 6]} />
+        <meshBasicMaterial
+          ref={glowMatRef}
+          color={d.colorHex}
+          transparent
+          opacity={0.18}
+          side={THREE.BackSide}
+          depthWrite={false}
+        />
+      </mesh>
+    </>
+  );
+}
 
 export default function SceneOrbs({ theme }) {
   const hueShift = THEME_HUE_SHIFTS[theme] ?? null;
@@ -90,81 +159,13 @@ export default function SceneOrbs({ theme }) {
     [spectralColors],
   );
 
-  const coreRef = useRef();
-  const glowRef = useRef();
-  const anglesRef = useRef(particles.map((d) => d.angle));
-
-  useFrame((state, delta) => {
-    const core = coreRef.current;
-    const glow = glowRef.current;
-    if (!core || !glow) return;
-    const t = state.clock.getElapsedTime();
-    const angles = anglesRef.current;
-
-    for (let i = 0; i < particles.length; i++) {
-      const d = particles[i];
-      angles[i] += delta * d.orbitSpeed;
-      const a = angles[i];
-
-      const x =
-        Math.cos(a) * d.orbitR +
-        Math.sin(t * d.wobbleFreq + d.wobblePhase) * d.wobbleAmp;
-      const z =
-        Math.sin(a) * d.orbitR +
-        Math.cos(t * d.wobbleFreq + d.wobblePhase + 0.9) * d.wobbleAmp;
-      const y =
-        d.initY + Math.sin(t * d.yDriftFreq + d.yDriftPhase) * d.yDriftAmp;
-      const pulse = Math.sin(t * d.pulseSpeed + d.pulseOffset) * 0.5 + 0.5;
-
-      _pos.set(x, y, z);
-      _scale.setScalar(d.radius * 200);
-      _matrix.compose(_pos, _quat, _scale);
-      core.setMatrixAt(i, _matrix);
-
-      _scale.setScalar(d.radius * 400);
-      _matrix.compose(_pos, _quat, _scale);
-      glow.setMatrixAt(i, _matrix);
-
-      _color.setHex(d.colorHex);
-      _color.multiplyScalar(d.baseOpacity * (0.35 + pulse * 0.65));
-      core.setColorAt(i, _color);
-
-      _color.setHex(d.colorHex);
-      _color.multiplyScalar(0.1 + pulse * 0.18);
-      glow.setColorAt(i, _color);
-    }
-
-    core.instanceMatrix.needsUpdate = true;
-    glow.instanceMatrix.needsUpdate = true;
-    if (core.instanceColor) core.instanceColor.needsUpdate = true;
-    if (glow.instanceColor) glow.instanceColor.needsUpdate = true;
-  });
-
-  if (!spectralColors || particles.length === 0) return null;
+  if (!spectralColors) return null;
 
   return (
     <>
-      <instancedMesh
-        ref={coreRef}
-        args={[null, null, particles.length]}
-        renderOrder={1}
-      >
-        <sphereGeometry args={[0.005, 6, 6]} />
-        <meshBasicMaterial transparent depthWrite={false} vertexColors />
-      </instancedMesh>
-      <instancedMesh
-        ref={glowRef}
-        args={[null, null, particles.length]}
-        renderOrder={0}
-      >
-        <sphereGeometry args={[0.005, 6, 6]} />
-        <meshBasicMaterial
-          transparent
-          depthWrite={false}
-          side={THREE.BackSide}
-          vertexColors
-        />
-      </instancedMesh>
+      {particles.map((d) => (
+        <Particle key={d.key} d={d} />
+      ))}
     </>
   );
 }

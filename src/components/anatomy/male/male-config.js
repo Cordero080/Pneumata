@@ -27,7 +27,7 @@ export const HAS_SHEEN = false;
 
 // Material colors used across all mesh modes and dark/light variants
 export const COLORS = {
-  obsColor: "#030306", // dark mode: base surface tint
+  obsColor: "#030306", // dark mode: base surface tint (violet-black)
   obsEmissive: "#880000", // dark mode: inner glow (crimson)
   ghostColor: "#afc1d4", // light mode: ghost shell tint
   ghostDark: "#1a1a2a", // light ghost mode 0: charcoal

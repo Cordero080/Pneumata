@@ -26,18 +26,6 @@ function makeGlowTexture() {
 }
 
 import { CATEGORY_COLORS, CATEGORY_EMISSIVE } from "../../data/categories";
-
-const IS_MOBILE = window.innerWidth <= 768;
-
-const GLITCH_COLORS = [
-  new THREE.Color("#ff0040"),
-  new THREE.Color("#00ffff"),
-  new THREE.Color("#39ff14"),
-  new THREE.Color("#ffffff"),
-  new THREE.Color("#ff8c00"),
-  new THREE.Color("#cc00ff"),
-];
-
 import HeartRings from "./HeartRings";
 import OrganLabel from "./OrganLabel";
 
@@ -63,6 +51,17 @@ function OrganNode({
   onClearPreview,
   legendCategory,
 }) {
+  const IS_MOBILE = window.innerWidth <= 768;
+
+  const GLITCH_COLORS = [
+    new THREE.Color("#ff0040"),
+    new THREE.Color("#00ffff"),
+    new THREE.Color("#39ff14"),
+    new THREE.Color("#ffffff"),
+    new THREE.Color("#ff8c00"),
+    new THREE.Color("#cc00ff"),
+  ];
+
   const meshRef = useRef();
   const glowRef = useRef();
   const innerRef = useRef();

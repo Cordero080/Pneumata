@@ -19,8 +19,8 @@ function CategoryLegend({ onCategoryHover }) {
             <span
               className="legend-label"
               style={{
-                color: "#ffffff",
-                textShadow: `0 0 10px ${color}, 0 0 20px ${color}88`,
+                color: "#ffffff99",
+                textShadow: `0 0 1px ${color}, 0 0 1px ${color}88`,
               }}
             >
               {label}
@@ -32,7 +32,7 @@ function CategoryLegend({ onCategoryHover }) {
           <div
             className="legend-dot"
             style={{
-              background: `radial-gradient(circle at 35% 35%, rgba(255,255,255,0.6), ${color} 55%, rgba(0,0,0,0.3))`,
+              background: `radial-gradient(circle at 35% 35%, rgba(245, 243, 171, 0.85), ${color} 55%, rgba(0,0,0,0.3))`,
               boxShadow: `0 2px 4px rgba(0,0,0,0.3), 0 0 8px ${color}80`,
             }}
           />

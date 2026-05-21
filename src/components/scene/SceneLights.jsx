@@ -192,7 +192,7 @@ function SceneLights({ darkMode, meshMode, femaleMode }) {
         <StudioLights />
       )}
 
-      {darkMode && window.innerWidth > 768 && <SpineAccentLights />}
+      {darkMode && <SpineAccentLights />}
     </>
   );
 }

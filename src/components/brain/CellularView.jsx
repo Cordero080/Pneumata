@@ -4,8 +4,6 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { organs } from "../../data/organs";
 
-const IS_MOBILE = window.innerWidth <= 768;
-
 const pituitaryOrgan = organs.find((o) => o.id === "pituitary");
 
 function makeMatcap(hexColor) {
@@ -83,6 +81,8 @@ function makeGlowTex() {
 }
 const glowTexSingleton = makeGlowTex();
 
+const IS_MOBILE =
+  /Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
 const LOGIC_COLOR = "#cc88ff";
 const INFRA_COLOR = "#ffb347";
 

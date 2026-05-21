@@ -18,8 +18,8 @@ const IS_STANDALONE =
   window.matchMedia("(display-mode: standalone)").matches;
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
-    ? { panY: 0.48, zoom: 0.22, globalScale: 0.906, offsetX: 0, offsetY: 0.1 }
-    : { panY: 0.48, zoom: 0.22, globalScale: 0.948, offsetX: 0, offsetY: 0.11 }
+    ? { panY: 0.48, zoom: 0.22, globalScale: 0.906, offsetX: 0, offsetY: 0.14 }
+    : { panY: 0.48, zoom: 0.22, globalScale: 0.948, offsetX: 0, offsetY: 0.14 }
   : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.11 };
 
 function App() {
