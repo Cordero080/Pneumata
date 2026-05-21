@@ -16,7 +16,7 @@
 .view-controller {
   position: fixed;
   left: -40px;
-  top: calc(50% + 60px);
+  top: calc(50% + 40px);
   bottom: auto;
   right: auto;
   transform: rotate(90deg);
@@ -59,9 +59,9 @@
 // The clickable tab — fixed independently so it's always visible at the left edge
 .view-controller-tab {
   position: fixed;
-  left: -20px;
-  top: calc(50% + 15px);
-  width: 52px;
+  left: -27px;
+  top: calc(50% + 0px);
+  width: 72px;
   height: 18px;
   transform: rotate(90deg);
   transform-origin: center center;
@@ -77,6 +77,7 @@
   align-items: center;
   justify-content: center;
   z-index: 51;
+  clip-path: polygon(17px 0, calc(100% - 17px) 0, 100% 100%, 0 100%);
   transition: background 0.2s ease;
 
   &:hover {
@@ -202,22 +203,29 @@
 }
 
 // === Mobile height breakpoints — shift wrapper + tab up so buttons don't clip ===
+// visual bottom of column ≈ container_top + panelW/2; must stay within visible viewport
 
-@media (max-height: 620px) {
-  .view-controller { top: calc(50% + 36px); }
-  .view-controller-tab { top: calc(50% - 4px); }
+@media (max-height: 900px) {
+  .view-controller { top: calc(50% + 10px); }
+  .view-controller-tab { top: calc(50% - 30px); }
 }
 
-@media (max-height: 560px) {
-  .view-controller { top: calc(50% + 16px); }
-  .view-controller-tab { top: calc(50% - 24px); }
+@media (max-height: 700px) {
+  .view-controller { top: calc(50% - 10px); }
+  .view-controller-tab { top: calc(50% - 40px); }
+}
+
+@media (max-height: 600px) {
+  .view-controller { top: calc(50% - 25px); }
+  .view-controller-tab { top: calc(50% - 55px); }
+  .view-btn { padding: 14px 12px; }
 }
 
 @media (max-height: 480px) {
-  .view-controller { top: calc(50% - 10px); }
-  .view-controller-tab { top: calc(50% - 50px); }
+  .view-controller { top: calc(50% - 40px); }
+  .view-controller-tab { top: calc(50% - 70px); }
   .view-btn {
-    padding: 16px 10px;
+    padding: 12px 10px;
     font-size: 6.5px;
   }
 }

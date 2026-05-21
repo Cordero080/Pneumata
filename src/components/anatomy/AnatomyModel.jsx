@@ -394,10 +394,13 @@ function AnatomyModel({
     if (darkMode) {
       mat.color.set(obsColor);
       mat.emissive.set(obsEmissive);
+      mat.emissiveIntensity = 0.12;
+      mat.transparent = true;
       mat.metalness = 0.92;
       mat.roughness = 0.08;
       mat.transmission = 0;
       mat.opacity = 0.82;
+      mat.depthWrite = false;
       mat.iridescence = 0.45;
       mat.iridescenceIOR = 1.32;
       mat.iridescenceThicknessRange = [120, 280];
@@ -410,6 +413,7 @@ function AnatomyModel({
       }
     } else {
       mat.color.set(ghostColor);
+      mat.transparent = true;
       mat.metalness = 0;
       mat.roughness = 0.2;
       mat.transmission = 0;
@@ -419,6 +423,7 @@ function AnatomyModel({
       mat.clearcoatRoughness = 0.1;
       mat.emissive.set("#ffffff");
       mat.emissiveIntensity = 0;
+      mat.depthWrite = false;
       if (aluminumMatRef.current) {
         aluminumMatRef.current.color.set(alColor);
         aluminumMatRef.current.opacity = 0.95;
@@ -522,6 +527,7 @@ function AnatomyModel({
         const solid = meshMode === 2;
         mat.color.set(obsColor);
         mat.emissive.set(obsEmissive);
+        mat.emissiveIntensity = 0.12;
         mat.transparent = !solid;
         mat.transmission = 0;
         mat.opacity = solid ? 1.0 : 0.82;

@@ -4,7 +4,7 @@ import "./ViewModeController.scss";
 const MODES = [
   { key: "logic", label: "Logic", color: "#ffd700" },
   { key: "power", label: "Power", color: "#ff3131" },
-  { key: "breathing", label: "Breathing", color: "#ffeea0" },
+  { key: "breathing", label: "Breath", color: "#ffeea0" },
   { key: "unified", label: "Unified", color: "#aaccff" },
 ];
 
@@ -18,19 +18,13 @@ function ViewModeController({
 }) {
   const panelRef = useRef();
   const [panelW, setPanelW] = useState(null);
-  const [tabWidth, setTabWidth] = useState(null);
 
   useEffect(() => {
     if (open && panelRef.current) {
       const w = panelRef.current.scrollWidth;
-      const h = panelRef.current.offsetHeight;
       setPanelW(w);
-      setTabWidth(h);
     } else {
-      const t = setTimeout(() => {
-        setPanelW(null);
-        setTabWidth(null);
-      }, 400);
+      const t = setTimeout(() => setPanelW(null), 400);
       return () => clearTimeout(t);
     }
   }, [open]);
@@ -82,7 +76,6 @@ function ViewModeController({
         className={`view-controller-tab${open ? " view-controller-tab--open" : ""}`}
         onClick={() => onToggle((o) => !o)}
         aria-label="Toggle view modes"
-        style={tabWidth != null ? { width: `${tabWidth}px` } : undefined}
       >
         <span className="view-controller-tab__arrow">∧</span>
       </button>
