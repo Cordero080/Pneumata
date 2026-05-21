@@ -82,6 +82,7 @@ function OrganNode({
   const screenXRef = useRef(0);
   const isEye = organ.id === "right_eye" || organ.id === "left_eye";
   const glitchRef = useRef({ nextGlitch: 3 + Math.random() * 6, duration: 0 });
+  const frameSkip = useRef(0);
 
   // Resolve position: explicit override → landmark-mapped → raw male position
   const femalePos =
@@ -134,6 +135,8 @@ function OrganNode({
   // "small" ~65% — deep/interior brain nodes. "large" ~130% — heart, liver, hemispheres.
   // Color variant idea for small nodes: blood-sunset tone like #c04030 or #e05020
   const hitMult = IS_MOBILE ? 2.5 : 1;
+  const seg = IS_MOBILE ? 6 : 16;
+  const segSm = IS_MOBILE ? 5 : 12;
   const sz =
     organ.nodeSize === "small"
       ? { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.007 * hitMult }
@@ -154,6 +157,12 @@ function OrganNode({
   }, [brainZoom, cellZoom]);
 
   useFrame((state, delta) => {
+    if (IS_MOBILE) {
+      frameSkip.current = (frameSkip.current + 1) % 2;
+      if (frameSkip.current !== 0) return;
+      delta *= 2;
+    }
+
     // Track screen X for edge-detection in label (ref only — no setState)
     if (IS_MOBILE && (hovered || previewedOrganId === organ.id)) {
       const ndc = currentPos.current.clone().project(state.camera);
@@ -356,24 +365,26 @@ function OrganNode({
           </>
         )}
 
-        {/* Soft outer halo */}
-        <mesh ref={glowRef} renderOrder={5}>
-          <sphereGeometry args={[sz.glow, 12, 12]} />
-          <meshStandardMaterial
-            color={color}
-            emissive={emissive}
-            emissiveIntensity={1}
-            toneMapped={false}
-            transparent
-            opacity={0.1}
-            depthWrite={false}
-            depthTest={false}
-          />
-        </mesh>
+        {/* Soft outer halo — skipped on mobile to save draw calls */}
+        {!IS_MOBILE && (
+          <mesh ref={glowRef} renderOrder={5}>
+            <sphereGeometry args={[sz.glow, segSm, segSm]} />
+            <meshStandardMaterial
+              color={color}
+              emissive={emissive}
+              emissiveIntensity={1}
+              toneMapped={false}
+              transparent
+              opacity={0.1}
+              depthWrite={false}
+              depthTest={false}
+            />
+          </mesh>
+        )}
 
         {/* Main node sphere */}
         <mesh ref={meshRef} renderOrder={5}>
-          <sphereGeometry args={[sz.main, 16, 16]} />
+          <sphereGeometry args={[sz.main, seg, seg]} />
           <meshStandardMaterial
             color={color}
             emissive={emissive}
@@ -388,7 +399,7 @@ function OrganNode({
 
         {/* Small bright inner core */}
         <mesh ref={innerRef} renderOrder={6}>
-          <sphereGeometry args={[sz.inner, 12, 12]} />
+          <sphereGeometry args={[sz.inner, segSm, segSm]} />
           <meshStandardMaterial
             color={isSpirit ? "#ffffff" : color}
             emissive={isSpirit ? "#ffffff" : color}
