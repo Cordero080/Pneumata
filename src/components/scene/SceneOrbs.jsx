@@ -15,14 +15,13 @@ const BASE_COLORS = [
   "#b3b30c",
 ];
 
-// Figure vertical centre
 const FIGURE_Y_CENTER = 0.85;
-// Particles spread wide around the whole figure
 const SWELL_R_MIN = 0.001;
 const SWELL_R_MAX = 1.88;
-const SWELL_Y_SPREAD = 1.0; // ± from centre
+const SWELL_Y_SPREAD = 1.0;
 
-const PARTICLE_COUNT = 150;
+const IS_MOBILE = window.innerWidth <= 768;
+const PARTICLE_COUNT = IS_MOBILE ? 60 : 150;
 
 function buildSpectralColors(hueShift) {
   return BASE_COLORS.map((hex) => {
@@ -56,17 +55,13 @@ function buildParticleParams(spectralColors) {
       angle,
       orbitR,
       initY,
-      // Fast swirl — vary speed so inner/outer orbit at different rates
       orbitSpeed: (0.009 + rng() * 0.005) * (rng() > 0.5 ? 1 : -1),
-      // Wide elliptic wobble layered on top of the orbit
       wobbleAmp: 0.35 + rng() * 0.45,
       wobbleFreq: 0.15 + rng() * 0.55,
       wobblePhase: rng() * Math.PI * 2,
-      // Vertical drift
       yDriftAmp: 0.08 + rng() * 0.22,
       yDriftFreq: 0.1 + rng() * 0.3,
       yDriftPhase: rng() * Math.PI * 2,
-      // Pulse
       pulseSpeed: 0.5 + rng() * 1.5,
       pulseOffset: rng() * Math.PI * 2,
       baseOpacity: 0.6 + rng() * 0.4,
@@ -77,81 +72,11 @@ function buildParticleParams(spectralColors) {
   return list;
 }
 
-function Particle({ d }) {
-  const meshRef = useRef();
-  const glowRef = useRef();
-  const coreMatRef = useRef();
-  const glowMatRef = useRef();
-  const angleRef = useRef(d.angle);
-
-  useFrame((state, delta) => {
-    if (!meshRef.current) return;
-    const t = state.clock.getElapsedTime();
-
-    angleRef.current += delta * d.orbitSpeed;
-    const a = angleRef.current;
-
-    // Wide swirling orbit with an elliptic wobble
-    const x =
-      Math.cos(a) * d.orbitR +
-      Math.sin(t * d.wobbleFreq + d.wobblePhase) * d.wobbleAmp;
-    const z =
-      Math.sin(a) * d.orbitR +
-      Math.cos(t * d.wobbleFreq + d.wobblePhase + 0.9) * d.wobbleAmp;
-    const y =
-      d.initY + Math.sin(t * d.yDriftFreq + d.yDriftPhase) * d.yDriftAmp;
-
-    meshRef.current.position.set(x, y, z);
-    if (glowRef.current) glowRef.current.position.set(x, y, z);
-
-    const pulse = Math.sin(t * d.pulseSpeed + d.pulseOffset) * 0.5 + 0.5;
-    if (coreMatRef.current)
-      coreMatRef.current.opacity = d.baseOpacity * (0.35 + pulse * 0.65);
-    if (glowMatRef.current) glowMatRef.current.opacity = 0.1 + pulse * 0.18;
-  });
-
-  const glowR = d.radius * 2;
-
-  return (
-    <>
-      <mesh
-        ref={meshRef}
-        position={[
-          Math.cos(d.angle) * d.orbitR,
-          d.initY,
-          Math.sin(d.angle) * d.orbitR,
-        ]}
-      >
-        <sphereGeometry args={[d.radius, 6, 6]} />
-        <meshBasicMaterial
-          ref={coreMatRef}
-          color={d.colorHex}
-          transparent
-          opacity={d.baseOpacity}
-          depthWrite={false}
-        />
-      </mesh>
-      <mesh
-        ref={glowRef}
-        position={[
-          Math.cos(d.angle) * d.orbitR,
-          d.initY,
-          Math.sin(d.angle) * d.orbitR,
-        ]}
-      >
-        <sphereGeometry args={[glowR, 6, 6]} />
-        <meshBasicMaterial
-          ref={glowMatRef}
-          color={d.colorHex}
-          transparent
-          opacity={0.18}
-          side={THREE.BackSide}
-          depthWrite={false}
-        />
-      </mesh>
-    </>
-  );
-}
+const _matrix = new THREE.Matrix4();
+const _pos = new THREE.Vector3();
+const _scale = new THREE.Vector3(1, 1, 1);
+const _quat = new THREE.Quaternion();
+const _color = new THREE.Color();
 
 export default function SceneOrbs({ theme }) {
   const hueShift = THEME_HUE_SHIFTS[theme] ?? null;
@@ -165,13 +90,81 @@ export default function SceneOrbs({ theme }) {
     [spectralColors],
   );
 
-  if (!spectralColors) return null;
+  const coreRef = useRef();
+  const glowRef = useRef();
+  const anglesRef = useRef(particles.map((d) => d.angle));
+
+  useFrame((state, delta) => {
+    const core = coreRef.current;
+    const glow = glowRef.current;
+    if (!core || !glow) return;
+    const t = state.clock.getElapsedTime();
+    const angles = anglesRef.current;
+
+    for (let i = 0; i < particles.length; i++) {
+      const d = particles[i];
+      angles[i] += delta * d.orbitSpeed;
+      const a = angles[i];
+
+      const x =
+        Math.cos(a) * d.orbitR +
+        Math.sin(t * d.wobbleFreq + d.wobblePhase) * d.wobbleAmp;
+      const z =
+        Math.sin(a) * d.orbitR +
+        Math.cos(t * d.wobbleFreq + d.wobblePhase + 0.9) * d.wobbleAmp;
+      const y =
+        d.initY + Math.sin(t * d.yDriftFreq + d.yDriftPhase) * d.yDriftAmp;
+      const pulse = Math.sin(t * d.pulseSpeed + d.pulseOffset) * 0.5 + 0.5;
+
+      _pos.set(x, y, z);
+      _scale.setScalar(d.radius * 200);
+      _matrix.compose(_pos, _quat, _scale);
+      core.setMatrixAt(i, _matrix);
+
+      _scale.setScalar(d.radius * 400);
+      _matrix.compose(_pos, _quat, _scale);
+      glow.setMatrixAt(i, _matrix);
+
+      _color.setHex(d.colorHex);
+      _color.multiplyScalar(d.baseOpacity * (0.35 + pulse * 0.65));
+      core.setColorAt(i, _color);
+
+      _color.setHex(d.colorHex);
+      _color.multiplyScalar(0.1 + pulse * 0.18);
+      glow.setColorAt(i, _color);
+    }
+
+    core.instanceMatrix.needsUpdate = true;
+    glow.instanceMatrix.needsUpdate = true;
+    if (core.instanceColor) core.instanceColor.needsUpdate = true;
+    if (glow.instanceColor) glow.instanceColor.needsUpdate = true;
+  });
+
+  if (!spectralColors || particles.length === 0) return null;
 
   return (
     <>
-      {particles.map((d) => (
-        <Particle key={d.key} d={d} />
-      ))}
+      <instancedMesh
+        ref={coreRef}
+        args={[null, null, particles.length]}
+        renderOrder={1}
+      >
+        <sphereGeometry args={[0.005, 6, 6]} />
+        <meshBasicMaterial transparent depthWrite={false} vertexColors />
+      </instancedMesh>
+      <instancedMesh
+        ref={glowRef}
+        args={[null, null, particles.length]}
+        renderOrder={0}
+      >
+        <sphereGeometry args={[0.005, 6, 6]} />
+        <meshBasicMaterial
+          transparent
+          depthWrite={false}
+          side={THREE.BackSide}
+          vertexColors
+        />
+      </instancedMesh>
     </>
   );
 }
