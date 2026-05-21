@@ -663,7 +663,7 @@ function AnatomyModel({
     if (!materialRef.current) return;
     const t = state.clock.getElapsedTime();
 
-    if (darkMode && materialRef.current.iridescence > 0) {
+    if (!IS_MOBILE && darkMode && materialRef.current.iridescence > 0) {
       materialRef.current.iridescenceIOR = 1.2 + Math.sin(t * 0.4) * 0.25;
       const iriRange = materialRef.current.iridescenceThicknessRange;
       iriRange[0] = 100 + Math.sin(t * 0.3) * 60;

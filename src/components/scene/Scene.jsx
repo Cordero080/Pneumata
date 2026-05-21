@@ -121,7 +121,7 @@ function Scene({
         antialias: window.devicePixelRatio < 2,
       }}
       dpr={[1, window.innerWidth <= 768 ? 1.5 : 2]}
-      performance={{ min: 0.5 }}
+      performance={{ min: 0.4 }}
       onPointerMissed={() => handleClearPreview()}
     >
       <SceneLights
