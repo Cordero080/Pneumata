@@ -121,32 +121,54 @@ const TRACTS = [
   },
 ];
 
-// Trail: head + N fading steps behind it
-const TRAIL = [
-  { tOff: 0.0, size: 0.002, opacity: 1.0 },
-  { tOff: 0.008, size: 0.002, opacity: 0.8 },
-  { tOff: 0.016, size: 0.002, opacity: 0.62 },
-  { tOff: 0.024, size: 0.002, opacity: 0.46 },
-  { tOff: 0.032, size: 0.002, opacity: 0.32 },
-  { tOff: 0.032, size: 0.002, opacity: 0.32 },
-  { tOff: 0.032, size: 0.002, opacity: 0.32 },
-  { tOff: 0.04, size: 0.002, opacity: 0.2 },
-  { tOff: 0.04, size: 0.002, opacity: 0.2 },
-  { tOff: 0.04, size: 0.002, opacity: 0.2 },
-  { tOff: 0.05, size: 0.002, opacity: 0.12 },
-  { tOff: 0.062, size: 0.002, opacity: 0.06 },
-  { tOff: 0.062, size: 0.002, opacity: 0.06 },
-  { tOff: 0.062, size: 0.002, opacity: 0.06 },
-  { tOff: 0.076, size: 0.002, opacity: 0.06 },
-  { tOff: 0.076, size: 0.002, opacity: 0.06 },
-  { tOff: 0.076, size: 0.002, opacity: 0.06 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-];
+const IS_MOBILE = window.innerWidth <= 768;
+
+// Fewer trail steps on mobile
+const TRAIL = IS_MOBILE
+  ? [
+      { tOff: 0.0, opacity: 1.0 },
+      { tOff: 0.012, opacity: 0.7 },
+      { tOff: 0.024, opacity: 0.45 },
+      { tOff: 0.04, opacity: 0.25 },
+      { tOff: 0.06, opacity: 0.1 },
+      { tOff: 0.08, opacity: 0.04 },
+    ]
+  : [
+      { tOff: 0.0, opacity: 1.0 },
+      { tOff: 0.008, opacity: 0.8 },
+      { tOff: 0.016, opacity: 0.62 },
+      { tOff: 0.024, opacity: 0.46 },
+      { tOff: 0.032, opacity: 0.32 },
+      { tOff: 0.032, opacity: 0.32 },
+      { tOff: 0.032, opacity: 0.32 },
+      { tOff: 0.04, opacity: 0.2 },
+      { tOff: 0.04, opacity: 0.2 },
+      { tOff: 0.04, opacity: 0.2 },
+      { tOff: 0.05, opacity: 0.12 },
+      { tOff: 0.062, opacity: 0.06 },
+      { tOff: 0.062, opacity: 0.06 },
+      { tOff: 0.062, opacity: 0.06 },
+      { tOff: 0.076, opacity: 0.06 },
+      { tOff: 0.076, opacity: 0.06 },
+      { tOff: 0.076, opacity: 0.06 },
+      { tOff: 0.076, opacity: 0.02 },
+      { tOff: 0.076, opacity: 0.02 },
+      { tOff: 0.076, opacity: 0.02 },
+    ];
+
+const DOT_SIZE = 0.002;
+
+// Pre-build flat instance list: [tractIdx, pulseIdx, trailIdx]
+const INSTANCES = [];
+for (let ti = 0; ti < TRACTS.length; ti++) {
+  const tract = TRACTS[ti];
+  for (let pi = 0; pi < tract.pulses; pi++) {
+    for (let tri = 0; tri < TRAIL.length; tri++) {
+      INSTANCES.push({ ti, pi, tri });
+    }
+  }
+}
+const INSTANCE_COUNT = INSTANCES.length;
 
 // Fast lookup: given t in [0,1], interpolate between pre-sampled points
 function sampleLUT(lut, t) {
@@ -164,9 +186,14 @@ function sampleLUT(lut, t) {
   );
 }
 const _lutTmp = new THREE.Vector3();
+const _matrix = new THREE.Matrix4();
+const _pos = new THREE.Vector3();
+const _scale = new THREE.Vector3(1, 1, 1);
+const _quat = new THREE.Quaternion();
+const _color = new THREE.Color();
 
 export default function SpinalFibers({ spinePoints, viewMode }) {
-  const meshRefs = useRef({});
+  const instanceRef = useRef();
   const pulseT = useRef({});
 
   const { luts, linePoints } = useMemo(() => {
@@ -185,35 +212,41 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
   }, []);
 
   useFrame((_, delta) => {
-    if (!luts) return;
-    const d = Math.min(delta, 0.05); // clamp delta — prevents spiral-of-death on slow frames
+    const mesh = instanceRef.current;
+    if (!mesh || !luts) return;
+    const d = Math.min(delta, 0.05);
     const mult =
       viewMode === "breathing" ? 0.15 : viewMode === "unified" ? 0.5 : 1.0;
 
+    // Advance all pulse positions
     for (const tract of TRACTS) {
-      const lut = luts[tract.id];
-      if (!lut) continue;
-
       if (pulseT.current[tract.id] === undefined)
         pulseT.current[tract.id] = Math.random();
       pulseT.current[tract.id] =
         (((pulseT.current[tract.id] + tract.dir * tract.speed * d) % 1) + 1) %
         1;
-      const t0 = pulseT.current[tract.id];
-
-      for (let pi = 0; pi < tract.pulses; pi++) {
-        const tHead = (((t0 + pi / tract.pulses) % 1) + 1) % 1;
-        for (let ti = 0; ti < TRAIL.length; ti++) {
-          const step = TRAIL[ti];
-          const t = Math.max(0, Math.min(1, tHead - tract.dir * step.tOff));
-          const ref = meshRefs.current[`${tract.id}_${pi}_${ti}`];
-          if (ref) {
-            ref.position.copy(sampleLUT(lut, t));
-            ref.material.opacity = step.opacity * mult;
-          }
-        }
-      }
     }
+
+    // Update all instances in one loop
+    for (let idx = 0; idx < INSTANCES.length; idx++) {
+      const { ti, pi, tri } = INSTANCES[idx];
+      const tract = TRACTS[ti];
+      const lut = luts[tract.id];
+      const step = TRAIL[tri];
+      const t0 = pulseT.current[tract.id];
+      const tHead = (((t0 + pi / tract.pulses) % 1) + 1) % 1;
+      const t = Math.max(0, Math.min(1, tHead - tract.dir * step.tOff));
+
+      _pos.copy(sampleLUT(lut, t));
+      _matrix.compose(_pos, _quat, _scale);
+      mesh.setMatrixAt(idx, _matrix);
+
+      _color.copy(tract.color).multiplyScalar(step.opacity * mult);
+      mesh.setColorAt(idx, _color);
+    }
+
+    mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
   });
 
   if (!luts) return null;
@@ -223,7 +256,6 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
 
   return (
     <group>
-      {/* Background tract lines — thick and visible */}
       {linePoints &&
         TRACTS.map((tract) => (
           <group key={tract.id}>
@@ -244,29 +276,19 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
           </group>
         ))}
 
-      {/* Animated comet trails */}
-      {TRACTS.map((tract) =>
-        Array.from({ length: tract.pulses }, (_, pi) =>
-          TRAIL.map((step, ti) => (
-            <mesh
-              key={`${tract.id}_${pi}_${ti}`}
-              ref={(el) => {
-                if (el) meshRefs.current[`${tract.id}_${pi}_${ti}`] = el;
-              }}
-              renderOrder={7}
-            >
-              <sphereGeometry args={[step.size, 7, 7]} />
-              <meshBasicMaterial
-                color={tract.color}
-                transparent
-                opacity={step.opacity * mult}
-                depthWrite={false}
-                toneMapped={false}
-              />
-            </mesh>
-          )),
-        ),
-      )}
+      <instancedMesh
+        ref={instanceRef}
+        args={[null, null, INSTANCE_COUNT]}
+        renderOrder={7}
+      >
+        <sphereGeometry args={[DOT_SIZE, 5, 5]} />
+        <meshBasicMaterial
+          transparent
+          depthWrite={false}
+          toneMapped={false}
+          vertexColors
+        />
+      </instancedMesh>
     </group>
   );
 }
