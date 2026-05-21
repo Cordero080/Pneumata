@@ -171,6 +171,7 @@ function App() {
                   offsetX={offsetX}
                   onOffsetXChange={setOffsetX}
                   darkMode={darkMode}
+                  closeOnOrgan={!!selectedOrgan}
                 />
               )}
             </div>

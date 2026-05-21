@@ -63,8 +63,13 @@ function VerticalControls({
   offsetX,
   onOffsetXChange,
   darkMode,
+  closeOnOrgan,
 }) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (closeOnOrgan) setOpen(false);
+  }, [closeOnOrgan]);
   const triggerRef = useRef(null);
   const [panelPos, setPanelPos] = useState({ top: 44, right: 0 });
 
