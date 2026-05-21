@@ -206,7 +206,7 @@
 // visual bottom of column ≈ container_top + panelW/2; must stay within visible viewport
 
 @media (max-height: 900px) {
-  .view-controller { top: calc(50% + 10px); }
+  .view-controller { top: calc(50% + 40px); }
   .view-controller-tab { top: calc(50% - 30px); }
 }
 
