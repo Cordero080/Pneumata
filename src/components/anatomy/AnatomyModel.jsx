@@ -198,6 +198,7 @@ function sampleBodyLandmarks(scene, heightScale = 1) {
 }
 
 const TARGET_HEIGHT = 1.75;
+const IS_MOBILE = window.innerWidth <= 768;
 
 const BREATH_BLUE = new THREE.Color("#334499");
 const BREATH_CYAN = new THREE.Color("#b0e8ff");
@@ -278,9 +279,9 @@ function AnatomyModel({
       opacity: 0.13,
       roughness: 0.2,
       metalness: 0,
-      clearcoat: 0.5,
-      clearcoatRoughness: 0.1,
-      iridescence: 0.001,
+      clearcoat: IS_MOBILE ? 0 : 0.5,
+      clearcoatRoughness: IS_MOBILE ? 0 : 0.1,
+      iridescence: 0,
       iridescenceIOR: 1.32,
       iridescenceThicknessRange: [120, 280],
       depthWrite: false,
