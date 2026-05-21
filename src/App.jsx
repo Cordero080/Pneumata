@@ -333,20 +333,15 @@ function App() {
         />
       )}
 
-      <div className="dark-capsule">
-        <button
-          className={`dark-capsule__opt${!darkMode ? " dark-capsule__opt--active" : ""}`}
-          onClick={() => setDarkMode(false)}
-        >
-          ☾
-        </button>
-        <button
-          className={`dark-capsule__opt${darkMode ? " dark-capsule__opt--active" : ""}`}
-          onClick={() => setDarkMode(true)}
-        >
-          ✦
-        </button>
-      </div>
+      <button
+        className={`dark-capsule${darkMode ? " dark-capsule--dark" : ""}`}
+        onClick={() => setDarkMode((d) => !d)}
+        aria-label="Toggle dark mode"
+      >
+        <span className="dark-capsule__thumb" />
+        <span className="dark-capsule__icon">☾</span>
+        <span className="dark-capsule__icon">✦</span>
+      </button>
 
       <p className="app-copyright">© 2026 Pablo Cordero</p>
 

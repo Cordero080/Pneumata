@@ -90,9 +90,9 @@ function VerticalControls({
         ⊞
       </button>
       {createPortal(
-        <div className={darkMode ? "app--dark" : ""}>
+        <div>
           <div
-            className={`vcontrols-panel${open ? " vcontrols-panel--open" : ""}`}
+            className={`vcontrols-panel${open ? " vcontrols-panel--open" : ""}${darkMode ? " vcontrols-panel--dark" : ""}`}
             style={
               window.innerWidth >= 769
                 ? { top: panelPos.top + 90, right: panelPos.right + 50 }

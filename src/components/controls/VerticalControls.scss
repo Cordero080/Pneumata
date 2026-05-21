@@ -94,7 +94,7 @@
   }
 
   @media (max-width: 768px) {
-    bottom: 17rem;
+    bottom: 18rem;
     right: .2rem;
   }
 }
@@ -117,7 +117,7 @@
 .vslider__track {
   position: relative;
   width: 20px;
-  height: 110px;
+  height: 90px;
   cursor: ns-resize;
 
   @media (min-width: 769px) {
@@ -203,26 +203,26 @@
   }
 }
 
-.app--dark .vcontrols-panel {
+.vcontrols-panel--dark {
   @include v.dark-surface;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: none;
 }
 
-.app--dark .vslider__label {
+.vcontrols-panel--dark .vslider__label {
   color: v.$dark-text-dim;
 }
 
-.app--dark .vslider__track::before {
+.vcontrols-panel--dark .vslider__track::before {
   background: rgba(100, 140, 200, 0.25);
 }
 
-.app--dark .vslider__fill {
+.vcontrols-panel--dark .vslider__fill {
   background: rgba(157, 188, 226, 0.97);
 }
 
-.app--dark .vslider__knob {
+.vcontrols-panel--dark .vslider__knob {
   background: rgba(30, 40, 60, 0.9);
   box-shadow:
     0 1px 4px rgba(0, 0, 0, 0.5),
