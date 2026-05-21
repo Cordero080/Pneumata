@@ -70,6 +70,8 @@ function VerticalControls({
   useEffect(() => {
     if (closeOnOrgan) setOpen(false);
   }, [closeOnOrgan]);
+
+  const panelOpen = open && !closeOnOrgan;
   const triggerRef = useRef(null);
   const [panelPos, setPanelPos] = useState({ top: 44, right: 0 });
 
@@ -80,11 +82,11 @@ function VerticalControls({
       top: rect.bottom,
       right: window.innerWidth - rect.right,
     });
-  }, [open]);
+  }, [panelOpen]);
 
   return (
     <div
-      className={`vcontrols-wrapper${open ? " vcontrols-wrapper--open" : ""}`}
+      className={`vcontrols-wrapper${panelOpen ? " vcontrols-wrapper--open" : ""}`}
     >
       <button
         ref={triggerRef}
@@ -97,7 +99,7 @@ function VerticalControls({
       {createPortal(
         <div>
           <div
-            className={`vcontrols-panel${open ? " vcontrols-panel--open" : ""}${darkMode ? " vcontrols-panel--dark" : ""}`}
+            className={`vcontrols-panel${panelOpen ? " vcontrols-panel--open" : ""}${darkMode ? " vcontrols-panel--dark" : ""}`}
             style={
               window.innerWidth >= 769
                 ? { top: panelPos.top + 90, right: panelPos.right + 50 }
