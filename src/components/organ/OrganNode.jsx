@@ -67,6 +67,7 @@ function OrganNode({
   const innerRef = useRef();
   const auraRef = useRef();
   const groupRef = useRef();
+  const selectedScaleRef = useRef(1);
   const heartVisualRef = useRef();
   const heartBeat = useRef({ last: 0, scale: 1 });
   const heartSpriteOuterRef = useRef();
@@ -174,6 +175,12 @@ function OrganNode({
         brainZoom && zoomedPos.current ? zoomedPos.current : fullPos.current;
       currentPos.current.lerp(target, 0.06);
       groupRef.current.position.copy(currentPos.current);
+
+      // Scale up slightly when this node is the selected (modal-open) one
+      const targetScale = selectedOrganId === organ.id ? 1.28 : 1.0;
+      selectedScaleRef.current +=
+        (targetScale - selectedScaleRef.current) * 0.1;
+      groupRef.current.scale.setScalar(selectedScaleRef.current);
     }
 
     if (!meshRef.current) return;

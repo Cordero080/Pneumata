@@ -17,6 +17,7 @@ import LungsModel from "../lungs/LungsModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
+import WaveBackground from "./WaveBackground";
 import MeridianLayer from "../meridian/MeridianLayer";
 import { organs } from "../../data/organs";
 
@@ -302,6 +303,7 @@ function Scene({
         target={ORBIT_TARGET}
       />
       {bgMode > 0 && bgMode <= 4 && <SceneOrbs theme={bgModeName} />}
+      {bgMode >= 5 && <WaveBackground theme={bgModeName} />}
     </Canvas>
   );
 }

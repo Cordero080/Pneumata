@@ -9,9 +9,9 @@
   z-index: 50;
 
   @media (max-width: 768px) {
-    top: auto;
-    transform: none;
-    bottom: 2.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    bottom: auto;
     right: 1rem;
     gap: 10px;
   }
@@ -89,10 +89,10 @@
 }
 
 .legend-dot {
-  width: 5.5px;
-  height: 12px;
+  width: 7px;
+  height: 14px;
   border-radius: 0;
-  transform: rotate(35deg);
+  transform: rotate(90deg);
   flex-shrink: 0;
   opacity: 0.50;
   transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;

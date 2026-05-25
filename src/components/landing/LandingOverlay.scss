@@ -8,7 +8,7 @@
   z-index: 200;
   overflow: hidden;
   // Matrix background — same look as .app--bg-matrix
-  background: linear-gradient(180deg, #7c5b02c4 0%, #3b1e65 30%, rgba(6, 48, 175, 0.98) 50%, #120101 100%);
+  background: linear-gradient(180deg, #7c5b02c4 0%, #6d48a1 30%, rgba(113, 145, 240, 0.98) 50%, #120101 100%);
   animation: bg-matrix-move 6s linear infinite;
 
   &::before {
@@ -21,7 +21,7 @@
     pointer-events: none;
     z-index: 1;
     background-image:
-      repeating-linear-gradient(45deg,  transparent 0px, transparent 80px, rgba(0, 150, 255, 0.08) 80px, rgba(0, 150, 255, 0.08) 82px),
+      repeating-linear-gradient(45deg,  transparent 0px, transparent 80px, rgba(0, 149, 255, 0.055) 80px, rgba(0, 150, 255, 0.08) 82px),
       repeating-linear-gradient(-45deg, transparent 0px, transparent 80px, rgba(0, 200, 255, 0.06) 80px, rgba(0, 200, 255, 0.06) 82px),
       repeating-linear-gradient(90deg,  transparent 0px, transparent 120px, rgba(100, 180, 255, 0.04) 120px, rgba(100, 180, 255, 0.04) 121px),
       repeating-linear-gradient(0deg,   transparent 0px, transparent 120px, rgba(80, 160, 255, 0.04) 120px, rgba(80, 160, 255, 0.04) 121px);
@@ -85,7 +85,7 @@
   align-items: center;
   gap: 1.6rem;
   padding: 3rem 3.5rem;
-  background: rgba(8, 4, 20, 0.55);
+  background: rgba(79, 84, 142, 0.647);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-top: 2px solid v.$glass-border;

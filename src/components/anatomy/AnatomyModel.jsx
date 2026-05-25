@@ -221,9 +221,12 @@ function AnatomyModel({
   const config = femaleMode ? femaleConfig : maleConfig;
 
   const gltf = useGLTF(modelPath);
+  const materialRef = useRef(null);
+  const bloodMatRef = useRef(null);
+  const bloodPulseRef = useRef(0);
+  const lastBeatCountRef = useRef(0);
   const scene = useMemo(() => {
     const cloned = gltf.scene.clone(true);
-    // Apply scale/position immediately so the first render is already correct (no flash)
     const raw = config.RAW;
     const s = (TARGET_HEIGHT * config.HEIGHT_SCALE) / raw.height;
     cloned.scale.setScalar(s);
@@ -232,12 +235,32 @@ function AnatomyModel({
       -raw.yMin * s + config.Y_OFFSET,
       -raw.centerZ * s,
     );
+    // Apply ghost material immediately so frame 1 never shows raw GLB materials
+    const mat = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color("#eef2f6"),
+      transparent: true,
+      transmission: 0,
+      opacity: 0.13,
+      roughness: 0.2,
+      metalness: 0,
+      clearcoat: 0.5,
+      clearcoatRoughness: 0.1,
+      iridescence: 0.001,
+      iridescenceIOR: 1.32,
+      iridescenceThicknessRange: [120, 280],
+      depthWrite: false,
+      emissive: new THREE.Color("#ffffff"),
+      emissiveIntensity: 0,
+    });
+    materialRef.current = mat;
+    cloned.traverse((child) => {
+      if (child.isMesh) {
+        child.material = mat;
+        child.renderOrder = 1;
+      }
+    });
     return cloned;
   }, [gltf.scene]);
-  const materialRef = useRef(null);
-  const bloodMatRef = useRef(null);
-  const bloodPulseRef = useRef(0);
-  const lastBeatCountRef = useRef(0);
   const [bloodScene, setBloodScene] = useState(null);
   const breathMatRef = useRef(null);
   const [breathScene, setBreathScene] = useState(null);
@@ -593,7 +616,21 @@ function AnatomyModel({
         al.opacity = 0.55;
         al.depthWrite = false;
         al.needsUpdate = true;
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 1/2/4/5 — GHOST + AL
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 4 — ALUMINUM ONLY
+      } else if (meshMode === 4) {
+        // Ghost hidden, aluminum semi-transparent — mirrors dark mode 4 behaviour
+        mat.transparent = true;
+        mat.opacity = 0;
+        mat.depthWrite = false;
+        mat.needsUpdate = true;
+        al.transparent = true;
+        al.color.set(alColorResolved);
+        al.metalness = 0.88;
+        al.roughness = 0.15;
+        al.opacity = 0.82;
+        al.depthWrite = false;
+        al.needsUpdate = true;
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 1/2 — GHOST + AL
       } else {
         mat.color.set(ghostColor);
         mat.transmission = 0;

@@ -5,11 +5,24 @@ import * as THREE from "three";
 const LERP = 0.055;
 const SETTLED = 0.0008;
 
-const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.62, 0);
-const MALE_CELL_TARGET = new THREE.Vector3(0, 1.68, 0);
+const IS_MOBILE = window.innerWidth <= 768;
+// On mobile the scene group has a larger offsetY, so the brain's world position
+// sits higher than on desktop. Raise camera and target to compensate.
+const MOBILE_BRAIN_Y = IS_MOBILE ? 0.07 : 0;
+
+const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.62 + MOBILE_BRAIN_Y, 0);
+const MALE_CELL_TARGET = new THREE.Vector3(0, 1.68 + MOBILE_BRAIN_Y, 0);
 const FEMALE_Y_OFFSET = 1.615 - 1.672;
-const FEMALE_BRAIN_TARGET = new THREE.Vector3(0, 1.62 + FEMALE_Y_OFFSET, 0);
-const FEMALE_CELL_TARGET = new THREE.Vector3(0, 1.68 + FEMALE_Y_OFFSET, 0);
+const FEMALE_BRAIN_TARGET = new THREE.Vector3(
+  0,
+  1.62 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
+  0,
+);
+const FEMALE_CELL_TARGET = new THREE.Vector3(
+  0,
+  1.68 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
+  0,
+);
 
 // Slider value 0 (knob top) = viewing head, 1 (knob bottom) = viewing legs
 const PAN_Y_TOP = 1.65;
@@ -63,12 +76,12 @@ function CameraController({
     camera.updateProjectionMatrix();
     const yo = femaleMode ? FEMALE_Y_OFFSET : 0;
     if (cellZoom) {
-      camera.position.set(0, 1.68 + yo, 0.32);
-      ctrl.target.set(0, 1.68 + yo, 0);
+      camera.position.set(0, 1.68 + yo + MOBILE_BRAIN_Y, 0.32);
+      ctrl.target.set(0, 1.68 + yo + MOBILE_BRAIN_Y, 0);
       ctrl.update();
     } else if (brainZoom) {
-      camera.position.set(0, 1.65 + yo, 0.65);
-      ctrl.target.set(0, 1.62 + yo, 0);
+      camera.position.set(0, 1.65 + yo + MOBILE_BRAIN_Y, 0.65);
+      ctrl.target.set(0, 1.62 + yo + MOBILE_BRAIN_Y, 0);
       ctrl.update();
     }
   }, [brainZoom, cellZoom, femaleMode, controlsRef, camera]);
