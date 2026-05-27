@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useReducer, useRef, useCallback, useEffect } from "react";
 import "./App.scss";
 import Scene from "./components/scene/Scene";
 import LandingOverlay from "./components/landing/LandingOverlay";
@@ -11,6 +11,30 @@ import VerticalControls from "./components/controls/VerticalControls";
 
 // Defaults differ by device and display context
 const IS_MOBILE = window.innerWidth <= 768;
+
+function cameraReducer(state, action) {
+  switch (action.type) {
+    case "reset":
+      return {
+        ...DEFAULTS,
+        brainZoom: false,
+        cellZoom: false,
+        resetKey: state.resetKey + 1,
+      };
+    case "setBrainZoom":
+      return { ...state, brainZoom: action.value };
+    case "setCellZoom":
+      return { ...state, cellZoom: action.value };
+    case "setPanY":
+      return { ...state, panY: action.value };
+    case "setZoom":
+      return { ...state, zoom: action.value };
+    case "setOffsetX":
+      return { ...state, offsetX: action.value };
+    default:
+      return state;
+  }
+}
 // Standalone (PWA / Add to Home Screen) has no browser chrome, so the canvas
 // is taller — use slightly smaller scale and less Y offset to compensate.
 const IS_STANDALONE =
@@ -56,29 +80,32 @@ function App() {
   const [bodyModel, setBodyModel] = useState("male");
   const modelPath =
     bodyModel === "male" ? "/male-body.glb" : "/female-body.glb";
-  const [brainZoom, setBrainZoom] = useState(false);
-  const [cellZoom, setCellZoom] = useState(false);
-  const [panY, setPanY] = useState(DEFAULTS.panY);
-  const [zoom, setZoom] = useState(DEFAULTS.zoom);
-  const [globalScale, setGlobalScale] = useState(DEFAULTS.globalScale);
-  const [offsetX, setOffsetX] = useState(DEFAULTS.offsetX);
-  const [offsetY, setOffsetY] = useState(DEFAULTS.offsetY);
+  const [cam, dispatchCam] = useReducer(cameraReducer, {
+    brainZoom: false,
+    cellZoom: false,
+    panY: DEFAULTS.panY,
+    zoom: DEFAULTS.zoom,
+    globalScale: DEFAULTS.globalScale,
+    offsetX: DEFAULTS.offsetX,
+    offsetY: DEFAULTS.offsetY,
+    resetKey: 0,
+  });
+  const {
+    brainZoom,
+    cellZoom,
+    panY,
+    zoom,
+    globalScale,
+    offsetX,
+    offsetY,
+    resetKey,
+  } = cam;
+  const handleReset = () => dispatchCam({ type: "reset" });
   const [showAnimation, setShowAnimation] = useState(false);
   const [showTopNav, setShowTopNav] = useState(false);
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
   const [legendCategory, setLegendCategory] = useState(null);
-  const [resetKey, setResetKey] = useState(0);
   const [showLanding, setShowLanding] = useState(true);
-  const handleReset = () => {
-    setBrainZoom(false);
-    setCellZoom(false);
-    setPanY(DEFAULTS.panY);
-    setZoom(DEFAULTS.zoom);
-    setGlobalScale(DEFAULTS.globalScale);
-    setOffsetX(DEFAULTS.offsetX);
-    setOffsetY(DEFAULTS.offsetY);
-    setResetKey((k) => k + 1);
-  };
   const aboutRef = useRef(null);
   const bgPickerRef = useRef(null);
 
@@ -95,8 +122,8 @@ function App() {
   useEffect(() => {
     const handler = (e) => {
       if (e.key === "Escape") {
-        if (cellZoom) setCellZoom(false);
-        else if (brainZoom) setBrainZoom(false);
+        if (cellZoom) dispatchCam({ type: "setCellZoom", value: false });
+        else if (brainZoom) dispatchCam({ type: "setBrainZoom", value: false });
       }
     };
     window.addEventListener("keydown", handler);
@@ -111,13 +138,7 @@ function App() {
 
   useEffect(() => {
     document.body.classList.toggle("body--female", bodyModel === "female");
-    // Reset transform values to defaults so female scale/offset doesn't bleed into male view
-    setPanY(DEFAULTS.panY);
-    setZoom(DEFAULTS.zoom);
-    setGlobalScale(DEFAULTS.globalScale);
-    setOffsetX(DEFAULTS.offsetX);
-    setOffsetY(DEFAULTS.offsetY);
-    setResetKey((k) => k + 1);
+    dispatchCam({ type: "reset" });
     return () => document.body.classList.remove("body--female");
   }, [bodyModel]);
 
@@ -165,11 +186,17 @@ function App() {
               {!showAnimation && !IS_MOBILE && (
                 <VerticalControls
                   panY={panY}
-                  onPanChange={setPanY}
+                  onPanChange={(v) =>
+                    dispatchCam({ type: "setPanY", value: v })
+                  }
                   zoom={zoom}
-                  onZoomChange={setZoom}
+                  onZoomChange={(v) =>
+                    dispatchCam({ type: "setZoom", value: v })
+                  }
                   offsetX={offsetX}
-                  onOffsetXChange={setOffsetX}
+                  onOffsetXChange={(v) =>
+                    dispatchCam({ type: "setOffsetX", value: v })
+                  }
                   darkMode={darkMode}
                   closeOnOrgan={!!selectedOrgan}
                 />
@@ -281,9 +308,9 @@ function App() {
           darkMode={darkMode}
           meshMode={meshMode}
           brainZoom={brainZoom}
-          setBrainZoom={setBrainZoom}
+          setBrainZoom={(v) => dispatchCam({ type: "setBrainZoom", value: v })}
           cellZoom={cellZoom}
-          setCellZoom={setCellZoom}
+          setCellZoom={(v) => dispatchCam({ type: "setCellZoom", value: v })}
           panY={panY}
           zoom={zoom}
           resetKey={resetKey}
@@ -302,8 +329,8 @@ function App() {
         <button
           className="brain-back-btn"
           onClick={() => {
-            if (cellZoom) setCellZoom(false);
-            else setBrainZoom(false);
+            if (cellZoom) dispatchCam({ type: "setCellZoom", value: false });
+            else dispatchCam({ type: "setBrainZoom", value: false });
             handleReset();
           }}
         >
