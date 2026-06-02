@@ -49,7 +49,7 @@ const DEFAULTS = IS_MOBILE
 
 const LANDING_ENTRY_PRESETS = {
   brain: { viewMode: "logic", brainZoom: true },
-  lungs: { viewMode: "breathing", organId: "left_lung" },
+  lungs: { viewMode: "breathing", zoom: 0.02, panY: 0.25 },
   heart: { viewMode: "power", zoom: 0.02, panY: 0.25 },
   nervous: {
     viewMode: "unified",

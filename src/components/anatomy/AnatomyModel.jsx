@@ -82,8 +82,26 @@ const LANDMARK_DEFS = {
   axilla_right: { yMin: 1.26, yMax: 1.4, xSign: 1, outer: true },
   elbow_left: { yMin: 0.95, yMax: 1.1, xSign: -1, outer: true },
   elbow_right: { yMin: 0.95, yMax: 1.1, xSign: 1, outer: true },
-  wrist_left: { yMin: 0.65, yMax: 0.8, xSign: -1, outer: true },
-  wrist_right: { yMin: 0.65, yMax: 0.8, xSign: 1, outer: true },
+  wrist_left: { yMin: 0.65, yMax: 0.8, xSign: -1, outer: false, absXMin: 0.3 },
+  wrist_right: { yMin: 0.65, yMax: 0.8, xSign: 1, outer: false, absXMin: 0.3 },
+  hand_left: {
+    yMin: 0.42,
+    yMax: 0.62,
+    xSign: -1,
+    outer: false,
+    absXMin: 0.2,
+    absXMax: 0.3,
+    zMin: 0,
+  },
+  hand_right: {
+    yMin: 0.42,
+    yMax: 0.62,
+    xSign: 1,
+    outer: false,
+    absXMin: 0.2,
+    absXMax: 0.3,
+    zMin: 0,
+  },
   // Lower limb — lateral
   hip_left: {
     yMin: 0.82,
@@ -103,8 +121,38 @@ const LANDMARK_DEFS = {
   },
   knee_left: { yMin: 0.38, yMax: 0.54, xSign: -1, outer: true },
   knee_right: { yMin: 0.38, yMax: 0.54, xSign: 1, outer: true },
-  ankle_left: { yMin: 0.05, yMax: 0.16, xSign: -1, outer: true },
-  ankle_right: { yMin: 0.05, yMax: 0.16, xSign: 1, outer: true },
+  ankle_left: {
+    yMin: 0.12,
+    yMax: 0.2,
+    xSign: -1,
+    outer: false,
+    absXMax: 0.07,
+    zMax: 0.0,
+  },
+  ankle_right: {
+    yMin: 0.12,
+    yMax: 0.2,
+    xSign: 1,
+    outer: false,
+    absXMax: 0.07,
+    zMax: 0.0,
+  },
+  foot_left: {
+    yMin: 0.0,
+    yMax: 0.18,
+    xSign: -1,
+    outer: false,
+    absXMax: 0.08,
+    zMax: 0.0,
+  },
+  foot_right: {
+    yMin: 0.0,
+    yMax: 0.18,
+    xSign: 1,
+    outer: false,
+    absXMax: 0.08,
+    zMax: 0.0,
+  },
   // Lower limb — medial/posterior
   groin_left: {
     yMin: 0.78,
@@ -168,6 +216,7 @@ function sampleBodyLandmarks(scene, heightScale = 1) {
         if (d.xSign === -1 && x >= 0) continue;
         if (d.xSign === 1 && x <= 0) continue;
         if (d.absXMax !== undefined && Math.abs(x) > d.absXMax) continue;
+        if (d.absXMin !== undefined && Math.abs(x) < d.absXMin) continue;
         if (d.zMax !== undefined && z > d.zMax) continue;
         if (d.zMin !== undefined && z < d.zMin) continue;
         buckets[k].push([x, y, z]);
