@@ -108,7 +108,7 @@ function CameraController({
     camera.position.set(INITIAL_CAM.x, INITIAL_CAM.y, INITIAL_CAM.z);
     ctrl.target.set(0, 0.85, 0);
     ctrl.update();
-    zoomDirty.current = false;
+    zoomDirty.current = true;
   }, [resetKey, camera, controlsRef]);
 
   useFrame(() => {

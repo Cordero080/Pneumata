@@ -50,7 +50,7 @@ const DEFAULTS = IS_MOBILE
 const LANDING_ENTRY_PRESETS = {
   brain: { viewMode: "logic", brainZoom: true },
   lungs: { viewMode: "breathing", organId: "left_lung" },
-  heart: { viewMode: "power", zoom: 0.18 },
+  heart: { viewMode: "power", zoom: 0.02, panY: 0.25 },
   nervous: {
     viewMode: "unified",
     organId: "spinal_cord",
@@ -206,6 +206,8 @@ function App() {
       dispatchCam({ type: "setBrainZoom", value: !!preset.brainZoom });
       if (preset.zoom != null)
         dispatchCam({ type: "setZoom", value: preset.zoom });
+      if (preset.panY != null)
+        dispatchCam({ type: "setPanY", value: preset.panY });
     },
     [bodyModel, globalScale, offsetY],
   );
@@ -270,10 +272,10 @@ function App() {
               <button
                 className="about-btn about-btn--entry"
                 onClick={handleOpenLanding}
-                aria-label="Reopen landing entry"
-                title="Reopen entry"
+                aria-label="Open path menu"
+                title="Open path menu"
               >
-                Re-enter
+                Path
               </button>
               <button
                 ref={aboutRef}
@@ -384,12 +386,19 @@ function App() {
               organ.type !== "line" &&
               organ.position
             ) {
-              setOrganFocusY(
-                organ.position[1] * globalScale +
-                  offsetY +
-                  (organ.focusYAdjust ?? 0),
-              );
-              setOrganFocusDistance(organ.focusDistance ?? null);
+              if (organ.focusZoom != null) {
+                dispatchCam({ type: "setZoom", value: organ.focusZoom });
+                dispatchCam({ type: "setPanY", value: organ.focusPanY ?? 0.5 });
+                setOrganFocusY(null);
+                setOrganFocusDistance(null);
+              } else {
+                setOrganFocusY(
+                  organ.position[1] * globalScale +
+                    offsetY +
+                    (organ.focusYAdjust ?? 0),
+                );
+                setOrganFocusDistance(organ.focusDistance ?? null);
+              }
             } else {
               setOrganFocusY(null);
               setOrganFocusDistance(null);
