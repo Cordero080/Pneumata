@@ -59,10 +59,10 @@
 // The clickable tab — fixed independently so it's always visible at the left edge
 .view-controller-tab {
   position: fixed;
-  left: -27px;
+  left: -34px;
   top: calc(50% + 0px);
-  width: 72px;
-  height: 18px;
+  width: 88px;
+  height: 24px;
   transform: rotate(90deg);
   transform-origin: center center;
   background: rgba(200, 210, 222, 0.38);
@@ -85,10 +85,10 @@
   }
 
   &__arrow {
-    font-size: 14px;
+    font-size: 16px;
     color: rgba(255, 255, 255, 0.85);
     line-height: 1;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
     animation: arrow-pulse 2s ease-in-out infinite;
     transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -142,27 +142,13 @@
   color: rgba(55, 72, 88, 0.68);
 
   // Chamfer on first button (top-left + bottom-right corners cut)
-  clip-path: polygon(
-    0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
-    100% 100%,
-    14px 100%,
-    0 calc(100% - 14px)
-  );
+  @include v.chamfer(v.$chamfer-lg);
 
   // All buttons after the first overlap + cut top-left corner only
   &:not(:first-child) {
     margin-left: -11px;
     padding-left: 24px;
-    clip-path: polygon(
-      0 0,
-      calc(100% - 14px) 0,
-      100% 14px,
-      100% 100%,
-      14px 100%,
-      14px 14px
-    );
+    @include v.chamfer-notch(v.$chamfer-lg);
   }
 
   &:hover:not(.view-btn--active) {

@@ -46,8 +46,14 @@ function Scene({
   meshMode,
   brainZoom,
   setBrainZoom,
+  cellZoom,
   modelPath,
   femaleMode,
+  panY,
+  zoom,
+  resetKey,
+  organFocusY,
+  viewPanelOpen,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -347,7 +353,17 @@ function Scene({
         ),
       )}
 
-      <CameraController brainZoom={brainZoom} controlsRef={controlsRef} />
+      <CameraController
+        brainZoom={brainZoom}
+        cellZoom={cellZoom}
+        controlsRef={controlsRef}
+        panY={panY}
+        zoom={zoom}
+        resetKey={resetKey}
+        organFocusY={organFocusY}
+        viewPanelOpen={viewPanelOpen}
+        femaleMode={femaleMode}
+      />
       <OrbitControls
         ref={controlsRef}
         enableZoom

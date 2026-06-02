@@ -139,14 +139,14 @@ function LungsModel({
       targetOpacity = 0.38;
     } else if (unifiedMode) {
       targetOpacity = 0.32;
-    } else if (meshMode === 2 || meshMode === 4) {
+    } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
       targetOpacity = 0.45;
     } else if (ghostMode) {
       targetOpacity = 0.35;
     } else if (meshMode === 1) {
       targetOpacity = 0.28;
     } else {
-      targetOpacity = 0.0;
+      targetOpacity = 0.2;
     }
 
     for (const m of tissue) {

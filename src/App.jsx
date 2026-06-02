@@ -8,6 +8,7 @@ import AboutModal from "./components/about/AboutModal";
 import CategoryLegend from "./components/legend/CategoryLegend";
 import ViewModeController from "./components/view-controller/ViewModeController";
 import VerticalControls from "./components/controls/VerticalControls";
+import { organs } from "./data/organs";
 
 // Defaults differ by device and display context
 const IS_MOBILE = window.innerWidth <= 768;
@@ -46,9 +47,22 @@ const DEFAULTS = IS_MOBILE
     : { panY: 0.48, zoom: 0.22, globalScale: 0.948, offsetX: 0, offsetY: 0.11 }
   : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.08 };
 
+const LANDING_ENTRY_PRESETS = {
+  brain: { viewMode: "logic", brainZoom: true },
+  lungs: { viewMode: "breathing", organId: "left_lung" },
+  heart: { viewMode: "power", zoom: 0.18 },
+  nervous: {
+    viewMode: "unified",
+    organId: "spinal_cord",
+    showNerves: true,
+  },
+  body: { viewMode: "logic" },
+};
+
 function App() {
   const [selectedOrgan, setSelectedOrgan] = useState(null);
   const [organFocusY, setOrganFocusY] = useState(null);
+  const [organFocusDistance, setOrganFocusDistance] = useState(null);
   const [viewMode, setViewMode] = useState("logic");
   const [showNerves, setShowNerves] = useState(false);
   const [showMeridians, setShowMeridians] = useState(false);
@@ -76,7 +90,7 @@ function App() {
     "⊟\uFE0E",
     "◎\uFE0E",
   ];
-  const [meshMode, setMeshMode] = useState(2); // 0=ghost, 1=semi-transparent silver, 2=solid silver
+  const [meshMode, setMeshMode] = useState(5); // 0=ghost, 1=semi-transparent silver, 2=solid silver
   const [bodyModel, setBodyModel] = useState("male");
   const modelPath =
     bodyModel === "male" ? "/male-body.glb" : "/female-body.glb";
@@ -100,7 +114,14 @@ function App() {
     offsetY,
     resetKey,
   } = cam;
-  const handleReset = () => dispatchCam({ type: "reset" });
+  const clearLandingFocus = useCallback(() => {
+    setOrganFocusY(null);
+  }, []);
+
+  const handleReset = useCallback(() => {
+    clearLandingFocus();
+    dispatchCam({ type: "reset" });
+  }, [clearLandingFocus]);
   const [showAnimation, setShowAnimation] = useState(false);
   const [showTopNav, setShowTopNav] = useState(false);
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
@@ -156,6 +177,78 @@ function App() {
     if (btn) btn.style.transform = "";
   }, []);
 
+  const handleLandingPreview = useCallback(
+    (pathKey) => {
+      const preset =
+        LANDING_ENTRY_PRESETS[pathKey] ?? LANDING_ENTRY_PRESETS.body;
+      const targetOrgan = preset.organId
+        ? organs.find((organ) => organ.id === preset.organId)
+        : null;
+      const focusPoint =
+        bodyModel === "female"
+          ? (targetOrgan?.femalePosition ??
+            targetOrgan?.position ??
+            targetOrgan?.points?.[4])
+          : (targetOrgan?.position ??
+            targetOrgan?.femalePosition ??
+            targetOrgan?.points?.[4]);
+
+      if (!preset.brainZoom) handleReset();
+      setSelectedOrgan(null);
+      setLegendCategory(null);
+      setShowAnimation(false);
+      setViewMode(preset.viewMode);
+      setShowNerves(!!preset.showNerves);
+      setShowMeridians(false);
+      setOrganFocusY(focusPoint ? focusPoint[1] * globalScale + offsetY : null);
+
+      dispatchCam({ type: "setCellZoom", value: false });
+      dispatchCam({ type: "setBrainZoom", value: !!preset.brainZoom });
+      if (preset.zoom != null)
+        dispatchCam({ type: "setZoom", value: preset.zoom });
+    },
+    [bodyModel, globalScale, offsetY],
+  );
+
+  const handleOpenLanding = useCallback(() => {
+    setShowLanding(true);
+    setShowAbout(false);
+    setViewPanelOpen(false);
+    setShowTopNav(false);
+  }, []);
+
+  const handleViewModeChange = useCallback(
+    (nextMode) => {
+      clearLandingFocus();
+      setViewMode(nextMode);
+    },
+    [clearLandingFocus],
+  );
+
+  const handleShowNervesChange = useCallback(
+    (valueOrUpdater) => {
+      clearLandingFocus();
+      setShowNerves(valueOrUpdater);
+    },
+    [clearLandingFocus],
+  );
+
+  const handlePanChange = useCallback(
+    (value) => {
+      clearLandingFocus();
+      dispatchCam({ type: "setPanY", value });
+    },
+    [clearLandingFocus],
+  );
+
+  const handleZoomChange = useCallback(
+    (value) => {
+      clearLandingFocus();
+      dispatchCam({ type: "setZoom", value });
+    },
+    [clearLandingFocus],
+  );
+
   return (
     <div
       className={`app app--${bodyModel}${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""}${bgMode > 0 ? ` app--bg-${BG_MODES[bgMode]}` : ""}`}
@@ -175,6 +268,14 @@ function App() {
             <p>Analogical Anatomy</p>
             <div className="header-panel__actions">
               <button
+                className="about-btn about-btn--entry"
+                onClick={handleOpenLanding}
+                aria-label="Reopen landing entry"
+                title="Reopen entry"
+              >
+                Re-enter
+              </button>
+              <button
                 ref={aboutRef}
                 className="about-btn"
                 onClick={() => setShowAbout(true)}
@@ -186,13 +287,9 @@ function App() {
               {!showAnimation && !IS_MOBILE && (
                 <VerticalControls
                   panY={panY}
-                  onPanChange={(v) =>
-                    dispatchCam({ type: "setPanY", value: v })
-                  }
+                  onPanChange={handlePanChange}
                   zoom={zoom}
-                  onZoomChange={(v) =>
-                    dispatchCam({ type: "setZoom", value: v })
-                  }
+                  onZoomChange={handleZoomChange}
                   offsetX={offsetX}
                   onOffsetXChange={(v) =>
                     dispatchCam({ type: "setOffsetX", value: v })
@@ -281,25 +378,37 @@ function App() {
           onSelect={(organ) => {
             setSelectedOrgan(organ);
             if (
+              !brainZoom &&
               organ &&
               !organ.brainPosition &&
               organ.type !== "line" &&
               organ.position
             ) {
-              setOrganFocusY(organ.position[1] * globalScale + offsetY);
+              setOrganFocusY(
+                organ.position[1] * globalScale +
+                  offsetY +
+                  (organ.focusYAdjust ?? 0),
+              );
+              setOrganFocusDistance(organ.focusDistance ?? null);
             } else {
               setOrganFocusY(null);
+              setOrganFocusDistance(null);
             }
           }}
           onFocus={(organ) => {
-            // Camera zoom only — no modal
             if (
+              !brainZoom &&
               organ &&
               !organ.brainPosition &&
               organ.type !== "line" &&
               organ.position
             ) {
-              setOrganFocusY(organ.position[1] * globalScale + offsetY);
+              setOrganFocusY(
+                organ.position[1] * globalScale +
+                  offsetY +
+                  (organ.focusYAdjust ?? 0),
+              );
+              setOrganFocusDistance(organ.focusDistance ?? null);
             }
           }}
           selectedOrgan={selectedOrgan}
@@ -317,6 +426,7 @@ function App() {
           modelPath={modelPath}
           femaleMode={bodyModel === "female"}
           organFocusY={organFocusY}
+          organFocusDistance={organFocusDistance}
           viewPanelOpen={viewPanelOpen}
           bgMode={bgMode}
           bgModeName={BG_MODES[bgMode]}
@@ -343,6 +453,7 @@ function App() {
         onClose={() => {
           setSelectedOrgan(null);
           setOrganFocusY(null);
+          setOrganFocusDistance(null);
         }}
       />
 
@@ -353,9 +464,9 @@ function App() {
       {!showAnimation && (
         <ViewModeController
           viewMode={viewMode}
-          setViewMode={setViewMode}
+          setViewMode={handleViewModeChange}
           showNerves={showNerves}
-          setShowNerves={setShowNerves}
+          setShowNerves={handleShowNervesChange}
           open={viewPanelOpen}
           onToggle={setViewPanelOpen}
         />
@@ -373,7 +484,12 @@ function App() {
 
       <p className="app-copyright">© 2026 Pablo Cordero</p>
 
-      {showLanding && <LandingOverlay onEnter={() => setShowLanding(false)} />}
+      {showLanding && (
+        <LandingOverlay
+          onPreviewEntry={handleLandingPreview}
+          onEnter={() => setShowLanding(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,13 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./LandingOverlay.scss";
 
 const ENDPOINT = "https://pneumata-backend.onrender.com/subscribe";
+const REVEAL_DURATION_MS = 920;
+const ENTRY_PATHS = [
+  {
+    key: "brain",
+    label: "Brain",
+    detail: "Logic core",
+  },
+  {
+    key: "lungs",
+    label: "Lungs",
+    detail: "Cooling array",
+  },
+  {
+    key: "heart",
+    label: "Heart",
+    detail: "Power relay",
+  },
+  {
+    key: "nervous",
+    label: "Nervous",
+    detail: "Signal bus",
+  },
+  {
+    key: "body",
+    label: "Full Body",
+    detail: "Whole chassis",
+  },
+];
 
-function LandingOverlay({ onEnter }) {
+function LandingOverlay({ onPreviewEntry, onEnter }) {
   const [email, setEmail] = useState("");
   const alreadySubscribed = !!localStorage.getItem("pneumata_subscribed");
   const [status, setStatus] = useState(alreadySubscribed ? "done" : "idle");
+  const [entryPhase, setEntryPhase] = useState("idle");
+  const [selectedPath, setSelectedPath] = useState(null);
+  const [flashMode, setFlashMode] = useState(null);
   const hasInput = email.length > 0;
+
+  useEffect(() => {
+    if (status === "done" && entryPhase === "idle") {
+      setEntryPhase("choosing");
+    }
+  }, [entryPhase, status]);
+
+  useEffect(() => {
+    if (entryPhase !== "revealing") return undefined;
+
+    const timer = window.setTimeout(() => {
+      onEnter(selectedPath);
+    }, REVEAL_DURATION_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [entryPhase, onEnter, selectedPath]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,13 +73,25 @@ function LandingOverlay({ onEnter }) {
     }
   };
 
-  const handleEnter = () => {
+  const handlePathSelect = (pathKey) => {
     localStorage.setItem("pneumata_subscribed", "1");
-    onEnter();
+    onPreviewEntry?.(pathKey);
+    setFlashMode("reveal");
+    setSelectedPath(pathKey);
+    setEntryPhase("revealing");
+  };
+
+  const handleBypass = () => {
+    localStorage.setItem("pneumata_subscribed", "1");
+    setStatus("done");
   };
 
   return (
-    <div className="landing-overlay">
+    <div
+      className={`landing-overlay landing-overlay--${entryPhase}${flashMode ? ` landing-overlay--flash-${flashMode}` : ""}`}
+    >
+      <div className="landing-flash" aria-hidden="true" />
+      <div className="landing-scanline" aria-hidden="true" />
       <div className="landing-content landing-content--visible">
         <div className="landing-panel">
           <div className="landing-title">
@@ -72,15 +131,39 @@ function LandingOverlay({ onEnter }) {
           )}
 
           {status === "done" && (
-            <button className="landing-enter" onClick={handleEnter}>
-              Explore
-            </button>
+            <div className={`landing-entry landing-entry--${entryPhase}`}>
+              {(entryPhase === "choosing" || entryPhase === "revealing") && (
+                <div className="landing-paths-shell">
+                  <p className="landing-entry-kicker">Choose your path</p>
+                  <div className="landing-paths">
+                    {ENTRY_PATHS.map((path) => {
+                      const isActive = selectedPath === path.key;
+                      return (
+                        <button
+                          key={path.key}
+                          className={`landing-path${isActive ? " landing-path--active" : ""}`}
+                          onClick={() => handlePathSelect(path.key)}
+                          disabled={entryPhase === "revealing"}
+                        >
+                          <span className="landing-path__label">
+                            {path.label}
+                          </span>
+                          <span className="landing-path__detail">
+                            {path.detail}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
           )}
 
           {status === "error" && (
             <button
               className="landing-enter landing-enter--bypass"
-              onClick={handleEnter}
+              onClick={handleBypass}
             >
               Enter without subscribing
             </button>

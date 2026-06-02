@@ -403,6 +403,8 @@ export const organs = [
     type: "point",
     nodeColor: "#ff0a0a", // STYLE: rich crimson — richer than category power red
     organ: "Heart",
+    focusDistance: 1.5,
+    focusYAdjust: 0.3,
     hardware: "Power Supply Unit (PSU)",
     position: [0.01, 1.32, 0.06],
     femalePosition: [0.01, 1.3, -0.02],

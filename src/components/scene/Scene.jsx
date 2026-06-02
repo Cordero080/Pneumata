@@ -68,6 +68,7 @@ function Scene({
   modelPath,
   femaleMode,
   organFocusY,
+  organFocusDistance,
   viewPanelOpen,
   bgMode,
   bgModeName,
@@ -289,6 +290,7 @@ function Scene({
         zoom={zoom}
         resetKey={resetKey}
         organFocusY={organFocusY}
+        organFocusDistance={organFocusDistance}
         viewPanelOpen={viewPanelOpen}
         femaleMode={femaleMode}
       />

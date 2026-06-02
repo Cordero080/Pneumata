@@ -10,17 +10,18 @@ const IS_MOBILE = window.innerWidth <= 768;
 // sits higher than on desktop. Raise camera and target to compensate.
 const MOBILE_BRAIN_Y = IS_MOBILE ? 0.07 : 0;
 
-const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.62 + MOBILE_BRAIN_Y, 0);
-const MALE_CELL_TARGET = new THREE.Vector3(0, 1.68 + MOBILE_BRAIN_Y, 0);
+// BRAIN PATH — raise Y to slide figure down, lower Y to slide figure up. z in snap = zoom distance (lower = closer).
+const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.55 + MOBILE_BRAIN_Y, 0);
+const MALE_CELL_TARGET = new THREE.Vector3(0, 1.51 + MOBILE_BRAIN_Y, 0);
 const FEMALE_Y_OFFSET = 1.615 - 1.672;
 const FEMALE_BRAIN_TARGET = new THREE.Vector3(
   0,
-  1.62 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
+  1.55 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
   0,
 );
 const FEMALE_CELL_TARGET = new THREE.Vector3(
   0,
-  1.68 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
+  1.51 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
   0,
 );
 
@@ -34,7 +35,7 @@ const ZOOM_FAR = 4.0;
 
 const INITIAL_CAM = { x: 0, y: 0.82, z: 2.1 };
 
-const TORSO_FOCUS_DIST = 1.45;
+const TORSO_FOCUS_DIST = 2.2;
 
 function CameraController({
   brainZoom,
@@ -45,6 +46,7 @@ function CameraController({
   zoom = 0.33,
   resetKey = 0,
   organFocusY = null,
+  organFocusDistance = null,
   viewPanelOpen = false,
   femaleMode = false,
 }) {
@@ -66,6 +68,13 @@ function CameraController({
     prevZoom.current = zoom;
   }
 
+  // Mark zoom dirty when organ focus ends so camera pulls back to slider distance
+  const prevOrganFocusY = useRef(organFocusY);
+  if (prevOrganFocusY.current !== null && organFocusY === null) {
+    zoomDirty.current = true;
+  }
+  prevOrganFocusY.current = organFocusY;
+
   useEffect(() => {
     animating.current = true;
     const ctrl = controlsRef.current;
@@ -76,12 +85,13 @@ function CameraController({
     camera.updateProjectionMatrix();
     const yo = femaleMode ? FEMALE_Y_OFFSET : 0;
     if (cellZoom) {
-      camera.position.set(0, 1.68 + yo + MOBILE_BRAIN_Y, 0.32);
-      ctrl.target.set(0, 1.68 + yo + MOBILE_BRAIN_Y, 0);
+      camera.position.set(0, 1.51 + yo + MOBILE_BRAIN_Y, 0.32);
+      ctrl.target.set(0, 1.51 + yo + MOBILE_BRAIN_Y, 0);
       ctrl.update();
     } else if (brainZoom) {
-      camera.position.set(0, 1.65 + yo + MOBILE_BRAIN_Y, 0.65);
-      ctrl.target.set(0, 1.62 + yo + MOBILE_BRAIN_Y, 0);
+      // Brain path initial zoom: z = distance from brain (lower = closer). Match Y to MALE_BRAIN_TARGET.
+      camera.position.set(0, 1.55 + yo + MOBILE_BRAIN_Y, 0.35);
+      ctrl.target.set(0, 1.55 + yo + MOBILE_BRAIN_Y, 0);
       ctrl.update();
     }
   }, [brainZoom, cellZoom, femaleMode, controlsRef, camera]);
@@ -92,6 +102,7 @@ function CameraController({
   // and just tell Three.js where the camera should be.
   useEffect(() => {
     if (resetKey === 0) return;
+    if (brainZoom || cellZoom) return;
     const ctrl = controlsRef.current;
     if (!ctrl) return;
     camera.position.set(INITIAL_CAM.x, INITIAL_CAM.y, INITIAL_CAM.z);
@@ -118,29 +129,33 @@ function CameraController({
       // Pan offsets Y relative to cell/brain target. Default pan (0.5) = zero offset.
       const panOffset = (0.5 - panYRef.current) * 0.4;
       ctrl.target.y += (target.y + panOffset - ctrl.target.y) * LERP;
+      // Keep camera Y level with orbit target to prevent foreshortening during entry
+      camera.position.y = ctrl.target.y;
       if (animating.current && ctrl.target.distanceTo(target) < SETTLED)
         animating.current = false;
-      ctrl.autoRotateSpeed = cellZoom ? 0 : 0.5;
+      ctrl.autoRotateSpeed = 0.5;
     } else {
       // Normal mode — pan targets absolute Y on the body
       const panelOffset = 0.02;
       const targetY =
         organFocusY !== null
-          ? organFocusY
+          ? organFocusY - 0.4
           : PAN_Y_TOP -
             panYRef.current * (PAN_Y_TOP - PAN_Y_BOTTOM) +
             panelOffset;
       ctrl.target.y += (targetY - ctrl.target.y) * LERP;
+      ctrl.autoRotateSpeed = 0.5;
     }
 
     // Zoom — map slider to the active mode's distance range
     const zoomMin = cellZoom ? 0.05 : brainZoom ? 0.12 : ZOOM_NEAR;
     const zoomMax = cellZoom ? 0.35 : brainZoom ? 0.6 : ZOOM_FAR;
     if (!cellZoom && !brainZoom && organFocusY !== null) {
+      const focusDist = organFocusDistance ?? TORSO_FOCUS_DIST;
       const currentDist = camera.position.distanceTo(ctrl.target);
-      if (Math.abs(currentDist - TORSO_FOCUS_DIST) > 0.01) {
+      if (Math.abs(currentDist - focusDist) > 0.01) {
         const dir = camera.position.clone().sub(ctrl.target).normalize();
-        const newDist = currentDist + (TORSO_FOCUS_DIST - currentDist) * LERP;
+        const newDist = currentDist + (focusDist - currentDist) * LERP;
         camera.position.copy(ctrl.target).addScaledVector(dir, newDist);
       }
     } else if (zoomDirty.current) {
