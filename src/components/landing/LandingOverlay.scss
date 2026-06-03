@@ -439,6 +439,8 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(220, 232, 245, 0.7);
+  text-align: center;
+  width: 100%;
 }
 
 .landing-paths-shell {
@@ -462,7 +464,7 @@
 .landing-path {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.25rem;
   padding: 0.95rem 1rem;
   border: 1px solid rgba(180, 222, 255, 0.18);

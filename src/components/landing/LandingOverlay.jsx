@@ -5,14 +5,9 @@ const ENDPOINT = "https://pneumata-backend.onrender.com/subscribe";
 const REVEAL_DURATION_MS = 920;
 const ENTRY_PATHS = [
   {
-    key: "brain",
-    label: "Brain",
-    detail: "Logic core",
-  },
-  {
-    key: "lungs",
-    label: "Lungs",
-    detail: "Cooling array",
+    key: "body",
+    label: "Full Body",
+    detail: "Whole chassis",
   },
   {
     key: "heart",
@@ -20,14 +15,19 @@ const ENTRY_PATHS = [
     detail: "Power relay",
   },
   {
+    key: "lungs",
+    label: "Lungs",
+    detail: "Cooling array",
+  },
+  {
+    key: "brain",
+    label: "Brain",
+    detail: "Logic core",
+  },
+  {
     key: "nervous",
     label: "Nervous",
     detail: "Signal bus",
-  },
-  {
-    key: "body",
-    label: "Full Body",
-    detail: "Whole chassis",
   },
 ];
 

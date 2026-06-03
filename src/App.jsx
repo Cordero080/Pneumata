@@ -255,7 +255,10 @@ function App() {
     <div
       className={`app app--${bodyModel}${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""}${bgMode > 0 ? ` app--bg-${BG_MODES[bgMode]}` : ""}`}
     >
-      <header className="app-header">
+      <header
+        className="app-header"
+        style={showLanding ? { display: "none" } : undefined}
+      >
         <div className="header-strip">
           <div className="header-accent header-accent--top">
             <button
