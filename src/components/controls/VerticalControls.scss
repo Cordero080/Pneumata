@@ -13,6 +13,10 @@
   font-family: v.$font-hud;
   font-size: 14px;
   padding: 3px 10px;
+  @media (max-width: 768px) {
+    font-size: 12px;
+    padding: 5px 9px;
+  }
   border: none;
   border-left: none;
   border-top: none;
@@ -63,6 +67,7 @@
 .vcontrols-panel {
   position: fixed;
   z-index: 200;
+  touch-action: none;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -139,6 +144,7 @@
   width: 20px;
   height: 90px;
   cursor: ns-resize;
+  touch-action: none;
 
   @media (min-width: 769px) {
     height: 180px;
