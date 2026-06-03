@@ -56,7 +56,7 @@ const LANDING_ENTRY_PRESETS = {
     organId: "spinal_cord",
     showNerves: true,
   },
-  body: { viewMode: "logic" },
+  body: { viewMode: "logic", zoom: 0.4, panY: IS_MOBILE ? 0.48 : 0.5 },
 };
 
 function App() {
