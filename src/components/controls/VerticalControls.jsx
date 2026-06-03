@@ -103,7 +103,7 @@ function VerticalControls({
             style={
               window.innerWidth >= 769
                 ? { top: panelPos.top + 90, right: panelPos.right + 50 }
-                : undefined
+                : { top: panelPos.top + 4, right: panelPos.right }
             }
           >
             <VSlider

@@ -289,7 +289,7 @@ function App() {
               >
                 Info
               </button>
-              {!showAnimation && !IS_MOBILE && (
+              {!showAnimation && !showLanding && (
                 <VerticalControls
                   panY={panY}
                   onPanChange={handlePanChange}
