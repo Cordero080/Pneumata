@@ -23,14 +23,7 @@
   border-right: 3px solid rgba(0, 0, 0, 0.18);
   border-bottom: 5px solid rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  background: linear-gradient(
-    135deg,
-    rgba(222, 228, 234, 0.72) 0%,
-    rgba(200, 210, 218, 0.66) 25%,
-    rgba(232, 238, 244, 0.72) 50%,
-    rgba(195, 206, 214, 0.66) 75%,
-    rgba(215, 222, 229, 0.72) 100%
-  );
+  background: transparent;
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.7),
@@ -79,14 +72,13 @@
   }
   background: linear-gradient(
     135deg,
-    rgba(222, 228, 234, 0.97) 0%,
-    rgba(200, 210, 218, 0.94) 25%,
-    rgba(232, 238, 244, 0.97) 50%,
-    rgba(195, 206, 214, 0.94) 75%,
-    rgba(215, 222, 229, 0.97) 100%
+    rgba(240, 244, 248, 0.38) 0%,
+    rgba(210, 218, 226, 0.36) 30%,
+    rgba(195, 206, 216, 0.34) 65%,
+    rgba(178, 190, 202, 0.34) 100%
   );
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-left: none;
   border-top: 2px solid rgba(255, 255, 255, 0.55);
   border-right: 3px solid rgba(0, 0, 0, 0.12);

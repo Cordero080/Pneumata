@@ -102,7 +102,7 @@ function VerticalControls({
             className={`vcontrols-panel${panelOpen ? " vcontrols-panel--open" : ""}${darkMode ? " vcontrols-panel--dark" : ""}`}
             style={
               window.innerWidth >= 769
-                ? { top: panelPos.top + 90, right: panelPos.right + 50 }
+                ? { top: panelPos.top + 120, right: panelPos.right + 80 }
                 : { top: panelPos.top + 4, right: panelPos.right }
             }
           >

@@ -56,32 +56,48 @@
 
 }
 
-// The clickable tab — fixed independently so it's always visible at the left edge
+// The clickable tab — floats off the left edge for easier tapping
 .view-controller-tab {
   position: fixed;
-  left: -34px;
-  top: calc(50% + 0px);
-  width: 88px;
+  left: -19px;
+  top: calc(50% - 40px);
+  width: 70px;
   height: 24px;
-  transform: rotate(90deg);
+  transform: rotate(-90deg);
   transform-origin: center center;
-  background: rgba(200, 210, 222, 0.38);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(
+    135deg,
+    rgba(222, 228, 234, 0.94) 0%,
+    rgba(200, 210, 218, 0.9) 50%,
+    rgba(210, 220, 228, 0.94) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.75);
-  border-right: 2px solid rgba(0, 0, 0, 0.1);
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid rgba(255, 255, 255, 0.75);
+  border-right: 4px solid rgba(0, 0, 0, 0.22);
+  border-left: 2px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0 0 8px 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 51;
-  clip-path: polygon(17px 0, calc(100% - 17px) 0, 100% 100%, 0 100%);
-  transition: background 0.2s ease;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(2px 0 8px rgba(0, 0, 0, 0.18));
+  transition: background 0.2s ease, filter 0.2s ease;
 
   &:hover {
-    background: rgba(200, 210, 222, 0.62);
+    background: linear-gradient(
+      135deg,
+      rgba(232, 238, 244, 0.98) 0%,
+      rgba(210, 220, 228, 0.95) 50%,
+      rgba(222, 230, 238, 0.98) 100%
+    );
+    filter: drop-shadow(2px 0 12px rgba(0, 0, 0, 0.28));
   }
 
   &__arrow {
@@ -119,26 +135,31 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   padding: 16px 16px;  // top/bottom become visual width after 90° rotation
+  @media (min-width: 769px) {
+    padding: 16px 25px;
+    font-size: 9px;
+  }
   display: flex;
   align-items: center;
   justify-content: center;
-  border-left: none;
-  border-top: 2px solid rgba(255, 255, 255, 0.35);
-  border-right: 3px solid rgba(0, 0, 0, 0.18);
-  border-bottom: 5px solid rgba(0, 0, 0, 0.2);
+  border-left: 2px solid rgba(255, 255, 255, 0.55);
+  border-top: 3px solid rgba(255, 255, 255, 0.82);
+  border-right: 5px solid rgba(0, 0, 0, 0.32);
+  border-bottom: 4px solid rgba(0, 0, 0, 0.38);
   cursor: pointer;
   background:
     linear-gradient(135deg,
-      rgba(222, 228, 234, 0.96) 0%,
-      rgba(200, 210, 218, 0.92) 25%,
-      rgba(232, 238, 244, 0.96) 50%,
-      rgba(195, 206, 214, 0.92) 75%,
-      rgba(215, 222, 229, 0.96) 100%
+      rgba(240, 244, 248, 0.99) 0%,
+      rgba(210, 218, 226, 0.95) 30%,
+      rgba(195, 206, 216, 0.92) 65%,
+      rgba(178, 190, 202, 0.92) 100%
     );
   box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.07);
+    0 4px 14px rgba(19, 27, 39, 0.22),
+    0 -1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 2px 0 rgba(255, 255, 255, 1),
+    inset 0 -3px 0 rgba(48, 60, 75, 0.22);
+  filter: drop-shadow(2px 3px 6px rgba(0, 0, 0, 0.28));
   color: rgba(55, 72, 88, 0.68);
 
   // Chamfer on first button (top-left + bottom-right corners cut)
@@ -155,27 +176,28 @@
     color: rgba(22, 36, 52, 0.9);
     transform: perspective(400px) rotateX(-2deg) scale(1.04);
     border-bottom-width: 6px;
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(3px 5px 10px rgba(0, 0, 0, 0.38));
   }
 
-  // Active/selected button style
+  // Active/selected button style — pressed in but same thickness
   &--active {
     color: rgba(22, 36, 52, 0.95);
-    border-top: 2px solid rgba(255, 255, 255, 0.5);
-    border-right: 2px solid rgba(0, 0, 0, 0.12);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.14);
+    border-left: 2px solid rgba(255, 255, 255, 0.55);
+    border-top: 3px solid rgba(255, 255, 255, 0.82);
+    border-right: 5px solid rgba(0, 0, 0, 0.32);
+    border-bottom: 4px solid rgba(0, 0, 0, 0.38);
+    filter: drop-shadow(2px 3px 6px rgba(0, 0, 0, 0.28));
     background:
       linear-gradient(135deg,
-        rgba(195, 204, 213, 0.97) 0%,
-        rgba(178, 190, 200, 0.95) 25%,
-        rgba(205, 215, 225, 0.97) 50%,
-        rgba(175, 188, 200, 0.95) 75%,
-        rgba(192, 202, 212, 0.97) 100%
+        rgba(195, 204, 213, 0.99) 0%,
+        rgba(172, 184, 196, 0.97) 40%,
+        rgba(162, 175, 188, 0.95) 100%
       );
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.14));
+      0 4px 14px rgba(19, 27, 39, 0.22),
+      0 -1px 0 rgba(255, 255, 255, 0.9),
+      inset 0 2px 0 rgba(255, 255, 255, 1),
+      inset 0 -3px 0 rgba(48, 60, 75, 0.22);
     z-index: 1;
   }
 
@@ -228,8 +250,15 @@
     @include v.dark-surface;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    box-shadow: none;
-    filter: drop-shadow(0 0 0.5px rgba(17, 38, 71, 0.3));
+    border-top-color: rgba(120, 160, 220, 0.55);
+    border-right-color: rgba(0, 0, 0, 0.5);
+    border-bottom: 5px solid rgba(80, 120, 200, 0.3);
+    box-shadow:
+      0 2px 12px rgba(0, 0, 0, 0.5),
+      0 0 8px rgba(80, 130, 220, 0.15),
+      inset 0 1px 0 rgba(120, 160, 255, 0.2),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    filter: none;
     color: v.$dark-text-dim;
 
     &--active {
@@ -245,9 +274,11 @@
   }
 
   .view-controller-tab {
-    background: rgba(15, 22, 40, 0.55);
-    border-top-color: rgba(100, 150, 220, 0.2);
-    &:hover { background: rgba(30, 45, 75, 0.75); }
+    background: linear-gradient(135deg, rgba(30, 40, 62, 0.92) 0%, rgba(18, 26, 46, 0.88) 100%);
+    border-top-color: rgba(100, 150, 220, 0.35);
+    border-right-color: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(120, 160, 255, 0.15);
+    &:hover { background: linear-gradient(135deg, rgba(40, 55, 85, 0.96) 0%, rgba(25, 36, 60, 0.92) 100%); }
     &__arrow { color: v.$dark-text-dim; }
     &:hover &__arrow { color: v.$dark-text; filter: drop-shadow(0 0 6px v.$dark-glow); }
   }
