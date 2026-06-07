@@ -4,9 +4,9 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 const LUNGS_CENTER_X = 0.0;
-const LUNGS_CENTER_Y = 1.34;
+const LUNGS_CENTER_Y = 1.35;
 const LUNGS_CENTER_Z = -0.01;
-const TARGET_HEIGHT = 0.31; // lung size — increase to enlarge
+const TARGET_HEIGHT = 0.333; // lung size — increase to enlarge
 
 // === FEMALE LUNGS — tweak these ===
 const LUNGS_CENTER_X_FEMALE = 0.0; // left (-) / right (+)
@@ -23,7 +23,7 @@ function LungsModel({
   heartbeatRef,
   femaleMode,
 }) {
-  const gltf = useGLTF("/new-lungs.glb");
+  const gltf = useGLTF("/lungs-final.glb");
   const baseScaleRef = useRef(1);
   const effectiveScaleRef = useRef(1);
   const lungsCenterRef = useRef(new THREE.Vector3());
@@ -32,7 +32,7 @@ function LungsModel({
     const cloned = gltf.scene.clone(true);
     cloned.scale.set(1, 1, 1);
     cloned.position.set(0, 0, 0);
-    cloned.rotation.set(0, 0, 0);
+    cloned.rotation.set(-0.26, 0, 0);
     cloned.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(cloned);
     const size = box.getSize(new THREE.Vector3());
@@ -175,6 +175,6 @@ function LungsModel({
   );
 }
 
-useGLTF.preload("/new-lungs.glb");
+useGLTF.preload("/lungs-final.glb");
 
 export default LungsModel;
