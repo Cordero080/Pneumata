@@ -14,6 +14,7 @@ import CameraController from "../CameraController";
 import BrainModel from "../brain/BrainModel";
 import HeartModel from "../heart/HeartModel";
 import LungsModel from "../lungs/LungsModel";
+import LiverModel from "../liver/LiverModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
@@ -160,6 +161,13 @@ function Scene({
           hoveredOrganId={hoveredOrganId}
           breathingRef={breathingRef}
           heartbeatRef={heartbeatRef}
+          femaleMode={femaleMode}
+        />
+
+        <LiverModel
+          meshMode={meshMode}
+          viewMode={viewMode}
+          hoveredOrganId={hoveredOrganId}
           femaleMode={femaleMode}
         />
 

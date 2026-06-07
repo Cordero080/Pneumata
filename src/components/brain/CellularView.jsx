@@ -573,9 +573,9 @@ function CellularView({
           />
           <CellMesh
             path="/pituitary.glb"
-            targetHeight={0.025}
+            targetHeight={0.020}
             posX={0}
-            posY={1.62}
+            posY={1.645}
             posZ={0.005}
             color="#ffe080"
             emissive="#ffaa00"

@@ -4,9 +4,9 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 const LUNGS_CENTER_X = 0.0;
-const LUNGS_CENTER_Y = 1.32;
-const LUNGS_CENTER_Z = 0.01;
-const TARGET_HEIGHT = 0.33; // lung size — increase to enlarge
+const LUNGS_CENTER_Y = 1.34;
+const LUNGS_CENTER_Z = -0.01;
+const TARGET_HEIGHT = 0.31; // lung size — increase to enlarge
 
 // === FEMALE LUNGS — tweak these ===
 const LUNGS_CENTER_X_FEMALE = 0.0; // left (-) / right (+)

@@ -120,7 +120,8 @@ function OrganNode({
     if (groupRef.current) {
       groupRef.current.position.copy(fullPos.current);
     }
-  }, [femaleMode, femalePositions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [femaleMode, femalePositions, organ.position, organ.brainPosition]);
 
   const color =
     organ.nodeColor ?? CATEGORY_COLORS[organ.category] ?? CATEGORY_COLORS.logic;
