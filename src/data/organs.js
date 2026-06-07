@@ -443,7 +443,7 @@ export const organs = [
     focusZoom: 0.02,
     focusPanY: 0.25,
     hardware: "Thermal Management (Heat Sink)",
-    position: [-0.1, 1.22, 0.05],
+    position: [-0.1, 1.26, 0.05],
     femalePosition: [-0.1, 1.18, -0.02],
     bio_function:
       "Exchanges carbon dioxide — the metabolic waste product of cellular energy generation — for fresh oxygen. Every cell in the body generates heat and CO₂ as byproducts of work. The lungs clear the exhaust.",
@@ -462,7 +462,7 @@ export const organs = [
     focusZoom: 0.02,
     focusPanY: 0.25,
     hardware: "Thermal Management (Heat Sink)",
-    position: [0.1, 1.22, 0.05],
+    position: [0.1, 1.26, 0.05],
     femalePosition: [0.1, 1.18, -0.02],
     bio_function:
       "Exchanges carbon dioxide — the metabolic waste product of cellular energy generation — for fresh oxygen. The right lung is slightly larger than the left, compensating for the cardiac displacement.",
