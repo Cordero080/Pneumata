@@ -22,6 +22,7 @@ function KidneysModel({
   viewMode,
   hoveredOrganId,
   femaleMode,
+  selectedOrganId,
   onKidneyClick,
 }) {
   const gltf = useGLTF("/kidneys.glb");
@@ -86,12 +87,18 @@ function KidneysModel({
     const mats = matsRef.current;
     if (!mats.length) return;
 
+    const otherSelected =
+      selectedOrganId &&
+      selectedOrganId !== "left_kidney" &&
+      selectedOrganId !== "right_kidney";
     const ghostMode = meshMode === 0 || meshMode === 3;
     const hovered =
       hoveredOrganId === "left_kidney" || hoveredOrganId === "right_kidney";
 
     let targetOpacity;
-    if (hovered) {
+    if (otherSelected) {
+      targetOpacity = 0;
+    } else if (hovered) {
       targetOpacity = 0.88;
     } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
       targetOpacity = 0.42;
@@ -104,8 +111,11 @@ function KidneysModel({
     }
 
     for (const m of mats) {
-      m.opacity += (targetOpacity - m.opacity) * 0.06;
+      const diff = targetOpacity - m.opacity;
+      if (Math.abs(diff) > 0.001) m.opacity += diff * 0.06;
     }
+
+    scene.visible = mats[0].opacity > 0.01;
   });
 
   return (

@@ -22,6 +22,7 @@ function LungsModel({
   breathingRef,
   heartbeatRef,
   femaleMode,
+  selectedOrganId,
 }) {
   const gltf = useGLTF("/lungs-final.glb");
   const baseScaleRef = useRef(1);
@@ -111,11 +112,14 @@ function LungsModel({
     };
   }, [scene]);
 
-  useFrame((state) => {
+  useFrame(() => {
     const tissue = tissueMats.current;
     if (!tissue.length) return;
 
-    const t = state.clock.getElapsedTime();
+    const otherSelected =
+      selectedOrganId &&
+      selectedOrganId !== "left_lung" &&
+      selectedOrganId !== "right_lung";
     const ghostMode = meshMode === 0 || meshMode === 3;
     const hovered =
       hoveredOrganId === "left_lung" || hoveredOrganId === "right_lung";
@@ -131,7 +135,9 @@ function LungsModel({
     beatFlash.current *= 0.88;
 
     let targetOpacity;
-    if (hovered) {
+    if (otherSelected) {
+      targetOpacity = 0;
+    } else if (hovered) {
       targetOpacity = 0.92;
     } else if (breathingMode) {
       targetOpacity = 0.55;
@@ -150,21 +156,31 @@ function LungsModel({
     }
 
     for (const m of tissue) {
-      m.opacity += (targetOpacity - m.opacity) * 0.06;
+      const diff = targetOpacity - m.opacity;
+      if (Math.abs(diff) > 0.001) m.opacity += diff * 0.06;
     }
 
-    // Glow layer — cyan only on inhale, fades out on exhale
-    const glowTarget = breathingMode ? breath * 0.28 : 0;
+    const visible = tissue[0].opacity > 0.01;
+    scene.visible = visible;
 
+    const glowTarget = visible && breathingMode ? breath * 0.28 : 0;
     for (const gm of glowMatsRef.current) {
-      gm.opacity += (glowTarget - gm.opacity) * 0.06;
+      const gDiff = glowTarget - gm.opacity;
+      if (Math.abs(gDiff) > 0.001) gm.opacity += gDiff * 0.06;
     }
 
-    const breathMult = breathingMode ? 1 + breath * 0.06 : 1;
-    const targetScale = effectiveScaleRef.current * breathMult;
-    scene.scale.setScalar(scene.scale.x + (targetScale - scene.scale.x) * 0.04);
-    if (glowScene) glowScene.scale.copy(scene.scale);
-    if (glowScene) glowScene.position.copy(scene.position);
+    if (visible) {
+      const breathMult = breathingMode ? 1 + breath * 0.06 : 1;
+      const targetScale = effectiveScaleRef.current * breathMult;
+      scene.scale.setScalar(
+        scene.scale.x + (targetScale - scene.scale.x) * 0.04,
+      );
+    }
+    if (glowScene) {
+      glowScene.visible = visible;
+      glowScene.scale.copy(scene.scale);
+      glowScene.position.copy(scene.position);
+    }
   });
 
   return (

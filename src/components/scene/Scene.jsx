@@ -125,7 +125,7 @@ function Scene({
         powerPreference: "high-performance",
         antialias: window.devicePixelRatio < 2,
       }}
-      dpr={[1, window.innerWidth <= 768 ? 1.5 : 2]}
+      dpr={[1, window.innerWidth <= 768 ? 1 : 2]}
       performance={{ min: 0.4 }}
       onPointerMissed={() => handleClearPreview()}
     >
@@ -155,6 +155,7 @@ function Scene({
           hoveredOrganId={hoveredOrganId}
           heartbeatRef={heartbeatRef}
           femaleMode={femaleMode}
+          selectedOrganId={selectedOrgan?.id}
         />
 
         <LungsModel
@@ -164,6 +165,7 @@ function Scene({
           breathingRef={breathingRef}
           heartbeatRef={heartbeatRef}
           femaleMode={femaleMode}
+          selectedOrganId={selectedOrgan?.id}
         />
 
         <KidneysModel
@@ -171,6 +173,7 @@ function Scene({
           viewMode={viewMode}
           hoveredOrganId={hoveredOrganId}
           femaleMode={femaleMode}
+          selectedOrganId={selectedOrgan?.id}
           onKidneyClick={() => {
             const kidney = organs.find((o) => o.id === "right_kidney");
             if (kidney) onSelect(kidney);
@@ -182,6 +185,7 @@ function Scene({
           viewMode={viewMode}
           hoveredOrganId={hoveredOrganId}
           femaleMode={femaleMode}
+          selectedOrganId={selectedOrgan?.id}
         />
 
         <StomachModel
@@ -189,6 +193,7 @@ function Scene({
           viewMode={viewMode}
           hoveredOrganId={hoveredOrganId}
           femaleMode={femaleMode}
+          selectedOrganId={selectedOrgan?.id}
         />
 
         <BrainModel

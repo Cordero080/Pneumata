@@ -17,7 +17,13 @@ const LIVER_CENTER_Z_FEMALE = 0.06;
 const TARGET_HEIGHT_FEMALE = 0.16;
 // ===================================
 
-function LiverModel({ meshMode, viewMode, hoveredOrganId, femaleMode }) {
+function LiverModel({
+  meshMode,
+  viewMode,
+  hoveredOrganId,
+  femaleMode,
+  selectedOrganId,
+}) {
   const gltf = useGLTF("/liver.glb");
   const baseScaleRef = useRef(1);
   const liverCenterRef = useRef(new THREE.Vector3());
@@ -85,12 +91,15 @@ function LiverModel({ meshMode, viewMode, hoveredOrganId, femaleMode }) {
     const mats = matsRef.current;
     if (!mats.length) return;
 
+    const otherSelected = selectedOrganId && selectedOrganId !== "liver";
     const ghostMode = meshMode === 0 || meshMode === 3;
     const hovered = hoveredOrganId === "liver";
     const digestiveMode = viewMode === "unified";
 
     let targetOpacity;
-    if (hovered) {
+    if (otherSelected) {
+      targetOpacity = 0;
+    } else if (hovered) {
       targetOpacity = 0.75;
     } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
       targetOpacity = digestiveMode ? 0.45 : 0.28;
@@ -103,10 +112,14 @@ function LiverModel({ meshMode, viewMode, hoveredOrganId, femaleMode }) {
     }
 
     for (const m of mats) {
-      m.opacity += (targetOpacity - m.opacity) * 0.06;
+      const opDiff = targetOpacity - m.opacity;
+      if (Math.abs(opDiff) > 0.001) m.opacity += opDiff * 0.06;
       const targetEmissive = hovered ? 0.4 : 0.0;
-      m.emissiveIntensity += (targetEmissive - m.emissiveIntensity) * 0.08;
+      const emDiff = targetEmissive - m.emissiveIntensity;
+      if (Math.abs(emDiff) > 0.001) m.emissiveIntensity += emDiff * 0.08;
     }
+
+    scene.visible = mats[0].opacity > 0.01;
   });
 
   return <primitive object={scene} />;

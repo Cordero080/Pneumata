@@ -6,7 +6,7 @@ import * as THREE from "three";
 // === MALE STOMACH — tweak these ===
 const STOMACH_CENTER_X = 0.01; // left (-) / right (+)
 const STOMACH_CENTER_Y = 1.17; // up (+) / down (-)
-const STOMACH_CENTER_Z = 0.040; // forward (+) / back into body (-)
+const STOMACH_CENTER_Z = 0.04; // forward (+) / back into body (-)
 const TARGET_HEIGHT = 0.22; // size — increase to enlarge
 // ==================================
 
@@ -17,7 +17,13 @@ const STOMACH_CENTER_Z_FEMALE = 0.04;
 const TARGET_HEIGHT_FEMALE = 0.14;
 // =====================================
 
-function StomachModel({ meshMode, viewMode, hoveredOrganId, femaleMode }) {
+function StomachModel({
+  meshMode,
+  viewMode,
+  hoveredOrganId,
+  femaleMode,
+  selectedOrganId,
+}) {
   const gltf = useGLTF("/stomach.glb");
   const baseScaleRef = useRef(1);
   const centerRef = useRef(new THREE.Vector3());
@@ -80,12 +86,15 @@ function StomachModel({ meshMode, viewMode, hoveredOrganId, femaleMode }) {
     const mats = matsRef.current;
     if (!mats.length) return;
 
+    const otherSelected = selectedOrganId && selectedOrganId !== "stomach";
     const ghostMode = meshMode === 0 || meshMode === 3;
     const hovered = hoveredOrganId === "stomach";
     const digestiveMode = viewMode === "unified";
 
     let targetOpacity;
-    if (hovered) {
+    if (otherSelected) {
+      targetOpacity = 0;
+    } else if (hovered) {
       targetOpacity = 0.88;
     } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
       targetOpacity = digestiveMode ? 0.55 : 0.38;
@@ -98,8 +107,11 @@ function StomachModel({ meshMode, viewMode, hoveredOrganId, femaleMode }) {
     }
 
     for (const m of mats) {
-      m.opacity += (targetOpacity - m.opacity) * 0.06;
+      const diff = targetOpacity - m.opacity;
+      if (Math.abs(diff) > 0.001) m.opacity += diff * 0.06;
     }
+
+    scene.visible = mats[0].opacity > 0.01;
   });
 
   return <primitive object={scene} />;
