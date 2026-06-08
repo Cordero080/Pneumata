@@ -15,6 +15,8 @@ import BrainModel from "../brain/BrainModel";
 import HeartModel from "../heart/HeartModel";
 import LungsModel from "../lungs/LungsModel";
 import LiverModel from "../liver/LiverModel";
+import KidneysModel from "../kidneys/KidneysModel";
+import StomachModel from "../stomach/StomachModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
@@ -164,7 +166,25 @@ function Scene({
           femaleMode={femaleMode}
         />
 
+        <KidneysModel
+          meshMode={meshMode}
+          viewMode={viewMode}
+          hoveredOrganId={hoveredOrganId}
+          femaleMode={femaleMode}
+          onKidneyClick={() => {
+            const kidney = organs.find((o) => o.id === "right_kidney");
+            if (kidney) onSelect(kidney);
+          }}
+        />
+
         <LiverModel
+          meshMode={meshMode}
+          viewMode={viewMode}
+          hoveredOrganId={hoveredOrganId}
+          femaleMode={femaleMode}
+        />
+
+        <StomachModel
           meshMode={meshMode}
           viewMode={viewMode}
           hoveredOrganId={hoveredOrganId}

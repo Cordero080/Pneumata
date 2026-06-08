@@ -513,7 +513,7 @@ export const organs = [
     type: "point",
     organ: "Stomach",
     hardware: "Parser / Compiler",
-    position: [0.05, 1.08, 0.08],
+    position: [0.05, 1.12, 0.08],
     bio_function:
       "Mechanically churns food and chemically breaks it down with acid and enzymes — converting complex raw material into a semi-digested slurry that the small intestine can extract nutrients from. It is the first stage of transformation.",
     hard_function:
@@ -614,6 +614,8 @@ export const organs = [
     organ: "Right Kidney",
     hardware: "Swap File / Virtual Memory",
     position: [-0.06, 1.07, -0.05],
+    focusZoom: 0.18,
+    focusPanY: 0.37,
     bio_function:
       "Continuously filters the blood, removing metabolic waste products that accumulate as byproducts of the body's own operations. Unlike digestion, the kidneys clean what the body itself produces.",
     hard_function:
@@ -630,6 +632,8 @@ export const organs = [
     organ: "Left Kidney",
     hardware: "Swap File / Virtual Memory",
     position: [0.06, 1.09, -0.05],
+    focusZoom: 0.18,
+    focusPanY: 0.37,
     bio_function:
       "Continuously filters the blood, removing metabolic waste products that accumulate as byproducts of the body's own operations. Bilateral redundancy — both kidneys can sustain life independently.",
     hard_function:

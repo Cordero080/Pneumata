@@ -4,10 +4,10 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 // === MALE LIVER — tweak these ===
-const LIVER_CENTER_X = -0.02; // left (-) / right (+)
+const LIVER_CENTER_X = -0.03; // left (-) / right (+)
 const LIVER_CENTER_Y = 1.18; // up (+) / down (-)
-const LIVER_CENTER_Z = 0.05; // forward (+) / back into body (-)
-const TARGET_HEIGHT = 0.135; // size — increase to enlarge
+const LIVER_CENTER_Z = 0.03; // forward (+) / back into body (-)
+const TARGET_HEIGHT = 0.12; // size — increase to enlarge
 // ================================
 
 // === FEMALE LIVER — tweak these ===
