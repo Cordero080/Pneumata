@@ -16,15 +16,7 @@ function CategoryLegend({ onCategoryHover }) {
         >
           {/* Chamfered tag slides out on hover */}
           <div className="legend-tag">
-            <span
-              className="legend-label"
-              style={{
-                color: "#ffffff99",
-                textShadow: `0 0 1px ${color}, 0 0 1px ${color}88`,
-              }}
-            >
-              {label}
-            </span>
+            <span className="legend-label">{label}</span>
             <span className="legend-desc">{desc}</span>
           </div>
 

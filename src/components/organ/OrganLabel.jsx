@@ -7,15 +7,15 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
   const isVertical = Math.abs(screenX) > 0.65;
 
   const panel = {
-    background: "rgba(12, 20, 40, 0.52)",
-    backdropFilter: "blur(22px)",
-    WebkitBackdropFilter: "blur(22px)",
-    boxShadow: `0 4px 24px rgba(0,0,0,0.22), 0 0 20px ${color}22, inset 0 1px 0 rgba(255,255,255,0.15)`,
-    border: "1px solid rgba(255, 255, 255, 0.22)",
-    borderRadius: "4px",
+    background: "rgba(220, 232, 248, 0.30)",
+    backdropFilter: "blur(32px)",
+    WebkitBackdropFilter: "blur(32px)",
+    boxShadow: `0 8px 32px rgba(0,0,0,0.22), 0 0 20px ${color}20, inset 0 1.5px 0 rgba(255,255,255,0.70), inset 0 -1px 0 rgba(180,200,230,0.15)`,
+    border: "1px solid rgba(255, 255, 255, 0.45)",
+    borderRadius: "6px",
   };
 
-  const subtitleColor = "rgba(200, 218, 245, 0.80)";
+  const subtitleColor = "rgba(18, 38, 72, 0.70)";
 
   return (
     <Html
@@ -102,9 +102,9 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
               position: "absolute",
               inset: 0,
               transform: `translate(${isLeft ? -5 : 5}px, 1px)`,
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.09)",
-              borderRadius: "4px",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              borderRadius: "6px",
             }}
           />
           {/* Layer 2 — middle */}
@@ -113,9 +113,9 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
               position: "absolute",
               inset: 0,
               transform: `translate(${isLeft ? -2.5 : 2.5}px, 0.5px)`,
-              background: "rgba(255,255,255,0.07)",
-              border: "1px solid rgba(255,255,255,0.14)",
-              borderRadius: "4px",
+              background: "rgba(255,255,255,0.09)",
+              border: "1px solid rgba(255,255,255,0.22)",
+              borderRadius: "6px",
             }}
           />
           {/* Layer 1 — front */}
@@ -132,8 +132,8 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
               ...panel,
               ...(labelReady
                 ? {
-                    border: `1px solid ${color}cc`,
-                    boxShadow: `0 0 18px ${color}55, 0 0 6px ${color}88, inset 0 1px 0 rgba(255,255,255,0.1)`,
+                    border: `1px solid ${color}aa`,
+                    boxShadow: `0 0 18px ${color}44, inset 0 1.5px 0 rgba(255,255,255,0.70)`,
                   }
                 : {}),
               position: "relative",
@@ -150,11 +150,11 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
                 fontFamily: "'Orbitron', system-ui, sans-serif",
                 fontSize: IS_MOBILE
                   ? "clamp(10px, 3vw, 13px)"
-                  : "clamp(13px, 1.1vw, 17px)",
-                fontWeight: 700,
-                letterSpacing: "0.14em",
-                color: "rgba(255, 255, 255, 0.97)",
-                textShadow: "0 1px 4px rgba(0,0,0,0.8)",
+                  : "clamp(14px, 1.2vw, 19px)",
+                fontWeight: 800,
+                letterSpacing: "0.16em",
+                color: "rgba(8, 20, 48, 0.95)",
+                textShadow: "0 1px 0 rgba(255,255,255,0.6)",
                 lineHeight: 1.2,
                 textTransform: "uppercase",
               }}
@@ -166,7 +166,7 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
                 fontFamily: "'Orbitron', system-ui, sans-serif",
                 fontSize: IS_MOBILE
                   ? "clamp(7px, 2.2vw, 9px)"
-                  : "clamp(10px, 0.8vw, 12px)",
+                  : "clamp(10px, 0.85vw, 13px)",
                 fontWeight: 500,
                 letterSpacing: "0.12em",
                 color: subtitleColor,
