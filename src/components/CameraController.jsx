@@ -11,17 +11,17 @@ const IS_MOBILE = window.innerWidth <= 768;
 const MOBILE_BRAIN_Y = IS_MOBILE ? 0.07 : 0;
 
 // BRAIN PATH — raise Y to slide figure down, lower Y to slide figure up. z in snap = zoom distance (lower = closer).
-const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.87 + MOBILE_BRAIN_Y, 0);
-const MALE_CELL_TARGET = new THREE.Vector3(0, 1.82 + MOBILE_BRAIN_Y, 0);
+const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.45 + MOBILE_BRAIN_Y, 0);
+const MALE_CELL_TARGET = new THREE.Vector3(0, 1.41 + MOBILE_BRAIN_Y, 0);
 const FEMALE_Y_OFFSET = 1.615 - 1.672;
 const FEMALE_BRAIN_TARGET = new THREE.Vector3(
   0,
-  1.87 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
+  1.45 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
   0,
 );
 const FEMALE_CELL_TARGET = new THREE.Vector3(
   0,
-  1.82 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
+  1.41 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
   0,
 );
 
@@ -85,13 +85,13 @@ function CameraController({
     camera.updateProjectionMatrix();
     const yo = femaleMode ? FEMALE_Y_OFFSET : 0;
     if (cellZoom) {
-      camera.position.set(0, 1.51 + yo + MOBILE_BRAIN_Y, 0.32);
-      ctrl.target.set(0, 1.51 + yo + MOBILE_BRAIN_Y, 0);
+      camera.position.set(0, 1.41 + yo + MOBILE_BRAIN_Y, 0.32);
+      ctrl.target.set(0, 1.41 + yo + MOBILE_BRAIN_Y, 0);
       ctrl.update();
     } else if (brainZoom) {
       // Brain path initial zoom: z = distance from brain (lower = closer). Match Y to MALE_BRAIN_TARGET.
-      camera.position.set(0, 1.55 + yo + MOBILE_BRAIN_Y, 0.35);
-      ctrl.target.set(0, 1.55 + yo + MOBILE_BRAIN_Y, 0);
+      camera.position.set(0, 1.45 + yo + MOBILE_BRAIN_Y, 0.35);
+      ctrl.target.set(0, 1.45 + yo + MOBILE_BRAIN_Y, 0);
       ctrl.update();
     }
   }, [brainZoom, cellZoom, femaleMode, controlsRef, camera]);
