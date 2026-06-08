@@ -456,6 +456,37 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.7rem;
 
+  // 5th button (nervous / signal bus) anchored at center — the hub
+  @media (min-width: 769px) {
+    .landing-path:last-child {
+      grid-column: 1 / -1;
+      width: calc(50% - 0.35rem);
+      justify-self: center;
+      border-color: rgba(92, 225, 255, 0.32);
+      background: linear-gradient(135deg, rgba(14, 28, 72, 0.88), rgba(18, 42, 78, 0.52));
+      position: relative;
+
+      // top accent line — signals this is the terminus
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 16%;
+        right: 16%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(92, 225, 255, 0.7), transparent);
+        box-shadow: 0 0 8px rgba(92, 225, 255, 0.4);
+      }
+
+      &:hover:enabled {
+        border-color: rgba(92, 225, 255, 0.65);
+        box-shadow:
+          0 0 24px rgba(50, 190, 255, 0.22),
+          0 -2px 12px rgba(92, 225, 255, 0.14);
+      }
+    }
+  }
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }

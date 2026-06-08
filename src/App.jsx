@@ -316,6 +316,7 @@ function App() {
         >
           <button
             className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
+            title={["Ghost", "Silver (Transparent)", "Silver (Solid)", "Bone / X-Ray", "Metallic Chrome", "", "Aluminum"][meshMode] ?? "Skin"}
             onClick={() =>
               setMeshMode((m) => {
                 if (darkMode) {
@@ -337,11 +338,12 @@ function App() {
                       ? "◎\uFE0E"
                       : "⬛\uFE0E"}
           </button>
-          <button className="reset-btn" onClick={handleReset}>
+          <button className="reset-btn" title="Reset camera" onClick={handleReset}>
             ↺
           </button>
           <button
             className={`body-toggle-btn${bodyModel === "female" ? " body-toggle-btn--active" : ""}`}
+            title={bodyModel === "male" ? "Male — switch to Female" : "Female — switch to Male"}
             onClick={() => {
               setBodyModel((m) => (m === "male" ? "female" : "male"));
               handleReset();
@@ -351,6 +353,7 @@ function App() {
           </button>
           <button
             className={`anim-toggle-btn${showAnimation ? " anim-toggle-btn--active" : ""}`}
+            title={showAnimation ? "Stop animation" : "Play animation"}
             onClick={() => setShowAnimation((v) => !v)}
           >
             {showAnimation ? "✕" : "▶"}

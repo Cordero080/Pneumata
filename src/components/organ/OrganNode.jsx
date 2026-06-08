@@ -42,7 +42,6 @@ function OrganNode({
   viewMode,
   brainZoom,
   cellZoom,
-  darkMode,
   femaleMode,
   femalePositions,
   selectedOrganId,
@@ -463,7 +462,6 @@ function OrganNode({
           <OrganLabel
             organ={organ}
             color={color}
-            darkMode={darkMode}
             labelReady={labelReady}
             screenX={screenXRef.current}
             onSelect={

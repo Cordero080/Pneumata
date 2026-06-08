@@ -27,7 +27,7 @@ export const HAS_SHEEN = false;
 
 // Material colors used across all mesh modes and dark/light variants
 export const COLORS = {
-  obsColor: "#030306", // dark mode: base surface tint (violet-black)
+  obsColor: "#080817", // dark mode: base surface tint (violet-black)
   obsEmissive: "#880000", // dark mode: inner glow (crimson)
   ghostColor: "#afc1d4", // light mode: ghost shell tint
   ghostDark: "#1a1a2a", // light ghost mode 0: charcoal
@@ -35,8 +35,8 @@ export const COLORS = {
   alColorDark: "#c8d5e0", // aluminum layer (dark mode) — same for male
   whiteColor: "#e2e2f0", // white ghost mode 3 tint
   whiteAlColor: "#a8bcd4", // aluminum in white ghost mode (light)
-  whiteAlColorDark: "#a8bcd4", // aluminum in white ghost mode (dark) — same for male
-  whiteEmissiveLight: "#c8a060", // emissive in white ghost mode (light)
+  whiteAlColorDark: "#7a9ac2", // aluminum in white ghost mode (dark) — same for male
+  whiteEmissiveLight: "#f9bc07", // emissive in white ghost mode (light)
   whiteEmissiveDark: "#9966ff", // emissive in white ghost mode (dark)
   onyxColor: "#030306fa", // onyx skin: light mode
   onyxColorDark: "#030306fa", // onyx skin: dark mode

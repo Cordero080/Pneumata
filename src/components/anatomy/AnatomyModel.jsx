@@ -442,6 +442,8 @@ function AnatomyModel({
 
     // Sync dark mode immediately in case it was active before this async GLB load resolved
     if (darkMode) {
+      // Colors come from male-config.js or female-config.js → COLORS object. Change colors there.
+      // "mat" = ghost/base layer. "al" = aluminum layer on top.
       mat.color.set(config.COLORS.obsColor);
       mat.emissive.set(config.COLORS.obsEmissive);
       mat.metalness = 0.92;
@@ -529,7 +531,7 @@ function AnatomyModel({
     const whiteEmissive = darkMode ? whiteEmissiveDark : whiteEmissiveLight;
 
     if (darkMode) {
-      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 6 — ONYX
+      // DARK · MODE 6 — ONYX: solid opaque near-black. color=onyxColorDark, emissive=onyxEmissive
       if (meshMode === 6) {
         // Onyx — solid near-black with violet emissive
         mat.color.set(onyxColorDark);
@@ -551,7 +553,7 @@ function AnatomyModel({
         al.opacity = 0;
         al.depthWrite = false;
         al.needsUpdate = true;
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 4/5 — GHOST + AL
+        // DARK · MODE 4=chrome transparent / MODE 5=chrome solid. Ghost hidden, aluminum visible. color=alColorDark
       } else if (meshMode === 4 || meshMode === 5) {
         const solid = meshMode === 5;
         mat.transparent = true;
@@ -565,32 +567,32 @@ function AnatomyModel({
         al.opacity = solid ? 1.0 : 0.82;
         al.depthWrite = solid;
         al.needsUpdate = true;
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 3 — XRAY
+        // DARK · MODE 3 — X-RAY/BONE: semi-transparent white. color=whiteColor, emissive=whiteEmissiveDark (purple♂ pink♀)
       } else if (meshMode === 3) {
         mat.color.set(whiteColor);
         mat.transparent = true;
         mat.transmission = 0;
-        mat.opacity = 0.28;
-        mat.metalness = 0.05;
+        mat.opacity = 0.68;
+        mat.metalness = 0.3;
         mat.roughness = 0.1;
         mat.emissive.set(whiteEmissive);
         mat.emissiveIntensity = 0.1;
         mat.iridescence = 0.001;
         mat.depthWrite = false;
         mat.needsUpdate = true;
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 0 — OBSIDIAN GHOST
+        // DARK · MODE 0 — GHOST: thin dark shell. color=obsColor, emissive=obsEmissive
       } else if (meshMode === 0) {
         mat.color.set(obsColor);
         mat.emissive.set(obsEmissive);
         mat.transparent = true;
         mat.transmission = 0;
-        mat.opacity = 0.45;
+        mat.opacity = 0.85;
         mat.metalness = 0.11;
         mat.roughness = 0.12;
         mat.iridescence = 0.001;
         mat.depthWrite = false;
         mat.needsUpdate = true;
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DARK · MODE 1/2 — OBSIDIAN SEMI / OBSIDIAN SOLID
+        // DARK · MODE 1=obsidian transparent / MODE 2=obsidian solid. Iridescent black. color=obsColor, emissive=obsEmissive
       } else {
         const solid = meshMode === 2;
         mat.color.set(obsColor);
@@ -600,7 +602,7 @@ function AnatomyModel({
         mat.opacity = solid ? 1.0 : 0.82;
         mat.metalness = 0.92;
         mat.roughness = 0.08;
-        mat.iridescence = 0.45;
+        mat.iridescence = .95;
         mat.depthWrite = solid;
         mat.needsUpdate = true;
         al.transparent = true;
@@ -609,7 +611,7 @@ function AnatomyModel({
         al.needsUpdate = true;
       }
     } else {
-      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 6 — ONYX
+      // LIGHT · MODE 6 — ONYX: same as dark mode 6. color=onyxColor, emissive=onyxEmissive
       if (meshMode === 6) {
         // Onyx — solid near-black, works same in light and dark mode
         mat.color.set(darkMode ? onyxColorDark : onyxColor);
@@ -618,10 +620,10 @@ function AnatomyModel({
         mat.transparent = false;
         mat.transmission = 0;
         mat.opacity = 1.0;
-        mat.metalness = 0.95;
+        mat.metalness = 0.75;
         mat.roughness = 0.05;
-        mat.iridescence = 0.3;
-        mat.iridescenceIOR = 1.4;
+        mat.iridescence = 1;
+        mat.iridescenceIOR = 2.4;
         mat.iridescenceThicknessRange = [80, 200];
         mat.clearcoat = 1.0;
         mat.clearcoatRoughness = 0.05;
@@ -631,7 +633,7 @@ function AnatomyModel({
         al.opacity = 0;
         al.depthWrite = false;
         al.needsUpdate = true;
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 0 — GHOST DARK
+        // LIGHT · MODE 0 — GHOST: dark semi-transparent. color=ghostDark (charcoal♂ warm-charcoal♀)
       } else if (meshMode === 0) {
         al.transparent = true;
         al.opacity = 0;
@@ -641,18 +643,18 @@ function AnatomyModel({
         mat.transparent = true;
         mat.transmission = 0;
         mat.opacity = 0.45;
-        mat.metalness = 0.1;
+        mat.metalness = 15;
         mat.roughness = 0.12;
         mat.emissiveIntensity = 0;
         mat.depthWrite = false;
         mat.needsUpdate = true;
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 3 — XRAY
+        // LIGHT · MODE 3 — X-RAY/BONE: white ghost + aluminum overlay. color=whiteColor, emissive=whiteEmissiveLight (amber♂ pink♀)
       } else if (meshMode === 3) {
         mat.color.set(whiteColor);
         mat.transparent = true;
         mat.transmission = 0;
-        mat.opacity = 0.28;
-        mat.metalness = 0.05;
+        mat.opacity = 0.18;
+        mat.metalness = 0.01;
         mat.roughness = 0.1;
         mat.emissive.set(whiteEmissive);
         mat.emissiveIntensity = 0.1;
@@ -662,10 +664,10 @@ function AnatomyModel({
         al.color.set(whiteAlResolved);
         al.metalness = 0.1;
         al.roughness = 0.1;
-        al.opacity = 0.55;
+        al.opacity = 0.38;
         al.depthWrite = false;
         al.needsUpdate = true;
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 4 — ALUMINUM ONLY
+        // LIGHT · MODE 4 — METALLIC CHROME (transparent): ghost hidden, aluminum semi-transparent. color=alColor
       } else if (meshMode === 4) {
         // Ghost hidden, aluminum semi-transparent — mirrors dark mode 4 behaviour
         mat.transparent = true;
@@ -674,12 +676,12 @@ function AnatomyModel({
         mat.needsUpdate = true;
         al.transparent = true;
         al.color.set(alColorResolved);
-        al.metalness = 0.88;
+        al.metalness = 0.90;
         al.roughness = 0.15;
-        al.opacity = 0.82;
+        al.opacity = 0.62;
         al.depthWrite = false;
         al.needsUpdate = true;
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIGHT · MODE 1/2 — GHOST + AL
+        // LIGHT · MODE 1=ghost+aluminum transparent / MODE 2=ghost+aluminum solid. color=ghostColor + alColor
       } else {
         mat.color.set(ghostColor);
         mat.transmission = 0;

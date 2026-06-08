@@ -1,40 +1,21 @@
 import { Html } from "@react-three/drei";
-import { darkenForLight } from "../../data/categories";
 
-function OrganLabel({
-  organ,
-  color,
-  darkMode,
-  onSelect,
-  labelReady,
-  screenX = 0,
-}) {
+const IS_MOBILE = window.innerWidth <= 768;
+
+function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
   const isLeft = organ.position[0] <= 0;
   const isVertical = Math.abs(screenX) > 0.65;
-  // Light mode: darken neons so they read on silvery panel
-  // Dark mode: use raw neon — it pops on the dark surface
-  const nameColor = darkMode ? color : darkenForLight(color);
 
-  const panel = darkMode
-    ? {
-        background: "rgba(8, 12, 22, 0.88)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        boxShadow: `0 0 12px ${color}22, inset 0 1px 0 rgba(255,255,255,0.06)`,
-        border: `1px solid ${color}55`,
-      }
-    : {
-        background: "rgba(218, 225, 233, 0.92)",
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-        boxShadow:
-          "0 2px 10px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.85)",
-        border: `1px solid ${darkenForLight(color)}`,
-      };
+  const panel = {
+    background: "rgba(12, 20, 40, 0.52)",
+    backdropFilter: "blur(22px)",
+    WebkitBackdropFilter: "blur(22px)",
+    boxShadow: `0 4px 24px rgba(0,0,0,0.22), 0 0 20px ${color}22, inset 0 1px 0 rgba(255,255,255,0.15)`,
+    border: "1px solid rgba(255, 255, 255, 0.22)",
+    borderRadius: "4px",
+  };
 
-  const subtitleColor = darkMode
-    ? "rgba(160, 185, 220, 0.65)"
-    : "rgba(45, 60, 78, 0.72)";
+  const subtitleColor = "rgba(200, 218, 245, 0.80)";
 
   return (
     <Html
@@ -113,60 +94,89 @@ function OrganLabel({
           />
         </div>
 
-        {/* Label panel — tappable to open modal */}
-        <div
-          onClick={
-            onSelect
-              ? (e) => {
-                  e.stopPropagation();
-                  onSelect(organ);
-                }
-              : undefined
-          }
-          style={{
-            ...panel,
-            ...(labelReady
-              ? {
-                  border: `1px solid ${color}cc`,
-                  boxShadow: `0 0 18px ${color}55, 0 0 6px ${color}88, inset 0 1px 0 rgba(255,255,255,0.1)`,
-                }
-              : {}),
-            padding: "6px 10px",
-            maxWidth: "130px",
-            clipPath:
-              "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
-            textAlign: isLeft ? "right" : "left",
-            cursor: onSelect ? "pointer" : "default",
-            pointerEvents: onSelect ? "all" : "none",
-          }}
-        >
+        {/* Label panel — stacked layers for plexi thickness */}
+        <div style={{ position: "relative", display: "inline-block" }}>
+          {/* Layer 3 — deepest, furthest offset */}
           <div
             style={{
-              fontFamily: "'Orbitron', system-ui, sans-serif",
-              fontSize: "clamp(10px, 3vw, 13px)",
-              fontWeight: 700,
-              letterSpacing: "0.14em",
-              color: nameColor,
-              textShadow: `0 0 10px ${color}66`,
-              lineHeight: 1.2,
-              textTransform: "uppercase",
+              position: "absolute",
+              inset: 0,
+              transform: `translate(${isLeft ? -5 : 5}px, 1px)`,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.09)",
+              borderRadius: "4px",
             }}
-          >
-            {organ.organ}
-          </div>
+          />
+          {/* Layer 2 — middle */}
           <div
             style={{
-              fontFamily: "'Orbitron', system-ui, sans-serif",
-              fontSize: "clamp(7px, 2.2vw, 9px)",
-              fontWeight: 500,
-              letterSpacing: "0.12em",
-              color: subtitleColor,
-              lineHeight: 1.4,
-              textTransform: "uppercase",
-              marginTop: "3px",
+              position: "absolute",
+              inset: 0,
+              transform: `translate(${isLeft ? -2.5 : 2.5}px, 0.5px)`,
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.14)",
+              borderRadius: "4px",
+            }}
+          />
+          {/* Layer 1 — front */}
+          <div
+            onClick={
+              onSelect
+                ? (e) => {
+                    e.stopPropagation();
+                    onSelect(organ);
+                  }
+                : undefined
+            }
+            style={{
+              ...panel,
+              ...(labelReady
+                ? {
+                    border: `1px solid ${color}cc`,
+                    boxShadow: `0 0 18px ${color}55, 0 0 6px ${color}88, inset 0 1px 0 rgba(255,255,255,0.1)`,
+                  }
+                : {}),
+              position: "relative",
+              zIndex: 1,
+              padding: IS_MOBILE ? "6px 10px" : "8px 16px",
+              maxWidth: IS_MOBILE ? "130px" : "260px",
+              textAlign: isLeft ? "right" : "left",
+              cursor: onSelect ? "pointer" : "default",
+              pointerEvents: onSelect ? "all" : "none",
             }}
           >
-            {organ.hardware}
+            <div
+              style={{
+                fontFamily: "'Orbitron', system-ui, sans-serif",
+                fontSize: IS_MOBILE
+                  ? "clamp(10px, 3vw, 13px)"
+                  : "clamp(13px, 1.1vw, 17px)",
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                color: "rgba(255, 255, 255, 0.97)",
+                textShadow: "0 1px 4px rgba(0,0,0,0.8)",
+                lineHeight: 1.2,
+                textTransform: "uppercase",
+              }}
+            >
+              {organ.organ}
+            </div>
+            <div
+              style={{
+                fontFamily: "'Orbitron', system-ui, sans-serif",
+                fontSize: IS_MOBILE
+                  ? "clamp(7px, 2.2vw, 9px)"
+                  : "clamp(10px, 0.8vw, 12px)",
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                color: subtitleColor,
+                lineHeight: 1.4,
+                textTransform: "uppercase",
+                marginTop: "3px",
+              }}
+            >
+              {organ.hardware}
+            </div>
           </div>
         </div>
       </div>

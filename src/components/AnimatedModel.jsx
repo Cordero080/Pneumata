@@ -113,21 +113,25 @@ function AnimatedModel({ darkMode, meshMode, fbxRef, onSecondLoop }) {
   // to the original fbx object, so any clone stays frozen in T-pose.
   useEffect(() => {
     let mat;
+    // Applies to both male (male-body.fbx) and female (female-body.fbx) animated figures.
+    // Static GLB figures use AnatomyModel.jsx / FemaleModel.jsx instead.
     if (darkMode) {
+      // DARK MODE — METALLIC CHROME (modes 4 & 5)
       if (meshMode === 4 || meshMode === 5) {
         const solid = meshMode === 5;
         mat = new THREE.MeshStandardMaterial({
-          color: "#d8dde2",
+          color: "#d8dde2", // silver-white chrome
           metalness: 0.88,
           roughness: 0.15,
           transparent: !solid,
           opacity: solid ? 1.0 : 0.82,
           depthWrite: solid,
         });
+        // DARK MODE — BONE / X-RAY (mode 3)
       } else if (meshMode === 3) {
         mat = new THREE.MeshPhysicalMaterial({
-          color: "#f0f4ff",
-          emissive: "#c8a060",
+          color: "#f0f4ff", // cool white
+          emissive: "#c8a060", // warm amber subsurface glow
           emissiveIntensity: 0.1,
           transparent: true,
           opacity: 0.28,
@@ -135,20 +139,22 @@ function AnimatedModel({ darkMode, meshMode, fbxRef, onSecondLoop }) {
           roughness: 0.1,
           depthWrite: false,
         });
+        // DARK MODE — GHOST (mode 0)
       } else if (meshMode === 0) {
         mat = new THREE.MeshPhysicalMaterial({
-          color: "#030306",
-          emissive: "#880000",
+          color: "#030306", // near-black
+          emissive: "#880000", // deep red glow
           transparent: true,
           opacity: 0.45,
           metalness: 0.1,
           roughness: 0.12,
           depthWrite: false,
         });
+        // DARK MODE — OBSIDIAN IRIDESCENT (modes 1 & 2)
       } else {
         mat = new THREE.MeshPhysicalMaterial({
-          color: "#030306",
-          emissive: "#880000",
+          color: "#030306", // near-black obsidian
+          emissive: "#880000", // red underbelly
           metalness: 0.92,
           roughness: 0.08,
           transparent: true,
@@ -163,19 +169,21 @@ function AnimatedModel({ darkMode, meshMode, fbxRef, onSecondLoop }) {
         applyChestWindow(mat);
       }
     } else {
+      // LIGHT MODE — GHOST (mode 0)
       if (meshMode === 0) {
         mat = new THREE.MeshPhysicalMaterial({
-          color: "#1a1a2a",
+          color: "#1a1a2a", // dark navy ghost
           transparent: true,
-          opacity: 0.45,
+          opacity: 0.5,
           metalness: 0.1,
           roughness: 0.12,
           depthWrite: false,
         });
+        // LIGHT MODE — BONE / X-RAY (mode 3)
       } else if (meshMode === 3) {
         mat = new THREE.MeshPhysicalMaterial({
-          color: "#f0f4ff",
-          emissive: "#c8a060",
+          color: "#f0f4ff", // cool white
+          emissive: "#c8a060", // amber subsurface
           emissiveIntensity: 0.1,
           transparent: true,
           opacity: 0.28,
@@ -183,9 +191,10 @@ function AnimatedModel({ darkMode, meshMode, fbxRef, onSecondLoop }) {
           roughness: 0.1,
           depthWrite: false,
         });
+        // LIGHT MODE — SILVER (modes 1, 2, 4, 5, 6 — all hit this branch)
       } else {
         mat = new THREE.MeshStandardMaterial({
-          color: "#d8dde2",
+          color: "#d8dde2", // light silver-aluminum
           metalness: 0.88,
           roughness: 0.15,
           transparent: true,
