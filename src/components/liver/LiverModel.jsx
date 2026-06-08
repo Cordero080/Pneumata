@@ -11,10 +11,10 @@ const TARGET_HEIGHT = 0.12; // size — increase to enlarge
 // ================================
 
 // === FEMALE LIVER — tweak these ===
-const LIVER_CENTER_X_FEMALE = -0.07;
+const LIVER_CENTER_X_FEMALE = -0.02;
 const LIVER_CENTER_Y_FEMALE = 1.14;
-const LIVER_CENTER_Z_FEMALE = 0.06;
-const TARGET_HEIGHT_FEMALE = 0.16;
+const LIVER_CENTER_Z_FEMALE = 0.04;
+const TARGET_HEIGHT_FEMALE = 0.12;
 // ===================================
 
 function LiverModel({

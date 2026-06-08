@@ -10,9 +10,9 @@ const TARGET_HEIGHT = 0.36; // lung size — increase to enlarge
 
 // === FEMALE LUNGS — tweak these ===
 const LUNGS_CENTER_X_FEMALE = 0.0; // left (-) / right (+)
-const LUNGS_CENTER_Y_FEMALE = 1.28; // up (+) / down (-)
+const LUNGS_CENTER_Y_FEMALE = 1.30; // up (+) / down (-)
 const LUNGS_CENTER_Z_FEMALE = -0.02; // forward (+) / back into body (-)
-const TARGET_HEIGHT_FEMALE = 0.28; // size — increase to enlarge
+const TARGET_HEIGHT_FEMALE = 0.30; // size — increase to enlarge
 // ===================================
 
 function LungsModel({

@@ -11,10 +11,10 @@ const TARGET_HEIGHT = 0.22; // size — increase to enlarge
 // ==================================
 
 // === FEMALE STOMACH — tweak these ===
-const STOMACH_CENTER_X_FEMALE = -0.03;
-const STOMACH_CENTER_Y_FEMALE = 1.08;
+const STOMACH_CENTER_X_FEMALE = -0.001;
+const STOMACH_CENTER_Y_FEMALE = 1.138;
 const STOMACH_CENTER_Z_FEMALE = 0.04;
-const TARGET_HEIGHT_FEMALE = 0.14;
+const TARGET_HEIGHT_FEMALE = 0.25;
 // =====================================
 
 function StomachModel({
