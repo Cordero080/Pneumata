@@ -33,7 +33,9 @@ const PAN_Y_BOTTOM = 0.1;
 const ZOOM_NEAR = 0.9;
 const ZOOM_FAR = 4.0;
 
-const INITIAL_CAM = { x: 0, y: 0.82, z: 2.1 };
+const INITIAL_CAM = IS_MOBILE
+  ? { x: 0, y: 0.82, z: 1.9 }
+  : { x: 0, y: 0.82, z: 2.1 };
 
 const TORSO_FOCUS_DIST = 2.2;
 

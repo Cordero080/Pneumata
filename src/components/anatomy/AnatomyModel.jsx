@@ -264,6 +264,7 @@ function AnatomyModel({
   darkMode,
   meshMode,
   femaleMode,
+  organWindowPositions = [],
 }) {
   // Config is constant for this component's lifetime — AnatomyModel remounts (key=modelPath)
   // whenever femaleMode changes, so this selection never changes mid-lifecycle.
@@ -271,6 +272,16 @@ function AnatomyModel({
 
   const gltf = useGLTF(modelPath);
   const materialRef = useRef(null);
+  // Uniform objects live in the ref from creation. onBeforeCompile merges them into
+  // shader.uniforms via Object.assign — same object reference — so updating the ref
+  // always updates the GPU, with no dependency on onBeforeCompile timing.
+  const onyxUniformsRef = useRef({
+    uOrganPos: {
+      value: Array.from({ length: 12 }, () => new THREE.Vector3(0, -100, 0)),
+    },
+    uFadeRadius: { value: 0.12 },
+    uOnyxFade: { value: 0.0 },
+  });
   const bloodMatRef = useRef(null);
   const bloodPulseRef = useRef(0);
   const lastBeatCountRef = useRef(0);
@@ -362,6 +373,38 @@ function AnatomyModel({
     });
 
     if (emissiveMap) mat.emissiveMap = emissiveMap;
+
+    // Organ window shader — creates pulsing transparent holes near organ positions in onyx mode
+    // onyxUniformsRef holds the actual uniform objects. onBeforeCompile merges them into
+    // shader.uniforms (same references), so useFrame updates propagate to the GPU immediately.
+    mat.onBeforeCompile = (shader) => {
+      Object.assign(shader.uniforms, onyxUniformsRef.current);
+      shader.vertexShader = "varying vec3 vOnyxWorld;\n" + shader.vertexShader;
+      shader.vertexShader = shader.vertexShader.replace(
+        "#include <project_vertex>",
+        `#include <project_vertex>
+vOnyxWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;`,
+      );
+      shader.fragmentShader =
+        "varying vec3 vOnyxWorld;\nuniform vec3 uOrganPos[12];\nuniform float uFadeRadius;\nuniform float uOnyxFade;\n" +
+        shader.fragmentShader;
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <output_fragment>",
+        `#include <output_fragment>
+if (uOnyxFade > 0.0) {
+  float _f = 1.0;
+  for (int i = 0; i < 12; i++) {
+    float _d = length(vOnyxWorld - uOrganPos[i]);
+    _f *= smoothstep(uFadeRadius * 0.35, uFadeRadius, _d);
+  }
+  float _a = 1.0 - uOnyxFade * (1.0 - _f);
+  if (_a < 0.02) discard;
+  gl_FragColor.a *= _a;
+}`,
+      );
+    };
+    mat.customProgramCacheKey = () => "onyx-organ-windows";
+
     mat.needsUpdate = true;
     materialRef.current = mat;
 
@@ -530,14 +573,15 @@ function AnatomyModel({
     const whiteAlResolved = darkMode ? whiteAlColorDark : whiteAlColor;
     const whiteEmissive = darkMode ? whiteEmissiveDark : whiteEmissiveLight;
 
+    // uOnyxFade is managed in useFrame to avoid onBeforeCompile timing race
+
     if (darkMode) {
-      // DARK · MODE 6 — ONYX: solid opaque near-black. color=onyxColorDark, emissive=onyxEmissive
+      // DARK · MODE 6 — ONYX: solid near-black with pulsing organ windows. color=onyxColorDark, emissive=onyxEmissive
       if (meshMode === 6) {
-        // Onyx — solid near-black with violet emissive
         mat.color.set(onyxColorDark);
         mat.emissive.set(onyxEmissive);
         mat.emissiveIntensity = 0.12;
-        mat.transparent = false;
+        mat.transparent = true;
         mat.transmission = 0;
         mat.opacity = 1.0;
         mat.metalness = 0.95;
@@ -553,6 +597,7 @@ function AnatomyModel({
         al.opacity = 0;
         al.depthWrite = false;
         al.needsUpdate = true;
+        // uOnyxFade set in useFrame to avoid onBeforeCompile timing race
         // DARK · MODE 4=chrome transparent / MODE 5=chrome solid. Ghost hidden, aluminum visible. color=alColorDark
       } else if (meshMode === 4 || meshMode === 5) {
         const solid = meshMode === 5;
@@ -602,7 +647,7 @@ function AnatomyModel({
         mat.opacity = solid ? 1.0 : 0.82;
         mat.metalness = 0.92;
         mat.roughness = 0.08;
-        mat.iridescence = .95;
+        mat.iridescence = 0.95;
         mat.depthWrite = solid;
         mat.needsUpdate = true;
         al.transparent = true;
@@ -676,7 +721,7 @@ function AnatomyModel({
         mat.needsUpdate = true;
         al.transparent = true;
         al.color.set(alColorResolved);
-        al.metalness = 0.90;
+        al.metalness = 0.9;
         al.roughness = 0.15;
         al.opacity = 0.62;
         al.depthWrite = false;
@@ -747,9 +792,28 @@ function AnatomyModel({
     setSheenScene(clone);
   }, [femaleMode, scene]);
 
+  const organPosSyncedRef = useRef(false);
+  useEffect(() => {
+    organPosSyncedRef.current = false;
+  }, [organWindowPositions]);
+
   useFrame((state) => {
     if (!materialRef.current) return;
     const t = state.clock.getElapsedTime();
+
+    // Organ positions — sync once (or when positions change), then update fade every frame
+    if (!organPosSyncedRef.current && organWindowPositions.length) {
+      organWindowPositions.forEach((p, i) => {
+        onyxUniformsRef.current.uOrganPos.value[i]?.set(p[0], p[1], p[2]);
+      });
+      organPosSyncedRef.current = true;
+    }
+    const wantFade = darkMode && meshMode === 6 ? 1.0 : 0.0;
+    onyxUniformsRef.current.uOnyxFade.value = wantFade;
+    if (wantFade > 0) {
+      onyxUniformsRef.current.uFadeRadius.value =
+        0.09 + Math.abs(Math.sin(t * 0.75)) * 0.06;
+    }
 
     if (darkMode && materialRef.current.iridescence > 0) {
       materialRef.current.iridescenceIOR = 1.2 + Math.sin(t * 0.4) * 0.25;
@@ -807,6 +871,14 @@ function AnatomyModel({
     } else {
       breathMatRef.current.opacity = 0;
     }
+
+    // Visibility culling — zero-opacity transparent meshes still participate in
+    // Three.js's per-frame transparent depth sort. Hiding them eliminates that cost.
+    scene.visible = materialRef.current.opacity > 0.001;
+    if (aluminumScene && aluminumMatRef.current)
+      aluminumScene.visible = aluminumMatRef.current.opacity > 0.001;
+    if (bloodScene) bloodScene.visible = bloodMatRef.current.opacity > 0.001;
+    if (breathScene) breathScene.visible = breathMatRef.current.opacity > 0.001;
   });
 
   return (

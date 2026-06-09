@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import SceneLights from "./SceneLights";
@@ -20,9 +20,25 @@ import StomachModel from "../stomach/StomachModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
-import WaveBackground from "./WaveBackground";
 import MeridianLayer from "../meridian/MeridianLayer";
 import { organs } from "../../data/organs";
+
+const IS_MOBILE = window.innerWidth <= 768;
+
+const ONYX_ORGAN_IDS = [
+  "heart",
+  "cerebellum",
+  "thyroid",
+  "liver",
+  "stomach",
+  "right_kidney",
+  "left_kidney",
+  "spleen",
+  "bladder",
+  "pancreas",
+  "vocal_cords",
+  "skin",
+];
 
 const CELL_ZOOM_IDS = new Set(["pituitary"]);
 
@@ -99,6 +115,19 @@ function Scene({
 
   const heartbeatRef = useRef(0);
   const breathingRef = useRef(0);
+
+  const organWindowPositions = useMemo(() => {
+    const positions = ONYX_ORGAN_IDS.map((id) => {
+      const organ = organs.find((o) => o.id === id);
+      if (!organ?.position) return [0, -100, 0];
+      return [
+        organ.position[0] * globalScale + offsetX,
+        organ.position[1] * globalScale + offsetY,
+        organ.position[2] * globalScale,
+      ];
+    });
+    return positions;
+  }, [globalScale, offsetX, offsetY]);
   const controlsRef = useRef();
   const handleSpineExtracted = useCallback((pts) => setSpinePoints(pts), []);
   const handleLandmarksExtracted = useCallback(
@@ -118,7 +147,7 @@ function Scene({
 
   return (
     <Canvas
-      camera={{ position: [0, 0.82, 2.1], fov: 48 }}
+      camera={{ position: [0, 0.82, IS_MOBILE ? 1.9 : 2.1], fov: 48 }}
       style={{ width: "100%", height: "100%", ...style }}
       gl={{
         alpha: true,
@@ -147,6 +176,7 @@ function Scene({
           darkMode={darkMode}
           meshMode={meshMode}
           femaleMode={femaleMode}
+          organWindowPositions={organWindowPositions}
         />
 
         <HeartModel
@@ -338,7 +368,6 @@ function Scene({
         target={ORBIT_TARGET}
       />
       {bgMode > 0 && bgMode <= 4 && <SceneOrbs theme={bgModeName} />}
-      {bgMode >= 5 && <WaveBackground theme={bgModeName} />}
     </Canvas>
   );
 }

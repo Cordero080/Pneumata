@@ -32,7 +32,7 @@ export const COLORS = {
   ghostColor: "#afc1d4", // light mode: ghost shell tint
   ghostDark: "#1a1a2a", // light ghost mode 0: charcoal
   alColor: "#bdd1e2", // aluminum layer (light mode)
-  alColorDark: "#c8d5e0", // aluminum layer (dark mode) — same for male
+  alColorDark: "#7890aa", // aluminum layer (dark mode) — dark steel-blue
   whiteColor: "#e2e2f0", // white ghost mode 3 tint
   whiteAlColor: "#a8bcd4", // aluminum in white ghost mode (light)
   whiteAlColorDark: "#7a9ac2", // aluminum in white ghost mode (dark) — same for male

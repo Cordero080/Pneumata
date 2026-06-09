@@ -43,8 +43,8 @@ const IS_STANDALONE =
   window.matchMedia("(display-mode: standalone)").matches;
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
-    ? { panY: 0.48, zoom: 0.22, globalScale: 0.906, offsetX: 0, offsetY: 0.11 }
-    : { panY: 0.48, zoom: 0.22, globalScale: 0.948, offsetX: 0, offsetY: 0.11 }
+    ? { panY: 0.51, zoom: 0.32, globalScale: 0.906, offsetX: 0, offsetY: 0.11 }
+    : { panY: 0.51, zoom: 0.32, globalScale: 0.948, offsetX: 0, offsetY: 0.11 }
   : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.08 };
 
 const LANDING_ENTRY_PRESETS = {
@@ -76,9 +76,6 @@ function App() {
     "space",
     "sunset",
     "matrix",
-    "wave",
-    "grid",
-    "pulse",
   ];
   const BG_ICONS = [
     "⬡\uFE0E",
@@ -86,10 +83,7 @@ function App() {
     "✦\uFE0E",
     "◐\uFE0E",
     "⊞\uFE0E",
-    "≋\uFE0E",
-    "⊟\uFE0E",
-    "◎\uFE0E",
-  ];
+   ];
   const [meshMode, setMeshMode] = useState(5); // 0=ghost, 1=semi-transparent silver, 2=solid silver
   const [bodyModel, setBodyModel] = useState("male");
   const modelPath =
@@ -151,11 +145,7 @@ function App() {
     return () => window.removeEventListener("keydown", handler);
   }, [brainZoom, cellZoom]);
 
-  useEffect(() => {
-    // When entering dark mode, silver/aluminum light-mode skin (modes > 2 light-only) don't apply
-    // Reset to solid obsidian (2) only if currently on a mode with no dark-mode branch (none currently)
-    // — no reset needed, all modes have dark branches now
-  }, [darkMode]);
+  useEffect(() => {}, [darkMode]);
 
   useEffect(() => {
     document.body.classList.toggle("body--female", bodyModel === "female");
@@ -316,7 +306,27 @@ function App() {
         >
           <button
             className={`mesh-toggle-btn mesh-toggle-btn--${meshMode}`}
-            title={["Ghost", "Silver (Transparent)", "Silver (Solid)", "Bone / X-Ray", "Metallic Chrome", "", "Aluminum"][meshMode] ?? "Skin"}
+            title={
+              (darkMode
+                ? [
+                    "Ghost",
+                    "Obsidian (Transparent)",
+                    "Obsidian (Solid)",
+                    "Bone / X-Ray",
+                    "Chrome (Transparent)",
+                    "Chrome (Solid)",
+                    "Onyx",
+                  ]
+                : [
+                    "Ghost",
+                    "Silver (Transparent)",
+                    "Silver (Solid)",
+                    "Bone / X-Ray",
+                    "Aluminum (Transparent)",
+                    "Aluminum (Solid)",
+                    "Crystal",
+                  ])[meshMode] ?? "Skin"
+            }
             onClick={() =>
               setMeshMode((m) => {
                 if (darkMode) {
@@ -338,12 +348,20 @@ function App() {
                       ? "◎\uFE0E"
                       : "⬛\uFE0E"}
           </button>
-          <button className="reset-btn" title="Reset camera" onClick={handleReset}>
+          <button
+            className="reset-btn"
+            title="Reset camera"
+            onClick={handleReset}
+          >
             ↺
           </button>
           <button
             className={`body-toggle-btn${bodyModel === "female" ? " body-toggle-btn--active" : ""}`}
-            title={bodyModel === "male" ? "Male — switch to Female" : "Female — switch to Male"}
+            title={
+              bodyModel === "male"
+                ? "Male — switch to Female"
+                : "Female — switch to Male"
+            }
             onClick={() => {
               setBodyModel((m) => (m === "male" ? "female" : "male"));
               handleReset();
@@ -351,6 +369,7 @@ function App() {
           >
             {bodyModel === "male" ? "♂\uFE0E" : "♀\uFE0E"}
           </button>
+          {/* animation button — blocked until fully developed
           <button
             className={`anim-toggle-btn${showAnimation ? " anim-toggle-btn--active" : ""}`}
             title={showAnimation ? "Stop animation" : "Play animation"}
@@ -358,6 +377,7 @@ function App() {
           >
             {showAnimation ? "✕" : "▶"}
           </button>
+          */}
           <button
             className={`bg-toggle-btn${bgMode > 0 ? " bg-toggle-btn--active" : ""}`}
             onClick={() => setBgMode((m) => (m + 1) % BG_MODES.length)}
@@ -489,7 +509,11 @@ function App() {
 
       <button
         className={`dark-capsule${darkMode ? " dark-capsule--dark" : ""}`}
-        onClick={() => setDarkMode((d) => !d)}
+        onClick={() => {
+          const next = !darkMode;
+          setDarkMode(next);
+          setMeshMode(next ? 6 : 5);
+        }}
         aria-label="Toggle dark mode"
       >
         <span className="dark-capsule__thumb" />

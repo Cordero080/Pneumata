@@ -216,29 +216,3 @@
   75%       { opacity: 0.8;  filter: blur(2px)   brightness(1.15); }
 }
 
-// ── Wave ──────────────────────────────────────────────────────────────────────
-// Deep violet — WaveBackground 3D mesh provides the animation.
-.app--bg-wave {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: linear-gradient(180deg, #0d0020 0%, #1a0a3a 60%, #0a0520 100%);
-}
-
-// ── Grid ──────────────────────────────────────────────────────────────────────
-// Deep navy — WaveBackground 3D mesh provides the animation.
-.app--bg-grid {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: linear-gradient(180deg, #000d1e 0%, #001a2e 60%, #000810 100%);
-}
-
-// ── Pulse ─────────────────────────────────────────────────────────────────────
-// Deep wine — WaveBackground 3D mesh provides the animation.
-.app--bg-pulse {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: linear-gradient(180deg, #120008 0%, #1a0010 60%, #0a0005 100%);
-}
