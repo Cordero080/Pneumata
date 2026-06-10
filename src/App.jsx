@@ -70,20 +70,8 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [bgMode, setBgMode] = useState(0);
   const [bgPanelOpen, setBgPanelOpen] = useState(false);
-  const BG_MODES = [
-    "default",
-    "nebula",
-    "space",
-    "sunset",
-    "matrix",
-  ];
-  const BG_ICONS = [
-    "⬡\uFE0E",
-    "✵\uFE0E",
-    "✦\uFE0E",
-    "◐\uFE0E",
-    "⊞\uFE0E",
-   ];
+  const BG_MODES = ["default", "nebula", "space", "sunset", "matrix"];
+  const BG_ICONS = ["⬡\uFE0E", "✵\uFE0E", "✦\uFE0E", "◐\uFE0E", "⊞\uFE0E"];
   const [meshMode, setMeshMode] = useState(5); // 0=ghost, 1=semi-transparent silver, 2=solid silver
   const [bodyModel, setBodyModel] = useState("male");
   const modelPath =
@@ -310,7 +298,7 @@ function App() {
               (darkMode
                 ? [
                     "Ghost",
-                    "Obsidian (Transparent)",
+                    "Onyx (Open)",
                     "Obsidian (Solid)",
                     "Bone / X-Ray",
                     "Chrome (Transparent)",
@@ -330,7 +318,7 @@ function App() {
             onClick={() =>
               setMeshMode((m) => {
                 if (darkMode) {
-                  return { 2: 0, 0: 1, 1: 3, 3: 4, 4: 6, 6: 2 }[m] ?? 2;
+                  return { 2: 0, 0: 3, 3: 4, 4: 6, 6: 1, 1: 2 }[m] ?? 2;
                 }
                 return m === 4 ? 6 : m === 6 ? 0 : (m + 1) % 6;
               })

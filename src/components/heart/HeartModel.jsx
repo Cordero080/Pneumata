@@ -118,7 +118,7 @@ function HeartModel({
     };
   }, [scene]);
 
-  useFrame(() => {
+  useFrame((_state, delta) => {
     const mats = matsRef.current;
     if (!mats.length) return;
 
@@ -132,7 +132,9 @@ function HeartModel({
       baseOpacity = 0;
     } else if (hovered) {
       baseOpacity = 0.95;
-    } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
+    } else if (meshMode === 4) {
+      baseOpacity = powerMode ? 0.88 : 0;
+    } else if (meshMode === 2 || meshMode === 5) {
       baseOpacity = powerMode ? 0.88 : 0.52;
     } else if (ghostMode) {
       baseOpacity = powerMode ? 0.82 : 0.6;
@@ -147,14 +149,16 @@ function HeartModel({
       b.last = heartbeatRef.current;
       b.flash = 1.0;
     }
-    b.flash *= 0.93;
+    b.flash *= Math.exp(-delta * 4.4); // delta-time decay — matches 0.93/frame at 60fps
 
+    const opLerp = 1 - Math.exp(-delta * 3.7); // delta-time lerp — matches 0.06/frame at 60fps
+    const emLerp = 1 - Math.exp(-delta * 6.2); // delta-time lerp — matches 0.10/frame at 60fps
     for (const m of mats) {
       const opDiff = baseOpacity - m.opacity;
-      if (Math.abs(opDiff) > 0.001) m.opacity += opDiff * 0.06;
+      if (Math.abs(opDiff) > 0.001) m.opacity += opDiff * opLerp;
       const baseEmissive = powerMode && !otherSelected ? 0.8 : 0.0;
       const emDiff = baseEmissive - m.emissiveIntensity;
-      if (Math.abs(emDiff) > 0.001) m.emissiveIntensity += emDiff * 0.1;
+      if (Math.abs(emDiff) > 0.001) m.emissiveIntensity += emDiff * emLerp;
     }
 
     const visible = mats[0].opacity > 0.01;
@@ -163,9 +167,10 @@ function HeartModel({
     if (glowMatRef.current) {
       const glowTarget = visible ? b.flash * (powerMode ? 1.0 : 0.75) : 0;
       const gDiff = glowTarget - glowMatRef.current.opacity;
-      if (Math.abs(gDiff) > 0.001) glowMatRef.current.opacity += gDiff * 0.15;
+      if (Math.abs(gDiff) > 0.001)
+        glowMatRef.current.opacity += gDiff * (1 - Math.exp(-delta * 9.2));
       if (glowScene) {
-        glowScene.visible = visible;
+        glowScene.visible = glowMatRef.current.opacity > 0.001;
         glowScene.scale.copy(scene.scale);
         glowScene.position.copy(scene.position);
       }

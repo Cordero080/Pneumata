@@ -87,7 +87,7 @@ function LiverModel({
     return () => mats.forEach((m) => m.dispose());
   }, [scene]);
 
-  useFrame(() => {
+  useFrame((_state, delta) => {
     const mats = matsRef.current;
     if (!mats.length) return;
 
@@ -101,7 +101,9 @@ function LiverModel({
       targetOpacity = 0;
     } else if (hovered) {
       targetOpacity = 0.75;
-    } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
+    } else if (meshMode === 4) {
+      targetOpacity = digestiveMode ? 0.35 : 0;
+    } else if (meshMode === 2 || meshMode === 5) {
       targetOpacity = digestiveMode ? 0.45 : 0.28;
     } else if (ghostMode) {
       targetOpacity = digestiveMode ? 0.4 : 0.22;
@@ -111,12 +113,14 @@ function LiverModel({
       targetOpacity = 0.12;
     }
 
+    const opLerp = 1 - Math.exp(-delta * 3.7);
+    const emLerp = 1 - Math.exp(-delta * 5.0);
     for (const m of mats) {
       const opDiff = targetOpacity - m.opacity;
-      if (Math.abs(opDiff) > 0.001) m.opacity += opDiff * 0.06;
+      if (Math.abs(opDiff) > 0.001) m.opacity += opDiff * opLerp;
       const targetEmissive = hovered ? 0.4 : 0.0;
       const emDiff = targetEmissive - m.emissiveIntensity;
-      if (Math.abs(emDiff) > 0.001) m.emissiveIntensity += emDiff * 0.08;
+      if (Math.abs(emDiff) > 0.001) m.emissiveIntensity += emDiff * emLerp;
     }
 
     scene.visible = mats[0].opacity > 0.01;

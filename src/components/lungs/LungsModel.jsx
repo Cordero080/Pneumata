@@ -10,9 +10,9 @@ const TARGET_HEIGHT = 0.36; // lung size — increase to enlarge
 
 // === FEMALE LUNGS — tweak these ===
 const LUNGS_CENTER_X_FEMALE = 0.0; // left (-) / right (+)
-const LUNGS_CENTER_Y_FEMALE = 1.30; // up (+) / down (-)
+const LUNGS_CENTER_Y_FEMALE = 1.3; // up (+) / down (-)
 const LUNGS_CENTER_Z_FEMALE = -0.02; // forward (+) / back into body (-)
-const TARGET_HEIGHT_FEMALE = 0.30; // size — increase to enlarge
+const TARGET_HEIGHT_FEMALE = 0.3; // size — increase to enlarge
 // ===================================
 
 function LungsModel({
@@ -112,7 +112,7 @@ function LungsModel({
     };
   }, [scene]);
 
-  useFrame(() => {
+  useFrame((_state, delta) => {
     const tissue = tissueMats.current;
     if (!tissue.length) return;
 
@@ -132,7 +132,7 @@ function LungsModel({
       lastBeat.current = heartbeatRef.current;
       beatFlash.current = 1.0;
     }
-    beatFlash.current *= 0.88;
+    beatFlash.current *= Math.exp(-delta * 6.8); // matches 0.88/frame at 60fps
 
     let targetOpacity;
     if (otherSelected) {
@@ -145,7 +145,9 @@ function LungsModel({
       targetOpacity = 0.38;
     } else if (unifiedMode) {
       targetOpacity = 0.32;
-    } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
+    } else if (meshMode === 4) {
+      targetOpacity = 0;
+    } else if (meshMode === 2 || meshMode === 5) {
       targetOpacity = 0.45;
     } else if (ghostMode) {
       targetOpacity = 0.35;
@@ -155,29 +157,33 @@ function LungsModel({
       targetOpacity = 0.2;
     }
 
+    const opLerp = 1 - Math.exp(-delta * 3.7);
     for (const m of tissue) {
       const diff = targetOpacity - m.opacity;
-      if (Math.abs(diff) > 0.001) m.opacity += diff * 0.06;
+      if (Math.abs(diff) > 0.001) m.opacity += diff * opLerp;
     }
 
     const visible = tissue[0].opacity > 0.01;
     scene.visible = visible;
 
     const glowTarget = visible && breathingMode ? breath * 0.28 : 0;
+    const glowLerp = 1 - Math.exp(-delta * 3.7);
     for (const gm of glowMatsRef.current) {
       const gDiff = glowTarget - gm.opacity;
-      if (Math.abs(gDiff) > 0.001) gm.opacity += gDiff * 0.06;
+      if (Math.abs(gDiff) > 0.001) gm.opacity += gDiff * glowLerp;
     }
 
     if (visible) {
       const breathMult = breathingMode ? 1 + breath * 0.06 : 1;
       const targetScale = effectiveScaleRef.current * breathMult;
+      const scaleLerp = 1 - Math.exp(-delta * 2.5);
       scene.scale.setScalar(
-        scene.scale.x + (targetScale - scene.scale.x) * 0.04,
+        scene.scale.x + (targetScale - scene.scale.x) * scaleLerp,
       );
     }
     if (glowScene) {
-      glowScene.visible = visible;
+      const glowMats = glowMatsRef.current;
+      glowScene.visible = glowMats.length > 0 && glowMats[0].opacity > 0.001;
       glowScene.scale.copy(scene.scale);
       glowScene.position.copy(scene.position);
     }

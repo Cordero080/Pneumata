@@ -281,6 +281,11 @@ function AnatomyModel({
     },
     uFadeRadius: { value: 0.12 },
     uOnyxFade: { value: 0.0 },
+    uRegionFade: { value: 0.0 },
+    uHeadYBot: { value: 1.55 },
+    uHeadYTop: { value: 1.63 },
+    uTorsoYBot: { value: 0.9 },
+    uTorsoYTop: { value: 1.38 },
   });
   const bloodMatRef = useRef(null);
   const bloodPulseRef = useRef(0);
@@ -386,7 +391,7 @@ function AnatomyModel({
 vOnyxWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;`,
       );
       shader.fragmentShader =
-        "varying vec3 vOnyxWorld;\nuniform vec3 uOrganPos[12];\nuniform float uFadeRadius;\nuniform float uOnyxFade;\n" +
+        "varying vec3 vOnyxWorld;\nuniform vec3 uOrganPos[12];\nuniform float uFadeRadius;\nuniform float uOnyxFade;\nuniform float uRegionFade;\nuniform float uHeadYBot;\nuniform float uHeadYTop;\nuniform float uTorsoYBot;\nuniform float uTorsoYTop;\n" +
         shader.fragmentShader;
       shader.fragmentShader = shader.fragmentShader.replace(
         "#include <output_fragment>",
@@ -400,10 +405,18 @@ if (uOnyxFade > 0.0) {
   float _a = 1.0 - uOnyxFade * (1.0 - _f);
   if (_a < 0.02) discard;
   gl_FragColor.a *= _a;
+}
+if (uRegionFade > 0.0) {
+  float _head = smoothstep(uHeadYBot, uHeadYTop, vOnyxWorld.y);
+  float _tIn = smoothstep(uTorsoYBot - 0.04, uTorsoYBot + 0.04, vOnyxWorld.y);
+  float _tOut = 1.0 - smoothstep(uTorsoYTop - 0.04, uTorsoYTop + 0.04, vOnyxWorld.y);
+  float _rt = uRegionFade * max(_head, _tIn * _tOut);
+  gl_FragColor.a *= (1.0 - _rt);
+  if (gl_FragColor.a < 0.02) discard;
 }`,
       );
     };
-    mat.customProgramCacheKey = () => "onyx-organ-windows";
+    mat.customProgramCacheKey = () => "onyx-organ-windows-v2";
 
     mat.needsUpdate = true;
     materialRef.current = mat;
@@ -637,18 +650,38 @@ if (uOnyxFade > 0.0) {
         mat.iridescence = 0.001;
         mat.depthWrite = false;
         mat.needsUpdate = true;
-        // DARK · MODE 1=obsidian transparent / MODE 2=obsidian solid. Iridescent black. color=obsColor, emissive=obsEmissive
+        // DARK · MODE 1 — ONYX OPEN: onyx body with transparent skull + torso windows. uRegionFade set in useFrame
+      } else if (meshMode === 1) {
+        mat.color.set(onyxColorDark);
+        mat.emissive.set(onyxEmissive);
+        mat.emissiveIntensity = 0.12;
+        mat.transparent = true;
+        mat.transmission = 0;
+        mat.opacity = 1.0;
+        mat.metalness = 0.95;
+        mat.roughness = 0.05;
+        mat.iridescence = 0.3;
+        mat.iridescenceIOR = 1.4;
+        mat.iridescenceThicknessRange = [80, 200];
+        mat.clearcoat = 1.0;
+        mat.clearcoatRoughness = 0.05;
+        mat.depthWrite = true;
+        mat.needsUpdate = true;
+        al.transparent = true;
+        al.opacity = 0;
+        al.depthWrite = false;
+        al.needsUpdate = true;
+        // DARK · MODE 2 — OBSIDIAN SOLID: iridescent black. color=obsColor, emissive=obsEmissive
       } else {
-        const solid = meshMode === 2;
         mat.color.set(obsColor);
         mat.emissive.set(obsEmissive);
-        mat.transparent = !solid;
+        mat.transparent = false;
         mat.transmission = 0;
-        mat.opacity = solid ? 1.0 : 0.82;
+        mat.opacity = 1.0;
         mat.metalness = 0.92;
         mat.roughness = 0.08;
         mat.iridescence = 0.95;
-        mat.depthWrite = solid;
+        mat.depthWrite = true;
         mat.needsUpdate = true;
         al.transparent = true;
         al.opacity = 0;
@@ -814,6 +847,8 @@ if (uOnyxFade > 0.0) {
       onyxUniformsRef.current.uFadeRadius.value =
         0.09 + Math.abs(Math.sin(t * 0.75)) * 0.06;
     }
+    onyxUniformsRef.current.uRegionFade.value =
+      darkMode && meshMode === 1 ? 1.0 : 0.0;
 
     if (darkMode && materialRef.current.iridescence > 0) {
       materialRef.current.iridescenceIOR = 1.2 + Math.sin(t * 0.4) * 0.25;

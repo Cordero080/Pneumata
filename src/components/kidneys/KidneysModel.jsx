@@ -83,7 +83,7 @@ function KidneysModel({
     return () => mats.forEach((m) => m.dispose());
   }, [scene]);
 
-  useFrame(() => {
+  useFrame((_state, delta) => {
     const mats = matsRef.current;
     if (!mats.length) return;
 
@@ -100,7 +100,9 @@ function KidneysModel({
       targetOpacity = 0;
     } else if (hovered) {
       targetOpacity = 0.88;
-    } else if (meshMode === 2 || meshMode === 4 || meshMode === 5) {
+    } else if (meshMode === 4) {
+      targetOpacity = 0;
+    } else if (meshMode === 2 || meshMode === 5) {
       targetOpacity = 0.42;
     } else if (ghostMode) {
       targetOpacity = 0.32;
@@ -110,9 +112,10 @@ function KidneysModel({
       targetOpacity = 0.14;
     }
 
+    const opLerp = 1 - Math.exp(-delta * 3.7);
     for (const m of mats) {
       const diff = targetOpacity - m.opacity;
-      if (Math.abs(diff) > 0.001) m.opacity += diff * 0.06;
+      if (Math.abs(diff) > 0.001) m.opacity += diff * opLerp;
     }
 
     scene.visible = mats[0].opacity > 0.01;

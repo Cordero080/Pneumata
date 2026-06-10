@@ -17,6 +17,7 @@ import LungsModel from "../lungs/LungsModel";
 import LiverModel from "../liver/LiverModel";
 import KidneysModel from "../kidneys/KidneysModel";
 import StomachModel from "../stomach/StomachModel";
+import IntestineModel from "../intestine/IntestineModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
@@ -219,6 +220,14 @@ function Scene({
         />
 
         <StomachModel
+          meshMode={meshMode}
+          viewMode={viewMode}
+          hoveredOrganId={hoveredOrganId}
+          femaleMode={femaleMode}
+          selectedOrganId={selectedOrgan?.id}
+        />
+
+        <IntestineModel
           meshMode={meshMode}
           viewMode={viewMode}
           hoveredOrganId={hoveredOrganId}
