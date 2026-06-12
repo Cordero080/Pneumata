@@ -2,6 +2,9 @@ import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
+// ── CAMERA SMOOTHING ─────────────────────────────────────────────────────────
+// LERP: fraction of remaining distance moved per frame (higher = snappier).
+// SETTLED: distance threshold below which the camera is considered "arrived".
 const LERP = 0.055;
 const SETTLED = 0.0008;
 
@@ -10,10 +13,16 @@ const IS_MOBILE = window.innerWidth <= 768;
 // sits higher than on desktop. Raise camera and target to compensate.
 const MOBILE_BRAIN_Y = IS_MOBILE ? 0.07 : 0;
 
-// BRAIN PATH — raise Y to slide figure down, lower Y to slide figure up. z in snap = zoom distance (lower = closer).
+// ── BRAIN ZOOM TARGETS ───────────────────────────────────────────────────────
+// World-space Y the camera orbit target snaps to during brain zoom.
+// Raise Y to push the figure down in frame; lower Y to push it up.
+// CELL target is slightly lower than BRAIN target (zooms into the cellular view).
+// The female GLB head sits lower in world space than the male — FEMALE_Y_OFFSET corrects for that.
+const MALE_HEAD_Y = 1.672;
+const FEMALE_HEAD_Y = 1.615;
+const FEMALE_Y_OFFSET = FEMALE_HEAD_Y - MALE_HEAD_Y;
 const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.45 + MOBILE_BRAIN_Y, 0);
 const MALE_CELL_TARGET = new THREE.Vector3(0, 1.41 + MOBILE_BRAIN_Y, 0);
-const FEMALE_Y_OFFSET = 1.615 - 1.672;
 const FEMALE_BRAIN_TARGET = new THREE.Vector3(
   0,
   1.45 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
@@ -25,18 +34,22 @@ const FEMALE_CELL_TARGET = new THREE.Vector3(
   0,
 );
 
-// Slider value 0 (knob top) = viewing head, 1 (knob bottom) = viewing legs
+// ── PAN & ZOOM RANGE ─────────────────────────────────────────────────────────
+// Slider value 0 = top of range, 1 = bottom. Change these to adjust how far
+// the user can pan/zoom. PAN is a world-space Y target; ZOOM is camera Z distance.
 const PAN_Y_TOP = 1.65;
 const PAN_Y_BOTTOM = 0.1;
-
-// Slider value 0 (knob top) = close, 1 (knob bottom) = far
 const ZOOM_NEAR = 0.9;
 const ZOOM_FAR = 4.0;
 
+// ── INITIAL CAMERA POSITION ──────────────────────────────────────────────────
+// Starting camera position when the scene loads or resets.
+// z controls how far back the camera starts (higher = more zoomed out).
 const INITIAL_CAM = IS_MOBILE
   ? { x: 0, y: 0.82, z: 1.9 }
   : { x: 0, y: 0.82, z: 2.1 };
 
+// Distance the camera pulls back when focusing on a torso organ.
 const TORSO_FOCUS_DIST = 2.2;
 
 function CameraController({

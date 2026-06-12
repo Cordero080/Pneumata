@@ -255,7 +255,7 @@ const EMISSIVE_WHITE = new THREE.Color("#ffffff");
 const EMISSIVE_POWER = new THREE.Color("#bd0404");
 
 function AnatomyModel({
-  modelPath = "/male-body.glb",
+  modelPath = "/models/body/male-body.glb",
   viewMode,
   onSpineExtracted,
   onLandmarksExtracted,
@@ -927,7 +927,7 @@ if (uRegionFade > 0.0) {
   );
 }
 
-useGLTF.preload("/male-body.glb");
-useGLTF.preload("/female-body.glb");
+useGLTF.preload("/models/body/male-body.glb");
+useGLTF.preload("/models/body/female-body.glb");
 
 export default AnatomyModel;

@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import SceneLights from "./SceneLights";
-import AnimatedModel from "../AnimatedModel";
+import AnimatedModel from "./AnimatedModel";
 
 const ORBIT_TARGET = [0, 0.85, 0];
 

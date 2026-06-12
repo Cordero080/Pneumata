@@ -95,9 +95,9 @@ const CELL_NODES = [
     hardware: "Transistor",
     position: [0.014, 1.708, 0.03],
     color: LOGIC_COLOR,
-    bio_function:
+    bioFunction:
       "Receives electrochemical signals through dendrites, integrates them in the cell body, and fires an electrical impulse down the axon when threshold is reached.",
-    hard_function:
+    hardFunction:
       "A semiconductor switch that allows current to flow when voltage exceeds a threshold — the fundamental binary switching unit of all computation.",
     synthesis:
       "Both are threshold-triggered switches. Fire or do not fire. One or zero. The logic of all computation begins here.",
@@ -108,9 +108,9 @@ const CELL_NODES = [
     hardware: "Logic Gate",
     position: [0.02, 1.696, 0.024],
     color: LOGIC_COLOR,
-    bio_function:
+    bioFunction:
       "The junction between two neurons where neurotransmitters cross the synaptic cleft and bind to receptors — passing or blocking the signal based on chemical conditions.",
-    hard_function:
+    hardFunction:
       "A circuit that evaluates multiple input signals and produces a defined output based on Boolean logic — AND, OR, NOT. Passes or blocks based on conditions.",
     synthesis:
       "Both evaluate inputs and make a pass or block decision. The synapse is the original logic gate.",
@@ -122,9 +122,9 @@ const CELL_NODES = [
     hardware: "Data Bus",
     position: [0.012, 1.678, 0.018],
     color: LOGIC_COLOR,
-    bio_function:
+    bioFunction:
       "The long fiber extending from the neuron cell body that carries the electrical impulse to the synaptic terminals — pure transmission, no processing.",
-    hard_function:
+    hardFunction:
       "A set of parallel conductors that transmit data between components. The bus carries signals without computing them.",
     synthesis:
       "Both are transmission-only pathways. The axon does not think. The bus does not compute. They carry.",
@@ -135,9 +135,9 @@ const CELL_NODES = [
     hardware: "Signal Insulation",
     position: [0.008, 1.666, 0.012],
     color: LOGIC_COLOR,
-    bio_function:
+    bioFunction:
       "Fatty segments wrapped around the axon that insulate the signal and enable saltatory conduction — the signal jumps between nodes of Ranvier at high speed.",
-    hard_function:
+    hardFunction:
       "Dielectric insulation on PCB traces that prevents signal bleed between adjacent conductors and maintains signal integrity at high frequencies.",
     synthesis:
       "Both solve the same problem: keep the signal clean and fast over distance.",
@@ -149,9 +149,9 @@ const CELL_NODES = [
     hardware: "Cache",
     position: [0.006, 1.625, -0.006],
     color: INFRA_COLOR,
-    bio_function:
+    bioFunction:
       "Non-neuronal cells that maintain the chemical environment, remove waste, provide structural support, and regulate ion concentrations. They do not transmit signals but make transmission possible.",
-    hard_function:
+    hardFunction:
       "Support chips and cache memory that do not execute primary computation but maintain the environment — buffering data, managing thermal output — that makes computation possible.",
     synthesis: "Neither computes. Both make computation possible.",
   },
@@ -161,9 +161,9 @@ const CELL_NODES = [
     hardware: "Firewall",
     position: [-0.006, 1.613, -0.014],
     color: INFRA_COLOR,
-    bio_function:
+    bioFunction:
       "A selective cellular barrier that controls what substances pass from the bloodstream into the brain — allowing nutrients, blocking pathogens and most chemicals.",
-    hard_function:
+    hardFunction:
       "A network security system that inspects incoming traffic and allows or blocks packets based on defined rules — protecting the core system from external threats.",
     synthesis:
       "Both are selective gatekeepers. The brain and the network both need a perimeter.",
@@ -512,7 +512,7 @@ function CellularView({
       {cellsReady && (
         <>
           <CellMesh
-            path="/neuron.glb"
+            path="/models/nervous/neuron.glb"
             targetHeight={0.055}
             posX={0.014}
             posY={1.702}
@@ -527,7 +527,7 @@ function CellularView({
             onCellZoom={onCellZoom}
           />
           <CellMesh
-            path="/neuron.glb"
+            path="/models/nervous/neuron.glb"
             targetHeight={0.042}
             posX={-0.018}
             posY={1.685}
@@ -542,7 +542,7 @@ function CellularView({
             onCellZoom={onCellZoom}
           />
           <CellMesh
-            path="/neuron.glb"
+            path="/models/nervous/neuron.glb"
             targetHeight={0.038}
             posX={0.034}
             posY={1.674}
@@ -557,7 +557,7 @@ function CellularView({
             onCellZoom={onCellZoom}
           />
           <CellMesh
-            path="/axon-single.glb"
+            path="/models/nervous/axon-single.glb"
             targetHeight={0.05}
             posX={0.002}
             posY={1.682}
@@ -572,8 +572,8 @@ function CellularView({
             onCellZoom={onCellZoom}
           />
           <CellMesh
-            path="/pituitary.glb"
-            targetHeight={0.020}
+            path="/models/nervous/pituitary.glb"
+            targetHeight={0.02}
             posX={0}
             posY={1.645}
             posZ={0.005}
@@ -602,8 +602,8 @@ function CellularView({
   );
 }
 
-useGLTF.preload("/neuron.glb");
-useGLTF.preload("/axon-single.glb");
-useGLTF.preload("/pituitary.glb");
+useGLTF.preload("/models/nervous/neuron.glb");
+useGLTF.preload("/models/nervous/axon-single.glb");
+useGLTF.preload("/models/nervous/pituitary.glb");
 
 export default CellularView;

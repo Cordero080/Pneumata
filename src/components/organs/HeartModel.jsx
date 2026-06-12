@@ -25,7 +25,7 @@ function HeartModel({
   femaleMode,
   selectedOrganId,
 }) {
-  const gltf = useGLTF("/rose-heart.glb");
+  const gltf = useGLTF("/models/organs/rose-heart.glb");
   const heartCenterRef = useRef(new THREE.Vector3());
   const heartScaleRef = useRef(1);
   const scene = useMemo(() => {
@@ -185,6 +185,6 @@ function HeartModel({
   );
 }
 
-useGLTF.preload("/rose-heart.glb");
+useGLTF.preload("/models/organs/rose-heart.glb");
 
 export default HeartModel;

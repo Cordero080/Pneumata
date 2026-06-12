@@ -3,32 +3,30 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-// === MALE INTESTINE — tweak these ===
-const INTESTINE_CENTER_X = 0.0;
-const INTESTINE_CENTER_Y = 1.01;
-const INTESTINE_CENTER_Z = 0.028;
-const TARGET_HEIGHT = 0.25;
-// =====================================
+// === MALE LIVER — tweak these ===
+const LIVER_CENTER_X = -0.03; // left (-) / right (+)
+const LIVER_CENTER_Y = 1.18; // up (+) / down (-)
+const LIVER_CENTER_Z = 0.03; // forward (+) / back into body (-)
+const TARGET_HEIGHT = 0.12; // size — increase to enlarge
+// ================================
 
-// === FEMALE INTESTINE — tweak these ===`
-const INTESTINE_CENTER_X_FEMALE = 0.0;
-const INTESTINE_CENTER_Y_FEMALE = 0.99;
-const INTESTINE_CENTER_Z_FEMALE = 0.02;
-const TARGET_HEIGHT_FEMALE = 0.25;
-// =======================================
+// === FEMALE LIVER — tweak these ===
+const LIVER_CENTER_X_FEMALE = -0.02;
+const LIVER_CENTER_Y_FEMALE = 1.14;
+const LIVER_CENTER_Z_FEMALE = 0.04;
+const TARGET_HEIGHT_FEMALE = 0.12;
+// ===================================
 
-const INTESTINE_IDS = new Set(["small_intestine", "large_intestine"]);
-
-function IntestineModel({
+function LiverModel({
   meshMode,
   viewMode,
   hoveredOrganId,
   femaleMode,
   selectedOrganId,
 }) {
-  const gltf = useGLTF("/intestine.glb");
+  const gltf = useGLTF("/models/organs/liver.glb");
   const baseScaleRef = useRef(1);
-  const centerRef = useRef(new THREE.Vector3());
+  const liverCenterRef = useRef(new THREE.Vector3());
 
   const scene = useMemo(() => {
     const cloned = gltf.scene.clone(true);
@@ -41,12 +39,12 @@ function IntestineModel({
     const center = box.getCenter(new THREE.Vector3());
     const s = TARGET_HEIGHT / size.y;
     baseScaleRef.current = s;
-    centerRef.current.copy(center);
+    liverCenterRef.current.copy(center);
     cloned.scale.setScalar(s);
     cloned.position.set(
-      INTESTINE_CENTER_X - center.x * s,
-      INTESTINE_CENTER_Y - center.y * s,
-      INTESTINE_CENTER_Z - center.z * s,
+      LIVER_CENTER_X - center.x * s,
+      LIVER_CENTER_Y - center.y * s,
+      LIVER_CENTER_Z - center.z * s,
     );
     cloned.visible = false;
     return cloned;
@@ -57,10 +55,10 @@ function IntestineModel({
     const rawSize = baseScaleRef.current > 0 ? baseScaleRef.current : 1;
     const s = (th / TARGET_HEIGHT) * rawSize;
     scene.scale.setScalar(s);
-    const c = centerRef.current;
-    const cx = femaleMode ? INTESTINE_CENTER_X_FEMALE : INTESTINE_CENTER_X;
-    const cy = femaleMode ? INTESTINE_CENTER_Y_FEMALE : INTESTINE_CENTER_Y;
-    const cz = femaleMode ? INTESTINE_CENTER_Z_FEMALE : INTESTINE_CENTER_Z;
+    const c = liverCenterRef.current;
+    const cx = femaleMode ? LIVER_CENTER_X_FEMALE : LIVER_CENTER_X;
+    const cy = femaleMode ? LIVER_CENTER_Y_FEMALE : LIVER_CENTER_Y;
+    const cz = femaleMode ? LIVER_CENTER_Z_FEMALE : LIVER_CENTER_Z;
     scene.position.set(cx - c.x * s, cy - c.y * s, cz - c.z * s);
   }, [femaleMode, scene]);
 
@@ -70,11 +68,16 @@ function IntestineModel({
     const mats = [];
     scene.traverse((child) => {
       if (!child.isMesh) return;
-      const m = child.material.clone();
-      m.transparent = true;
-      m.opacity = 0;
-      m.depthWrite = false;
-      m.needsUpdate = true;
+      const m = new THREE.MeshStandardMaterial({
+        color: new THREE.Color("#7a2a10"),
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        emissive: new THREE.Color("#5a1808"),
+        emissiveIntensity: 0,
+        roughness: 0.65,
+        metalness: 0.1,
+      });
       child.material = m;
       child.renderOrder = 4;
       mats.push(m);
@@ -88,33 +91,36 @@ function IntestineModel({
     const mats = matsRef.current;
     if (!mats.length) return;
 
-    const otherSelected =
-      selectedOrganId && !INTESTINE_IDS.has(selectedOrganId);
+    const otherSelected = selectedOrganId && selectedOrganId !== "liver";
     const ghostMode = meshMode === 0 || meshMode === 3;
-    const hovered = INTESTINE_IDS.has(hoveredOrganId);
+    const hovered = hoveredOrganId === "liver";
     const digestiveMode = viewMode === "unified";
 
     let targetOpacity;
     if (otherSelected) {
       targetOpacity = 0;
     } else if (hovered) {
-      targetOpacity = 0.88;
+      targetOpacity = 0.75;
     } else if (meshMode === 4) {
-      targetOpacity = digestiveMode ? 0.38 : 0;
+      targetOpacity = digestiveMode ? 0.35 : 0;
     } else if (meshMode === 2 || meshMode === 5) {
-      targetOpacity = digestiveMode ? 0.55 : 0.38;
+      targetOpacity = digestiveMode ? 0.45 : 0.28;
     } else if (ghostMode) {
-      targetOpacity = digestiveMode ? 0.5 : 0.32;
+      targetOpacity = digestiveMode ? 0.4 : 0.22;
     } else if (meshMode === 1) {
-      targetOpacity = 0.26;
+      targetOpacity = 0.18;
     } else {
-      targetOpacity = 0.2;
+      targetOpacity = 0.12;
     }
 
     const opLerp = 1 - Math.exp(-delta * 3.7);
+    const emLerp = 1 - Math.exp(-delta * 5.0);
     for (const m of mats) {
-      const diff = targetOpacity - m.opacity;
-      if (Math.abs(diff) > 0.001) m.opacity += diff * opLerp;
+      const opDiff = targetOpacity - m.opacity;
+      if (Math.abs(opDiff) > 0.001) m.opacity += opDiff * opLerp;
+      const targetEmissive = hovered ? 0.4 : 0.0;
+      const emDiff = targetEmissive - m.emissiveIntensity;
+      if (Math.abs(emDiff) > 0.001) m.emissiveIntensity += emDiff * emLerp;
     }
 
     scene.visible = mats[0].opacity > 0.01;
@@ -123,6 +129,6 @@ function IntestineModel({
   return <primitive object={scene} />;
 }
 
-useGLTF.preload("/intestine.glb");
+useGLTF.preload("/models/organs/liver.glb");
 
-export default IntestineModel;
+export default LiverModel;

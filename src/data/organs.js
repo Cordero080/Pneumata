@@ -27,9 +27,9 @@ export const organs = [
     femalePosition: [0, 1.737, 0.0],
     brainPosition: [0, 1.746, 0.0],
     femaleBrainPosition: [0, 1.737, 0.0],
-    bio_function:
+    bioFunction:
       "The emergent phenomenon of self-awareness arising from coordinated neural activity — the point at which biology becomes witness to itself. Not located in any single region. Arises from integration across all of them.",
-    hard_function:
+    hardFunction:
       "A theoretical threshold at which information processing becomes so densely interconnected that the system begins modeling itself. No single chip produces it. It emerges from the architecture as a whole.",
     synthesis:
       "Both are properties of complexity, not components. You cannot point to the transistor that holds consciousness, just as you cannot point to the neuron that holds the self. The pattern observes the pattern.",
@@ -48,9 +48,9 @@ export const organs = [
     femalePosition: [0, 1.619, 0.08],
     brainPosition: [0, 1.71, 0.06],
     femaleBrainPosition: [0, 1.646, 0.06],
-    bio_function:
+    bioFunction:
       "The prefrontal cortex governs active working memory, impulse control, planning, and deliberate reasoning. It holds the current thought in place long enough to act on it. Damage here doesn't erase the past — it destroys the ability to hold the present.",
-    hard_function:
+    hardFunction:
       "Random Access Memory — the volatile workspace where the CPU holds everything it is actively computing. Fast, limited, and completely cleared when power cuts. Nothing stored here survives a reboot.",
     synthesis:
       "Both are temporary high-speed workspaces. Neither stores anything permanently. Both are the first thing lost when the system goes down.",
@@ -68,9 +68,9 @@ export const organs = [
     femalePosition: [-0.05, 1.61, 0.02],
     brainPosition: [-0.078, 1.675, 0.0],
     femaleBrainPosition: [-0.078, 1.615, 0.0],
-    bio_function:
+    bioFunction:
       "Specializes in sequential processing — language, grammar, logic, analysis. It breaks complex problems into ordered steps and executes them in series. It is the hemisphere that narrates.",
-    hard_function:
+    hardFunction:
       "The Central Processing Unit — executes sequential instructions, handles mathematical logic, and processes language and symbolic reasoning one step at a time. The fastest path through a linear problem.",
     synthesis:
       "Both are engines of linear, structured thought. Both excel at following rules, parsing syntax, and moving through a problem one step at a time.",
@@ -88,9 +88,9 @@ export const organs = [
     femalePosition: [0.05, 1.61, 0.02],
     brainPosition: [0.078, 1.675, 0.0],
     femaleBrainPosition: [0.078, 1.615, 0.0],
-    bio_function:
+    bioFunction:
       "Handles spatial reasoning, pattern recognition, emotional tone, and holistic perception. It processes the entire scene rather than its parts, recognizes faces, interprets music, and holds the big picture.",
-    hard_function:
+    hardFunction:
       "The Graphics Processing Unit — processes thousands of parallel data streams simultaneously. Built not for sequential logic but for pattern recognition, rendering, and spatial computation across massive arrays of data at once.",
     synthesis:
       "Both trade sequential precision for parallel throughput. Both see the whole image before the individual pixel.",
@@ -108,9 +108,9 @@ export const organs = [
     femalePosition: [-0.02, 1.588, -0.01],
     brainPosition: [0, 1.642, -0.02],
     femaleBrainPosition: [0, 1.586, -0.02],
-    bio_function:
+    bioFunction:
       "Nearly all sensory input — vision, touch, hearing, pain — passes through the thalamus before reaching the cortex. It acts as the central relay station, filtering and routing signals to the correct brain region. Consciousness depends on it remaining online.",
-    hard_function:
+    hardFunction:
       "The interrupt controller receives signals from every connected hardware device and routes them to the correct processor with assigned priority. Nothing reaches the CPU without passing through it first. It does not compute — it directs.",
     synthesis:
       "Both are mandatory routing layers. Neither generates meaning — both determine what gets through, in what order, to what destination.",
@@ -128,9 +128,9 @@ export const organs = [
     femalePosition: [0, 1.575, -0.04],
     brainPosition: [0.055, 1.618, -0.055],
     femaleBrainPosition: [0.055, 1.564, -0.055],
-    bio_function:
+    bioFunction:
       "Encodes short-term experience into long-term memory, consolidates it during sleep, and retrieves it on demand. Without it, every day begins with no record of the last. Damage produces a permanent present tense.",
-    hard_function:
+    hardFunction:
       "Solid-state storage — non-volatile memory that persists after power loss. Writes experience to permanent blocks, indexes it for retrieval, and holds the archive the system draws on when processing new information against old patterns.",
     synthesis:
       "Both convert active, temporary experience into indexed, persistent storage. Both are the reason the system can learn rather than just react.",
@@ -148,9 +148,9 @@ export const organs = [
     femalePosition: [0, 1.575, 0.03],
     brainPosition: [0.055, 1.633, 0.02],
     femaleBrainPosition: [0.055, 1.578, 0.02],
-    bio_function:
+    bioFunction:
       "Detects emotional and survival-critical stimuli — threat, fear, aggression — and fires before conscious processing completes. It bypasses deliberation and triggers immediate physical response. It is faster than thought by design.",
-    hard_function:
+    hardFunction:
       "The interrupt handler monitors the event queue for signals flagged as critical — threats that cannot wait in line for scheduled processing. When triggered, it preempts normal execution and forces immediate CPU attention regardless of what was running.",
     synthesis:
       "Both exist because some inputs cannot be queued. Both override the normal processing hierarchy when the cost of delay is too high.",
@@ -168,9 +168,9 @@ export const organs = [
     femalePosition: [0, 1.571, 0.02],
     brainPosition: [0, 1.624, 0.01],
     femaleBrainPosition: [0, 1.57, 0.01],
-    bio_function:
+    bioFunction:
       "Regulates body temperature, hunger, thirst, circadian rhythm, and hormonal balance. It continuously samples the body's internal state and adjusts output to maintain homeostasis. It never stops running.",
-    hard_function:
+    hardFunction:
       "The thermal and power management subsystem monitors CPU temperature, adjusts fan speed, throttles clock speed, and manages sleep states. It keeps the system within safe operating parameters at all times without user intervention.",
     synthesis:
       "Both manage the unglamorous infrastructure that makes everything else possible. Both are invisible until they fail — at which point the entire system destabilizes.",
@@ -189,9 +189,9 @@ export const organs = [
     femalePosition: [0, 1.566, 0.01],
     brainPosition: [0, 1.609, 0.022],
     femaleBrainPosition: [0, 1.556, 0.022],
-    bio_function:
+    bioFunction:
       "The master gland that releases hormones controlling growth, metabolism, reproduction, stress response, and the activity of every other endocrine gland. It is the conductor of the hormonal orchestra — the signal that tells every instrument when to play.",
-    hard_function:
+    hardFunction:
       "The master control chip that orchestrates system-wide signaling — broadcasting commands that regulate the behavior of every downstream subsystem simultaneously. It does not execute tasks directly; it issues the instructions that govern everything that does.",
     synthesis:
       "Both sit at the apex of a command hierarchy. Neither does the work directly. Both ensure the work gets done by everything below them.",
@@ -209,9 +209,9 @@ export const organs = [
     femalePosition: [0, 1.548, -0.06],
     brainPosition: [0, 1.608, -0.07],
     femaleBrainPosition: [0, 1.551, -0.06],
-    bio_function:
+    bioFunction:
       "Coordinates movement, balance, and timing — not initiating actions but ensuring they are executed with precision and rhythm. It fine-tunes the signal after the cortex sends it. Damage produces not paralysis but ataxia — movement that exists but cannot be controlled.",
-    hard_function:
+    hardFunction:
       "The clock crystal generates the master timing signal — a precise, stable oscillation that every other component synchronizes to. Without it, operations lose coordination. Chips fire out of sequence. The system falls apart not from lack of power but from loss of rhythm.",
     synthesis:
       "Both are the reason the system moves gracefully rather than just moving. Both are invisible when working and devastating when not.",
@@ -229,9 +229,9 @@ export const organs = [
     femalePosition: [0, 1.526, -0.04],
     brainPosition: [0, 1.592, -0.063],
     femaleBrainPosition: [0, 1.523, -0.058],
-    bio_function:
+    bioFunction:
       "Governs all involuntary survival functions — breathing, heart rate, blood pressure, swallowing, consciousness itself. It operates beneath awareness. No amount of cortical health compensates for its failure. It is the irreducible minimum of being alive.",
-    hard_function:
+    hardFunction:
       "The BIOS is the lowest-level firmware — the first code that runs on power-up, before the operating system loads. It governs the most primitive hardware functions: power cycling, thermal monitoring, basic input/output. The system cannot boot without it.",
     synthesis:
       "Both run before anything else. Both are the layer you cannot lose and still have a system.",
@@ -260,9 +260,9 @@ export const organs = [
       [0, 0.9, -0.02], // L4/L5 — lordosis apex, most anterior
       [0, 0.88, -0.04], // S1  — sacrum steps posterior, terminates
     ],
-    bio_function:
+    bioFunction:
       "The trunk line of the nervous system — a continuous bundle of nerve fibers carrying motor commands from the brain to the body and sensory data from the body back to the brain. It contains 24 vertebral relay stations that segment and route every signal.",
-    hard_function:
+    hardFunction:
       "The PCIe bus is the motherboard's primary data highway — the physical channel through which the CPU communicates with every connected component. Every signal between processor and periphery travels through it.",
     synthesis:
       "Both are the backbone everything else depends on. Damage anywhere along the line interrupts communication below that point — completely, and in both directions.",
@@ -281,9 +281,9 @@ export const organs = [
     femalePosition: [-0.035, 1.588, 0.08],
     brainPosition: [-0.035, 1.64, 0.08], // keep in sync with position above
     femaleBrainPosition: [-0.035, 1.588, 0.08],
-    bio_function:
+    bioFunction:
       "Captures photons through the lens, focuses them on the retina's photoreceptors, and converts light into electrochemical signals. The retina actively preprocesses the data — edge detection, contrast, motion — before it ever reaches the brain.",
-    hard_function:
+    hardFunction:
       "The camera sensor captures raw photon data and converts it into a digital signal. The render pipeline processes raw geometry into structured, displayable frames. Together they transform light into image.",
     synthesis:
       "Both are active encoders, not passive receivers. Both begin processing before the signal reaches the main processor. Both translate light into structured output.",
@@ -300,9 +300,9 @@ export const organs = [
     femalePosition: [0.035, 1.588, 0.08],
     brainPosition: [0.035, 1.64, 0.08], // keep in sync with position above
     femaleBrainPosition: [0.035, 1.588, 0.08],
-    bio_function:
+    bioFunction:
       "Captures photons through the lens, focuses them on the retina's photoreceptors, and converts light into electrochemical signals. Dual-sensor stereo input provides the depth and field the brain needs to construct three-dimensional space.",
-    hard_function:
+    hardFunction:
       "The second camera sensor in the stereo input array. Both sensors feed the same render pipeline, providing dual-channel input for depth mapping and three-dimensional scene reconstruction.",
     synthesis:
       "Both are active encoders, not passive receivers. Both begin processing before the signal reaches the main processor. Both translate light into structured output.",
@@ -319,9 +319,9 @@ export const organs = [
     femalePosition: [-0.07, 1.579, 0.0],
     brainPosition: [-0.07, 1.635, 0.0],
     femaleBrainPosition: [-0.07, 1.579, 0.0],
-    bio_function:
+    bioFunction:
       "The eardrum converts air pressure waves into mechanical vibration. The ossicles amplify and transmit it. The cochlea's hair cells perform the final transduction — converting mechanical movement into electrochemical nerve signals.",
-    hard_function:
+    hardFunction:
       "The microphone converts analog air pressure waves into analog electrical signals. The ADC samples those signals at high frequency and converts them into a discrete digital stream the system can process.",
     synthesis:
       "The same three-stage transduction chain: physical wave → analog electrical → digital signal. Biology and hardware arrived at identical architectures independently.",
@@ -338,9 +338,9 @@ export const organs = [
     femalePosition: [0.07, 1.579, 0.0],
     brainPosition: [0.07, 1.635, 0.0],
     femaleBrainPosition: [0.07, 1.579, 0.0],
-    bio_function:
+    bioFunction:
       "The eardrum converts air pressure waves into mechanical vibration. The ossicles amplify and transmit it. The cochlea's hair cells perform the final transduction — converting mechanical movement into electrochemical nerve signals. Stereo input enables directional hearing.",
-    hard_function:
+    hardFunction:
       "The second microphone in the stereo audio input array. Both channels feed the same ADC pipeline, providing dual-channel input for spatial audio processing and directional signal mapping.",
     synthesis:
       "The same three-stage transduction chain: physical wave → analog electrical → digital signal. Biology and hardware arrived at identical architectures independently.",
@@ -354,9 +354,9 @@ export const organs = [
     organ: "Vocal Cords",
     hardware: "DAC + Speaker / TTS Engine",
     position: [0, 1.49, 0.03],
-    bio_function:
+    bioFunction:
       "Paired mucous membrane folds in the larynx that vibrate at precise frequencies when air passes through them. They do not generate the message — they are the final output encoder, converting internal neurological intent into a transmittable acoustic signal.",
-    hard_function:
+    hardFunction:
       "The DAC converts internal digital signals into analog waveforms. The speaker converts those waveforms into physical pressure waves that propagate through air. Neither generates meaning — they encode and transmit what the system has already decided to say.",
     synthesis:
       "Output is always translation. Both are the last stage of a long internal process — the point where thought becomes signal becomes wave.",
@@ -370,9 +370,9 @@ export const organs = [
     organ: "Skin",
     hardware: "Sensor Array / Haptic Interface",
     position: [0.14, 1.08, 0.02],
-    bio_function:
+    bioFunction:
       "The body's largest organ. Distributed receptors for pressure, temperature, pain, and vibration across its entire surface, while simultaneously serving as the primary barrier against pathogens and a thermal interface with the environment.",
-    hard_function:
+    hardFunction:
       "The sensor array monitors the system's external surface — temperature, pressure, contact, proximity. The haptic interface simultaneously provides tactile feedback. The chassis does three things at once: input device, physical barrier, and thermal interface.",
     synthesis:
       "One layer, three simultaneous functions. The boundary between system and environment was never passive in either case.",
@@ -388,9 +388,9 @@ export const organs = [
     organ: "Thyroid",
     hardware: "System Clock (BCLK)",
     position: [0, 1.53, 0.03],
-    bio_function:
+    bioFunction:
       "Secretes hormones that set the body's baseline metabolic rate — how fast every cell burns energy, synthesizes protein, and generates heat. Hyperthyroidism overclocks the body. Hypothyroidism throttles it below usable performance.",
-    hard_function:
+    hardFunction:
       "The base clock sets the fundamental speed at which every component in the system operates. Raise it and everything accelerates — but heat and instability follow. Lower it and the system cools but slows. Every process is downstream of this signal.",
     synthesis:
       "Both set the operating tempo of every downstream process. Both are small, unglamorous, and catastrophic when miscalibrated.",
@@ -408,9 +408,9 @@ export const organs = [
     hardware: "Power Supply Unit (PSU)",
     position: [0.01, 1.32, 0.06],
     femalePosition: [0.01, 1.3, -0.02],
-    bio_function:
+    bioFunction:
       "The muscular pump delivering oxygenated blood to every cell in the body. Not because it thinks, but because everything that thinks requires continuous power delivery. It beats 100,000 times per day without instruction. Four minutes without it and the cortex begins to die.",
-    hard_function:
+    hardFunction:
       "The power supply unit converts incoming current into stable, regulated voltage and distributes it to every component in the system. It is not the brain — it is the reason the brain can run at all. Everything dies when it stops.",
     synthesis:
       "Neither is the most complex component. Both are the most critical one. The system does not degrade without them — it stops.",
@@ -424,9 +424,9 @@ export const organs = [
     organ: "Adrenal Glands",
     hardware: "Overclock Mechanism",
     position: [0, 1.12, -0.05],
-    bio_function:
+    bioFunction:
       "Release adrenaline in response to stress — instantly spiking heart rate, blood pressure, muscle blood flow, and reaction speed. The body performs beyond its normal limits. Sustained activation causes cardiovascular damage, immune suppression, and burnout.",
-    hard_function:
+    hardFunction:
       "Overclocking forces the CPU to run above its rated speed by increasing voltage and clock multiplier. Performance spikes dramatically — but thermal output rises, component wear accelerates, and sustained overclocking shortens hardware lifespan.",
     synthesis:
       "Both deliver emergency performance at the cost of long-term integrity. Both are designed for crisis, not cruise.",
@@ -445,9 +445,9 @@ export const organs = [
     hardware: "Thermal Management (Heat Sink)",
     position: [-0.1, 1.26, 0.05],
     femalePosition: [-0.1, 1.18, -0.02],
-    bio_function:
+    bioFunction:
       "Exchanges carbon dioxide — the metabolic waste product of cellular energy generation — for fresh oxygen. Every cell in the body generates heat and CO₂ as byproducts of work. The lungs clear the exhaust.",
-    hard_function:
+    hardFunction:
       "The heat sink absorbs thermal energy generated by the CPU and dissipates it into the surrounding airspace. Without continuous airflow, components overheat and throttle. Sustained thermal overload causes permanent damage.",
     synthesis:
       "Both exist because energy conversion produces waste that must be removed continuously. Both are the reason the system can run at load without destroying itself.",
@@ -464,9 +464,9 @@ export const organs = [
     hardware: "Thermal Management (Heat Sink)",
     position: [0.1, 1.26, 0.05],
     femalePosition: [0.1, 1.18, -0.02],
-    bio_function:
+    bioFunction:
       "Exchanges carbon dioxide — the metabolic waste product of cellular energy generation — for fresh oxygen. The right lung is slightly larger than the left, compensating for the cardiac displacement.",
-    hard_function:
+    hardFunction:
       "The second heat sink in the bilateral thermal management array. Both units absorb and dissipate thermal load, providing redundant cooling capacity at the same bus tier.",
     synthesis:
       "Both exist because energy conversion produces waste that must be removed continuously. Both are the reason the system can run at load without destroying itself.",
@@ -480,9 +480,9 @@ export const organs = [
     organ: "Diaphragm",
     hardware: "Fan Controller",
     position: [0, 1.13, 0.06],
-    bio_function:
+    bioFunction:
       "The primary muscle of respiration — contracting to expand lung volume, driving the entire breathing cycle. It responds to CO₂ levels in the blood, unconsciously adjusting rate and depth to match metabolic demand.",
-    hard_function:
+    hardFunction:
       "The fan controller regulates fan speed in response to thermal load — accelerating airflow under heavy processing, slowing during idle, maintaining the rhythm of the entire cooling cycle.",
     synthesis:
       "Both regulate the rhythm of the cooling system. Neither generates the airflow — both determine when and how fast it moves.",
@@ -498,9 +498,9 @@ export const organs = [
     organ: "Esophagus",
     hardware: "Input Queue / Data Bus",
     position: [0, 1.26, -0.03],
-    bio_function:
+    bioFunction:
       "A muscular tube that moves food from the mouth to the stomach via rhythmic contraction. It performs no digestion — its sole function is controlled, sequential delivery of raw input to the processing organ.",
-    hard_function:
+    hardFunction:
       "The data bus segment between the input port and the parser. It performs no transformation — it ensures raw input arrives at the processing layer in sequence, without loss, and without collision.",
     synthesis:
       "The pipe between the port and the processor. Before anything can be understood, it must first be delivered — orderly, intact, in sequence.",
@@ -514,9 +514,9 @@ export const organs = [
     organ: "Stomach",
     hardware: "Parser / Compiler",
     position: [0.05, 1.12, 0.08],
-    bio_function:
+    bioFunction:
       "Mechanically churns food and chemically breaks it down with acid and enzymes — converting complex raw material into a semi-digested slurry that the small intestine can extract nutrients from. It is the first stage of transformation.",
-    hard_function:
+    hardFunction:
       "The parser takes raw input — text, binary, encoded data — and breaks it down into structured tokens the system can process. The compiler converts human-readable code into machine-executable instructions. Both transform raw input into usable form.",
     synthesis:
       "Neither produces the final output. Both convert raw input into a form the rest of the pipeline can work with.",
@@ -531,9 +531,9 @@ export const organs = [
     organ: "Liver",
     hardware: "Firewall / Data Filter",
     position: [-0.07, 1.18, 0.08],
-    bio_function:
+    bioFunction:
       "Filters the entire blood supply — neutralizing toxins, metabolizing drugs, breaking down hormones, synthesizing proteins, and maintaining chemical balance. Everything absorbed from digestion passes through it before reaching circulation.",
-    hard_function:
+    hardFunction:
       "The firewall inspects incoming data packets, filters threats, blocks unauthorized access, and sanitizes inputs before they reach the system's core. It maintains a continuously updated ruleset for what is safe to process.",
     synthesis:
       "Both are mandatory inspection layers that every input must pass through. Both protect the system from what looked like food but turned out to be poison.",
@@ -548,9 +548,9 @@ export const organs = [
     hardware: "Capacitor Bank / Crypto-Coprocessor",
     position: [-0.045, 1.15, 0.07],
     femalePosition: [-0.045, 1.1, 0.07],
-    bio_function:
+    bioFunction:
       "Stores concentrated bile produced by the liver. When the small intestine encounters dense fat — the hardest material to break down — the gallbladder contracts and injects its concentrated charge directly into the pipeline to emulsify the load. It does not manufacture — it stores and discharges on demand.",
-    hard_function:
+    hardFunction:
       "A capacitor bank stores concentrated electrical charge and discharges it rapidly when the system encounters a sudden heavy load — providing the burst current a component needs to process dense or complex data without the main supply dropping voltage.",
     synthesis:
       "Both are reservoir-discharge systems. Both sit adjacent to a filter. Both exist for one purpose: when the pipeline hits something too dense for normal throughput, release the stored concentration and force it through.",
@@ -564,9 +564,9 @@ export const organs = [
     organ: "Pancreas",
     hardware: "Voltage Regulator (VRM)",
     position: [-0.02, 1.06, 0.04],
-    bio_function:
+    bioFunction:
       "Produces insulin and glucagon to regulate blood sugar — the body's primary energy currency. Without it, glucose spikes and crashes destabilize every cell. Uncontrolled, it is fatal.",
-    hard_function:
+    hardFunction:
       "The voltage regulator module converts the PSU's raw output into the precise, stable voltage each component requires. A failing VRM causes system-wide instability — components receive inconsistent power and begin behaving unpredictably.",
     synthesis:
       "Both regulate the energy supply that every downstream process depends on. Both failures look the same: not a sudden shutdown, but a progressive, system-wide unraveling.",
@@ -580,9 +580,9 @@ export const organs = [
     organ: "Small Intestine",
     hardware: "Data Bus / Processing Pipeline",
     position: [0, 1.05, 0.07],
-    bio_function:
+    bioFunction:
       "Where 90% of nutrient absorption occurs — extracting glucose, amino acids, fatty acids, and vitamins from the digested slurry and passing them into the bloodstream for distribution. The longest stage of the pipeline.",
-    hard_function:
+    hardFunction:
       "The data bus is the high-throughput channel through which processed data moves between components — extracting useful information from the parsed stream and forwarding it to storage, execution, and output subsystems.",
     synthesis:
       "Both are extraction and distribution stages. Neither transforms — both identify what's valuable and route it forward.",
@@ -596,9 +596,9 @@ export const organs = [
     organ: "Large Intestine",
     hardware: "Garbage Collector",
     position: [0, 0.97, 0.06],
-    bio_function:
+    bioFunction:
       "Absorbs remaining water, compacts indigestible waste, and prepares it for elimination. It takes what the processing pipeline couldn't use and clears it from the system.",
-    hard_function:
+    hardFunction:
       "The garbage collector identifies memory that is no longer referenced, marks it for deletion, and reclaims the space. It runs in the background, invisible until it doesn't — at which point memory fills and performance degrades.",
     synthesis:
       "Both clean up what the productive processes left behind. Both are invisible infrastructure that makes sustained operation possible.",
@@ -616,9 +616,9 @@ export const organs = [
     position: [-0.06, 1.07, -0.05],
     focusZoom: 0.18,
     focusPanY: 0.37,
-    bio_function:
+    bioFunction:
       "Continuously filters the blood, removing metabolic waste products that accumulate as byproducts of the body's own operations. Unlike digestion, the kidneys clean what the body itself produces.",
-    hard_function:
+    hardFunction:
       "The virtual memory manager — scanning RAM for stale data, moving it to disk to free active memory, retrieving it on demand. It manages the residue of the system's own computations.",
     synthesis:
       "Without something to continuously clean internal waste, both systems choke on the byproducts of their own operation.",
@@ -634,9 +634,9 @@ export const organs = [
     position: [0.06, 1.09, -0.05],
     focusZoom: 0.18,
     focusPanY: 0.37,
-    bio_function:
+    bioFunction:
       "Continuously filters the blood, removing metabolic waste products that accumulate as byproducts of the body's own operations. Bilateral redundancy — both kidneys can sustain life independently.",
-    hard_function:
+    hardFunction:
       "The virtual memory manager — scanning RAM for stale data, moving it to disk to free active memory, retrieving it on demand. Redundant virtual memory channels provide fault tolerance.",
     synthesis:
       "Without something to continuously clean internal waste, both systems choke on the byproducts of their own operation.",
@@ -650,9 +650,9 @@ export const organs = [
     organ: "Bladder",
     hardware: "Output Buffer",
     position: [0, 0.91, 0.04],
-    bio_function:
+    bioFunction:
       "Stores liquid waste filtered by the kidneys, accumulating it until voluntary release. It is a scheduled output operation, not a continuous stream.",
-    hard_function:
+    hardFunction:
       "The output buffer holds processed data ready for transmission — accumulating until a threshold is reached or a flush is triggered, then releasing in a single controlled output event.",
     synthesis:
       "Both store output until conditions are right for transmission. Both are controlled release mechanisms, not constant drains.",
@@ -668,9 +668,9 @@ export const organs = [
     organ: "Spleen",
     hardware: "SIEM (Central Threat Coordination)",
     position: [0.08, 1.1, -0.02],
-    bio_function:
+    bioFunction:
       "Filters blood directly, identifying and destroying pathogens and aging red blood cells. Unlike lymph nodes which intercept threats in transit, the spleen processes the blood itself — a central clearing house where immune responses are coordinated at scale.",
-    hard_function:
+    hardFunction:
       "The Security Information and Event Management system aggregates threat signals from across the network, correlates them into meaningful patterns, coordinates the response of the entire security infrastructure, and maintains the threat log.",
     synthesis:
       "Distributed sensors collect. The center coordinates. Both are the point where scattered threat signals become a unified response.",
@@ -684,9 +684,9 @@ export const organs = [
     organ: "Lymph Node (Cervical)",
     hardware: "Edge Security — Perimeter Node",
     position: [0.04, 1.51, 0.01],
-    bio_function:
+    bioFunction:
       "A forward-deployed checkpoint in the neck where lymphatic fluid is filtered by immune cells before returning to circulation. Threats are intercepted at the periphery before reaching critical organs.",
-    hard_function:
+    hardFunction:
       "An edge security node deployed at a network boundary — filtering and evaluating traffic before it enters the core system. The closer to the perimeter the interception, the less exposure to core infrastructure.",
     synthesis:
       "Defense-in-depth. Neither system waits for threats to reach the center — forward checkpoints intercept at the boundary.",
@@ -700,9 +700,9 @@ export const organs = [
     organ: "Lymph Node (Axillary)",
     hardware: "Edge Security — Perimeter Node",
     position: [0.16, 1.36, 0.02],
-    bio_function:
+    bioFunction:
       "A distributed checkpoint in the armpit region filtering lymphatic fluid from the arm and upper chest before it returns to central circulation.",
-    hard_function:
+    hardFunction:
       "A branch-office or DMZ perimeter node filtering lateral network traffic before it merges with the core network backbone.",
     synthesis:
       "Defense-in-depth. Neither system waits for threats to reach the center — forward checkpoints intercept at the boundary.",
@@ -716,9 +716,9 @@ export const organs = [
     organ: "Lymph Node (Inguinal)",
     hardware: "Edge Security — Perimeter Node",
     position: [0.08, 0.85, 0.03],
-    bio_function:
+    bioFunction:
       "A checkpoint at the groin filtering lymphatic fluid from the lower extremities before it returns to central circulation.",
-    hard_function:
+    hardFunction:
       "A southbound network perimeter node filtering traffic from lower-tier endpoints before it accesses the core.",
     synthesis:
       "Defense-in-depth. Neither system waits for threats to reach the center — forward checkpoints intercept at the boundary.",
@@ -732,9 +732,9 @@ export const organs = [
     organ: "Bone Marrow",
     hardware: "Antivirus Definition Update Engine",
     position: [0, 1.33, 0.09],
-    bio_function:
+    bioFunction:
       "Soft tissue inside the sternum and major bones that manufactures all blood and immune cells — B-cells, T-cells, red blood cells. It does not fight pathogens directly. It produces the defenders, continuously generating cells with updated threat-recognition capabilities.",
-    hard_function:
+    hardFunction:
       "The antivirus definition update engine. It does not scan or quarantine — it manufactures and distributes the updated signature databases the active scanning layer uses to recognize new attacks.",
     synthesis:
       "Without continuous production of updated defenders, the immune layer stagnates. Novel threats pass through unrecognized. Both systems require a factory, not just a fighter.",

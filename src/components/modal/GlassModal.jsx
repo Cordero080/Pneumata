@@ -27,14 +27,14 @@ function GlassModal({ organ, onClose }) {
         <div className="modal-body">
           <div className="modal-column">
             <h3>Biological</h3>
-            <p>{organ.bio_function}</p>
+            <p>{organ.bioFunction}</p>
           </div>
 
           <div className="modal-divider" aria-hidden="true" />
 
           <div className="modal-column">
             <h3>Hardware</h3>
-            <p>{organ.hard_function}</p>
+            <p>{organ.hardFunction}</p>
           </div>
         </div>
 

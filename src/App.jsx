@@ -10,9 +10,11 @@ import ViewModeController from "./components/view-controller/ViewModeController"
 import VerticalControls from "./components/controls/VerticalControls";
 import { organs } from "./data/organs";
 
-// Defaults differ by device and display context
 const IS_MOBILE = window.innerWidth <= 768;
 
+// ── CAMERA REDUCER ───────────────────────────────────────────────────────────
+// All camera state lives here. Dispatch via dispatchCam({ type, value }).
+// Add a new case to support a new camera dimension (e.g. tilt, roll).
 function cameraReducer(state, action) {
   switch (action.type) {
     case "reset":
@@ -36,8 +38,13 @@ function cameraReducer(state, action) {
       return state;
   }
 }
-// Standalone (PWA / Add to Home Screen) has no browser chrome, so the canvas
-// is taller — use slightly smaller scale and less Y offset to compensate.
+// ── DEVICE DEFAULTS ──────────────────────────────────────────────────────────
+// Starting camera values per device. Standalone = PWA (no browser chrome),
+// which gives a taller canvas, so globalScale is reduced to keep the figure in frame.
+//   panY:        0 = head end, 1 = feet end  (maps to the vertical slider)
+//   zoom:        0 = close,    1 = far        (maps to the zoom slider)
+//   globalScale: Three.js scale multiplier on the figure group
+//   offsetX/Y:   figure offset from canvas center in world units
 const IS_STANDALONE =
   window.navigator.standalone === true ||
   window.matchMedia("(display-mode: standalone)").matches;
@@ -47,6 +54,14 @@ const DEFAULTS = IS_MOBILE
     : { panY: 0.51, zoom: 0.32, globalScale: 0.948, offsetX: 0, offsetY: 0.11 }
   : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.08 };
 
+// ── LANDING ENTRY PRESETS ────────────────────────────────────────────────────
+// Each key maps to a path card on the landing screen. When the user picks one,
+// the scene snaps to these values. Add a new key + object to add a new path card.
+//   viewMode:   "logic" | "power" | "breathing" | "unified"
+//   brainZoom:  if true, triggers the brain close-up camera path
+//   zoom/panY:  override the slider starting values on entry
+//   organId:    if set, the scene focuses on that organ node
+//   showNerves: if true, the nerve overlay is enabled on entry
 const LANDING_ENTRY_PRESETS = {
   brain: { viewMode: "logic", brainZoom: true },
   lungs: { viewMode: "breathing", zoom: 0.02, panY: 0.25 },
@@ -59,6 +74,13 @@ const LANDING_ENTRY_PRESETS = {
   body: { viewMode: "logic", zoom: 0.4, panY: IS_MOBILE ? 0.48 : 0.5 },
 };
 
+// ── BACKGROUND MODES ─────────────────────────────────────────────────────────
+// Each index maps to an app--bg-{name} CSS class in App.scss.
+// BG_ICONS are the characters shown on the cycle button for each mode.
+// To add a background: append to both arrays and add an app--bg-{name} rule to App.scss.
+const BG_MODES = ["default", "nebula", "space", "sunset", "matrix"];
+const BG_ICONS = ["⬡︎", "✵︎", "✦︎", "◐︎", "⊞︎"];
+
 function App() {
   const [selectedOrgan, setSelectedOrgan] = useState(null);
   const [organFocusY, setOrganFocusY] = useState(null);
@@ -70,12 +92,14 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [bgMode, setBgMode] = useState(0);
   const [bgPanelOpen, setBgPanelOpen] = useState(false);
-  const BG_MODES = ["default", "nebula", "space", "sunset", "matrix"];
-  const BG_ICONS = ["⬡\uFE0E", "✵\uFE0E", "✦\uFE0E", "◐\uFE0E", "⊞\uFE0E"];
-  const [meshMode, setMeshMode] = useState(5); // 0=ghost, 1=semi-transparent silver, 2=solid silver
+  // 0=Ghost 1=Silver-Trans 2=Silver-Solid 3=Bone 4=Aluminum-Trans 5=Aluminum-Solid 6=Crystal/Onyx
+  // Dark mode uses a different cycle sequence — see onClick on .mesh-toggle-btn.
+  const [meshMode, setMeshMode] = useState(5);
   const [bodyModel, setBodyModel] = useState("male");
   const modelPath =
-    bodyModel === "male" ? "/male-body.glb" : "/female-body.glb";
+    bodyModel === "male"
+      ? "/models/body/male-body.glb"
+      : "/models/body/female-body.glb";
   const [cam, dispatchCam] = useReducer(cameraReducer, {
     brainZoom: false,
     cellZoom: false,
@@ -132,8 +156,6 @@ function App() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [brainZoom, cellZoom]);
-
-  useEffect(() => {}, [darkMode]);
 
   useEffect(() => {
     document.body.classList.toggle("body--female", bodyModel === "female");
@@ -227,6 +249,61 @@ function App() {
       dispatchCam({ type: "setZoom", value });
     },
     [clearLandingFocus],
+  );
+
+  // ── ORGAN SELECTION ──────────────────────────────────────────────────────────
+  // Called when the user clicks an organ node in the 3D scene.
+  // If the organ has focusZoom, the camera jumps to those exact slider values.
+  // Otherwise it auto-computes a Y target from the organ's world position.
+  // focusYAdjust lets individual organs nudge that computed Y (see organs.js).
+  const handleOrganSelect = useCallback(
+    (organ) => {
+      setSelectedOrgan(organ);
+      if (
+        !brainZoom &&
+        organ &&
+        !organ.brainPosition &&
+        organ.type !== "line" &&
+        organ.position
+      ) {
+        if (organ.focusZoom != null) {
+          dispatchCam({ type: "setZoom", value: organ.focusZoom });
+          dispatchCam({ type: "setPanY", value: organ.focusPanY ?? 0.5 });
+          setOrganFocusY(null);
+          setOrganFocusDistance(null);
+        } else {
+          setOrganFocusY(
+            organ.position[1] * globalScale +
+              offsetY +
+              (organ.focusYAdjust ?? 0),
+          );
+          setOrganFocusDistance(organ.focusDistance ?? null);
+        }
+      } else {
+        setOrganFocusY(null);
+        setOrganFocusDistance(null);
+      }
+    },
+    [brainZoom, globalScale, offsetY],
+  );
+
+  // Same focus logic as handleOrganSelect but fires on hover — no selection state change.
+  const handleOrganFocus = useCallback(
+    (organ) => {
+      if (
+        !brainZoom &&
+        organ &&
+        !organ.brainPosition &&
+        organ.type !== "line" &&
+        organ.position
+      ) {
+        setOrganFocusY(
+          organ.position[1] * globalScale + offsetY + (organ.focusYAdjust ?? 0),
+        );
+        setOrganFocusDistance(organ.focusDistance ?? null);
+      }
+    },
+    [brainZoom, globalScale, offsetY],
   );
 
   return (
@@ -391,49 +468,8 @@ function App() {
           offsetX={offsetX}
           offsetY={offsetY + -0.02}
           style={showLanding ? { pointerEvents: "none" } : undefined}
-          onSelect={(organ) => {
-            setSelectedOrgan(organ);
-            if (
-              !brainZoom &&
-              organ &&
-              !organ.brainPosition &&
-              organ.type !== "line" &&
-              organ.position
-            ) {
-              if (organ.focusZoom != null) {
-                dispatchCam({ type: "setZoom", value: organ.focusZoom });
-                dispatchCam({ type: "setPanY", value: organ.focusPanY ?? 0.5 });
-                setOrganFocusY(null);
-                setOrganFocusDistance(null);
-              } else {
-                setOrganFocusY(
-                  organ.position[1] * globalScale +
-                    offsetY +
-                    (organ.focusYAdjust ?? 0),
-                );
-                setOrganFocusDistance(organ.focusDistance ?? null);
-              }
-            } else {
-              setOrganFocusY(null);
-              setOrganFocusDistance(null);
-            }
-          }}
-          onFocus={(organ) => {
-            if (
-              !brainZoom &&
-              organ &&
-              !organ.brainPosition &&
-              organ.type !== "line" &&
-              organ.position
-            ) {
-              setOrganFocusY(
-                organ.position[1] * globalScale +
-                  offsetY +
-                  (organ.focusYAdjust ?? 0),
-              );
-              setOrganFocusDistance(organ.focusDistance ?? null);
-            }
-          }}
+          onSelect={handleOrganSelect}
+          onFocus={handleOrganFocus}
           selectedOrgan={selectedOrgan}
           viewMode={viewMode}
           showNerves={showNerves}

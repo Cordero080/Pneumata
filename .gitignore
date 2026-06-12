@@ -6,3 +6,4 @@ docs/
 !public/screenshots/*.png
 !public/screenshots/new-shots/*.png
 .vercel
+*.backup.glb

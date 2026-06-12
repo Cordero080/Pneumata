@@ -3,29 +3,30 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-// === MALE KIDNEYS — tweak these ===
-const KIDNEYS_CENTER_X = -0.0; // left (-) / right (+)
-const KIDNEYS_CENTER_Y = 1.08; // up (+) / down (-)
-const KIDNEYS_CENTER_Z = -0.05; // forward (+) / back into body (-)
-const TARGET_HEIGHT = 0.16; // size — increase to enlarge
-// ==================================
-
-// === FEMALE KIDNEYS — tweak these ===
-const KIDNEYS_CENTER_X_FEMALE = 0.0;
-const KIDNEYS_CENTER_Y_FEMALE = 1.04;
-const KIDNEYS_CENTER_Z_FEMALE = -0.05;
-const TARGET_HEIGHT_FEMALE = 0.14;
+// === MALE INTESTINE — tweak these ===
+const INTESTINE_CENTER_X = 0.0;
+const INTESTINE_CENTER_Y = 1.01;
+const INTESTINE_CENTER_Z = 0.028;
+const TARGET_HEIGHT = 0.25;
 // =====================================
 
-function KidneysModel({
+// === FEMALE INTESTINE — tweak these ===`
+const INTESTINE_CENTER_X_FEMALE = 0.0;
+const INTESTINE_CENTER_Y_FEMALE = 0.99;
+const INTESTINE_CENTER_Z_FEMALE = 0.02;
+const TARGET_HEIGHT_FEMALE = 0.25;
+// =======================================
+
+const INTESTINE_IDS = new Set(["small_intestine", "large_intestine"]);
+
+function IntestineModel({
   meshMode,
   viewMode,
   hoveredOrganId,
   femaleMode,
   selectedOrganId,
-  onKidneyClick,
 }) {
-  const gltf = useGLTF("/kidneys.glb");
+  const gltf = useGLTF("/models/organs/intestine.glb");
   const baseScaleRef = useRef(1);
   const centerRef = useRef(new THREE.Vector3());
 
@@ -43,9 +44,9 @@ function KidneysModel({
     centerRef.current.copy(center);
     cloned.scale.setScalar(s);
     cloned.position.set(
-      KIDNEYS_CENTER_X - center.x * s,
-      KIDNEYS_CENTER_Y - center.y * s,
-      KIDNEYS_CENTER_Z - center.z * s,
+      INTESTINE_CENTER_X - center.x * s,
+      INTESTINE_CENTER_Y - center.y * s,
+      INTESTINE_CENTER_Z - center.z * s,
     );
     cloned.visible = false;
     return cloned;
@@ -57,9 +58,9 @@ function KidneysModel({
     const s = (th / TARGET_HEIGHT) * rawSize;
     scene.scale.setScalar(s);
     const c = centerRef.current;
-    const cx = femaleMode ? KIDNEYS_CENTER_X_FEMALE : KIDNEYS_CENTER_X;
-    const cy = femaleMode ? KIDNEYS_CENTER_Y_FEMALE : KIDNEYS_CENTER_Y;
-    const cz = femaleMode ? KIDNEYS_CENTER_Z_FEMALE : KIDNEYS_CENTER_Z;
+    const cx = femaleMode ? INTESTINE_CENTER_X_FEMALE : INTESTINE_CENTER_X;
+    const cy = femaleMode ? INTESTINE_CENTER_Y_FEMALE : INTESTINE_CENTER_Y;
+    const cz = femaleMode ? INTESTINE_CENTER_Z_FEMALE : INTESTINE_CENTER_Z;
     scene.position.set(cx - c.x * s, cy - c.y * s, cz - c.z * s);
   }, [femaleMode, scene]);
 
@@ -88,12 +89,10 @@ function KidneysModel({
     if (!mats.length) return;
 
     const otherSelected =
-      selectedOrganId &&
-      selectedOrganId !== "left_kidney" &&
-      selectedOrganId !== "right_kidney";
+      selectedOrganId && !INTESTINE_IDS.has(selectedOrganId);
     const ghostMode = meshMode === 0 || meshMode === 3;
-    const hovered =
-      hoveredOrganId === "left_kidney" || hoveredOrganId === "right_kidney";
+    const hovered = INTESTINE_IDS.has(hoveredOrganId);
+    const digestiveMode = viewMode === "unified";
 
     let targetOpacity;
     if (otherSelected) {
@@ -101,15 +100,15 @@ function KidneysModel({
     } else if (hovered) {
       targetOpacity = 0.88;
     } else if (meshMode === 4) {
-      targetOpacity = 0;
+      targetOpacity = digestiveMode ? 0.38 : 0;
     } else if (meshMode === 2 || meshMode === 5) {
-      targetOpacity = 0.42;
+      targetOpacity = digestiveMode ? 0.55 : 0.38;
     } else if (ghostMode) {
-      targetOpacity = 0.32;
+      targetOpacity = digestiveMode ? 0.5 : 0.32;
     } else if (meshMode === 1) {
-      targetOpacity = 0.22;
+      targetOpacity = 0.26;
     } else {
-      targetOpacity = 0.14;
+      targetOpacity = 0.2;
     }
 
     const opLerp = 1 - Math.exp(-delta * 3.7);
@@ -121,17 +120,9 @@ function KidneysModel({
     scene.visible = mats[0].opacity > 0.01;
   });
 
-  return (
-    <primitive
-      object={scene}
-      onClick={(e) => {
-        e.stopPropagation();
-        onKidneyClick?.();
-      }}
-    />
-  );
+  return <primitive object={scene} />;
 }
 
-useGLTF.preload("/kidneys.glb");
+useGLTF.preload("/models/organs/intestine.glb");
 
-export default KidneysModel;
+export default IntestineModel;

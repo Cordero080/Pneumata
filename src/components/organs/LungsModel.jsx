@@ -24,7 +24,7 @@ function LungsModel({
   femaleMode,
   selectedOrganId,
 }) {
-  const gltf = useGLTF("/lungs-final.glb");
+  const gltf = useGLTF("/models/organs/lungs-final.glb");
   const baseScaleRef = useRef(1);
   const effectiveScaleRef = useRef(1);
   const lungsCenterRef = useRef(new THREE.Vector3());
@@ -197,6 +197,6 @@ function LungsModel({
   );
 }
 
-useGLTF.preload("/lungs-final.glb");
+useGLTF.preload("/models/organs/lungs-final.glb");
 
 export default LungsModel;

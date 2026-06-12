@@ -4,24 +4,24 @@ import { OrbitControls } from "@react-three/drei";
 import SceneLights from "./SceneLights";
 import OrganNode from "../organ/OrganNode";
 import SpinalCord from "../spine/SpinalCord";
-import LungVolume from "../LungVolume";
+import LungVolume from "./LungVolume";
 import AnatomyModel from "../anatomy/AnatomyModel";
-import BodyCirculation from "../BodyCirculation";
-import NerveRoots from "../NerveRoots";
+import BodyCirculation from "./BodyCirculation";
+import NerveRoots from "./NerveRoots";
 import NerveSystem from "../spine/NerveSystem";
 import SpinalFibers from "../spine/SpinalFibers";
-import CameraController from "../CameraController";
+import CameraController from "./CameraController";
 import BrainModel from "../brain/BrainModel";
-import HeartModel from "../heart/HeartModel";
-import LungsModel from "../lungs/LungsModel";
-import LiverModel from "../liver/LiverModel";
-import KidneysModel from "../kidneys/KidneysModel";
-import StomachModel from "../stomach/StomachModel";
-import IntestineModel from "../intestine/IntestineModel";
+import HeartModel from "../organs/HeartModel";
+import LungsModel from "../organs/LungsModel";
+import LiverModel from "../organs/LiverModel";
+import KidneysModel from "../organs/KidneysModel";
+import StomachModel from "../organs/StomachModel";
+import IntestineModel from "../organs/IntestineModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
-import MeridianLayer from "../meridian/MeridianLayer";
+import MeridianLayer from "../organs/MeridianLayer";
 import { organs } from "../../data/organs";
 
 const IS_MOBILE = window.innerWidth <= 768;
@@ -261,8 +261,8 @@ function Scene({
               id: node.id,
               organ: node.organ ?? node.label,
               hardware: node.hardware,
-              bio_function: node.bio_function,
-              hard_function: node.hard_function,
+              bioFunction: node.bioFunction,
+              hardFunction: node.hardFunction,
               synthesis: node.synthesis,
             })
           }

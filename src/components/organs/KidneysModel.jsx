@@ -3,28 +3,29 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-// === MALE STOMACH — tweak these ===
-const STOMACH_CENTER_X = 0.01; // left (-) / right (+)
-const STOMACH_CENTER_Y = 1.17; // up (+) / down (-)
-const STOMACH_CENTER_Z = 0.04; // forward (+) / back into body (-)
-const TARGET_HEIGHT = 0.22; // size — increase to enlarge
+// === MALE KIDNEYS — tweak these ===
+const KIDNEYS_CENTER_X = -0.0; // left (-) / right (+)
+const KIDNEYS_CENTER_Y = 1.08; // up (+) / down (-)
+const KIDNEYS_CENTER_Z = -0.05; // forward (+) / back into body (-)
+const TARGET_HEIGHT = 0.16; // size — increase to enlarge
 // ==================================
 
-// === FEMALE STOMACH — tweak these ===
-const STOMACH_CENTER_X_FEMALE = -0.001;
-const STOMACH_CENTER_Y_FEMALE = 1.138;
-const STOMACH_CENTER_Z_FEMALE = 0.04;
-const TARGET_HEIGHT_FEMALE = 0.25;
+// === FEMALE KIDNEYS — tweak these ===
+const KIDNEYS_CENTER_X_FEMALE = 0.0;
+const KIDNEYS_CENTER_Y_FEMALE = 1.04;
+const KIDNEYS_CENTER_Z_FEMALE = -0.05;
+const TARGET_HEIGHT_FEMALE = 0.14;
 // =====================================
 
-function StomachModel({
+function KidneysModel({
   meshMode,
   viewMode,
   hoveredOrganId,
   femaleMode,
   selectedOrganId,
+  onKidneyClick,
 }) {
-  const gltf = useGLTF("/stomach.glb");
+  const gltf = useGLTF("/models/organs/kidneys.glb");
   const baseScaleRef = useRef(1);
   const centerRef = useRef(new THREE.Vector3());
 
@@ -32,7 +33,7 @@ function StomachModel({
     const cloned = gltf.scene.clone(true);
     cloned.scale.set(1, 1, 1);
     cloned.position.set(0, 0, 0);
-    cloned.rotation.set(-0.15, 0, -0.2);
+    cloned.rotation.set(0, 0, 0);
     cloned.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(cloned);
     const size = box.getSize(new THREE.Vector3());
@@ -42,9 +43,9 @@ function StomachModel({
     centerRef.current.copy(center);
     cloned.scale.setScalar(s);
     cloned.position.set(
-      STOMACH_CENTER_X - center.x * s,
-      STOMACH_CENTER_Y - center.y * s,
-      STOMACH_CENTER_Z - center.z * s,
+      KIDNEYS_CENTER_X - center.x * s,
+      KIDNEYS_CENTER_Y - center.y * s,
+      KIDNEYS_CENTER_Z - center.z * s,
     );
     cloned.visible = false;
     return cloned;
@@ -56,9 +57,9 @@ function StomachModel({
     const s = (th / TARGET_HEIGHT) * rawSize;
     scene.scale.setScalar(s);
     const c = centerRef.current;
-    const cx = femaleMode ? STOMACH_CENTER_X_FEMALE : STOMACH_CENTER_X;
-    const cy = femaleMode ? STOMACH_CENTER_Y_FEMALE : STOMACH_CENTER_Y;
-    const cz = femaleMode ? STOMACH_CENTER_Z_FEMALE : STOMACH_CENTER_Z;
+    const cx = femaleMode ? KIDNEYS_CENTER_X_FEMALE : KIDNEYS_CENTER_X;
+    const cy = femaleMode ? KIDNEYS_CENTER_Y_FEMALE : KIDNEYS_CENTER_Y;
+    const cz = femaleMode ? KIDNEYS_CENTER_Z_FEMALE : KIDNEYS_CENTER_Z;
     scene.position.set(cx - c.x * s, cy - c.y * s, cz - c.z * s);
   }, [femaleMode, scene]);
 
@@ -86,10 +87,13 @@ function StomachModel({
     const mats = matsRef.current;
     if (!mats.length) return;
 
-    const otherSelected = selectedOrganId && selectedOrganId !== "stomach";
+    const otherSelected =
+      selectedOrganId &&
+      selectedOrganId !== "left_kidney" &&
+      selectedOrganId !== "right_kidney";
     const ghostMode = meshMode === 0 || meshMode === 3;
-    const hovered = hoveredOrganId === "stomach";
-    const digestiveMode = viewMode === "unified";
+    const hovered =
+      hoveredOrganId === "left_kidney" || hoveredOrganId === "right_kidney";
 
     let targetOpacity;
     if (otherSelected) {
@@ -97,15 +101,15 @@ function StomachModel({
     } else if (hovered) {
       targetOpacity = 0.88;
     } else if (meshMode === 4) {
-      targetOpacity = digestiveMode ? 0.38 : 0;
+      targetOpacity = 0;
     } else if (meshMode === 2 || meshMode === 5) {
-      targetOpacity = digestiveMode ? 0.55 : 0.38;
+      targetOpacity = 0.42;
     } else if (ghostMode) {
-      targetOpacity = digestiveMode ? 0.5 : 0.32;
+      targetOpacity = 0.32;
     } else if (meshMode === 1) {
-      targetOpacity = 0.26;
+      targetOpacity = 0.22;
     } else {
-      targetOpacity = 0.2;
+      targetOpacity = 0.14;
     }
 
     const opLerp = 1 - Math.exp(-delta * 3.7);
@@ -117,9 +121,17 @@ function StomachModel({
     scene.visible = mats[0].opacity > 0.01;
   });
 
-  return <primitive object={scene} />;
+  return (
+    <primitive
+      object={scene}
+      onClick={(e) => {
+        e.stopPropagation();
+        onKidneyClick?.();
+      }}
+    />
+  );
 }
 
-useGLTF.preload("/stomach.glb");
+useGLTF.preload("/models/organs/kidneys.glb");
 
-export default StomachModel;
+export default KidneysModel;
