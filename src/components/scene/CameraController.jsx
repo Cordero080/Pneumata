@@ -49,8 +49,9 @@ const INITIAL_CAM = IS_MOBILE
   ? { x: 0, y: 0.82, z: 1.9 }
   : { x: 0, y: 0.82, z: 2.1 };
 
-// Distance the camera pulls back when focusing on a torso organ.
-const TORSO_FOCUS_DIST = 2.2;
+// Distance the camera moves to when focusing on a torso organ on click.
+// Must be less than INITIAL_CAM.z (~2.0) or it will zoom OUT instead of in.
+const TORSO_FOCUS_DIST = 1.5;
 
 function CameraController({
   brainZoom,

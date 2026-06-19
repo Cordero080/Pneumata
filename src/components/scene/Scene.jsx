@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 import { OrbitControls } from "@react-three/drei";
 import SceneLights from "./SceneLights";
 import OrganNode from "../organ/OrganNode";
@@ -372,9 +373,13 @@ function Scene({
         enablePan
         autoRotate
         autoRotateSpeed={0.5}
-        minDistance={0.9}
-        maxDistance={7}
+        minDistance={0.7}
+        maxDistance={6}
         target={ORBIT_TARGET}
+        touches={{
+          ONE: THREE.TOUCH.ROTATE,
+          TWO: THREE.TOUCH.DOLLY_PAN,
+        }}
       />
       {bgMode > 0 && bgMode <= 4 && <SceneOrbs theme={bgModeName} />}
     </Canvas>

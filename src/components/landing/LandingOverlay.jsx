@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import "./LandingOverlay.scss";
 
 const ENDPOINT = "https://pneumata-backend.onrender.com/subscribe";
@@ -30,6 +31,32 @@ const ENTRY_PATHS = [
     detail: "Signal bus",
   },
 ];
+
+const pathGridVariants = {
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+};
+const pathCardVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { duration: 0.25, ease: "easeOut" },
+  },
+};
+
+function PathCard({ path, isActive, onSelect, disabled }) {
+  return (
+    <motion.button
+      className={`landing-path${isActive ? " landing-path--active" : ""}`}
+      onClick={() => onSelect(path.key)}
+      disabled={disabled}
+      variants={pathCardVariants}
+      whileTap={{ scale: 0.98 }}
+    >
+      <span className="landing-path__label">{path.label}</span>
+      <span className="landing-path__detail">{path.detail}</span>
+    </motion.button>
+  );
+}
 
 function LandingOverlay({ onPreviewEntry, onEnter }) {
   const [email, setEmail] = useState("");
@@ -105,7 +132,7 @@ function LandingOverlay({ onPreviewEntry, onEnter }) {
           <div className="landing-divider" />
 
           {status === "done" ? (
-            <p className="landing-confirm">Transmission received.</p>
+            <p className="landing-confirm"></p>
           ) : (
             <form className="landing-form" onSubmit={handleSubmit}>
               <input
@@ -135,26 +162,22 @@ function LandingOverlay({ onPreviewEntry, onEnter }) {
               {(entryPhase === "choosing" || entryPhase === "revealing") && (
                 <div className="landing-paths-shell">
                   <p className="landing-entry-kicker">Choose your path</p>
-                  <div className="landing-paths">
-                    {ENTRY_PATHS.map((path) => {
-                      const isActive = selectedPath === path.key;
-                      return (
-                        <button
-                          key={path.key}
-                          className={`landing-path${isActive ? " landing-path--active" : ""}`}
-                          onClick={() => handlePathSelect(path.key)}
-                          disabled={entryPhase === "revealing"}
-                        >
-                          <span className="landing-path__label">
-                            {path.label}
-                          </span>
-                          <span className="landing-path__detail">
-                            {path.detail}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <motion.div
+                    className="landing-paths"
+                    initial="hidden"
+                    animate="show"
+                    variants={pathGridVariants}
+                  >
+                    {ENTRY_PATHS.map((path) => (
+                      <PathCard
+                        key={path.key}
+                        path={path}
+                        isActive={selectedPath === path.key}
+                        onSelect={handlePathSelect}
+                        disabled={entryPhase === "revealing"}
+                      />
+                    ))}
+                  </motion.div>
                 </div>
               )}
             </div>

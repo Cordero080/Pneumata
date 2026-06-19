@@ -1,5 +1,13 @@
 @use 'variables' as v;
 
+:root {
+  --header-h: 44px;
+
+  @media (max-width: 768px) {
+    --header-h: 38px;
+  }
+}
+
 *,
 *::before,
 *::after {

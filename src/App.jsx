@@ -50,8 +50,8 @@ const IS_STANDALONE =
   window.matchMedia("(display-mode: standalone)").matches;
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
-    ? { panY: 0.51, zoom: 0.32, globalScale: 0.906, offsetX: 0, offsetY: 0.11 }
-    : { panY: 0.51, zoom: 0.32, globalScale: 0.948, offsetX: 0, offsetY: 0.11 }
+    ? { panY: 0.51, zoom: 0.33, globalScale: 0.906, offsetX: 0, offsetY: 0.11 }
+    : { panY: 0.51, zoom: 0.33, globalScale: 0.948, offsetX: 0, offsetY: 0.11 }
   : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.08 };
 
 // ── LANDING ENTRY PRESETS ────────────────────────────────────────────────────
@@ -308,7 +308,7 @@ function App() {
 
   return (
     <div
-      className={`app app--${bodyModel}${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""}${bgMode > 0 ? ` app--bg-${BG_MODES[bgMode]}` : ""}`}
+      className={`app app--${bodyModel}${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""} app--bg-${BG_MODES[bgMode]}`}
     >
       <header
         className="app-header"

@@ -1,0 +1,57 @@
+================================================================================
+SECURITY AUDIT — LandingOverlay.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/landing/LandingOverlay.jsx
+Time: 2026-06-18T05:15:06Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — LandingOverlay.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/landing/LandingOverlay.jsx
+Time: 2026-06-18T05:15:25Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — LandingOverlay.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/landing/LandingOverlay.jsx
+Time: 2026-06-18T05:15:46Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================

@@ -1,3 +1,5 @@
+@use "buttons";
+
 @keyframes fadeIn {
   from { opacity: 0 }
   to   { opacity: 1 }
@@ -150,30 +152,7 @@
   padding: 3px;
 }
 
-.about-tab {
-  flex: 1;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 7px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s ease, background 0.2s ease;
-  background: transparent;
-  color: rgba(180, 200, 230, 0.35);
-
-  &--active {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(220, 235, 255, 0.85);
-  }
-
-  &:hover:not(&--active) {
-    color: rgba(180, 200, 230, 0.6);
-  }
-}
+// .about-tab → components/about/_buttons.scss
 
 .about-nav-list {
   display: flex;

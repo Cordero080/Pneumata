@@ -1,0 +1,153 @@
+// Controls strip buttons — rendered in App.jsx inside .top-left-strip.
+// top-nav-trigger · mesh-toggle-btn · reset-btn · body-toggle-btn
+// anim-toggle-btn · bg-toggle-btn · meridian-toggle-btn · bg-picker-opt · left-strip-btn
+
+@use "../../styles/buttons" as btn;
+@use "../../styles/variables" as v;
+
+.top-nav-trigger {
+  @include btn.chamfer-btn;
+  font-size: 13px;
+  padding: 6px 10px;
+  color: rgba(55, 72, 88, 0.55);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%
+  );
+  opacity: 1 !important;
+}
+
+.mesh-toggle-btn {
+  @include btn.chamfer-btn;
+  font-size: 17px;
+  @media (max-width: 768px) { font-size: 15px; }
+  padding: 6px 10px;
+  color: rgba(55, 72, 88, 0.55);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    0 100%
+  );
+}
+
+.reset-btn {
+  @include btn.chamfer-btn;
+  font-size: 19px;
+  @media (max-width: 768px) { font-size: 17px; }
+  padding: 6px 12px 6px 20px;
+  min-width: 42px;
+}
+
+.body-toggle-btn {
+  @include btn.chamfer-btn;
+  font-size: 17px;
+  @media (max-width: 768px) { font-size: 15px; }
+  padding: 6px 12px 6px 20px;
+  min-width: 38px;
+
+  &--active {
+    color: #c060a0;
+    background: linear-gradient(
+      135deg,
+      rgba(234, 210, 226, 0.96) 0%,
+      rgba(218, 195, 212, 0.92) 25%,
+      rgba(242, 220, 234, 0.96) 50%,
+      rgba(210, 190, 206, 0.92) 75%,
+      rgba(226, 205, 220, 0.96) 100%
+    );
+    border-top-color: rgba(255, 220, 240, 0.5);
+    border-bottom-color: rgba(160, 80, 130, 0.3);
+  }
+}
+
+.anim-toggle-btn {
+  @include btn.chamfer-btn;
+  font-size: 15px;
+  @media (max-width: 768px) { font-size: 13px; }
+  padding: 6px 12px 6px 20px;
+  min-width: 44px;
+
+  &--active {
+    color: #e86030;
+  }
+}
+
+.bg-toggle-btn {
+  @include btn.chamfer-btn;
+  font-size: 17px;
+  @media (max-width: 768px) { font-size: 15px; }
+  padding: 6px 12px 6px 20px;
+  min-width: 44px;
+
+  &--active {
+    color: rgba(90, 50, 180, 0.9);
+  }
+}
+
+.meridian-toggle-btn {
+  @include btn.chamfer-btn;
+  font-size: 17px;
+  @media (max-width: 768px) { font-size: 15px; }
+  padding: 6px 10px;
+  min-width: 0;
+
+  &--active {
+    color: rgba(255, 215, 0, 0.95);
+  }
+}
+
+.bg-picker-opt {
+  @include btn.chamfer-btn;
+  font-size: 13px;
+  padding: 5px 10px 5px 16px;
+  min-width: 38px;
+
+  &--active {
+    color: rgba(90, 50, 180, 0.9);
+    background: rgba(90, 50, 180, 0.12);
+  }
+}
+
+.left-strip-btn {
+  position: static;
+  flex-shrink: 0;
+  width: 58px;
+  height: var(--header-h);
+  margin: 0;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(40, 55, 80, 0.35);
+  border: none;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+  border-right: 3px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 5px solid rgba(0, 0, 0, 0.25);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  cursor: pointer;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+    color: rgba(255, 255, 255, 0.95);
+  }
+}

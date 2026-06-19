@@ -1,54 +1,10 @@
 @use "./styles/variables" as v;
+@use "./styles/app-buttons" as *;
+@use "./components/controls/buttons";
+@use "./components/about/buttons" as about-buttons;
+@use "./components/brain/buttons" as brain-buttons;
 
-:root {
-  --header-h: 2.75rem;
-  @media (max-width: 768px) { --header-h: 2.3rem; }
-}
-
-// Shared button shape — extended by all chamfered buttons
-%chamfer-btn {
-  position: fixed;
-  z-index: 50;
-  font-size: 14px;
-  padding: 7px 13px;
-
-  @media (max-width: 768px) {
-    font-size: 12px;
-    padding: 4px 10px;
-  }
-  border-left: none;
-  border-top: 2px solid rgba(255, 255, 255, 0.35);
-  border-right: 3px solid rgba(0, 0, 0, 0.18);
-  border-bottom: 5px solid rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  background:
-    linear-gradient(135deg,
-      rgba(222, 228, 234, 0.96) 0%,
-      rgba(200, 210, 218, 0.92) 25%,
-      rgba(232, 238, 244, 0.96) 50%,
-      rgba(195, 206, 214, 0.92) 75%,
-      rgba(215, 222, 229, 0.96) 100%
-    );
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.07);
-  color: rgba(55, 72, 88, 0.55);
-  transition: color 0.2s ease, filter 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
-  @include v.chamfer(v.$chamfer-sm);
-  &:hover {
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
-    color: rgba(22, 36, 52, 0.92);
-    transform: perspective(400px) rotateX(-2deg) scale(1.04);
-    border-bottom-width: 6px;
-  }
-}
-
-// === App Shell ===
+// ── App Shell ────────────────────────────────────────────────────────────────
 
 .app {
   position: absolute;
@@ -56,7 +12,7 @@
   overflow: hidden;
 }
 
-// === Side Title ===
+// ── Header ───────────────────────────────────────────────────────────────────
 
 .app-header {
   position: fixed;
@@ -74,11 +30,6 @@
   height: var(--header-h);
   white-space: nowrap;
   filter: drop-shadow(0 0 4px rgba(140, 171, 255, 0.434));
-}
-
-@keyframes toggle-pulse {
-  0%, 100% { opacity: 0; }
-  50%       { opacity: 1; text-shadow: 0 0 8px #fff, 0 0 20px rgba(200, 220, 255, 1), 0 0 40px rgba(140, 180, 255, 0.9), 0 0 70px rgba(100, 160, 255, 0.6); }
 }
 
 .header-accent {
@@ -129,133 +80,6 @@
   }
 }
 
-.header-nav-trigger {
-  position: absolute;
-  inset: 0;
-  border: none;
-  cursor: pointer;
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.85);
-  background: transparent;
-  clip-path: polygon(
-    0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
-    100% 100%,
-    14px 100%,
-    0 calc(100% - 14px)
-  );
-
-  @media (max-width: 768px) {
-    clip-path: polygon(
-      0 0,
-      calc(100% - 8px) 0,
-      100% 8px,
-      100% 100%,
-      0 100%
-    );
-  }
-  animation: toggle-pulse 2.8s ease-in-out infinite;
-  transition: color 0.2s ease, background 0.2s ease;
-
-  &:hover {
-    animation: none;
-    color: rgba(200, 220, 255, 0.9);
-    background: rgba(55, 70, 95, 0.4);
-  }
-
-  &--open {
-    animation: none;
-    color: rgba(230, 240, 255, 0.95);
-    background: rgba(55, 70, 95, 0.25);
-  }
-}
-
-.dark-capsule {
-  position: fixed;
-  bottom: .2rem;
-  right: .4rem;
-  z-index: 50;
-  @media (max-width: 768px) {
-    bottom: 1.2rem;
-  }
-  display: flex;
-  align-items: center;
-  background: rgba(200, 210, 222, 0.45);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-bottom: 2px solid rgba(0, 0, 0, 0.15);
-  border-radius: 100px;
-  padding: 2px;
-  gap: 2px;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
-  cursor: pointer;
-
-  &__thumb {
-    position: absolute;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.88);
-    left: 2px;
-    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-  }
-
-  &--dark &__thumb {
-    left: 30px;
-  }
-
-  &__icon {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    color: rgba(55, 72, 88, 0.5);
-    position: relative;
-    z-index: 1;
-    pointer-events: none;
-    transition: color 0.25s ease;
-  }
-
-  &:not(&--dark) &__icon:first-of-type,
-  &--dark &__icon:last-of-type {
-    color: rgba(25, 36, 52, 0.9);
-  }
-}
-
-.app--dark .dark-capsule {
-  background: rgba(15, 22, 40, 0.7);
-  border-color: rgba(100, 150, 220, 0.2);
-  border-bottom-color: rgba(80, 120, 200, 0.3);
-
-  .dark-capsule__thumb {
-    background: rgba(40, 58, 95, 0.95);
-  }
-
-  .dark-capsule__icon {
-    color: rgba(140, 165, 210, 0.5);
-  }
-
-  &.dark-capsule--dark .dark-capsule__icon:last-of-type {
-    color: rgba(200, 220, 255, 0.95);
-  }
-
-  &:not(.dark-capsule--dark) .dark-capsule__icon:first-of-type {
-    color: rgba(200, 220, 255, 0.95);
-  }
-}
-
 .header-panel {
   flex: 1;
   display: flex;
@@ -271,7 +95,7 @@
   }
   background:
     linear-gradient(135deg,
-      rgba(222, 228, 234, 0.88) 0%,
+      rgba(222, 228, 234, 0.757) 0%,
       rgba(200, 210, 218, 0.82) 25%,
       rgba(232, 238, 244, 0.88) 50%,
       rgba(195, 206, 214, 0.82) 75%,
@@ -280,12 +104,11 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-left: none;
-  border-top: 2px solid rgba(255, 255, 255, 0.4);
-  border-right: 3px solid rgba(0, 0, 0, 0.15);
+  border-top: 2px solid rgba(255, 255, 255, 0.419);
+  border-right: 3px solid rgba(0, 0, 0, 0.338);
   border-bottom: none;
   box-shadow: none;
   white-space: nowrap;
-
   clip-path: polygon(
     0 0,
     calc(100% - 14px) 0,
@@ -302,7 +125,7 @@
     font-size: 1.15rem;
     letter-spacing: 0.55em;
     text-transform: uppercase;
-    color: rgba(25, 36, 52, 0.9);
+    color: rgba(25, 36, 52, 0.846);
 
     @media (max-width: 768px) {
       font-size: 0.9rem;
@@ -329,11 +152,11 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
-// === Top-right stack — About + Adjust trigger as one connected unit ===
+// ── Top-right stack ───────────────────────────────────────────────────────────
 
 .top-right-stack {
   position: fixed;
@@ -351,166 +174,7 @@
   }
 }
 
-.about-btn {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  min-height: 28px;
-  padding: 7px 16px;
-  @media (max-width: 768px) {
-    min-height: 0;
-    padding: 5px 9px;
-    letter-spacing: 0.08em;
-  }
-  border: none;
-  border-top: 2px solid rgba(255, 255, 255, 0.42);
-  border-right: 3px solid rgba(0, 0, 0, 0.24);
-  border-bottom: 5px solid rgba(0, 0, 0, 0.28);
-  background: linear-gradient(
-    135deg,
-    rgba(192, 201, 210, 0.98) 0%,
-    rgba(169, 179, 190, 0.95) 26%,
-    rgba(209, 217, 226, 0.98) 52%,
-    rgba(160, 170, 181, 0.95) 78%,
-    rgba(186, 195, 204, 0.98) 100%
-  );
-  box-shadow:
-    0 4px 14px rgba(19, 27, 39, 0.18),
-    0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    inset 0 -2px 0 rgba(48, 60, 75, 0.12);
-  color: rgba(42, 56, 72, 0.78);
-  cursor: pointer;
-  transition:
-    color 0.2s ease,
-    filter 0.2s ease,
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-  @include v.chamfer(v.$chamfer-sm);
-
-  &:hover {
-    color: rgba(18, 30, 46, 0.96);
-    filter: drop-shadow(0 7px 16px rgba(16, 22, 32, 0.24));
-    transform: perspective(400px) rotateX(-2deg) translateY(-1px) scale(1.04);
-    border-bottom-width: 6px;
-    box-shadow:
-      0 7px 18px rgba(15, 21, 31, 0.22),
-      0 1px 0 rgba(255, 255, 255, 0.22),
-      inset 0 1px 0 rgba(255, 255, 255, 0.95),
-      inset 0 -2px 0 rgba(45, 57, 71, 0.18);
-  }
-
-  &--entry {
-    position: relative;
-    isolation: isolate;
-    min-width: 82px;
-    padding: 7px 14px;
-    letter-spacing: 0.12em;
-
-    @media (max-width: 768px) {
-      min-width: 50px;
-      padding: 5px 9px;
-      letter-spacing: 0.08em;
-    }
-    background:
-      linear-gradient(135deg,
-        rgba(41, 73, 98, 0.88) 0%,
-        rgba(28, 96, 133, 0.82) 54%,
-        rgba(103, 223, 246, 0.54) 100%
-      );
-    color: rgba(229, 243, 255, 0.98);
-    text-shadow: 0 0 8px rgba(90, 225, 255, 0.14);
-    box-shadow:
-      0 5px 14px rgba(16, 37, 49, 0.22),
-      inset 0 1px 0 rgba(196, 239, 255, 0.22),
-      inset 0 -2px 0 rgba(17, 54, 77, 0.28),
-      0 0 0 1px rgba(90, 225, 255, 0.12);
-
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      opacity: 0.85;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(90, 225, 255, 0.22) 45%,
-        transparent 100%
-      );
-      transform: translateX(-100%);
-      transition: transform 220ms ease;
-    }
-
-    &::after {
-      content: "";
-      position: absolute;
-      inset: auto 10px 6px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(108, 232, 255, 0.88), transparent);
-      opacity: 0.72;
-    }
-
-    &:hover {
-      background:
-        linear-gradient(135deg,
-          rgba(46, 82, 110, 0.94) 0%,
-          rgba(31, 108, 149, 0.88) 55%,
-          rgba(122, 234, 255, 0.58) 100%
-        );
-      color: rgba(235, 247, 255, 0.96);
-
-      &::before {
-        transform: translateX(100%);
-      }
-    }
-  }
-}
-
-// === Dark Mode Toggle ===
-
-.dark-toggle-btn {
-  position: fixed;
-  top: 1.1rem;
-  right: 1.5rem;
-  z-index: 50;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 7px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  padding: 8px 16px;
-  border: none;
-  cursor: pointer;
-  background: rgba(40, 55, 80, 0.45);
-  color: rgba(160, 185, 220, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: color 0.2s ease, background 0.2s ease;
-  clip-path: polygon(
-    0 0,
-    calc(100% - 10px) 0,
-    100% 10px,
-    100% 100%,
-    10px 100%,
-    0 calc(100% - 10px)
-  );
-
-  &:hover {
-    color: rgba(200, 220, 255, 0.9);
-    background: rgba(55, 70, 95, 0.65);
-  }
-
-  &--active {
-    color: rgba(230, 240, 255, 0.95);
-    background: rgba(30, 40, 65, 0.8);
-  }
-}
-
-// === Top-left utility strip — vertical dropdown from header accent ===
+// ── Top-left strip ────────────────────────────────────────────────────────────
 
 .top-left-strip {
   position: fixed;
@@ -521,7 +185,6 @@
   flex-direction: column;
   gap: 0;
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.18));
-
 
   .top-nav-drawer {
     display: flex;
@@ -539,7 +202,7 @@
     }
   }
 
-  // All drawer buttons use the same chamfer as the trigger, stacked vertically
+  // Contextual overrides — strip layout resets the fixed positioning of each button
   .mesh-toggle-btn,
   .reset-btn,
   .body-toggle-btn,
@@ -553,9 +216,6 @@
     margin-top: 0;
     margin-left: 0;
     padding: 0 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     clip-path: polygon(
       0 0,
       calc(100% - 14px) 0,
@@ -564,8 +224,6 @@
       14px 100%,
       0 calc(100% - 14px)
     );
-    transition: opacity 0.2s ease, color 0.2s ease, filter 0.2s ease,
-                transform 0.2s ease, border-color 0.2s ease;
     opacity: 0.38;
     &:hover { opacity: 1; }
   }
@@ -576,159 +234,9 @@
   .meridian-toggle-btn--active {
     opacity: 1;
   }
-
-  // Info button re-styled to fit the left strip
-  .left-strip-btn {
-    position: static;
-    flex-shrink: 0;
-    width: 58px;
-    height: var(--header-h);
-    margin: 0;
-    padding: 0 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.7);
-    background: rgba(40, 55, 80, 0.35);
-    border: none;
-    border-top: 2px solid rgba(255, 255, 255, 0.1);
-    border-right: 3px solid rgba(0, 0, 0, 0.2);
-    border-bottom: 5px solid rgba(0, 0, 0, 0.25);
-    clip-path: polygon(
-      0 0,
-      calc(100% - 14px) 0,
-      100% 14px,
-      100% 100%,
-      14px 100%,
-      0 calc(100% - 14px)
-    );
-    cursor: pointer;
-    transition: opacity 0.2s ease, color 0.2s ease;
-    opacity: 0.7;
-    &:hover { opacity: 1; color: rgba(255, 255, 255, 0.95); }
-  }
 }
 
-.top-nav-trigger {
-  @extend %chamfer-btn;
-  font-size: 13px;
-  padding: 6px 10px;
-  color: rgba(55, 72, 88, 0.55);
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% - 14px),
-    calc(100% - 14px) 100%,
-    0 100%
-  );
-  opacity: 1 !important;
-}
-
-.mesh-toggle-btn {
-  @extend %chamfer-btn;
-  font-size: 17px;
-  @media (max-width: 768px) { font-size: 15px; }
-  padding: 6px 10px;
-  color: rgba(55, 72, 88, 0.55);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
-    100% 100%,
-    0 100%
-  );
-}
-
-.reset-btn {
-  @extend %chamfer-btn;
-  font-size: 19px;
-  @media (max-width: 768px) { font-size: 17px; }
-  padding: 6px 12px 6px 20px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 42px;
-}
-
-.body-toggle-btn {
-  @extend %chamfer-btn;
-  font-size: 17px;
-  @media (max-width: 768px) { font-size: 15px; }
-  padding: 6px 12px 6px 20px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 38px;
-
-  &--active {
-    color: #c060a0;
-    background: linear-gradient(
-      135deg,
-      rgba(234, 210, 226, 0.96) 0%,
-      rgba(218, 195, 212, 0.92) 25%,
-      rgba(242, 220, 234, 0.96) 50%,
-      rgba(210, 190, 206, 0.92) 75%,
-      rgba(226, 205, 220, 0.96) 100%
-    );
-    border-top-color: rgba(255, 220, 240, 0.5);
-    border-bottom-color: rgba(160, 80, 130, 0.3);
-  }
-}
-
-.anim-toggle-btn {
-  @extend %chamfer-btn;
-  font-size: 15px;
-  @media (max-width: 768px) { font-size: 13px; }
-  padding: 6px 12px 6px 20px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-
-  &--active {
-    color: #e86030;
-  }
-}
-
-.bg-toggle-btn {
-  @extend %chamfer-btn;
-  font-size: 17px;
-  @media (max-width: 768px) { font-size: 15px; }
-  padding: 6px 12px 6px 20px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-
-  &--active {
-    color: rgba(90, 50, 180, 0.9);
-  }
-}
-
-.meridian-toggle-btn {
-  @extend %chamfer-btn;
-  font-size: 17px;
-  @media (max-width: 768px) { font-size: 15px; }
-  padding: 6px 10px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-
-  &--active {
-    color: rgba(255, 215, 0, 0.95);
-  }
-}
+// ── Background picker ─────────────────────────────────────────────────────────
 
 .bg-picker-wrap {
   position: relative;
@@ -749,67 +257,7 @@
   z-index: 200;
 }
 
-.bg-picker-opt {
-  @extend %chamfer-btn;
-  font-size: 13px;
-  padding: 5px 10px 5px 16px;
-  min-width: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &--active {
-    color: rgba(90, 50, 180, 0.9);
-    background: rgba(90, 50, 180, 0.12);
-  }
-}
-
-// === Brain Zoom Back Button ===
-
-.brain-back-btn {
-  position: fixed;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 50;
-  font-family: "Orbitron", sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 12px 28px;
-  border: none;
-  background:
-    linear-gradient(135deg,
-      rgba(222, 228, 234, 0.96) 0%,
-      rgba(200, 210, 218, 0.92) 25%,
-      rgba(232, 238, 244, 0.96) 50%,
-      rgba(195, 206, 214, 0.92) 75%,
-      rgba(215, 222, 229, 0.96) 100%
-    );
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.07);
-  color: rgba(55, 72, 88, 0.75);
-  cursor: pointer;
-  transition: color 0.2s ease, filter 0.2s ease;
-  clip-path: polygon(
-    0 0,
-    calc(100% - 12px) 0,
-    100% 12px,
-    100% 100%,
-    12px 100%,
-    0 calc(100% - 12px)
-  );
-
-  &:hover {
-    color: rgba(22, 36, 52, 0.92);
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.18));
-  }
-}
-
-// === Copyright ===
+// ── Copyright ─────────────────────────────────────────────────────────────────
 
 .app-copyright {
   position: fixed;
@@ -829,7 +277,7 @@
   pointer-events: none;
 }
 
-// === Female mode — rose tint on all chamfer buttons (light mode only) ===
+// ── Theme overrides — female mode (light only) ────────────────────────────────
 
 .app--female:not(.app--dark) {
   .header-nav-trigger,
@@ -853,7 +301,8 @@
   }
 }
 
-// === Dark mode — chamfer button overrides ===
+// ── Theme overrides — dark mode (male only) ───────────────────────────────────
+// Female dark overrides live in anatomy/female/FemaleModel.scss
 
 .app--dark:not(.app--female) {
   .header-nav-trigger,
@@ -903,5 +352,4 @@
   }
 }
 
-// === Dark mode — see anatomy/male/MaleModel.scss and anatomy/female/FemaleModel.scss ===
-
+// Additional dark overrides: anatomy/male/MaleModel.scss · anatomy/female/FemaleModel.scss

@@ -41,7 +41,7 @@ $light-surface: linear-gradient(
   rgba(195, 206, 214, 0.92) 75%,
   rgba(215, 222, 229, 0.96) 100%
 );
-
+// this controls specifically the buttons
 $light-surface-active: linear-gradient(
   135deg,
   rgba(195, 204, 213, 0.97) 0%,
@@ -171,7 +171,7 @@ $neon-purple: #bf00ff;
 $neon-pink:   #ff00a0;
 
 // =============================================================================
-// Chamfer Mixins
+// Chamfer Mixins VEW MODE CONTROLLER BUTTONS
 // =============================================================================
 
 @mixin chamfer($size: $chamfer-md) {
@@ -193,6 +193,77 @@ $neon-pink:   #ff00a0;
     100% 100%,
     #{$size} 100%,
     #{$size} #{$size}
+  );
+}
+
+// chamfer but the top-left square corner is replaced by a step notch.
+// Use on buttons 2+ in a vertical stack (margin-top: -11px) so the notch
+// faces UP and receives the bottom-left tongue of the button above it.
+@mixin chamfer-notch-tl($size: $chamfer-md) {
+  clip-path: polygon(
+    #{$size} 0,
+    calc(100% - #{$size}) 0,
+    100% #{$size},
+    100% 100%,
+    #{$size} 100%,
+    0 calc(100% - #{$size}),
+    0 #{$size},
+    #{$size} #{$size}
+  );
+}
+
+@mixin chamfer-v($size: $chamfer-md) {
+  clip-path: polygon(
+    #{$size} 0,
+    100% 0,
+    100% calc(100% - #{$size}),
+    calc(100% - #{$size}) 100%,
+    0 100%,
+    0 #{$size}
+  );
+}
+
+@mixin chamfer-v-notch($size: $chamfer-md) {
+  clip-path: polygon(
+    0 0,
+    calc(100% - #{$size}) 0,
+    calc(100% - #{$size}) #{$size},
+    100% #{$size},
+    100% calc(100% - #{$size}),
+    calc(100% - #{$size}) 100%,
+    0 100%
+  );
+}
+
+// chamfer-v but with a step notch at top-left instead of a diagonal cut.
+// Use on buttons 2+ in a vertical stack (margin-top: -$size) so the notch
+// faces UP and receives the full bottom-left corner of the button above it,
+// creating the same interlocking look as the ViewModeController buttons.
+@mixin chamfer-v-notch-tl($size: $chamfer-md) {
+  clip-path: polygon(
+    #{$size} 0,
+    100% 0,
+    100% calc(100% - #{$size}),
+    calc(100% - #{$size}) 100%,
+    0 100%,
+    0 #{$size},
+    #{$size} #{$size}
+  );
+}
+
+// All 4 corners chamfered (octagon). Use for vertical stacking with margin-top: -11px —
+// the matching cuts at top-left/bottom-left AND top-right/bottom-right of adjacent buttons
+// create the double-diagonal interlock slit on both sides of each junction.
+@mixin chamfer-4($size: $chamfer-md) {
+  clip-path: polygon(
+    #{$size} 0,
+    calc(100% - #{$size}) 0,
+    100% #{$size},
+    100% calc(100% - #{$size}),
+    calc(100% - #{$size}) 100%,
+    #{$size} 100%,
+    0 calc(100% - #{$size}),
+    0 #{$size}
   );
 }
 
