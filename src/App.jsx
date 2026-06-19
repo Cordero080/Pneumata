@@ -48,11 +48,24 @@ function cameraReducer(state, action) {
 const IS_STANDALONE =
   window.navigator.standalone === true ||
   window.matchMedia("(display-mode: standalone)").matches;
+// ── FIGURE SIZE & POSITION DEFAULTS ─────────────────────────────────────────
+// globalScale : size of the figure (increase = bigger, 1.0 = full size)
+// offsetY     : vertical position of the figure group in world units
+//               (increase = figure moves UP, decrease = figure moves DOWN)
+// offsetX     : horizontal shift (0 = centered)
+// zoom        : 0 = close camera, 1 = far camera
+// panY        : 0 = top of pan range, 1 = bottom of pan range
+//
+// These are also the values the Reset button snaps back to.
+
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
-    ? { panY: 0.51, zoom: 0.33, globalScale: 0.906, offsetX: 0, offsetY: 0.11 }
-    : { panY: 0.51, zoom: 0.33, globalScale: 0.948, offsetX: 0, offsetY: 0.11 }
-  : { panY: 0.5, zoom: 0.33, globalScale: 0.927, offsetX: 0, offsetY: 0.08 };
+    ? // ── Mobile PWA (no browser chrome — taller canvas) ──────────────────────
+      { panY: 0.51, zoom: 0.33, globalScale: 0.846, offsetX: 0, offsetY: 0.14 }
+    : // ── Mobile browser ──────────────────────────────────────────────────────
+      { panY: 0.502, zoom: 0.33, globalScale: 0.885, offsetX: 0, offsetY: 0.14 }
+  : // ── Desktop ───────────────────────────────────────────────────────────────
+    { panY: 0.5,  zoom: 0.33, globalScale: 0.866, offsetX: 0, offsetY: 0.11 };
 
 // ── LANDING ENTRY PRESETS ────────────────────────────────────────────────────
 // Each key maps to a path card on the landing screen. When the user picks one,

@@ -124,8 +124,8 @@ function LandingOverlay({ onPreviewEntry, onEnter }) {
           <div className="landing-title">
             <h1>Pneumata</h1>
             <p className="landing-sub">
-              An interactive 3D model mapping every human organ to its hardware
-              analog. Your body is hardware. Now see the blueprint.
+              An interactive 3D model mapping every human organ to its hardware analog.
+              
             </p>
           </div>
 
@@ -161,7 +161,7 @@ function LandingOverlay({ onPreviewEntry, onEnter }) {
             <div className={`landing-entry landing-entry--${entryPhase}`}>
               {(entryPhase === "choosing" || entryPhase === "revealing") && (
                 <div className="landing-paths-shell">
-                  <p className="landing-entry-kicker">Choose your path</p>
+                  <p className="landing-entry-kicker">Choose mode</p>
                   <motion.div
                     className="landing-paths"
                     initial="hidden"

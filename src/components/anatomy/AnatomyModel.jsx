@@ -616,6 +616,7 @@ if (uRegionFade > 0.0) {
         const solid = meshMode === 5;
         mat.transparent = true;
         mat.opacity = 0;
+        mat.iridescence = 0; // ghost is hidden — no iridescence animation needed
         mat.depthWrite = false;
         mat.needsUpdate = true;
         al.transparent = !solid;
@@ -635,7 +636,7 @@ if (uRegionFade > 0.0) {
         mat.roughness = 0.1;
         mat.emissive.set(whiteEmissive);
         mat.emissiveIntensity = 0.1;
-        mat.iridescence = 0.001;
+        mat.iridescence = 0; // no animation needed — avoids per-frame shader recompute
         mat.depthWrite = false;
         mat.needsUpdate = true;
         // DARK · MODE 0 — GHOST: thin dark shell. color=obsColor, emissive=obsEmissive
@@ -851,10 +852,17 @@ if (uRegionFade > 0.0) {
       darkMode && meshMode === 1 ? 1.0 : 0.0;
 
     if (darkMode && materialRef.current.iridescence > 0) {
-      materialRef.current.iridescenceIOR = 1.2 + Math.sin(t * 0.4) * 0.25;
-      const iriRange = materialRef.current.iridescenceThicknessRange;
-      iriRange[0] = 100 + Math.sin(t * 0.3) * 60;
-      iriRange[1] = 260 + Math.cos(t * 0.35) * 80;
+      // Only animate iridescence for the onyx/obsidian modes (0,1,2,6).
+      // Modes 3 (Bone) and 4 (Chrome-Trans) have iridescence set but don't need
+      // per-frame animation — modifying iridescenceThicknessRange every frame
+      // forces a full shader recompute on a high-poly mesh and causes the lag.
+      const iridModes = [0, 1, 2, 6];
+      if (iridModes.includes(meshMode)) {
+        materialRef.current.iridescenceIOR = 1.2 + Math.sin(t * 0.4) * 0.25;
+        const iriRange = materialRef.current.iridescenceThicknessRange;
+        iriRange[0] = 100 + Math.sin(t * 0.3) * 60;
+        iriRange[1] = 260 + Math.cos(t * 0.35) * 80;
+      }
     }
 
     let base = 0;
