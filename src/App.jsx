@@ -61,9 +61,9 @@ const IS_STANDALONE =
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
     ? // ── Mobile PWA (no browser chrome — taller canvas) ──────────────────────
-      { panY: 0.51, zoom: 0.33, globalScale: 0.846, offsetX: 0, offsetY: 0.14 }
+      { panY: 0.51, zoom: 0.33, globalScale: 0.900, offsetX: 0, offsetY: 0.1 }
     : // ── Mobile browser ──────────────────────────────────────────────────────
-      { panY: 0.502, zoom: 0.33, globalScale: 0.885, offsetX: 0, offsetY: 0.14 }
+      { panY: 0.50, zoom: 0.33, globalScale: 0.960, offsetX: 0, offsetY: 0.1 }
   : // ── Desktop ───────────────────────────────────────────────────────────────
     { panY: 0.5,  zoom: 0.33, globalScale: 0.866, offsetX: 0, offsetY: 0.11 };
 
