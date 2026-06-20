@@ -108,7 +108,7 @@ function LiverModel({
     } else if (ghostMode) {
       targetOpacity = digestiveMode ? 0.4 : 0.22;
     } else if (meshMode === 1) {
-      targetOpacity = 0.18;
+      targetOpacity = 0.75;
     } else {
       targetOpacity = 0.12;
     }

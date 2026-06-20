@@ -61,11 +61,11 @@ const IS_STANDALONE =
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
     ? // ── Mobile PWA (no browser chrome — taller canvas) ──────────────────────
-      { panY: 0.51, zoom: 0.33, globalScale: 0.900, offsetX: 0, offsetY: 0.1 }
+      { panY: 0.51, zoom: 0.33, globalScale: 0.9, offsetX: 0, offsetY: 0.1 }
     : // ── Mobile browser ──────────────────────────────────────────────────────
-      { panY: 0.50, zoom: 0.33, globalScale: 0.960, offsetX: 0, offsetY: 0.1 }
+      { panY: 0.5, zoom: 0.33, globalScale: 0.96, offsetX: 0, offsetY: 0.1 }
   : // ── Desktop ───────────────────────────────────────────────────────────────
-    { panY: 0.5,  zoom: 0.33, globalScale: 0.866, offsetX: 0, offsetY: 0.11 };
+    { panY: 0.5, zoom: 0.33, globalScale: 0.866, offsetX: 0, offsetY: 0.11 };
 
 // ── LANDING ENTRY PRESETS ────────────────────────────────────────────────────
 // Each key maps to a path card on the landing screen. When the user picks one,
@@ -408,7 +408,7 @@ function App() {
             onClick={() =>
               setMeshMode((m) => {
                 if (darkMode) {
-                  return { 2: 0, 0: 3, 3: 4, 4: 6, 6: 1, 1: 2 }[m] ?? 2;
+                  return { 0: 1, 1: 6, 6: 3, 3: 4, 4: 2, 2: 0 }[m] ?? 0;
                 }
                 return m === 4 ? 6 : m === 6 ? 0 : (m + 1) % 6;
               })
@@ -549,7 +549,7 @@ function App() {
         onClick={() => {
           const next = !darkMode;
           setDarkMode(next);
-          setMeshMode(next ? 6 : 5);
+          setMeshMode(next ? 0 : 5);
         }}
         aria-label="Toggle dark mode"
       >

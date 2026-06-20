@@ -165,9 +165,9 @@
 
 .landing-sub {
   font-family: v.$font-hud;
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   font-weight: 400;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: v.$text-secondary;
   text-align: center;
@@ -421,8 +421,8 @@
 .landing-entry-kicker {
   margin: 0;
   font-family: v.$font-hud;
-  font-size: 0.58rem;
-  letter-spacing: 0.22em;
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(220, 232, 245, 0.7);
   text-align: center;
@@ -456,15 +456,15 @@
   border-right:  5px solid rgba(0, 0, 0, 0.32);
   border-bottom: 4px solid rgba(0, 0, 0, 0.38);
   background: linear-gradient(135deg,
-    rgba(240, 244, 248, 0.359) 0%,
-    rgba(210, 218, 226, 0.384) 30%,
-    rgba(195, 206, 216, 0.379) 65%,
-    rgba(178, 190, 202, 0.415) 100%
+    rgba(240, 244, 248, 0.196) 0%,
+    rgba(222, 210, 226, 0.273) 30%,
+    rgba(195, 206, 216, 0.24) 65%,
+    rgba(178, 190, 202, 0.184) 100%
   );
   box-shadow:
     0 4px 14px rgba(19, 27, 39, 0.22),
     0 -1px 0 rgba(255, 255, 255, 0.544),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.465),
     inset 0 -3px 0 rgba(48, 60, 75, 0.22);
   filter: drop-shadow(2px 3px 6px rgba(0, 0, 0, 0.28));
   color: rgba(55, 72, 88, 0.68);
@@ -499,8 +499,8 @@
 
 .landing-path__label {
   font-family: v.$font-hud;
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
   font-weight: 600;
   text-transform: uppercase;
   color: rgba(217, 229, 243, 0.774);
@@ -508,8 +508,8 @@
 
 .landing-path__detail {
   font-family: v.$font-sans;
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
+  font-size: 0.84rem;
+  letter-spacing: 0.05em;
   color: rgba(217, 229, 243, 0.508);
 }
 

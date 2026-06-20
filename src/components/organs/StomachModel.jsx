@@ -103,7 +103,7 @@ function StomachModel({
     } else if (ghostMode) {
       targetOpacity = digestiveMode ? 0.5 : 0.32;
     } else if (meshMode === 1) {
-      targetOpacity = 0.26;
+      targetOpacity = 0.8;
     } else {
       targetOpacity = 0.2;
     }

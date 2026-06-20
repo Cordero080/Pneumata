@@ -152,7 +152,7 @@ function LungsModel({
     } else if (ghostMode) {
       targetOpacity = 0.35;
     } else if (meshMode === 1) {
-      targetOpacity = 0.28;
+      targetOpacity = 0.8;
     } else {
       targetOpacity = 0.2;
     }

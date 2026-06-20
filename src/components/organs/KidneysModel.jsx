@@ -107,7 +107,7 @@ function KidneysModel({
     } else if (ghostMode) {
       targetOpacity = 0.32;
     } else if (meshMode === 1) {
-      targetOpacity = 0.22;
+      targetOpacity = 0.82;
     } else {
       targetOpacity = 0.14;
     }

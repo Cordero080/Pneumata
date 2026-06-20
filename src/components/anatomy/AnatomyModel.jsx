@@ -842,7 +842,7 @@ if (uRegionFade > 0.0) {
       });
       organPosSyncedRef.current = true;
     }
-    const wantFade = darkMode && meshMode === 6 ? 1.0 : 0.0;
+    const wantFade = darkMode && (meshMode === 6 || meshMode === 1) ? 1.0 : 0.0;
     onyxUniformsRef.current.uOnyxFade.value = wantFade;
     if (wantFade > 0) {
       onyxUniformsRef.current.uFadeRadius.value =

@@ -139,7 +139,7 @@ function HeartModel({
     } else if (ghostMode) {
       baseOpacity = powerMode ? 0.82 : 0.6;
     } else if (meshMode === 1) {
-      baseOpacity = 0.4;
+      baseOpacity = 0.88;
     } else {
       baseOpacity = 0.0;
     }

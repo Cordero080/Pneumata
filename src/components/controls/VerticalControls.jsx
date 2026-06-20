@@ -11,15 +11,23 @@ export function sliderToX(v) {
   return X_MIN + v * (X_MAX - X_MIN);
 }
 
+const KNOB_H = 8; // px — must match .vslider__knob height in CSS
+
 function VSlider({ label, value, onChange }) {
   const trackRef = useRef();
   const dragging = useRef(false);
 
   const updateFromPointer = (e) => {
     const rect = trackRef.current.getBoundingClientRect();
-    // top = 1 (max), bottom = 0 (min)
+    const inset = KNOB_H / 2;
     onChange(
-      Math.max(0, Math.min(1, 1 - (e.clientY - rect.top) / rect.height)),
+      Math.max(
+        0,
+        Math.min(
+          1,
+          1 - (e.clientY - rect.top - inset) / (rect.height - inset * 2),
+        ),
+      ),
     );
   };
 
@@ -47,7 +55,9 @@ function VSlider({ label, value, onChange }) {
         <div className="vslider__fill" style={{ height: `${value * 100}%` }} />
         <div
           className="vslider__knob"
-          style={{ top: `${(1 - value) * 100}%` }}
+          style={{
+            top: `calc(${KNOB_H / 2}px + (100% - ${KNOB_H}px) * ${1 - value})`,
+          }}
         />
       </div>
       <span className="vslider__label">{label}</span>
@@ -102,8 +112,10 @@ function VerticalControls({
             className={`vcontrols-panel${panelOpen ? " vcontrols-panel--open" : ""}${darkMode ? " vcontrols-panel--dark" : ""}`}
             style={
               window.innerWidth >= 769
-                ? { top: panelPos.top + 120, right: panelPos.right + 80 }
-                : { top: panelPos.top + 4, right: panelPos.right }
+                ? // ── DESKTOP: flush with nav bottom (44px header) ──
+                  { top: 44, right: panelPos.right }
+                : // ── MOBILE: flush with nav bottom, pinned to right edge ──
+                  { top: panelPos.top, right: 4 }
             }
           >
             <VSlider
