@@ -10,12 +10,16 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  min-height: 28px;
-  padding: 7px 16px;
+  width: calc(68px + #{v.$chamfer-lg});
+  height: 38px;
+  padding: 0;
+  margin-right: calc(-#{v.$chamfer-lg} + 4px);
 
   @media (max-width: 768px) {
-    min-height: 0;
-    padding: 5px 9px;
+    width: calc(56px + #{v.$chamfer-lg});
+    height: 32px;
+    padding: 0;
+    margin-right: calc(-#{v.$chamfer-lg} + 4px);
     letter-spacing: 0.08em;
   }
   border: none;
@@ -43,7 +47,14 @@
     transform 0.2s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease;
-  @include v.chamfer(v.$chamfer-sm);
+  clip-path: polygon(
+    0 0,
+    calc(100% - #{v.$chamfer-lg}) 0,
+    calc(100% - #{v.$chamfer-lg}) calc(100% - #{v.$chamfer-lg}),
+    100% 100%,
+    #{v.$chamfer-lg} 100%,
+    0 calc(100% - #{v.$chamfer-lg})
+  );
 
   &:hover {
     color: rgba(18, 30, 46, 0.96);
@@ -60,18 +71,9 @@
   &--entry {
     position: relative;
     isolation: isolate;
-    min-width: 82px;
-    padding: 7px 14px;
-    letter-spacing: 0.12em;
-
-    @media (max-width: 768px) {
-      min-width: 50px;
-      padding: 5px 9px;
-      letter-spacing: 0.08em;
-    }
     background:
       linear-gradient(135deg,
-        rgba(41, 73, 98, 0.88) 0%,
+        rgba(56, 102, 136, 0.88) 0%,
         rgba(28, 96, 133, 0.82) 54%,
         rgba(103, 223, 246, 0.54) 100%
       );
@@ -111,9 +113,9 @@
     &:hover {
       background:
         linear-gradient(135deg,
-          rgba(46, 82, 110, 0.94) 0%,
-          rgba(31, 108, 149, 0.88) 55%,
-          rgba(122, 234, 255, 0.58) 100%
+          rgba(63, 112, 150, 0.819) 0%,
+          rgba(39, 132, 181, 0.88) 55%,
+          rgba(122, 235, 255, 0.525) 100%
         );
       color: rgba(235, 247, 255, 0.96);
 

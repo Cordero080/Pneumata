@@ -24,8 +24,8 @@ function CategoryLegend({ onCategoryHover }) {
           <div
             className="legend-dot"
             style={{
-              background: `radial-gradient(circle at 35% 35%, rgba(245, 243, 171, 0.85), ${color} 55%, rgba(0,0,0,0.3))`,
-              boxShadow: `0 2px 4px rgba(0,0,0,0.3), 0 0 8px ${color}80`,
+              background: `linear-gradient(to bottom, rgba(255,255,255,0.35) 0%, ${color} 40%, rgba(0,0,0,0.15) 100%)`,
+              boxShadow: `0 0 4px ${color}99, 0 0 8px ${color}44`,
             }}
           />
         </div>

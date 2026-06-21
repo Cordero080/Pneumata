@@ -65,7 +65,7 @@ const DEFAULTS = IS_MOBILE
     : // ── Mobile browser ──────────────────────────────────────────────────────
       { panY: 0.5, zoom: 0.33, globalScale: 0.96, offsetX: 0, offsetY: 0.1 }
   : // ── Desktop ───────────────────────────────────────────────────────────────
-    { panY: 0.5, zoom: 0.33, globalScale: 0.866, offsetX: 0, offsetY: 0.11 };
+    { panY: 0.5, zoom: 0.33, globalScale: 0.950, offsetX: 0, offsetY: 0.11 };
 
 // ── LANDING ENTRY PRESETS ────────────────────────────────────────────────────
 // Each key maps to a path card on the landing screen. When the user picks one,

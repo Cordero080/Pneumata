@@ -123,7 +123,7 @@
 
 // Individual mode buttons (LOGIC, POWER, etc.)
 .view-btn {
-  opacity: 0.38;       // dimmed when not active
+  opacity: 0.62;       // dimmed when not active
   transition: opacity 0.5s ease, color 0.2s ease, filter 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 
   &--active { opacity: 1; }
@@ -219,8 +219,8 @@
 }
 
 @media (max-width: 768px) {
-  .view-controller { top: calc(50% + 20px); }
-  .view-controller-tab { top: calc(50% - 55px); }
+  .view-controller { top: calc(50% + 5px); }
+  .view-controller-tab { top: calc(50% - 72px); }
 }
 
 @media (max-height: 700px) {

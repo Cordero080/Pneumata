@@ -36,7 +36,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.7),
     inset 0 -1px 0 rgba(0, 0, 0, 0.05);
   color: rgba(55, 72, 88, 0.55);
-  @include v.chamfer-docked-left(v.$chamfer-lg);
+  @include v.chamfer(v.$chamfer-lg);
   transition: color 0.2s ease, filter 0.2s ease, transform 0.2s ease;
   line-height: 1;
   display: flex;
@@ -128,7 +128,7 @@
     right: 0;
     margin: auto;
     border-radius: 4px;
-    background: rgba(80, 100, 130, 0.3);
+    background: rgba(80, 100, 130, 0.263);
     border-left: 1px solid rgba(255, 255, 255, 0.25);
     border-right: 2px solid rgba(0, 0, 0, 0.2);
   }
@@ -186,6 +186,12 @@
 // ================================================================
 
 @media (max-width: 768px) {
+  .vcontrols-trigger {
+    width: 56px;
+    height: 32px;
+    font-size: 18px;
+  }
+
   .vcontrols-panel {
     gap: 10px;
     padding: 8px;
