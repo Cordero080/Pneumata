@@ -1,48 +1,49 @@
 import { useState } from "react";
 import "./AboutModal.scss";
+import { CATEGORY_COLORS } from "../../data/categories";
 
 const CATEGORIES = [
   {
-    color: "#ffd700",
+    key: "logic",
     label: "Logic",
     desc: "Brain, cerebellum, spinal cord — CPU, firmware, and data bus.",
   },
   {
-    color: "#ff3131",
+    key: "power",
     label: "Power",
     desc: "Heart, thyroid, adrenals — PSU, system clock, and overclock mechanism.",
   },
   {
-    color: "#00f2ff",
+    key: "thermal",
     label: "Thermal",
     desc: "Lungs, diaphragm — heat sink and fan controller.",
   },
   {
-    color: "#39ff14",
+    key: "digestive",
     label: "Digestive",
     desc: "Stomach, liver, intestines — parser, firewall, and I/O pipeline.",
   },
   {
-    color: "#ff8c00",
+    key: "sensory",
     label: "Sensory",
     desc: "Eyes, ears, skin, vocal cords — camera, microphone, sensor array, and speaker.",
   },
   {
-    color: "#b06bff",
+    key: "renal",
     label: "Renal",
     desc: "Kidneys, bladder — virtual memory and output buffer.",
   },
   {
-    color: "#00e5cc",
+    key: "immune",
     label: "Immune",
     desc: "Spleen, lymph nodes, bone marrow — SIEM, perimeter nodes, and definition engine.",
   },
   {
-    color: "#ffffff",
+    key: "spirit",
     label: "Consciousness",
     desc: "Pneuma — the emergent field where information density becomes self-aware.",
   },
-];
+].map((c) => ({ ...c, color: CATEGORY_COLORS[c.key] }));
 
 const NAV_ITEMS = [
   {

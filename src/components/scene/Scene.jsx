@@ -24,8 +24,7 @@ import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
 import MeridianLayer from "../organs/MeridianLayer";
 import { organs } from "../../data/organs";
-
-const IS_MOBILE = window.innerWidth <= 768;
+import { IS_MOBILE } from "../../utils/device";
 
 const ONYX_ORGAN_IDS = [
   "heart",
