@@ -739,3 +739,250 @@ PASSED
 
 Result: 0 CRITICAL, 0 WARNING
 ================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: src/App.jsx
+Time: 2026-06-21T17:15:33Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — CategoryLegend.jsx
+File: src/components/legend/CategoryLegend.jsx
+Time: 2026-06-21T17:15:33Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — BrainModel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/brain/BrainModel.jsx
+Time: 2026-06-21T17:30:26Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — BrainModel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/brain/BrainModel.jsx
+Time: 2026-06-21T17:30:38Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — device.js
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/utils/device.js
+Time: 2026-06-21T17:30:54Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-06-21T17:31:09Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — Scene.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/scene/Scene.jsx
+Time: 2026-06-21T17:31:23Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — AboutModal.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/about/AboutModal.jsx
+Time: 2026-06-21T17:31:38Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: src/App.jsx
+Time: 2026-06-21T17:31:58Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — AboutModal.jsx
+File: src/components/about/AboutModal.jsx
+Time: 2026-06-21T17:31:58Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — BrainModel.jsx
+File: src/components/brain/BrainModel.jsx
+Time: 2026-06-21T17:31:58Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — Scene.jsx
+File: src/components/scene/Scene.jsx
+Time: 2026-06-21T17:31:58Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — device.js
+File: src/utils/device.js
+Time: 2026-06-21T17:31:58Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
