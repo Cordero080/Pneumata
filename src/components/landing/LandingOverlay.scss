@@ -7,48 +7,49 @@
   inset: 0;
   z-index: 200;
   overflow: hidden;
-  // All gradient layers on the fixed element itself — viewport-pinned on all devices
-  background-image:
-    // mirror layer (vertically flipped angles)
-    repeating-linear-gradient(135deg, transparent 0px, transparent 80px,  rgba(0, 149, 255, 0.118) 200px, rgba(0, 150, 255, 0.08) 82px),
-    repeating-linear-gradient(225deg, transparent 0px, transparent 80px,  rgba(0, 200, 255, 0.06)  200px, rgba(0, 200, 255, 0.06) 82px),
-    repeating-linear-gradient(110deg, transparent 0px, transparent 120px, rgba(80,  160, 255, 0.04) 200px, rgba(220, 255, 80, 0.118) 121px),
-    repeating-linear-gradient(160deg, transparent 0px, transparent 120px, rgba(80,  160, 255, 0.04) 200px, rgba(80, 159, 255, 0.118) 121px),
-    repeating-linear-gradient(290deg, transparent 0px, transparent 120px, rgba(80,  160, 255, 0.04) 200px, rgba(80, 159, 255, 0.056) 121px),
-    // original layer
-    repeating-linear-gradient(45deg,  transparent 0px, transparent 80px,  rgba(0, 149, 255, 0.055) 200px, rgba(0, 150, 255, 0.08) 82px),
-    repeating-linear-gradient(-45deg, transparent 20px, transparent 80px,  rgba(0, 200, 255, 0.06)  200px, rgba(0, 200, 255, 0.06) 82px),
-    repeating-linear-gradient(0deg,   transparent 0px, transparent 120px, rgba(100, 180, 255, 0.04) 200px, rgba(100, 180, 255, 0.118) 121px),
-    repeating-linear-gradient(70deg,  transparent 0px, transparent 120px, rgba(80,  160, 255, 0.04) 200px, rgba(80, 159, 255, 0.102) 121px),
-    repeating-linear-gradient(20deg,  transparent 0px, transparent 120px, rgba(80,  160, 255, 0.04) 200px, rgba(80, 159, 255, 0.264) 121px),
-    repeating-linear-gradient(250deg, transparent 0px, transparent 120px, rgba(80,  160, 255, 0.04) 200px, rgba(13, 95, 195, 0.527) 121px),
-    // base color
-    linear-gradient(180deg, #897d5dc4 0%, #8c97a3 30%, rgba(89, 102, 145, 0.606) 50%, #22232d 100%);
-  animation: bg-matrix-move 6s linear infinite;
+  background: linear-gradient(180deg, #272c01 0%, #1a1a4a 100%);
 
-  &::before,
-  &::after {
-    display: none;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 30% at 50% 20%, rgba(80, 255, 255, 0.18) 0%, transparent 80%),
+      radial-gradient(ellipse 60% 20% at 60% 25%, rgba(120, 255, 180, 0.13) 0%, transparent 80%),
+      radial-gradient(ellipse 50% 15% at 40% 18%, rgba(180, 120, 255, 0.1) 0%, transparent 80%),
+      radial-gradient(ellipse 60% 7% at 40% 48%, rgba(233, 221, 228, 0.989) 0%, rgba(36, 3, 66, 0) 80%),
+      radial-gradient(ellipse 90% 0.5% at 45% 22%, rgba(255, 230, 0, 0.843) 0%, transparent 80%),
+      radial-gradient(ellipse 90% 25% at 50% 15%, rgba(255, 255, 120, 0.13) 0%, transparent 80%),
+      radial-gradient(ellipse 40% 0.5% at 80% 70%, rgba(0, 238, 255, 0.898) 0%, transparent 80%),
+      radial-gradient(ellipse 100% 40% at 50% 10%, rgba(60, 120, 255, 0.13) 0%, transparent 90%),
+      radial-gradient(ellipse 100% 50% at 50% 0%, rgba(26, 8, 69, 0.782) 0%, transparent 100%),
+      linear-gradient(10deg,
+        rgba(47, 2, 74, 0.921) 0%,
+        rgba(0, 255, 255, 0.18) 30%,
+        rgba(0, 255, 208, 0.475) 60%,
+        rgba(255, 255, 0, 0.13) 80%,
+        rgba(120, 0, 255, 0.18) 100%
+      );
+    animation: bg-aurora-move 20s ease-in-out infinite alternate;
   }
-}
 
-@keyframes bg-matrix-move {
-  0%   { background-position: 0% 0%;   filter: brightness(1)    contrast(1.1) hue-rotate(0deg); }
-  40%  { background-position: 0% 40%;  filter: brightness(1.1)  contrast(1.2) hue-rotate(0deg); }
-  60%  { background-position: 0% 60%;  filter: brightness(0.95) contrast(1.3) hue-rotate(0deg); }
-  100% { background-position: 0% 100%; filter: brightness(1)    contrast(1.1) hue-rotate(0deg); }
-}
-
-@keyframes bg-grid-flow {
-  0%   { transform: translate(0, 0)       rotate(0deg); }
-  100% { transform: translate(40px, 40px) rotate(0.5deg); }
-}
-
-@keyframes bg-node-pulse {
-  0%, 100% { opacity: 0.7;  filter: blur(2px)   brightness(1);    }
-  25%       { opacity: 0.85; filter: blur(3px)   brightness(1.2);  }
-  50%       { opacity: 0.75; filter: blur(2.5px) brightness(1.1);  }
-  75%       { opacity: 0.8;  filter: blur(2px)   brightness(1.15); }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% 80%, rgba(0, 40, 80, 0.22) 0%, transparent 80%),
+      radial-gradient(ellipse 100% 30% at 30% 60%, rgba(159, 98, 98, 0.862) 0%, transparent 80%),
+      radial-gradient(ellipse 80% 20% at 70% 65%, rgba(0, 0, 0, 0.13) 0%, transparent 80%),
+      linear-gradient(100deg, rgba(0, 255, 255, 0.08) 10%, rgba(255, 0, 255, 0.07) 90%);
+    opacity: 0.7;
+    filter: blur(18px) brightness(0.9);
+    animation: bg-aurora-depth-move 22s ease-in-out infinite alternate;
+  }
 }
 
 // Content overlay — fades in via overlay parent
