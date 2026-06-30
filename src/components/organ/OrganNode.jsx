@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Html } from "@react-three/drei";
 import * as THREE from "three";
 
 function makeGlowTexture() {
@@ -26,6 +27,11 @@ function makeGlowTexture() {
 }
 
 import { CATEGORY_COLORS, CATEGORY_EMISSIVE } from "../../data/categories";
+import { ORGAN_TCM } from "../../data/tcmMapping";
+import {
+  activeMeridianRef,
+  subscribeActiveMeridian,
+} from "../../data/activeMeridian";
 import HeartRings from "./HeartRings";
 import OrganLabel from "./OrganLabel";
 
@@ -78,7 +84,17 @@ function OrganNode({
   );
   const [hovered, setHovered] = useState(false);
   const [labelReady, setLabelReady] = useState(false);
+  const [labelClosed, setLabelClosed] = useState(false);
+  const [isMeridianTarget, setIsMeridianTarget] = useState(false);
   const screenXRef = useRef(0);
+
+  const myMeridianId = ORGAN_TCM[organ.id]?.meridianId ?? null;
+  useEffect(() => {
+    if (!myMeridianId) return;
+    return subscribeActiveMeridian((id) => {
+      setIsMeridianTarget(id === myMeridianId);
+    });
+  }, [myMeridianId]);
   const isEye = organ.id === "right_eye" || organ.id === "left_eye";
   const glitchRef = useRef({ nextGlitch: 3 + Math.random() * 6, duration: 0 });
   const frameSkip = useRef(0);
@@ -176,8 +192,10 @@ function OrganNode({
       currentPos.current.lerp(target, 0.06);
       groupRef.current.position.copy(currentPos.current);
 
-      // Scale up slightly when this node is the selected (modal-open) one
-      const targetScale = selectedOrganId === organ.id ? 1.28 : 1.0;
+      // Scale: 1.5 when modal open, 1.35 on hover (desktop) or preview tap (mobile), else 1
+      const isInteractive = IS_MOBILE ? isPreview : hovered;
+      const targetScale =
+        selectedOrganId === organ.id ? 1.5 : isInteractive ? 2.0 : 1.0;
       selectedScaleRef.current +=
         (targetScale - selectedScaleRef.current) * 0.1;
       groupRef.current.scale.setScalar(selectedScaleRef.current);
@@ -196,6 +214,9 @@ function OrganNode({
       pulseRef || !selectedOrganId || selectedOrganId === organ.id ? 1 : 0.18;
     const legendDim =
       !legendCategory || organ.category === legendCategory ? 1 : 0.12;
+    const mid = activeMeridianRef.current;
+    const meridianDim =
+      !mid || ORGAN_TCM[organ.id]?.meridianId === mid ? 1 : 0.08;
 
     // Eye glitch — occasional rapid color flicker
     if (isEye && meshRef.current) {
@@ -226,7 +247,12 @@ function OrganNode({
       base + Math.sin(t * 3 + phase) * 0.5;
 
     meshRef.current.material.opacity +=
-      (0.18 * effectiveNodeOpacity * brainFade * selectionDim * legendDim -
+      (0.18 *
+        effectiveNodeOpacity *
+        brainFade *
+        selectionDim *
+        legendDim *
+        meridianDim -
         meshRef.current.material.opacity) *
       0.08;
 
@@ -248,7 +274,8 @@ function OrganNode({
         (hovered ? 0.22 : isExternallyHighlighted ? 0.18 : 0.1) *
         effectiveNodeOpacity *
         selectionDim *
-        legendDim;
+        legendDim *
+        meridianDim;
       glowRef.current.scale.setScalar(
         hovered ? 3.5 : isExternallyHighlighted ? 3.0 : 2.5,
       );
@@ -261,7 +288,11 @@ function OrganNode({
       innerRef.current.material.emissiveIntensity =
         innerBase + Math.sin(t * 5 + phase) * (isSpirit ? 3 : 1.2);
       innerRef.current.material.opacity +=
-        (effectiveNodeOpacity * brainFade * selectionDim * legendDim -
+        (effectiveNodeOpacity *
+          brainFade *
+          selectionDim *
+          legendDim *
+          meridianDim -
           innerRef.current.material.opacity) *
         0.08;
     }
@@ -302,6 +333,7 @@ function OrganNode({
     if (cellZoom || (brainZoom && !organ.brainPosition)) return;
     e.stopPropagation();
     setHovered(true);
+    setLabelClosed(false);
     onHover?.(organ.id);
     onCategoryHover?.(organ.category);
     document.body.style.cursor = "pointer";
@@ -457,6 +489,7 @@ function OrganNode({
 
       {/* Label — on hover (desktop) or first tap (mobile preview) */}
       {(hovered || isPreview) &&
+        !labelClosed &&
         !cellZoom &&
         !(brainZoom && !organ.brainPosition) && (
           <OrganLabel
@@ -464,10 +497,15 @@ function OrganNode({
             color={color}
             labelReady={labelReady}
             screenX={screenXRef.current}
+            onClose={() => {
+              setLabelClosed(true);
+              onClearPreview?.();
+              setLabelReady(false);
+              onCategoryHover?.(null);
+            }}
             onSelect={
               IS_MOBILE && isPreview && !labelReady
                 ? () => {
-                    // Step 2 on mobile: zoom camera, activate "tap to open" cue
                     onFocus?.(organ);
                     setLabelReady(true);
                   }
@@ -478,6 +516,111 @@ function OrganNode({
                   }
             }
           />
+        )}
+
+      {/* Meridian connection label — appears when a linked meridian point triggers it */}
+      {isMeridianTarget &&
+        !cellZoom &&
+        !(brainZoom && !organ.brainPosition) && (
+          <Html
+            center
+            portal={{ current: document.body }}
+            zIndexRange={[9998, 9998]}
+            style={{
+              pointerEvents: "none",
+              userSelect: "none",
+              overflow: "visible",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                bottom: "10px",
+                transform: "translateX(-50%)",
+                display: "flex",
+                flexDirection: "column-reverse",
+                alignItems: "center",
+                animation: "scanReveal 0.22s ease-out both",
+              }}
+            >
+              {/* Connector line going down to node */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    width: "1px",
+                    height: "10px",
+                    background: `${color}dd`,
+                  }}
+                />
+                <div
+                  style={{
+                    width: "1px",
+                    height: "36px",
+                    background: `linear-gradient(to bottom, ${color}dd, ${color}00)`,
+                  }}
+                />
+              </div>
+
+              {/* Panel */}
+              <div
+                style={{
+                  background: "rgba(220, 232, 248, 0.30)",
+                  backdropFilter: "blur(32px)",
+                  WebkitBackdropFilter: "blur(32px)",
+                  boxShadow: `0 8px 32px rgba(0,0,0,0.22), 0 0 20px ${color}40, inset 0 1.5px 0 rgba(255,255,255,0.70)`,
+                  border: `1px solid ${color}88`,
+                  borderRadius: "6px",
+                  padding: IS_MOBILE ? "6px 10px" : "8px 14px",
+                  maxWidth: IS_MOBILE ? "140px" : "220px",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Orbitron', system-ui, sans-serif",
+                    fontSize: IS_MOBILE
+                      ? "clamp(10px, 3vw, 13px)"
+                      : "clamp(13px, 1.2vw, 17px)",
+                    fontWeight: 800,
+                    letterSpacing: "0.14em",
+                    color: "rgba(8, 20, 48, 0.95)",
+                    textShadow: "0 1px 0 rgba(255,255,255,0.6)",
+                    textTransform: "uppercase",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {organ.organ}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Orbitron', system-ui, sans-serif",
+                    fontSize: IS_MOBILE
+                      ? "clamp(7px, 2vw, 9px)"
+                      : "clamp(9px, 0.8vw, 11px)",
+                    fontWeight: 600,
+                    letterSpacing: "0.10em",
+                    color,
+                    textTransform: "uppercase",
+                    marginTop: "4px",
+                  }}
+                >
+                  {ORGAN_TCM[organ.id]?.meridianName}
+                </div>
+              </div>
+            </div>
+            <style>{`
+            @keyframes scanReveal {
+              from { opacity: 0; clip-path: inset(0 100% 0 0); }
+              to   { opacity: 1; clip-path: inset(0 0% 0 0); }
+            }
+          `}</style>
+          </Html>
         )}
     </group>
   );

@@ -1,10 +1,22 @@
 import { Html } from "@react-three/drei";
+import { ORGAN_TCM, TCM_ELEMENTS } from "../../data/tcmMapping";
 
 const IS_MOBILE = window.innerWidth <= 768;
 
-function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
+function OrganLabel({
+  organ,
+  color,
+  onSelect,
+  onQiChannel,
+  onClose,
+  labelReady,
+  screenX = 0,
+}) {
   const isLeft = organ.position[0] <= 0;
   const isVertical = Math.abs(screenX) > 0.65;
+
+  const tcm = ORGAN_TCM[organ.id];
+  const element = tcm ? TCM_ELEMENTS[tcm.element] : null;
 
   const panel = {
     background: "rgba(220, 232, 248, 0.30)",
@@ -96,7 +108,7 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
 
         {/* Label panel — stacked layers for plexi thickness */}
         <div style={{ position: "relative", display: "inline-block" }}>
-          {/* Layer 3 — deepest, furthest offset */}
+          {/* Layer 3 — deepest */}
           <div
             style={{
               position: "absolute",
@@ -138,19 +150,59 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
                 : {}),
               position: "relative",
               zIndex: 1,
-              padding: IS_MOBILE ? "6px 10px" : "8px 16px",
-              maxWidth: IS_MOBILE ? "130px" : "260px",
+              padding: IS_MOBILE ? "7px 12px" : "10px 18px",
+              paddingTop: IS_MOBILE ? "22px" : "26px",
+              maxWidth: IS_MOBILE ? "160px" : "300px",
               textAlign: isLeft ? "right" : "left",
               cursor: onSelect ? "pointer" : "default",
-              pointerEvents: onSelect ? "all" : "none",
+              pointerEvents: "all",
             }}
           >
+            {/* Close button */}
+            {onClose && (
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+                style={{
+                  position: "absolute",
+                  top: "6px",
+                  right: "8px",
+                  width: "16px",
+                  height: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontFamily: "system-ui, sans-serif",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  color: "rgba(8, 20, 48, 0.45)",
+                  lineHeight: 1,
+                  borderRadius: "3px",
+                  transition: "color 0.15s, background 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(8,20,48,0.85)";
+                  e.currentTarget.style.background = "rgba(0,0,0,0.08)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(8,20,48,0.45)";
+                  e.currentTarget.style.background = "transparent";
+                }}
+              >
+                ×
+              </div>
+            )}
+
+            {/* Organ name */}
             <div
               style={{
                 fontFamily: "'Orbitron', system-ui, sans-serif",
                 fontSize: IS_MOBILE
-                  ? "clamp(10px, 3vw, 13px)"
-                  : "clamp(14px, 1.2vw, 19px)",
+                  ? "clamp(12px, 3.5vw, 15px)"
+                  : "clamp(16px, 1.5vw, 22px)",
                 fontWeight: 800,
                 letterSpacing: "0.16em",
                 color: "rgba(8, 20, 48, 0.95)",
@@ -161,12 +213,14 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
             >
               {organ.organ}
             </div>
+
+            {/* Hardware analog */}
             <div
               style={{
                 fontFamily: "'Orbitron', system-ui, sans-serif",
                 fontSize: IS_MOBILE
-                  ? "clamp(7px, 2.2vw, 9px)"
-                  : "clamp(10px, 0.85vw, 13px)",
+                  ? "clamp(8px, 2.5vw, 11px)"
+                  : "clamp(11px, 1vw, 14px)",
                 fontWeight: 500,
                 letterSpacing: "0.12em",
                 color: subtitleColor,
@@ -177,6 +231,92 @@ function OrganLabel({ organ, color, onSelect, labelReady, screenX = 0 }) {
             >
               {organ.hardware}
             </div>
+
+            {/* TCM element + meridian row */}
+            {element && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  marginTop: "7px",
+                  justifyContent: isLeft ? "flex-end" : "flex-start",
+                }}
+              >
+                <div
+                  style={{
+                    width: "7px",
+                    height: "7px",
+                    borderRadius: "50%",
+                    background: element.color,
+                    boxShadow: `0 0 6px ${element.color}99`,
+                    flexShrink: 0,
+                  }}
+                />
+                <div
+                  style={{
+                    fontFamily: "'Orbitron', system-ui, sans-serif",
+                    fontSize: IS_MOBILE
+                      ? "clamp(7px, 2vw, 9px)"
+                      : "clamp(9px, 0.8vw, 11px)",
+                    fontWeight: 600,
+                    letterSpacing: "0.10em",
+                    color: element.color,
+                    textTransform: "uppercase",
+                    lineHeight: 1,
+                  }}
+                >
+                  {element.label}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Orbitron', system-ui, sans-serif",
+                    fontSize: IS_MOBILE
+                      ? "clamp(7px, 2vw, 9px)"
+                      : "clamp(9px, 0.8vw, 11px)",
+                    fontWeight: 400,
+                    letterSpacing: "0.08em",
+                    color: subtitleColor,
+                    textTransform: "uppercase",
+                    lineHeight: 1,
+                  }}
+                >
+                  · {tcm.meridianName}
+                </div>
+              </div>
+            )}
+
+            {/* Qi Channel button — shown when the organ has a linked meridian */}
+            {tcm?.meridianId && (
+              <div
+                onClick={
+                  onQiChannel
+                    ? (e) => {
+                        e.stopPropagation();
+                        onQiChannel(tcm.meridianId);
+                      }
+                    : undefined
+                }
+                style={{
+                  marginTop: "8px",
+                  fontFamily: "'Orbitron', system-ui, sans-serif",
+                  fontSize: IS_MOBILE
+                    ? "clamp(7px, 2vw, 9px)"
+                    : "clamp(9px, 0.8vw, 11px)",
+                  fontWeight: 700,
+                  letterSpacing: "0.14em",
+                  color: element?.color ?? color,
+                  textTransform: "uppercase",
+                  cursor: onQiChannel ? "pointer" : "default",
+                  pointerEvents: onQiChannel ? "all" : "none",
+                  opacity: onQiChannel ? 1 : 0.5,
+                  borderTop: "1px solid rgba(255,255,255,0.25)",
+                  paddingTop: "6px",
+                }}
+              >
+                Qi Channel →
+              </div>
+            )}
           </div>
         </div>
       </div>

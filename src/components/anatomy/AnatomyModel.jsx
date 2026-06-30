@@ -191,6 +191,93 @@ const LANDMARK_DEFS = {
   neck_right: { yMin: 1.5, yMax: 1.62, xSign: 1, outer: false, absXMax: 0.06 },
 };
 
+// ---------------------------------------------------------------------------
+// Full-body extremity sampler — bins all mesh vertices into 2cm y-slices.
+// For each slice it reports the body width (xMax) and, for vertices beyond
+// the torso half-width (x > 0.12), the arm/extremity centroid and outer edge.
+// Call once after GLB load; read the "[ExtremitySampler]" console group.
+// ---------------------------------------------------------------------------
+function sampleExtremities(scene) {
+  scene.updateMatrixWorld(true);
+  const tmp = new THREE.Vector3();
+
+  const NUM_BANDS = 88; // ≈ 2 cm per band at 1.76 m total
+  const Y_MIN = 0.0;
+  const Y_MAX = 1.76;
+
+  const bands = Array.from({ length: NUM_BANDS }, () => ({
+    xMax: -Infinity,
+    zMin: Infinity,
+    zMax: -Infinity,
+    n: 0,
+    // vertices beyond torso half-width — arm / hand / finger surface
+    ext: { sumX: 0, sumZ: 0, n: 0, xMax: -Infinity, yMin: Infinity },
+  }));
+
+  scene.traverse((child) => {
+    if (!child.isMesh) return;
+    const pos = child.geometry?.attributes?.position;
+    if (!pos) return;
+    const mat = child.matrixWorld;
+    const skinned =
+      child.isSkinnedMesh && typeof child.boneTransform === "function";
+    if (skinned && child.skeleton) child.skeleton.update();
+
+    for (let i = 0; i < pos.count; i++) {
+      if (skinned) {
+        child.boneTransform(i, tmp);
+        tmp.applyMatrix4(mat);
+      } else {
+        tmp.set(pos.getX(i), pos.getY(i), pos.getZ(i)).applyMatrix4(mat);
+      }
+      const { x, y, z } = tmp;
+      if (y < Y_MIN || y > Y_MAX) continue;
+
+      const bi = Math.min(
+        Math.floor(((y - Y_MIN) / (Y_MAX - Y_MIN)) * NUM_BANDS),
+        NUM_BANDS - 1,
+      );
+      const b = bands[bi];
+      if (x > b.xMax) b.xMax = x;
+      if (z < b.zMin) b.zMin = z;
+      if (z > b.zMax) b.zMax = z;
+      b.n++;
+
+      // Right-side arm / extremity — beyond torso width
+      if (x > 0.12) {
+        b.ext.sumX += x;
+        b.ext.sumZ += z;
+        b.ext.n++;
+        if (x > b.ext.xMax) b.ext.xMax = x;
+        if (y < b.ext.yMin) b.ext.yMin = y;
+      }
+    }
+  });
+
+  console.group(
+    "[ExtremitySampler] y-profile · arm_ctr = centroid of x>0.12 vertices",
+  );
+  for (let bi = NUM_BANDS - 1; bi >= 0; bi--) {
+    const b = bands[bi];
+    if (b.n < 3) continue;
+    const yBot = (Y_MIN + (bi / NUM_BANDS) * (Y_MAX - Y_MIN)).toFixed(2);
+    const yTop = (Y_MIN + ((bi + 1) / NUM_BANDS) * (Y_MAX - Y_MIN)).toFixed(2);
+    const hasExt = b.ext.n > 4;
+    const extStr = hasExt
+      ? `  ▶ arm  x_ctr=${(b.ext.sumX / b.ext.n).toFixed(3)}` +
+        `  z_ctr=${(b.ext.sumZ / b.ext.n).toFixed(3)}` +
+        `  x_max=${b.ext.xMax.toFixed(3)}`
+      : "";
+    console.log(
+      `y[${yBot}→${yTop}]` +
+        `  xMax=${b.xMax.toFixed(3)}` +
+        `  z[${b.zMin.toFixed(3)},${b.zMax.toFixed(3)}]` +
+        extStr,
+    );
+  }
+  console.groupEnd();
+}
+
 function sampleBodyLandmarks(scene, heightScale = 1) {
   scene.updateMatrixWorld(true);
 
@@ -438,6 +525,10 @@ if (uRegionFade > 0.0) {
 
     const landmarks = sampleBodyLandmarks(scene, config.HEIGHT_SCALE);
     if (onLandmarksExtracted) onLandmarksExtracted(landmarks);
+
+    // Body extremity sampler — logs per-2cm y-slice arm centroid and outer edge.
+    // Open the "[ExtremitySampler]" group in DevTools to calibrate meridian coordinates.
+    sampleExtremities(scene);
 
     const aluminumMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color("#c8d5e0"),

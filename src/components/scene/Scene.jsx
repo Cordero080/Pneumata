@@ -23,6 +23,7 @@ import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./SceneOrbs";
 import MeridianLayer from "../organs/MeridianLayer";
+import MeridianPaths from "../organs/MeridianPaths";
 import { organs } from "../../data/organs";
 import { IS_MOBILE } from "../../utils/device";
 
@@ -351,7 +352,10 @@ function Scene({
             />
           ),
         )}
-        {showMeridians && <MeridianLayer scale={globalScale} />}
+        {showMeridians && (
+          <MeridianLayer scale={globalScale} bodyLandmarks={bodyLandmarks} />
+        )}
+        {showMeridians && <MeridianPaths bodyLandmarks={bodyLandmarks} />}
       </group>
       <CameraController
         brainZoom={brainZoom}
