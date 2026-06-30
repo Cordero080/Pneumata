@@ -45,11 +45,11 @@
 
 .body-toggle-btn {
   @include btn.chamfer-btn;
-  font-size: 17px;
+  font-size: 22px;
   @media (max-width: 768px) { font-size: 15px; }
   padding: 6px 12px 6px 20px;
   min-width: 38px;
-
+ 
   &--active {
     color: #c060a0;
     background: linear-gradient(
@@ -79,7 +79,7 @@
 
 .bg-toggle-btn {
   @include btn.chamfer-btn;
-  font-size: 17px;
+  font-size: 25px;
   @media (max-width: 768px) { font-size: 15px; }
   padding: 6px 12px 6px 20px;
   min-width: 44px;
@@ -91,7 +91,7 @@
 
 .meridian-toggle-btn {
   @include btn.chamfer-btn;
-  font-size: 17px;
+  font-size: 25px;
   @media (max-width: 768px) { font-size: 15px; }
   padding: 6px 10px;
   min-width: 0;

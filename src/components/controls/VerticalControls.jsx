@@ -130,11 +130,13 @@ function VerticalControls({
             <button
               className={`vcontrols-rotate-btn${autoRotate ? " vcontrols-rotate-btn--on" : ""}`}
               onClick={onAutoRotateToggle}
-              title={autoRotate ? "Stop auto-rotation" : "Start auto-rotation"}
+              title={autoRotate ? "Pause rotation" : "Play rotation"}
             >
-              <span className="vcontrols-rotate-btn__icon">⟳</span>
-              <span className="vcontrols-rotate-btn__label">
-                {autoRotate ? "SPIN" : "FREE"}
+              <span
+                className="vcontrols-rotate-btn__icon"
+                style={{ fontSize: autoRotate ? "20px" : "16px" }}
+              >
+                {autoRotate ? "⏸" : "▶"}
               </span>
             </button>
           </div>

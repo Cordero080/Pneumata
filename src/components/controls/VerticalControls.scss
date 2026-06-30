@@ -187,20 +187,31 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 6px 4px 5px;
+  padding: 6px 8px 7px;
   border: none;
-  border-right: 2px solid rgba(0, 0, 0, 0.14);
-  border-bottom: 3px solid rgba(0, 0, 0, 0.18);
-  border-radius: 3px;
-  background: rgba(180, 195, 210, 0.28);
+  border-right: 1px solid rgba(0, 0, 0, 0.18);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+  background: linear-gradient(
+    135deg,
+    rgba(222, 228, 234, 0.72) 0%,
+    rgba(200, 210, 218, 0.66) 25%,
+    rgba(232, 238, 244, 0.72) 50%,
+    rgba(195, 206, 214, 0.66) 75%,
+    rgba(215, 222, 229, 0.72) 100%
+  );
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
   cursor: pointer;
+  @include v.chamfer(v.$chamfer-sm);
   transition: background 0.2s ease, color 0.2s ease, filter 0.2s ease;
 
   &__icon {
     font-size: 16px;
     line-height: 1;
     color: rgba(55, 72, 88, 0.45);
-    transition: color 0.2s ease, transform 0.3s ease;
+    transition: color 0.2s ease;
   }
 
   &__label {
@@ -222,17 +233,11 @@
 
   &--on .vcontrols-rotate-btn__icon {
     color: rgba(10, 126, 235, 0.7);
-    animation: spin-slow 3s linear infinite;
   }
 
   &--on .vcontrols-rotate-btn__label {
     color: rgba(10, 126, 235, 0.75);
   }
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
 }
 
 
@@ -346,8 +351,9 @@
 .vcontrols-panel--dark .vslider__fill      { background: rgba(157, 188, 226, 0.97); }
 
 .vcontrols-panel--dark .vcontrols-rotate-btn {
-  background: rgba(30, 45, 70, 0.5);
-  border-color: rgba(80, 120, 200, 0.2);
+  @include v.dark-surface;
+  box-shadow: none;
+  border-bottom: 2px solid rgba(80, 120, 200, 0.2);
 
   .vcontrols-rotate-btn__icon { color: v.$dark-text-dim; }
   .vcontrols-rotate-btn__label { color: v.$dark-text-dim; }
