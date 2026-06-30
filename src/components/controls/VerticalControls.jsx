@@ -74,6 +74,8 @@ function VerticalControls({
   onOffsetXChange,
   darkMode,
   closeOnOrgan,
+  autoRotate,
+  onAutoRotateToggle,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -125,6 +127,16 @@ function VerticalControls({
             />
             <VSlider label="PAN" value={panY} onChange={onPanChange} />
             <VSlider label="ZOOM" value={zoom} onChange={onZoomChange} />
+            <button
+              className={`vcontrols-rotate-btn${autoRotate ? " vcontrols-rotate-btn--on" : ""}`}
+              onClick={onAutoRotateToggle}
+              title={autoRotate ? "Stop auto-rotation" : "Start auto-rotation"}
+            >
+              <span className="vcontrols-rotate-btn__icon">⟳</span>
+              <span className="vcontrols-rotate-btn__label">
+                {autoRotate ? "SPIN" : "FREE"}
+              </span>
+            </button>
           </div>
         </div>,
         document.body,

@@ -64,7 +64,7 @@ const DEFAULTS = IS_MOBILE
     : // ── Mobile browser ──────────────────────────────────────────────────────
       { panY: 0.5, zoom: 0.33, globalScale: 0.96, offsetX: 0, offsetY: 0.1 }
   : // ── Desktop ───────────────────────────────────────────────────────────────
-    { panY: 0.5, zoom: 0.33, globalScale: 0.95, offsetX: 0, offsetY: 0.08};
+    { panY: 0.5, zoom: 0.33, globalScale: 0.95, offsetX: 0, offsetY: 0.08 };
 
 // ── LANDING ENTRY PRESETS ────────────────────────────────────────────────────
 // Each key maps to a path card on the landing screen. When the user picks one,
@@ -100,6 +100,7 @@ function App() {
   const [viewMode, setViewMode] = useState("logic");
   const [showNerves, setShowNerves] = useState(false);
   const [showMeridians, setShowMeridians] = useState(false);
+  const [autoRotate, setAutoRotate] = useState(true);
   const [showAbout, setShowAbout] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [bgMode, setBgMode] = useState(0);
@@ -368,6 +369,8 @@ function App() {
                   }
                   darkMode={darkMode}
                   closeOnOrgan={!!selectedOrgan}
+                  autoRotate={autoRotate}
+                  onAutoRotateToggle={() => setAutoRotate((v) => !v)}
                 />
               )}
             </div>
@@ -503,6 +506,7 @@ function App() {
           bgModeName={BG_MODES[bgMode]}
           legendCategory={legendCategory}
           showMeridians={showMeridians}
+          autoRotate={autoRotate}
         />
       )}
 

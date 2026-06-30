@@ -95,6 +95,7 @@ function Scene({
   bgModeName,
   legendCategory,
   showMeridians,
+  autoRotate,
   style,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
@@ -374,7 +375,7 @@ function Scene({
         ref={controlsRef}
         enableZoom
         enablePan
-        autoRotate
+        autoRotate={autoRotate}
         autoRotateSpeed={0.5}
         minDistance={0.7}
         maxDistance={6}

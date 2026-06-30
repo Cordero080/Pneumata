@@ -144,7 +144,7 @@ export const meridians = [
       {
         id: "LU-9",
         name: "Taiyuan",
-        position: [0.29, 0.84, 0.04], // radial wrist crease, lateral to radial artery — x≈0.28–0.30, y≈0.84
+        position: [0.356, 0.891, -.020], // radial wrist crease, lateral to radial artery — x≈0.28–0.30, y≈0.84
         function: "Source point — tonifies lung qi, influential for vessels",
         isSource: true,
       },
@@ -154,7 +154,7 @@ export const meridians = [
         position: [0.13, 0.61, 0.04], // RADIAL CORNER OF THUMB NAIL — FINGERTIP: x≈0.11–0.13, y≈0.59–0.62, z>0
         function: "Well point — clears heat, benefits throat, resuscitates",
         useHandLandmark: true,
-        handOffset: [-0.03, -0.02, 0.02],
+        handOffset: [.067, 0.030, 0.027], ///✅✅✅✅✅✅✅✅✅
       },
     ],
   },
@@ -502,7 +502,7 @@ export const meridians = [
       {
         id: "PC-7",
         name: "Daling",
-        position: [0.29, 0.84, 0.04], // wrist crease center, between palmaris longus & flexor carpi radialis — anterior, y≈0.83–0.85
+        position: [0.353, 0.885,-.061], //✅ wrist crease center, between palmaris longus & flexor carpi radialis — anterior, y≈0.83–0.85
         function: "Source point — calms shen, carpal tunnel, chest pain",
         isSource: true,
       },

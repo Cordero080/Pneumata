@@ -180,6 +180,61 @@
   text-align: center;
 }
 
+// --- Rotate toggle button ---
+
+.vcontrols-rotate-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px 5px;
+  border: none;
+  border-right: 2px solid rgba(0, 0, 0, 0.14);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.18);
+  border-radius: 3px;
+  background: rgba(180, 195, 210, 0.28);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, filter 0.2s ease;
+
+  &__icon {
+    font-size: 16px;
+    line-height: 1;
+    color: rgba(55, 72, 88, 0.45);
+    transition: color 0.2s ease, transform 0.3s ease;
+  }
+
+  &__label {
+    font-family: v.$font-hud;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(10, 126, 235, 0.5);
+    transition: color 0.2s ease;
+  }
+
+  &:hover {
+    background: rgba(200, 215, 230, 0.45);
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+
+    .vcontrols-rotate-btn__icon { color: rgba(22, 36, 52, 0.8); }
+  }
+
+  &--on .vcontrols-rotate-btn__icon {
+    color: rgba(10, 126, 235, 0.7);
+    animation: spin-slow 3s linear infinite;
+  }
+
+  &--on .vcontrols-rotate-btn__label {
+    color: rgba(10, 126, 235, 0.75);
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 
 // ================================================================
 // MOBILE  (max-width: 768px)
@@ -289,6 +344,19 @@
 .vcontrols-panel--dark .vslider__label     { color: v.$dark-text-dim; }
 .vcontrols-panel--dark .vslider__track::before { background: rgba(100, 140, 200, 0.25); }
 .vcontrols-panel--dark .vslider__fill      { background: rgba(157, 188, 226, 0.97); }
+
+.vcontrols-panel--dark .vcontrols-rotate-btn {
+  background: rgba(30, 45, 70, 0.5);
+  border-color: rgba(80, 120, 200, 0.2);
+
+  .vcontrols-rotate-btn__icon { color: v.$dark-text-dim; }
+  .vcontrols-rotate-btn__label { color: v.$dark-text-dim; }
+
+  &:hover .vcontrols-rotate-btn__icon { color: v.$dark-text; }
+
+  &.vcontrols-rotate-btn--on .vcontrols-rotate-btn__icon { color: rgba(0, 212, 255, 0.8); }
+  &.vcontrols-rotate-btn--on .vcontrols-rotate-btn__label { color: rgba(0, 212, 255, 0.7); }
+}
 
 .vcontrols-panel--dark .vslider__knob {
   background: rgba(30, 40, 60, 0.9);
