@@ -49,19 +49,9 @@
   @media (max-width: 768px) { font-size: 15px; }
   padding: 6px 12px 6px 20px;
   min-width: 38px;
- 
+
   &--active {
-    color: #c060a0;
-    background: linear-gradient(
-      135deg,
-      rgba(234, 210, 226, 0.96) 0%,
-      rgba(218, 195, 212, 0.92) 25%,
-      rgba(242, 220, 234, 0.96) 50%,
-      rgba(210, 190, 206, 0.92) 75%,
-      rgba(226, 205, 220, 0.96) 100%
-    );
-    border-top-color: rgba(255, 220, 240, 0.5);
-    border-bottom-color: rgba(160, 80, 130, 0.3);
+    color: rgba(10, 30, 60, 0.85);
   }
 }
 

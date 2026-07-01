@@ -9,7 +9,9 @@ export const RAW = {
   centerZ: 0.17,
 };
 
-// Female figure is scaled to 88% of TARGET_HEIGHT to match real proportional difference
+// Female figure is scaled to 88% of TARGET_HEIGHT to match real proportional difference.
+// Further whole-scene shrinking is applied at the Scene wrapper (see FEMALE_SCALE) so
+// mesh + organ nodes + meridians + spine all shrink together.
 export const HEIGHT_SCALE = 0.88;
 
 // Extra Y lift: female GLB floor sits slightly higher than the male baseline
@@ -24,23 +26,23 @@ export const SPINE_OPTS = {
   zMax: -0.035, // tightest posterior z allowed (female lumbar is less pronounced)
 };
 
-// Female model gets an extra sheen layer (velvet/peach-fuzz upper body)
-export const HAS_SHEEN = true;
+// No sheen layer — kept identical to the male model for visual consistency.
+export const HAS_SHEEN = false;
 
-// Material colors — shifted to a pink/mauve palette vs the blue-steel male defaults
+// Material colors — identical to male-config.js so both bodies render the same.
 export const COLORS = {
-  obsColor: "#030306", // dark mode: base surface tint (matches male, violet-black)
-  obsEmissive: "#5500aa", // dark mode: inner glow (violet — female variant of male crimson)
-  ghostColor: "#f0edf2", // light mode: ghost shell tint (warm white)
-  ghostDark: "#1c1520", // light ghost mode 0: warm charcoal
-  alColor: "#d0c8d8", // aluminum layer (light mode) — barely-pink silver
-  alColorDark: "#c4bcd0", // aluminum layer (dark mode) — cooler mauve
-  whiteColor: "#f4f0f8", // white ghost mode 3 tint
-  whiteAlColor: "#bab0c0", // aluminum in white ghost mode (light)
-  whiteAlColorDark: "#b8b0c4", // aluminum in white ghost mode (dark)
-  whiteEmissiveLight: "#c06080", // emissive in white ghost mode (light)
-  whiteEmissiveDark: "#cc4488", // emissive in white ghost mode (dark)
-  onyxColor: "#030306fa", // onyx skin: light mode
-  onyxColorDark: "#030306fa", // onyx skin: dark mode
-  onyxEmissive: "#330044", // onyx skin: emissive glow (warm dark violet)
+  obsColor: "#080817",
+  obsEmissive: "#880000",
+  ghostColor: "#afc1d4",
+  ghostDark: "#1a1a2a",
+  alColor: "#bdd1e2",
+  alColorDark: "#7890aa",
+  whiteColor: "#e2e2f0",
+  whiteAlColor: "#a8bcd4",
+  whiteAlColorDark: "#7a9ac2",
+  whiteEmissiveLight: "#f9bc07",
+  whiteEmissiveDark: "#9966ff",
+  onyxColor: "#030306fa",
+  onyxColorDark: "#030306fa",
+  onyxEmissive: "#220055",
 };

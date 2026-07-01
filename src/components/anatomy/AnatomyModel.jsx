@@ -5,7 +5,6 @@ import * as THREE from "three";
 import * as maleConfig from "./male/male-config";
 import * as femaleConfig from "./female/female-config";
 import "./male/MaleModel.scss";
-import "./female/FemaleModel.scss";
 
 // Skull bounds (sampled once from GLB, y > 1.55):
 //   x: -0.096 → 0.096   y: 1.550 → 1.750   z: -0.126 → 0.098

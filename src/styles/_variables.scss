@@ -104,61 +104,6 @@ $dark-text-dim: rgba(160, 185, 220, 0.6);
 $dark-glow:     rgba(0, 212, 255, 0.35);
 
 // =============================================================================
-// Female Mode Tokens
-// =============================================================================
-
-// Light surface — blush metallic, same holographic sheen but rose-tinted
-$female-light-surface: linear-gradient(
-  135deg,
-  rgba(234, 212, 226, 0.94) 0%,
-  rgba(218, 192, 214, 0.90) 25%,
-  rgba(242, 220, 236, 0.94) 50%,
-  rgba(210, 186, 210, 0.90) 75%,
-  rgba(228, 206, 224, 0.94) 100%
-);
-
-$female-light-surface-active: linear-gradient(
-  135deg,
-  rgba(214, 190, 208, 0.97) 0%,
-  rgba(196, 172, 196, 0.95) 25%,
-  rgba(222, 198, 218, 0.97) 50%,
-  rgba(190, 168, 192, 0.95) 75%,
-  rgba(210, 186, 208, 0.97) 100%
-);
-
-// Dark surface — holographic obsidian shifted to magenta/purple
-$female-dark-surface:
-  linear-gradient(145deg, #180410, #0b020e),
-  radial-gradient(circle at 30% 30%, rgba(255, 20, 140, 0.18), transparent 50%),
-  radial-gradient(circle at 70% 70%, rgba(120, 0, 170, 0.22), transparent 50%),
-  linear-gradient(
-    45deg,
-    rgba(200, 0, 130, 0.08),
-    rgba(0, 180, 220, 0.06),
-    rgba(190, 0, 210, 0.08)
-  );
-
-$female-dark-surface-size: 100% 100%, 150% 150%, 150% 150%, 200% 200%;
-
-$female-text:     rgba(255, 198, 232, 0.95);
-$female-text-dim: rgba(210, 148, 192, 0.65);
-$female-glow:     rgba(255, 20, 150, 0.4);
-
-@mixin female-light-surface {
-  background: $female-light-surface;
-  box-shadow:
-    0 2px 8px rgba(100, 0, 60, 0.1),
-    inset 0 1px 0 rgba(255, 220, 240, 0.9),
-    inset 0 -1px 0 rgba(80, 0, 40, 0.07);
-}
-
-@mixin female-dark-surface {
-  background: $female-dark-surface;
-  background-size: $female-dark-surface-size;
-  background-blend-mode: overlay, multiply, overlay;
-}
-
-// =============================================================================
 // Glass Surface (modal / overlay)
 // =============================================================================
 

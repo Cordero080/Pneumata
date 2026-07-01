@@ -115,6 +115,12 @@ function AboutModal({ onClose }) {
             Philosophy
           </button>
           <button
+            className={`about-tab${tab === "architecture" ? " about-tab--active" : ""}`}
+            onClick={() => setTab("architecture")}
+          >
+            Architecture
+          </button>
+          <button
             className={`about-tab${tab === "navigate" ? " about-tab--active" : ""}`}
             onClick={() => setTab("navigate")}
           >
@@ -200,6 +206,92 @@ function AboutModal({ onClose }) {
               Tap or click any node to explore the analogy. The white node at
               the apex is Pneuma — the point where the system becomes aware of
               itself.
+            </p>
+          </>
+        )}
+
+        {tab === "architecture" && (
+          <>
+            <p className="about-lead">
+              The body isn't one machine — it's three overlapping layers running
+              through the same chassis. Once you see them separated, the
+              architecture becomes clear.
+            </p>
+
+            <div className="about-tiers">
+              <div className="about-tier">
+                <span className="about-tier-label" style={{ color: "#c0c8d8" }}>
+                  1 · Hardware Layer
+                </span>
+                <span className="about-tier-desc">
+                  Organs, brain, spine, muscles — the physical components. Each
+                  maps to a piece of computing hardware: brain as CPU, heart as
+                  PSU, lungs as heat sinks, kidneys as swap memory.
+                </span>
+              </div>
+              <div className="about-tier">
+                <span className="about-tier-label" style={{ color: "#8bffea" }}>
+                  2 · Data Layer
+                </span>
+                <span className="about-tier-desc">
+                  The nervous system. Discrete, point-to-point signals —
+                  instructions from brain to organs, sensations back from body
+                  to brain. This is the data bus. Fast, targeted, binary.
+                </span>
+              </div>
+              <div className="about-tier">
+                <span className="about-tier-label" style={{ color: "#ff9944" }}>
+                  3 · Power Layer
+                </span>
+                <span className="about-tier-desc">
+                  The meridian network. A continuous electrical grid carrying
+                  the heart's baseline current (Qi, in TCM) to every organ.
+                  Without this voltage potential, the data layer has nothing to
+                  switch on with. Slower, distributed, foundational.
+                </span>
+              </div>
+            </div>
+
+            <div className="about-thesis">
+              The heart pumps voltage into the meridian grid. The grid keeps the
+              brain and nerves at operational potential. Life is the power rail
+              staying up.
+            </div>
+
+            <div className="about-divider" />
+
+            <h3 className="about-subhead">Biophysical footing</h3>
+            <p className="about-body">
+              Two areas of emerging research support treating the meridian
+              network as a real bioelectric system, not just a metaphor:
+            </p>
+            <div className="about-biophysics">
+              <div className="about-biophysics-item">
+                <span className="about-biophysics-name">
+                  Perineural DC signaling
+                </span>
+                <span className="about-biophysics-desc">
+                  The sheaths around nerve cells may carry a slower, direct-
+                  current signal that operates separately from the standard
+                  chemical synapses — a secondary bioelectric layer often cited
+                  as a scientific correlate for the meridian system.
+                </span>
+              </div>
+              <div className="about-biophysics-item">
+                <span className="about-biophysics-name">
+                  Piezoelectricity in bone and collagen
+                </span>
+                <span className="about-biophysics-desc">
+                  Connective tissue generates electrical charge under mechanical
+                  stress. Meridian pathways align with these high-conductance
+                  channels through the body's fascial network.
+                </span>
+              </div>
+            </div>
+
+            <p className="about-footer">
+              Toggle the meridian layer in the scene to see the power grid
+              rendered separately from the nervous system.
             </p>
           </>
         )}

@@ -143,6 +143,90 @@
   line-height: 1.5;
 }
 
+// ─── Architecture tab — three-tier stack ─────────────────────────────────
+.about-tiers {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0.5rem 0 1.4rem;
+}
+
+.about-tier {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem 0.95rem;
+  background: rgba(255, 255, 255, 0.024);
+  border-left: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0 6px 6px 0;
+}
+
+.about-tier-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.about-tier-desc {
+  font-size: 0.82rem;
+  color: rgba(200, 215, 235, 0.86);
+  line-height: 1.55;
+}
+
+.about-thesis {
+  margin: 1.25rem 0 0.5rem;
+  padding: 1rem 1.15rem;
+  background: rgba(255, 153, 68, 0.06);
+  border: 1px solid rgba(255, 153, 68, 0.28);
+  border-radius: 6px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: rgba(255, 210, 170, 0.92);
+  text-align: center;
+}
+
+.about-subhead {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(180, 200, 230, 0.7);
+  margin: 0.4rem 0 0.6rem;
+}
+
+.about-biophysics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin: 0.4rem 0 0.8rem;
+}
+
+.about-biophysics-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.about-biophysics-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(139, 255, 234, 0.85);
+}
+
+.about-biophysics-desc {
+  font-size: 0.78rem;
+  color: rgba(180, 200, 230, 0.82);
+  line-height: 1.55;
+}
+
 .about-tabs {
   display: flex;
   gap: 2px;

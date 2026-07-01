@@ -158,3 +158,176 @@
     color: rgba(160, 215, 255, 0.6);
   }
 }
+
+// ─── Layman / Technical mode toggle ────────────────────────────────────────
+.modal-mode-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  margin-bottom: 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 200, 0, 0.18);
+  border-radius: 999px;
+
+  &__btn {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(220, 230, 255, 0.45);
+    background: transparent;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color v.$transition-fast, background v.$transition-fast;
+
+    &:hover { color: rgba(255, 215, 0, 0.75); }
+
+    &.is-active {
+      color: #0a0e1c;
+      background: rgba(255, 215, 0, 0.85);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+    }
+  }
+}
+
+.modal-jargon-hint {
+  margin-top: 1rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(160, 190, 255, 0.4);
+  text-align: center;
+}
+
+// ─── Inline clickable jargon spans ─────────────────────────────────────────
+.jargon-wrap { display: inline; }
+
+.jargon {
+  color: rgba(140, 220, 255, 0.95);
+  border-bottom: 1px dotted rgba(140, 220, 255, 0.55);
+  cursor: pointer;
+  transition: color v.$transition-fast, background v.$transition-fast;
+  padding: 0 1px;
+
+  &:hover {
+    color: #b8e8ff;
+    background: rgba(140, 220, 255, 0.08);
+    border-bottom-color: #b8e8ff;
+  }
+
+  &--open {
+    color: #ffd700;
+    border-bottom-color: rgba(255, 215, 0, 0.8);
+  }
+}
+
+// ─── Mobile inline expanded definition ─────────────────────────────────────
+.jargon-inline {
+  display: block;
+  margin: 0.5rem 0 0.6rem;
+  padding: 0.7rem 0.85rem;
+  background: rgba(140, 220, 255, 0.06);
+  border-left: 2px solid rgba(140, 220, 255, 0.4);
+  border-radius: 0 4px 4px 0;
+  font-style: normal;
+
+  &__name {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: rgba(180, 230, 255, 0.95);
+    margin-bottom: 0.3rem;
+  }
+
+  &__short {
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: rgba(220, 235, 255, 0.78);
+  }
+
+  &__example {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: rgba(180, 220, 255, 0.55);
+    font-style: italic;
+  }
+}
+
+// ─── Desktop floating definition panels ────────────────────────────────────
+.jargon-panel {
+  position: fixed;
+  width: 280px;
+  background: rgba(10, 16, 32, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(140, 220, 255, 0.35);
+  border-radius: 6px;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(140, 220, 255, 0.18);
+  color: rgba(220, 235, 255, 0.85);
+  font-family: system-ui, sans-serif;
+  user-select: none;
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: rgba(140, 220, 255, 0.1);
+    border-bottom: 1px solid rgba(140, 220, 255, 0.18);
+    border-radius: 6px 6px 0 0;
+    cursor: grab;
+    touch-action: none;
+
+    &:active { cursor: grabbing; }
+  }
+
+  &__title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: rgba(180, 230, 255, 0.95);
+  }
+
+  &__close {
+    background: transparent;
+    border: none;
+    color: rgba(220, 235, 255, 0.5);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 2px 6px;
+    line-height: 1;
+
+    &:hover { color: #ffd700; }
+  }
+
+  &__body {
+    padding: 12px 14px 14px;
+  }
+
+  &__short {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: rgba(220, 235, 255, 0.82);
+    margin: 0;
+  }
+
+  &__example {
+    margin: 0.55rem 0 0;
+    font-size: 0.76rem;
+    line-height: 1.5;
+    color: rgba(180, 220, 255, 0.55);
+    font-style: italic;
+  }
+}

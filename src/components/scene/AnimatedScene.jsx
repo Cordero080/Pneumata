@@ -18,7 +18,7 @@ function AnimatedScene({ darkMode, meshMode, onSecondLoop }) {
       dpr={[1, 2]}
       performance={{ min: 0.5 }}
     >
-      <SceneLights darkMode={darkMode} meshMode={meshMode} femaleMode={false} />
+      <SceneLights darkMode={darkMode} meshMode={meshMode} />
       <AnimatedModel
         darkMode={darkMode}
         meshMode={meshMode}

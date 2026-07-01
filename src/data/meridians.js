@@ -137,8 +137,8 @@ export const meridians = [
       },
       {
         id: "LU-7",
-        name: "Lieque",
-        position: [0.27, 0.88, 0.04], // 1.5 cun above LU-9, radial forearm — anterior, x≈0.27, y≈0.88
+        name: "Lieque",// ✅
+        position: [0.260, 1.030, -0.065], // 1.5 cun above LU-9, radial forearm — anterior, x≈0.27, y≈0.88
         function: "Luo-connecting — opens conception vessel, headache",
       },
       {
@@ -317,8 +317,8 @@ export const meridians = [
       },
       {
         id: "HT-7",
-        name: "Shenmen",
-        position: [0.28, 0.84, 0.03], // ulnar wrist crease, radial side of pisiform bone — anterior, x≈0.26–0.29, y≈0.83–0.85
+        name: "Shenmen", //✅
+        position: [0.32, 0.88, -0.044], // ulnar wrist crease, radial side of pisiform bone — anterior, x≈0.26–0.29, y≈0.83–0.85
         function: "Source point — calms shen, anxiety, insomnia, palpitations",
         isSource: true,
       },
@@ -495,8 +495,8 @@ export const meridians = [
       },
       {
         id: "PC-6",
-        name: "Neiguan",
-        position: [0.27, 0.88, 0.04], // 2 cun above PC-7, between palmaris longus & flexor carpi radialis — anterior, y≈0.86–0.90
+        name: "Neiguan",//✅
+        position: [0.34, 0.920, -0.068], // 2 cun above PC-7, between palmaris longus & flexor carpi radialis — anterior, y≈0.86–0.90
         function: "Opens Yin Wei vessel — nausea, heart, anxiety, wrist",
       },
       {

@@ -1,12 +1,11 @@
 @use '../../../styles/variables' as v;
 
 // =============================================================================
-// Male Theme — .app--male dark mode color overrides.
-// Light mode base styles in App.scss ARE the male defaults (no overrides needed).
-// Only dark mode needs explicit values here since dark-surface is blue-steel toned.
+// Dark mode UI overrides — applied to both male and female bodies.
+// Light mode base styles in App.scss are the shared defaults (no overrides needed).
 // =============================================================================
 
-.app--male.app--dark {
+.app--dark {
 
   // Header
   .header-accent {

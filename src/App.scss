@@ -278,34 +278,9 @@
   pointer-events: none;
 }
 
-// ── Theme overrides — female mode (light only) ────────────────────────────────
+// ── Theme overrides — dark mode ───────────────────────────────────────────────
 
-.app--female:not(.app--dark) {
-  .header-nav-trigger,
-  .mesh-toggle-btn,
-  .reset-btn,
-  .body-toggle-btn,
-  .anim-toggle-btn,
-  .bg-toggle-btn,
-  .meridian-toggle-btn,
-  .about-btn {
-    background: linear-gradient(
-      135deg,
-      rgba(234, 214, 226, 0.96) 0%,
-      rgba(218, 198, 212, 0.92) 25%,
-      rgba(242, 222, 234, 0.96) 50%,
-      rgba(210, 192, 206, 0.92) 75%,
-      rgba(226, 208, 220, 0.96) 100%
-    );
-    border-top-color: rgba(255, 210, 230, 0.5);
-    border-bottom-color: rgba(160, 80, 130, 0.3);
-  }
-}
-
-// ── Theme overrides — dark mode (male only) ───────────────────────────────────
-// Female dark overrides live in anatomy/female/FemaleModel.scss
-
-.app--dark:not(.app--female) {
+.app--dark {
   .header-nav-trigger,
   .body-toggle-btn,
   .anim-toggle-btn,
@@ -339,18 +314,8 @@
   }
 
   .body-toggle-btn--active {
-    color: #e080c0;
-    background: linear-gradient(
-      135deg,
-      rgba(72, 32, 56, 0.98) 0%,
-      rgba(56, 24, 44, 0.96) 25%,
-      rgba(80, 36, 64, 0.98) 50%,
-      rgba(52, 22, 42, 0.96) 75%,
-      rgba(68, 28, 52, 0.98) 100%
-    );
-    border-top-color: rgba(220, 120, 180, 0.4);
-    border-bottom-color: rgba(160, 60, 120, 0.3);
+    color: rgba(180, 210, 255, 0.9);
   }
 }
 
-// Additional dark overrides: anatomy/male/MaleModel.scss · anatomy/female/FemaleModel.scss
+// Additional dark overrides: anatomy/male/MaleModel.scss

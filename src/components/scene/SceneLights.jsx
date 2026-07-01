@@ -44,25 +44,6 @@ function WhiteGhostLights() {
   );
 }
 
-// Nebula — female mode
-// ✏️ FEMALE MODE accent lighting — pink/purple nebula glow
-function NebulaLights() {
-  return (
-    <>
-      <ambientLight intensity={0.55} color="#ffe0f0" />
-      {/* Frontal key — soft white fill so the mesh reads clearly */}
-      <pointLight position={[0, 1.3, 4]} intensity={4.5} color="#fff0f8" />
-      <pointLight position={[0, 0.8, 3.5]} intensity={2.5} color="#ffe8f4" />
-      {/* Color accent lights */}
-      <pointLight position={[2.5, 2.5, 1.5]} intensity={2.0} color="#ff2090" />
-      <pointLight position={[-2.5, 1.5, 1]} intensity={1.8} color="#9010ff" />
-      <pointLight position={[0, 1.5, -2.5]} intensity={1.5} color="#ff10cc" />
-      <pointLight position={[-1.5, 0.5, 1]} intensity={1.0} color="#4020ff" />
-      <pointLight position={[1.5, 0.8, 1]} intensity={1.2} color="#ff40a0" />
-    </>
-  );
-}
-
 // Ghost x-ray neon — light mode meshMode 0
 function GhostNeonLights() {
   return (
@@ -153,17 +134,7 @@ function SpineAccentLights() {
   );
 }
 
-function SceneLights({ darkMode, meshMode, femaleMode }) {
-  if (femaleMode) {
-    return (
-      <>
-        <fog attach="fog" args={["#08021a", 6, 12]} />
-        <Environment preset="sunset" background={false} />
-        <NebulaLights />
-      </>
-    );
-  }
-
+function SceneLights({ darkMode, meshMode }) {
   const showEnv =
     (!darkMode && meshMode !== 0) ||
     (darkMode && (meshMode === 4 || meshMode === 5));

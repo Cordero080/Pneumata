@@ -48,7 +48,14 @@ const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
 const RIGHT_LUNG_POS = [0.12, 1.22, 0.05];
 const ORBIT_TARGET = [0, 0.85, 0];
 
-export const FEMALE_SCALE = 0.88;
+// Aesthetic shrink applied to the entire female scene group so mesh, nodes, meridians,
+// spine — everything — scales proportionally together. Sits on top of HEIGHT_SCALE 0.88
+// (the real anatomical ratio) in female-config.js.
+export const FEMALE_SCALE = 0.9224;
+
+// Vertical lift added to offsetY when female mode is on — compensates for the fact
+// that scaling from origin pulls the mesh downward. Tune to re-center visually.
+export const FEMALE_Y_LIFT = 0.08;
 
 const CIRC_OPACITY = { logic: 0.0, power: 1.0, breathing: 0.0, unified: 0.65 };
 
@@ -161,13 +168,12 @@ function Scene({
       performance={{ min: 0.4 }}
       onPointerMissed={() => handleClearPreview()}
     >
-      <SceneLights
-        darkMode={darkMode}
-        meshMode={meshMode}
-        femaleMode={femaleMode}
-      />
+      <SceneLights darkMode={darkMode} meshMode={meshMode} />
       <BreathingDriver breathingRef={breathingRef} />
-      <group scale={globalScale} position={[offsetX, offsetY, 0]}>
+      <group
+        scale={globalScale * (femaleMode ? FEMALE_SCALE : 1)}
+        position={[offsetX, offsetY + (femaleMode ? FEMALE_Y_LIFT : 0), 0]}
+      >
         <AnatomyModel
           key={modelPath}
           modelPath={modelPath}

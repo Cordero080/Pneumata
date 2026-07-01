@@ -171,9 +171,7 @@ function App() {
   }, [brainZoom, cellZoom]);
 
   useEffect(() => {
-    document.body.classList.toggle("body--female", bodyModel === "female");
     dispatchCam({ type: "reset" });
-    return () => document.body.classList.remove("body--female");
   }, [bodyModel]);
 
   const handleTilt = useCallback((e) => {
@@ -321,7 +319,7 @@ function App() {
 
   return (
     <div
-      className={`app app--${bodyModel}${darkMode ? " app--dark" : ""}${bodyModel === "female" ? " app--female" : ""} app--bg-${BG_MODES[bgMode]}`}
+      className={`app app--${bodyModel}${darkMode ? " app--dark" : ""} app--bg-${BG_MODES[bgMode]}`}
     >
       <header
         className="app-header"
