@@ -100,7 +100,14 @@ function App() {
   const [viewMode, setViewMode] = useState("logic");
   const [showNerves, setShowNerves] = useState(false);
   const [showMeridians, setShowMeridians] = useState(false);
+  const [wipBadgeDismissed, setWipBadgeDismissed] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
+
+  // Reset the dismissed state each time meridians are toggled off, so the badge
+  // reappears next time the layer is turned back on.
+  useEffect(() => {
+    if (!showMeridians) setWipBadgeDismissed(false);
+  }, [showMeridians]);
   const [showAbout, setShowAbout] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [bgMode, setBgMode] = useState(0);
@@ -506,6 +513,22 @@ function App() {
           showMeridians={showMeridians}
           autoRotate={autoRotate}
         />
+      )}
+
+      {showMeridians && !wipBadgeDismissed && (
+        <div className="meridian-wip-badge" aria-live="polite">
+          <span className="meridian-wip-badge__dot" />
+          <span className="meridian-wip-badge__text">
+            Meridian layer · under construction
+          </span>
+          <button
+            className="meridian-wip-badge__close"
+            onClick={() => setWipBadgeDismissed(true)}
+            aria-label="Dismiss notice"
+          >
+            ✕
+          </button>
+        </div>
       )}
 
       {(brainZoom || cellZoom) && (
