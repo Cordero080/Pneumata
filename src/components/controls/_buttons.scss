@@ -23,7 +23,7 @@
 .mesh-toggle-btn {
   @include btn.chamfer-btn;
   font-size: 17px;
-  @media (max-width: 768px) { font-size: 15px; }
+  @media (max-width: 768px) { font-size: 20px; }
   padding: 6px 10px;
   color: rgba(55, 72, 88, 0.55);
   clip-path: polygon(
@@ -38,7 +38,7 @@
 .reset-btn {
   @include btn.chamfer-btn;
   font-size: 19px;
-  @media (max-width: 768px) { font-size: 17px; }
+  @media (max-width: 768px) { font-size: 22px; }
   padding: 6px 12px 6px 20px;
   min-width: 42px;
 }
@@ -46,7 +46,7 @@
 .body-toggle-btn {
   @include btn.chamfer-btn;
   font-size: 22px;
-  @media (max-width: 768px) { font-size: 15px; }
+  @media (max-width: 768px) { font-size: 22px; }
   padding: 6px 12px 6px 20px;
   min-width: 38px;
 
@@ -58,7 +58,7 @@
 .anim-toggle-btn {
   @include btn.chamfer-btn;
   font-size: 15px;
-  @media (max-width: 768px) { font-size: 13px; }
+  @media (max-width: 768px) { font-size: 18px; }
   padding: 6px 12px 6px 20px;
   min-width: 44px;
 
@@ -70,7 +70,7 @@
 .bg-toggle-btn {
   @include btn.chamfer-btn;
   font-size: 25px;
-  @media (max-width: 768px) { font-size: 15px; }
+  @media (max-width: 768px) { font-size: 22px; }
   padding: 6px 12px 6px 20px;
   min-width: 44px;
 
@@ -82,12 +82,12 @@
 .meridian-toggle-btn {
   @include btn.chamfer-btn;
   font-size: 25px;
-  @media (max-width: 768px) { font-size: 15px; }
+  @media (max-width: 768px) { font-size: 22px; }
   padding: 6px 10px;
   min-width: 0;
 
   &--active {
-    color: rgba(255, 215, 0, 0.95);
+    color: rgba(18, 30, 50, 0.9);
   }
 }
 

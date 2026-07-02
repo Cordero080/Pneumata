@@ -47,8 +47,7 @@
     pointer-events: auto;
     clip-path: polygon(
       0 0,
-      calc(100% - 14px) 0,
-      100% 14px,
+      100% 0,
       100% 100%,
       14px 100%,
       0 calc(100% - 14px)
@@ -179,7 +178,7 @@
 
 .top-left-strip {
   position: fixed;
-  top: var(--header-h);
+  top: calc(var(--header-h) - 11px);
   left: 0;
   z-index: 50;
   display: flex;
@@ -203,7 +202,9 @@
     }
   }
 
-  // Contextual overrides — strip layout resets the fixed positioning of each button
+  // All buttons share the same interlocking shape: triangle at top-left + full body below.
+  // The strip sits 11px above the header bottom so the first button's triangle fills the
+  // header-accent's bottom-left chamfer void with a ~2px gap (matching subsequent button gaps).
   .mesh-toggle-btn,
   .reset-btn,
   .body-toggle-btn,
@@ -213,20 +214,22 @@
     position: static;
     flex-shrink: 0;
     width: 58px;
-    height: 50px;
+    height: 61px;
+    padding: 11px 10px 0;
     margin-top: 0;
     margin-left: 0;
-    padding: 0 10px;
-    clip-path: polygon(
-      0 0,
-      calc(100% - 14px) 0,
-      100% 14px,
-      100% 100%,
-      14px 100%,
-      0 calc(100% - 14px)
-    );
+    clip-path: polygon(0 0, 0 calc(100% - 14px), 14px 100%, 100% 100%, 100% 11px, 11px 11px);
     opacity: 0.62;
     &:hover { opacity: 1; }
+  }
+
+  // Buttons 2–5 overlap the button above to interlock with its bottom-left chamfer void
+  .reset-btn,
+  .body-toggle-btn,
+  .anim-toggle-btn,
+  .bg-toggle-btn,
+  .meridian-toggle-btn {
+    margin-top: -11px;
   }
 
   .body-toggle-btn--active,
@@ -316,6 +319,23 @@
   .body-toggle-btn--active {
     color: rgba(180, 210, 255, 0.9);
   }
+
+  .top-left-strip {
+    .mesh-toggle-btn,
+    .reset-btn,
+    .body-toggle-btn,
+    .anim-toggle-btn,
+    .bg-toggle-btn,
+    .meridian-toggle-btn {
+      opacity: 0.85;
+      &:hover { opacity: 1; }
+    }
+
+    .meridian-toggle-btn--active {
+      color: rgba(255, 215, 0, 0.95);
+    }
+  }
+
 }
 
 // Additional dark overrides: anatomy/male/MaleModel.scss

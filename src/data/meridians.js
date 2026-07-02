@@ -151,7 +151,7 @@ export const meridians = [
       {
         id: "LU-11",
         name: "Shaoshang",
-        position: [0.13, 0.61, 0.04], // RADIAL CORNER OF THUMB NAIL — FINGERTIP: x≈0.11–0.13, y≈0.59–0.62, z>0
+        position: [0.133, 0.61, 0.04], // RADIAL CORNER OF THUMB NAIL — FINGERTIP: x≈0.11–0.13, y≈0.59–0.62, z>0
         function: "Well point — clears heat, benefits throat, resuscitates",
         useHandLandmark: true,
         handOffset: [.067, 0.030, 0.027], ///✅✅✅✅✅✅✅✅✅
@@ -194,7 +194,7 @@ export const meridians = [
         function: "3 cun below elbow — digestion, arm pain",
       },
       {
-        id: "LI-11",
+        id: "LI-11", //🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
         name: "Quchi",
         position: [0.29, 1.1, 0.01], // lateral elbow crease end, between biceps and lateral epicondyle — x≈0.28–0.31, y≈1.08–1.12
         function: "Elbow crease — clears heat, drains dampness, immunity",
@@ -328,7 +328,7 @@ export const meridians = [
         position: [0.11, 0.61, 0.02], // RADIAL CORNER OF LITTLE FINGER NAIL — FINGERTIP: x≈0.10–0.12, y≈0.59–0.62, z>0
         function: "Well point — opens orifices, cardiac emergencies",
         useHandLandmark: true,
-        handOffset: [0.03, -0.01, 0.01],
+        handOffset: [-0.045, -0.01, 0.010],//✅✅✅✅✅✅✅✅
       },
     ],
   },
@@ -551,12 +551,11 @@ export const meridians = [
       },
       {
         id: "TW-5",
-        name: "Waiguan",
-        position: [0.29, 0.88, -0.04], // 2 cun above TW-4, dorsal forearm between radius & ulna — posterior, y≈0.86–0.90, z<0
+        name: "Waiguan",//✅✅✅✅✅✅✅
+        position: [0.30, 1.025, -0.080], // 2 cun above TW-4, dorsal forearm between radius & ulna — posterior, y≈0.86–0.90, z<0
         function: "Opens Yang Wei vessel — fever, headache, deafness",
       },
       {
-        id: "TW-14",
         name: "Jianliao",
         position: [0.14, 1.42, -0.06], // posterior-inferior to acromion, between two deltoid tendons — x≈0.13–0.16, y≈1.40–1.44, z<0
         function: "Posterior shoulder — shoulder pain, limited mobility",

@@ -1,5 +1,8 @@
 // App-shell buttons — rendered directly in App.jsx, not owned by a sub-component.
-// header-nav-trigger · dark-capsule · dark-toggle-btn
+// header-nav-trigger · dark-mode-btn
+
+@use 'buttons' as btn;
+@use 'variables' as v;
 
 @keyframes toggle-pulse {
   0%, 100% { opacity: 0; }
@@ -61,120 +64,58 @@
   }
 }
 
-.dark-toggle-btn {
-  position: fixed;
-  top: 1.1rem;
-  right: 1.5rem;
-  z-index: 50;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 7px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  padding: 8px 16px;
-  border: none;
-  cursor: pointer;
-  background: rgba(40, 55, 80, 0.45);
-  color: rgba(160, 185, 220, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: color 0.2s ease, background 0.2s ease;
-  clip-path: polygon(
-    0 0,
-    calc(100% - 10px) 0,
-    100% 10px,
-    100% 100%,
-    10px 100%,
-    0 calc(100% - 10px)
-  );
-
-  &:hover {
-    color: rgba(200, 220, 255, 0.9);
-    background: rgba(55, 70, 95, 0.65);
+@keyframes dark-mode-icon-enter {
+  from {
+    opacity: 0;
+    transform: rotate(-150deg) scale(0.3);
   }
-
-  &--active {
-    color: rgba(230, 240, 255, 0.95);
-    background: rgba(30, 40, 65, 0.8);
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
   }
 }
 
-.dark-capsule {
-  position: fixed;
-  bottom: .2rem;
-  right: .4rem;
-  z-index: 50;
+.dark-mode-btn {
+  @include btn.chamfer-btn;
+  bottom: 0.2rem;
+  right: 0.4rem;
+  top: unset;
+  left: unset;
 
-  @media (max-width: 768px) {
-    bottom: 1rem;
-  }
-  display: flex;
-  align-items: center;
-  background: rgba(200, 210, 222, 0.45);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-bottom: 2px solid rgba(0, 0, 0, 0.15);
-  border-radius: 100px;
-  padding: 2px;
-  gap: 2px;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
-  cursor: pointer;
+  @media (max-width: 768px) { bottom: 1rem; }
 
-  &__thumb {
-    position: absolute;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.88);
-    left: 2px;
-    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-  }
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 20px;
+  @include v.chamfer(v.$chamfer-sm);
+  opacity: 0.7;
 
-  &--dark &__thumb {
-    left: 34px;
+  &:hover {
+    opacity: 1;
+    transform: none;
   }
 
   &__icon {
-    width: 29px;
-    height: 26px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    color: rgba(55, 54, 42, 0.612);
-    position: relative;
-    z-index: 1;
+    display: block;
     pointer-events: none;
-    transition: color 0.25s ease;
-  }
-
-  &:not(&--dark) &__icon:first-of-type,
-  &--dark &__icon:last-of-type {
-    color: rgba(25, 36, 52, 0.9);
+    animation: dark-mode-icon-enter 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 }
 
-.app--dark .dark-capsule {
-  background: rgba(15, 22, 40, 0.7);
-  border-color: rgba(100, 150, 220, 0.2);
-  border-bottom-color: rgba(80, 120, 200, 0.3);
+.app--dark .dark-mode-btn {
+  background:
+    linear-gradient(135deg,
+      rgba(42, 52, 72, 0.98) 0%,
+      rgba(30, 38, 56, 0.96) 25%,
+      rgba(48, 58, 80, 0.98) 50%,
+      rgba(28, 36, 54, 0.96) 75%,
+      rgba(40, 50, 68, 0.98) 100%
+    );
+  border-top-color: rgba(120, 160, 220, 0.55);
+  border-right-color: rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid rgba(80, 120, 200, 0.2);
+  color: rgba(180, 210, 255, 0.9);
 
-  .dark-capsule__thumb {
-    background: rgba(40, 58, 95, 0.95);
-  }
-
-  .dark-capsule__icon {
-    color: rgba(140, 165, 210, 0.5);
-  }
-
-  &.dark-capsule--dark .dark-capsule__icon:last-of-type {
-    color: rgba(200, 220, 255, 0.95);
-  }
-
-  &:not(.dark-capsule--dark) .dark-capsule__icon:first-of-type {
-    color: rgba(200, 220, 255, 0.95);
-  }
+  &:hover { color: rgba(200, 220, 255, 0.95); }
 }

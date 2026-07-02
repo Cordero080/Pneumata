@@ -569,17 +569,18 @@ function App() {
       )}
 
       <button
-        className={`dark-capsule${darkMode ? " dark-capsule--dark" : ""}`}
+        className={`dark-mode-btn${darkMode ? " dark-mode-btn--dark" : ""}`}
         onClick={() => {
           const next = !darkMode;
           setDarkMode(next);
           setMeshMode(next ? 0 : 5);
         }}
         aria-label="Toggle dark mode"
+        title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
       >
-        <span className="dark-capsule__thumb" />
-        <span className="dark-capsule__icon">☾</span>
-        <span className="dark-capsule__icon">✦</span>
+        <span key={String(darkMode)} className="dark-mode-btn__icon">
+          {darkMode ? "✦︎" : "☾︎"}
+        </span>
       </button>
 
       <p className="app-copyright">© 2026 Pablo Cordero</p>

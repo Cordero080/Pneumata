@@ -212,15 +212,6 @@ $neon-pink:   #ff00a0;
   );
 }
 
-@mixin chamfer-docked-left($size: $chamfer-lg) {
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    #{$size} 100%,
-    0 calc(100% - #{$size})
-  );
-}
 
 // Dark mode holographic surface helper
 @mixin dark-surface {
