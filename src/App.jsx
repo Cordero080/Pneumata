@@ -8,6 +8,7 @@ import AboutModal from "./components/about/AboutModal";
 import CategoryLegend from "./components/legend/CategoryLegend";
 import ViewModeController from "./components/view-controller/ViewModeController";
 import VerticalControls from "./components/controls/VerticalControls";
+import CoachMarks from "./components/onboarding/CoachMarks";
 import { organs } from "./data/organs";
 import { IS_MOBILE } from "./utils/device";
 
@@ -155,6 +156,9 @@ function App() {
   const [showLanding, setShowLanding] = useState(true);
   const aboutRef = useRef(null);
   const bgPickerRef = useRef(null);
+  const pathBtnRef = useRef(null);
+  const navTriggerRef = useRef(null);
+  const darkModeRef = useRef(null);
 
   useEffect(() => {
     if (!bgPanelOpen) return;
@@ -335,6 +339,7 @@ function App() {
         <div className="header-strip">
           <div className="header-accent header-accent--top">
             <button
+              ref={navTriggerRef}
               className={`header-nav-trigger${showTopNav ? " header-nav-trigger--open" : ""}`}
               onClick={() => setShowTopNav((v) => !v)}
             >
@@ -346,6 +351,7 @@ function App() {
             <p>Analogical Anatomy</p>
             <div className="header-panel__actions">
               <button
+                ref={pathBtnRef}
                 className="about-btn about-btn--entry"
                 onClick={handleOpenLanding}
                 aria-label="Open path menu"
@@ -569,6 +575,7 @@ function App() {
       )}
 
       <button
+        ref={darkModeRef}
         className={`dark-mode-btn${darkMode ? " dark-mode-btn--dark" : ""}`}
         onClick={() => {
           const next = !darkMode;
@@ -591,6 +598,16 @@ function App() {
           onEnter={() => setShowLanding(false)}
         />
       )}
+
+      <CoachMarks
+        active={!showLanding && !showAnimation}
+        darkMode={darkMode}
+        targets={{
+          path: pathBtnRef,
+          nav: navTriggerRef,
+          dark: darkModeRef,
+        }}
+      />
     </div>
   );
 }

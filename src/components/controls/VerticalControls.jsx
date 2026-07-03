@@ -114,10 +114,10 @@ function VerticalControls({
             className={`vcontrols-panel${panelOpen ? " vcontrols-panel--open" : ""}${darkMode ? " vcontrols-panel--dark" : ""}`}
             style={
               window.innerWidth >= 769
-                ? // ── DESKTOP: flush with nav bottom (44px header) ──
-                  { top: 44, right: panelPos.right }
-                : // ── MOBILE: flush with nav bottom, pinned to right edge ──
-                  { top: panelPos.top, right: 4 }
+                ? // ── DESKTOP: 4px below nav bottom (44px header) ──
+                  { top: 48, right: panelPos.right }
+                : // ── MOBILE: 4px below nav bottom, pinned to right edge ──
+                  { top: panelPos.top + 4, right: 4 }
             }
           >
             <VSlider
