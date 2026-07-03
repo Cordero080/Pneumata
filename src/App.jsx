@@ -75,8 +75,9 @@ const DEFAULTS = IS_MOBILE
 //   zoom/panY:  override the slider starting values on entry
 //   organId:    if set, the scene focuses on that organ node
 //   showNerves: if true, the nerve overlay is enabled on entry
+//   meshMode:   if set, overrides the mesh material on entry (light mode only)
 const LANDING_ENTRY_PRESETS = {
-  brain: { viewMode: "logic", brainZoom: true },
+  brain: { viewMode: "logic", brainZoom: true, meshMode: 3 },
   lungs: { viewMode: "breathing", zoom: 0.02, panY: 0.25 },
   heart: { viewMode: "power", zoom: 0.02, panY: 0.25 },
   nervous: {
@@ -230,8 +231,9 @@ function App() {
         dispatchCam({ type: "setZoom", value: preset.zoom });
       if (preset.panY != null)
         dispatchCam({ type: "setPanY", value: preset.panY });
+      if (preset.meshMode != null && !darkMode) setMeshMode(preset.meshMode);
     },
-    [bodyModel, globalScale, offsetY],
+    [bodyModel, globalScale, offsetY, darkMode],
   );
 
   const handleOpenLanding = useCallback(() => {

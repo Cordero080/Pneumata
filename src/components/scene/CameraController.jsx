@@ -21,11 +21,11 @@ const MOBILE_BRAIN_Y = IS_MOBILE ? 0.07 : 0;
 const MALE_HEAD_Y = 1.672;
 const FEMALE_HEAD_Y = 1.615;
 const FEMALE_Y_OFFSET = FEMALE_HEAD_Y - MALE_HEAD_Y;
-const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.45 + MOBILE_BRAIN_Y, 0);
+const MALE_BRAIN_TARGET = new THREE.Vector3(0, 1.60 + MOBILE_BRAIN_Y, 0);
 const MALE_CELL_TARGET = new THREE.Vector3(0, 1.41 + MOBILE_BRAIN_Y, 0);
 const FEMALE_BRAIN_TARGET = new THREE.Vector3(
   0,
-  1.45 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
+  1.60 + FEMALE_Y_OFFSET + MOBILE_BRAIN_Y,
   0,
 );
 const FEMALE_CELL_TARGET = new THREE.Vector3(
@@ -106,8 +106,8 @@ function CameraController({
       ctrl.update();
     } else if (brainZoom) {
       // Brain path initial zoom: z = distance from brain (lower = closer). Match Y to MALE_BRAIN_TARGET.
-      camera.position.set(0, 1.45 + yo + MOBILE_BRAIN_Y, 0.35);
-      ctrl.target.set(0, 1.45 + yo + MOBILE_BRAIN_Y, 0);
+      camera.position.set(0, 1.60 + yo + MOBILE_BRAIN_Y, 0.35);
+      ctrl.target.set(0, 1.60 + yo + MOBILE_BRAIN_Y, 0);
       ctrl.update();
     }
   }, [brainZoom, cellZoom, femaleMode, controlsRef, camera]);

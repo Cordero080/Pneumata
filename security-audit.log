@@ -7767,3 +7767,246 @@ PASSED
 
 Result: 0 CRITICAL, 0 WARNING
 ================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: src/App.jsx
+Time: 2026-07-03T05:56:24Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — VerticalControls.jsx
+File: src/components/controls/VerticalControls.jsx
+Time: 2026-07-03T05:56:24Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — CoachMarks.jsx
+File: src/components/onboarding/CoachMarks.jsx
+Time: 2026-07-03T05:56:25Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-03T06:01:22Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-03T06:01:33Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — brain.js
+File: /private/tmp/claude-501/-Users-pablodcordero-code-my-stuff-Pneumata/a0e777e9-b367-4e6d-95c8-72d2c00d9480/scratchpad/pw/brain.js
+Time: 2026-07-03T06:02:21Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — final-check.js
+File: /private/tmp/claude-501/-Users-pablodcordero-code-my-stuff-Pneumata/a0e777e9-b367-4e6d-95c8-72d2c00d9480/scratchpad/pw/final-check.js
+Time: 2026-07-03T06:04:41Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-03T06:05:04Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-03T06:05:10Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-03T06:05:20Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-03T06:05:38Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — final-check.js
+File: /private/tmp/claude-501/-Users-pablodcordero-code-my-stuff-Pneumata/a0e777e9-b367-4e6d-95c8-72d2c00d9480/scratchpad/pw/final-check.js
+Time: 2026-07-03T06:06:08Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — final-check.js
+File: /private/tmp/claude-501/-Users-pablodcordero-code-my-stuff-Pneumata/a0e777e9-b367-4e6d-95c8-72d2c00d9480/scratchpad/pw/final-check.js
+Time: 2026-07-03T06:07:16Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
