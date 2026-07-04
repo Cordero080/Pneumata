@@ -15,7 +15,7 @@ const HEART_CENTER_Z_FEMALE = 0.02; // forward (+) / back into body (-)
 const TARGET_HEIGHT_FEMALE = 0.13; // size — increase to enlarge
 // ===================================
 
-const BLOOD_RED = new THREE.Color("#aa3018");
+const BLOOD_RED = new THREE.Color("#93202c");
 
 function HeartModel({
   meshMode,
@@ -78,7 +78,7 @@ function HeartModel({
           transparent: true,
           opacity: 0,
           depthWrite: false,
-          emissive: new THREE.Color("#cc0011"),
+          emissive: new THREE.Color("#cc0030"),
           emissiveIntensity: 0,
           roughness: 0.55,
           metalness: 0.25,

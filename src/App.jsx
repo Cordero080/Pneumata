@@ -283,6 +283,12 @@ function App() {
   const handleOrganSelect = useCallback(
     (organ) => {
       setSelectedOrgan(organ);
+      // Clicking a brain-region node from anywhere should land on the same
+      // look as entering via the dedicated Brain path (see LANDING_ENTRY_PRESETS.brain).
+      if (organ?.brainPosition) {
+        setViewMode("logic");
+        if (!darkMode) setMeshMode(3);
+      }
       if (
         !brainZoom &&
         organ &&
@@ -308,7 +314,7 @@ function App() {
         setOrganFocusDistance(null);
       }
     },
-    [brainZoom, globalScale, offsetY],
+    [brainZoom, globalScale, offsetY, darkMode],
   );
 
   // Same focus logic as handleOrganSelect but fires on hover — no selection state change.

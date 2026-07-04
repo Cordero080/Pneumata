@@ -518,7 +518,7 @@ function CellularView({
             posY={1.702}
             posZ={0.026}
             color="#cc88ff"
-            emissive="#9933ff"
+            emissive="#fa2476"
             emissiveIntensity={1.4}
             brainZoom={brainZoom}
             cellZoom={cellZoom}

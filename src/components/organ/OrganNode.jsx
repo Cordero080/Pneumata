@@ -34,6 +34,7 @@ import {
 } from "../../data/activeMeridian";
 import HeartRings from "./HeartRings";
 import OrganLabel from "./OrganLabel";
+import NodeCore from "./NodeCore";
 
 function OrganNode({
   organ,
@@ -59,12 +60,12 @@ function OrganNode({
   const IS_MOBILE = window.innerWidth <= 768;
 
   const GLITCH_COLORS = [
-    new THREE.Color("#ff0040"),
+    new THREE.Color("#f8f2f4"),
     new THREE.Color("#00ffff"),
     new THREE.Color("#39ff14"),
     new THREE.Color("#ffffff"),
     new THREE.Color("#ff8c00"),
-    new THREE.Color("#cc00ff"),
+    new THREE.Color("#fbf5fd"),
   ];
 
   const meshRef = useRef();
@@ -147,12 +148,10 @@ function OrganNode({
   const isSpirit = organ.category === "spirit";
 
   // STYLE: node size hierarchy — set nodeSize in organs.js to "small" | "large" | (default)
-  // Sizes: glow outer / main sphere / inner core / hit target
+  // Sizes: glow outer / main faceted core / inner core / hit target
   // "small" ~65% — deep/interior brain nodes. "large" ~130% — heart, liver, hemispheres.
   // Color variant idea for small nodes: blood-sunset tone like #c04030 or #e05020
   const hitMult = IS_MOBILE ? 2.5 : 1;
-  const seg = IS_MOBILE ? 6 : 16;
-  const segSm = IS_MOBILE ? 5 : 12;
   const sz =
     organ.nodeSize === "small"
       ? { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.007 * hitMult }
@@ -204,6 +203,16 @@ function OrganNode({
     if (!meshRef.current) return;
     const t = state.clock.getElapsedTime();
     const phase = organ.position[0];
+
+    // Slow tumble so the faceted core actually catches light instead of reading as a static blob
+    if (!IS_MOBILE) {
+      meshRef.current.rotation.x = t * 0.35 + phase;
+      meshRef.current.rotation.y = t * 0.25 + phase;
+      if (innerRef.current) {
+        innerRef.current.rotation.x = t * 0.5 + phase;
+        innerRef.current.rotation.y = t * -0.4 + phase;
+      }
+    }
 
     const brainFade = cellZoom || (brainZoom && !organ.brainPosition) ? 0 : 1;
     // Heart is always fully lit — never dimmed by selection or view mode
@@ -403,52 +412,16 @@ function OrganNode({
           </>
         )}
 
-        {/* Soft outer halo — skipped on mobile to save draw calls */}
-        {!IS_MOBILE && (
-          <mesh ref={glowRef} renderOrder={5}>
-            <sphereGeometry args={[sz.glow, segSm, segSm]} />
-            <meshStandardMaterial
-              color={color}
-              emissive={emissive}
-              emissiveIntensity={1}
-              toneMapped={false}
-              transparent
-              opacity={0.1}
-              depthWrite={false}
-              depthTest={false}
-            />
-          </mesh>
-        )}
-
-        {/* Main node sphere */}
-        <mesh ref={meshRef} renderOrder={5}>
-          <sphereGeometry args={[sz.main, seg, seg]} />
-          <meshStandardMaterial
-            color={color}
-            emissive={emissive}
-            emissiveIntensity={1}
-            toneMapped={false}
-            transparent
-            opacity={0.18}
-            depthWrite={false}
-            depthTest={false}
-          />
-        </mesh>
-
-        {/* Small bright inner core */}
-        <mesh ref={innerRef} renderOrder={6}>
-          <sphereGeometry args={[sz.inner, segSm, segSm]} />
-          <meshStandardMaterial
-            color={isSpirit ? "#ffffff" : color}
-            emissive={isSpirit ? "#ffffff" : color}
-            emissiveIntensity={isSpirit ? 12 : 6}
-            toneMapped={false}
-            transparent
-            opacity={1}
-            depthWrite={false}
-            depthTest={false}
-          />
-        </mesh>
+        <NodeCore
+          ref={meshRef}
+          glowRef={glowRef}
+          innerRef={innerRef}
+          color={color}
+          emissive={emissive}
+          isSpirit={isSpirit}
+          sz={sz}
+          isMobile={IS_MOBILE}
+        />
       </group>
       {/* end visual sub-group */}
 
