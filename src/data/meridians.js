@@ -154,7 +154,7 @@ export const meridians = [
         position: [0.133, 0.61, 0.04], // RADIAL CORNER OF THUMB NAIL — FINGERTIP: x≈0.11–0.13, y≈0.59–0.62, z>0
         function: "Well point — clears heat, benefits throat, resuscitates",
         useHandLandmark: true,
-        handOffset: [.067, 0.030, 0.027], ///✅✅✅✅✅✅✅✅✅
+        handOffset: [.06, 0.035, 0.030], ///✅✅✅✅✅✅✅✅✅
       },
     ],
   },
@@ -311,8 +311,8 @@ export const meridians = [
     points: [
       {
         id: "HT-3",
-        name: "Shaohai",
-        position: [0.21, 1.1, 0.04], // medial elbow crease, ulnar side of biceps tendon — anterior arm, x≈0.19–0.23, y≈1.08–1.12
+        name: "Shaohai", //✅✅✅✅✅✅
+        position: [0.270, 1.14,-0.02], // medial elbow crease, ulnar side of biceps tendon — anterior arm, x≈0.19–0.23, y≈1.08–1.12
         function: "Calms shen, clears heart fire, elbow pain",
       },
       {
