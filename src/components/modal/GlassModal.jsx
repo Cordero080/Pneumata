@@ -131,10 +131,18 @@ function GlassModal({ organ, onClose }) {
             </p>
           </div>
 
-          {/* Bus Lane: spinal innervation → hardware channel analogy */}
+          {/* Bus Lane: spinal innervation → hardware channel analogy.
+              Per docs/analog.md, the spine is the "Main Bus" — organs whose
+              spinalConnection text is cranial/lateral (bypasses the spine
+              entirely, e.g. the corpus callosum between hemispheres) get
+              labeled "Local Bus" instead, so the two aren't conflated. */}
           {organ.spinalConnection && (
             <div className="modal-bus-lane">
-              <h3>Bus Lane</h3>
+              <h3>
+                {organ.spinalConnection.startsWith("Cranial")
+                  ? "Local Bus"
+                  : "Main Bus"}
+              </h3>
               <p>
                 <JargonText
                   text={pickField(organ, "spinalConnection", mode)}

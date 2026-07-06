@@ -1,5 +1,5 @@
 // App-shell buttons — rendered directly in App.jsx, not owned by a sub-component.
-// header-nav-trigger · dark-mode-btn
+// header-nav-trigger · dark-mode-switch
 
 @use 'buttons' as btn;
 @use 'variables' as v;
@@ -75,7 +75,11 @@
   }
 }
 
-.dark-mode-btn {
+// Minimal futuristic toggle switch — same chamfered-metallic language as
+// every other button, reshaped into a track + sliding knob. The icon lives
+// inside the knob (swaps sun/moon there) rather than as separate track-end
+// icons, so there's nothing for the knob to overlap or clash with.
+.dark-mode-switch {
   @include btn.chamfer-btn;
   bottom: 0.2rem;
   right: 0.4rem;
@@ -84,26 +88,61 @@
 
   @media (max-width: 768px) { bottom: 1rem; }
 
-  width: 55px;
-  height: 36px;
+  width: 58px;
+  height: 32px;
   padding: 0;
-  font-size: 20px;
   @include v.chamfer(v.$chamfer-sm);
-  opacity: 0.7;
+  opacity: 0.85;
 
   &:hover {
     opacity: 1;
     transform: none;
   }
 
+  &__knob {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      linear-gradient(135deg,
+        rgba(250, 252, 255, 0.98) 0%,
+        rgba(220, 228, 236, 0.95) 50%,
+        rgba(200, 210, 220, 0.92) 100%
+      );
+    box-shadow:
+      0 1px 4px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 0 6px rgba(217, 164, 65, 0.45);
+    @include v.chamfer(4px);
+    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+
+  &--dark &__knob {
+    transform: translateX(26px);
+    box-shadow:
+      0 1px 4px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 0 8px rgba(0, 212, 255, 0.55);
+  }
+
   &__icon {
     display: block;
+    font-size: 13px;
+    line-height: 1;
     pointer-events: none;
+    color: #d9a441;
     animation: dark-mode-icon-enter 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+
+  &--dark &__icon { color: #8fb8ff; }
 }
 
-.app--dark .dark-mode-btn {
+.app--dark .dark-mode-switch {
   background:
     linear-gradient(135deg,
       rgba(42, 52, 72, 0.98) 0%,
@@ -115,7 +154,6 @@
   border-top-color: rgba(120, 160, 220, 0.55);
   border-right-color: rgba(0, 0, 0, 0.5);
   border-bottom: 2px solid rgba(80, 120, 200, 0.2);
-  color: rgba(180, 210, 255, 0.9);
 
-  &:hover { color: rgba(200, 220, 255, 0.95); }
+  &:hover { filter: drop-shadow(0 0 8px rgba(0, 180, 255, 0.25)); }
 }

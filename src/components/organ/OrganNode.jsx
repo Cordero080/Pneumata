@@ -32,6 +32,7 @@ import {
   activeMeridianRef,
   subscribeActiveMeridian,
 } from "../../data/activeMeridian";
+import { getOrganNodeSizeTier } from "../../data/sizing";
 import HeartRings from "./HeartRings";
 import OrganLabel from "./OrganLabel";
 import NodeCore from "./NodeCore";
@@ -151,13 +152,14 @@ function OrganNode({
   // Sizes: glow outer / main faceted core / inner core / hit target
   // "small" ~65% — deep/interior brain nodes. "large" ~130% — heart, liver, hemispheres.
   // Color variant idea for small nodes: blood-sunset tone like #c04030 or #e05020
-  const hitMult = IS_MOBILE ? 2.5 : 1;
+  // Tiers (mobile/desktop/large-monitor) + values live in src/data/sizing.js
+  const sizeTier = useMemo(() => getOrganNodeSizeTier(), []);
   const sz =
-    organ.nodeSize === "small"
-      ? { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.007 * hitMult }
-      : organ.nodeSize === "large"
-        ? { glow: 0.016, main: 0.021, inner: 0.009, hit: 0.012 * hitMult }
-        : { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.009 * hitMult };
+    sizeTier[
+      organ.nodeSize === "small" || organ.nodeSize === "large"
+        ? organ.nodeSize
+        : "default"
+    ];
   const isPreview = previewedOrganId === organ.id;
   const isExternallyHighlighted =
     !hovered && hoveredCategory === organ.category;

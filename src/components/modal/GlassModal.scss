@@ -24,6 +24,13 @@
   right: 0;
   bottom: 0;
   width: min(400px, 88vw);
+
+  // Desktop: the two-column Biology/Hardware grid plus the synthesis and
+  // Bus Lane sections were cramped at the mobile-derived 400px cap.
+  @media (min-width: 769px) {
+    width: min(600px, 42vw);
+  }
+
   background: rgba(8, 12, 28, 0.29);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);

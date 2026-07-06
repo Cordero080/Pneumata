@@ -584,17 +584,21 @@ function App() {
 
       <button
         ref={darkModeRef}
-        className={`dark-mode-btn${darkMode ? " dark-mode-btn--dark" : ""}`}
+        className={`dark-mode-switch${darkMode ? " dark-mode-switch--dark" : ""}`}
         onClick={() => {
           const next = !darkMode;
           setDarkMode(next);
           setMeshMode(next ? 0 : 5);
         }}
+        role="switch"
+        aria-checked={darkMode}
         aria-label="Toggle dark mode"
         title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
       >
-        <span key={String(darkMode)} className="dark-mode-btn__icon">
-          {darkMode ? "✦︎" : "☾︎"}
+        <span className="dark-mode-switch__knob">
+          <span key={String(darkMode)} className="dark-mode-switch__icon">
+            {darkMode ? "☾︎" : "☀︎"}
+          </span>
         </span>
       </button>
 

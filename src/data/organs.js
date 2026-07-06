@@ -19,7 +19,7 @@ export const organs = [
   // ── SPIRIT ─────────────────────────────────────────────────────────────────
   {
     id: "consciousness",
-    category: "spirit",
+    category: "anima",
     type: "point",
     organ: "Pneuma",
     hardware: "Integrated Information Field",

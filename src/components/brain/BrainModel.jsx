@@ -2,12 +2,15 @@ import { useRef, useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { BRAIN_MESH } from "../../data/sizing";
 
-const BRAIN_CENTER_Y = 1.66; // tweak to move brain mesh up/down in male mode
-const FEMALE_BRAIN_CENTER_Y = 1.615; // tweak to move brain mesh up/down in female mode
-const BRAIN_Z_OFFSET = -0.011;
-const TARGET_HEIGHT = 0.17; // tweak to resize brain mesh
-const FEMALE_TARGET_HEIGHT = TARGET_HEIGHT * 0.94; // 2% smaller for female
+// Size/position constants live in src/data/sizing.js (BRAIN_MESH) —
+// tweak there to move/resize the brain mesh.
+const BRAIN_CENTER_Y = BRAIN_MESH.centerY;
+const FEMALE_BRAIN_CENTER_Y = BRAIN_MESH.femaleCenterY;
+const BRAIN_Z_OFFSET = BRAIN_MESH.zOffset;
+const TARGET_HEIGHT = BRAIN_MESH.targetHeight;
+const FEMALE_TARGET_HEIGHT = BRAIN_MESH.femaleTargetHeight;
 
 function BrainModel({
   meshMode,

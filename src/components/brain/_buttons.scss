@@ -2,7 +2,7 @@
 
 .brain-back-btn {
   position: fixed;
-  bottom: 2.5rem;
+  top: calc(var(--header-h) + 16px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 50;

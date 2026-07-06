@@ -60,7 +60,7 @@
 .view-controller-tab {
   position: fixed;
   left: -19px;
-  top: calc(50% - 40px);
+  top: calc(50% - 30px);
   width: 70px;
   height: 24px;
   transform: rotate(-90deg);
@@ -136,7 +136,7 @@
   text-transform: uppercase;
   padding: 16px 16px;  // top/bottom become visual width after 90° rotation
   @media (min-width: 769px) {
-    padding: 16px 25px;
+    padding: 22px 25px; // top/bottom (visual width) widened from 16px
     font-size: 9px;
   }
   display: flex;
@@ -207,6 +207,11 @@
     padding: 16px 18px 16px 24px;
     letter-spacing: 0.2em;
     color: rgba(55, 72, 88, 0.6);
+
+    // Match the other buttons' widened top/bottom (visual width) on desktop
+    @media (min-width: 769px) {
+      padding: 22px 18px 22px 24px;
+    }
   }
 }
 
@@ -215,28 +220,28 @@
 
 @media (max-height: 900px) {
   .view-controller { top: calc(50% + 40px); }
-  .view-controller-tab { top: calc(50% - 30px); }
+  .view-controller-tab { top: calc(50% - 20px); }
 }
 
 @media (max-width: 768px) {
   .view-controller { top: calc(50% + 5px); }
-  .view-controller-tab { top: calc(50% - 68px); }
+  .view-controller-tab { top: calc(50% - 58px); }
 }
 
 @media (max-height: 700px) {
   .view-controller { top: calc(50% - 10px); }
-  .view-controller-tab { top: calc(50% - 40px); }
+  .view-controller-tab { top: calc(50% - 30px); }
 }
 
 @media (max-height: 600px) {
   .view-controller { top: calc(50% - 25px); }
-  .view-controller-tab { top: calc(50% - 55px); }
+  .view-controller-tab { top: calc(50% - 45px); }
   .view-btn { padding: 14px 12px; }
 }
 
 @media (max-height: 480px) {
   .view-controller { top: calc(50% - 40px); }
-  .view-controller-tab { top: calc(50% - 70px); }
+  .view-controller-tab { top: calc(50% - 60px); }
   .view-btn {
     padding: 12px 10px;
     font-size: 6.5px;
