@@ -317,7 +317,8 @@ function OrganNode({
         (targetOpacity - auraRef.current.material.opacity) * 0.06;
     }
 
-    // Heart beat scale pulse + sprite glow
+    // Heart beat scale pulse + sprite glow — delta-time corrected so the
+    // pulse pace stays consistent regardless of actual frame rate.
     if (pulseRef) {
       const b = heartBeat.current;
       if (pulseRef.current !== b.last) {
@@ -325,18 +326,19 @@ function OrganNode({
         b.scale = 0.72;
         heartGlowFlash.current = 1.0;
       }
-      b.scale += (1.0 - b.scale) * 0.14;
+      b.scale += (1.0 - b.scale) * (1 - Math.exp(-delta * 9.05)); // matches 0.14/frame at 60fps
       if (heartVisualRef.current)
         heartVisualRef.current.scale.setScalar(b.scale);
 
-      heartGlowFlash.current *= 0.84;
+      heartGlowFlash.current *= Math.exp(-delta * 10.46); // matches 0.84/frame at 60fps
       const flash = heartGlowFlash.current;
+      const spriteLerp = 1 - Math.exp(-delta * 13.4); // matches 0.2/frame at 60fps
       if (heartSpriteOuterRef.current)
         heartSpriteOuterRef.current.opacity +=
-          (flash * 0.55 - heartSpriteOuterRef.current.opacity) * 0.2;
+          (flash * 0.55 - heartSpriteOuterRef.current.opacity) * spriteLerp;
       if (heartSpriteInnerRef.current)
         heartSpriteInnerRef.current.opacity +=
-          (flash * 1.0 - heartSpriteInnerRef.current.opacity) * 0.2;
+          (flash * 1.0 - heartSpriteInnerRef.current.opacity) * spriteLerp;
     }
   });
 

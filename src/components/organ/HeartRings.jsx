@@ -46,7 +46,7 @@ function HeartRings({ pulseRef, nodeOpacity }) {
       }
 
       s.scale += delta * PULSES[i].speed;
-      s.opacity *= 0.91;
+      s.opacity *= Math.exp(-delta * 5.66); // delta-time decay — matches 0.91/frame at 60fps
       refs.current[i].scale.setScalar(s.scale);
       refs.current[i].material.opacity = s.opacity * nodeOpacity;
     });

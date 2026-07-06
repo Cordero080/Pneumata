@@ -66,7 +66,7 @@ function CircuitOrb({
   const lightRef = useRef();
   const wasNear = useRef(false);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     // Full loop every ~4.5 s
     const t = (state.clock.getElapsedTime() * 0.22 + phaseOffset) % 1;
     const point = curve.getPoint(t);
@@ -85,16 +85,19 @@ function CircuitOrb({
       wasNear.current = near;
     }
 
+    // delta-time lerp — matches 0.12/frame at 60fps
+    const lerp = 1 - Math.exp(-delta * 7.7);
+
     if (orbRef.current) {
       orbRef.current.position.copy(point);
       orbRef.current.material.opacity +=
-        (opacity - orbRef.current.material.opacity) * 0.12;
+        (opacity - orbRef.current.material.opacity) * lerp;
     }
 
     if (lightRef.current) {
       lightRef.current.position.copy(point);
       lightRef.current.intensity +=
-        (opacity * 1.4 - lightRef.current.intensity) * 0.12;
+        (opacity * 1.4 - lightRef.current.intensity) * lerp;
     }
   });
 

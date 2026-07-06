@@ -61,11 +61,11 @@ const IS_STANDALONE =
 const DEFAULTS = IS_MOBILE
   ? IS_STANDALONE
     ? // ── Mobile PWA (no browser chrome — taller canvas) ──────────────────────
-      { panY: 0.51, zoom: 0.33, globalScale: 0.9, offsetX: 0, offsetY: 0.1 }
+      { panY: 0.51, zoom: 0.4, globalScale: 0.9, offsetX: 0, offsetY: 0.1 }
     : // ── Mobile browser ──────────────────────────────────────────────────────
-      { panY: 0.5, zoom: 0.33, globalScale: 0.96, offsetX: 0, offsetY: 0.1 }
+      { panY: 0.5, zoom: 0.4, globalScale: 0.96, offsetX: 0, offsetY: 0.1 }
   : // ── Desktop ───────────────────────────────────────────────────────────────
-    { panY: 0.5, zoom: 0.33, globalScale: 0.95, offsetX: 0, offsetY: 0.08 };
+    { panY: 0.5, zoom: 0.4, globalScale: 0.95, offsetX: 0, offsetY: 0.08 };
 
 // ── LANDING ENTRY PRESETS ────────────────────────────────────────────────────
 // Each key maps to a path card on the landing screen. When the user picks one,
