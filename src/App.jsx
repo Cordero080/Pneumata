@@ -111,12 +111,13 @@ function App() {
     if (!showMeridians) setWipBadgeDismissed(false);
   }, [showMeridians]);
   const [showAbout, setShowAbout] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [bgMode, setBgMode] = useState(0);
   const [bgPanelOpen, setBgPanelOpen] = useState(false);
   // 0=Ghost 1=Silver-Trans 2=Silver-Solid 3=Bone 4=Aluminum-Trans 5=Aluminum-Solid 6=Crystal/Onyx
   // Dark mode uses a different cycle sequence — see onClick on .mesh-toggle-btn.
-  const [meshMode, setMeshMode] = useState(5);
+  // Default is dark mode's Ghost (0) — matches darkMode's default of true above.
+  const [meshMode, setMeshMode] = useState(0);
   const [bodyModel, setBodyModel] = useState("male");
   const modelPath =
     bodyModel === "male"
