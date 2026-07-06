@@ -454,7 +454,17 @@ if (uRegionFade > 0.0) {
       bloodPulseRef.current = 0.35;
     }
 
-    if (viewMode === "power") {
+    // Blood/breath overlays are full-resolution duplicate clones of the entire
+    // body mesh, rendered as a separate additive draw call. Their opacity only
+    // reaches ~30% (blood) or ~8% (breath) even at peak, so the visual cost of
+    // skipping them on mobile is minor — but the GPU cost of the extra draw
+    // call is not, and (unlike other view modes) these rarely settle back to
+    // 0 while their mode is actually in use, so the existing visibility-culling
+    // optimization barely helps during normal use. Disable outright on mobile.
+    if (IS_MOBILE) {
+      bloodPulseRef.current = 0;
+      bloodMatRef.current.opacity = 0;
+    } else if (viewMode === "power") {
       bloodPulseRef.current *= 0.94;
       const ambient = Math.sin(t * 1.2) * 0.008 + 0.012;
       bloodMatRef.current.opacity = bloodPulseRef.current + ambient;
@@ -467,7 +477,8 @@ if (uRegionFade > 0.0) {
     }
 
     if (!breathMatRef.current) return;
-    const isBreathActive = viewMode === "breathing" || viewMode === "unified";
+    const isBreathActive =
+      !IS_MOBILE && (viewMode === "breathing" || viewMode === "unified");
     const breathe = breathingRef?.current ?? 0;
     if (isBreathActive) {
       breathMatRef.current.color.lerpColors(BREATH_BLUE, BREATH_CYAN, breathe);
