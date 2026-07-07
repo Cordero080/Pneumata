@@ -19,30 +19,30 @@ export const organs = [
   // ── SPIRIT ─────────────────────────────────────────────────────────────────
   {
     id: "consciousness",
-    category: "anima",
+    category: "spirit",
     type: "point",
     organ: "Pneuma",
-    hardware: "Integrated Information Field",
+    hardware: "The User",
     position: [0, 1.746, 0.0],
     femalePosition: [0, 1.72, 0.0],
     brainPosition: [0, 1.746, 0.0],
     femaleBrainPosition: [0, 1.72, 0.0],
     bioFunction:
-      "The emergent phenomenon of self-awareness arising from coordinated neural activity — the point at which biology becomes witness to itself. Not located in any single region. Arises from integration across all of them.",
+      "Not a product of the tissue but the presence the tissue makes room for — the witness behind thought, sensation, and impulse, felt from the inside rather than observed from outside. Anima: the animating principle a living body is organized to host, not manufacture.",
     hardFunction:
-      "A theoretical threshold at which information processing becomes so densely interconnected that the system begins modeling itself. No single chip produces it. It emerges from the architecture as a whole.",
+      "The User: not a program running on the hardware, but the operator the hardware and software exist to serve. Every chip and every routing table assumes something is present to use them — a session owner logged into the system, distinct from the machine it operates.",
     synthesis:
-      "Both are properties of complexity, not components. You cannot point to the transistor that holds consciousness, just as you cannot point to the neuron that holds the self. The pattern observes the pattern.",
+      "Neither the body nor a machine explains why anyone is home. A computer executes without complaint whether or not a user is logged in; a body, by every indication, does not. Anima and User name the same relationship from two directions: the one for whom hardware and software exist, but who is not made of either.",
     bioFunctionSimple:
-      "Self-awareness isn't located in any one part of the brain. It emerges from millions of neurons working together in a particular way — the moment the brain becomes capable of thinking about itself.",
+      "Not something your brain makes, but something your brain makes room for — the 'you' behind your thoughts, feelings, and choices. Anima is an old word for it: the animating presence a living body exists to carry.",
     hardFunctionSimple:
-      "An idea — not yet a built reality — that if a computer ever becomes complex enough at modeling its own behavior, awareness might emerge from the architecture as a whole. No single chip would 'hold' it.",
+      "Picture a computer with no one using it — it can still run programs, but there's no one there. The User is the person actually at the keyboard: not a program, not a chip, but the one the whole machine exists to serve.",
     synthesisSimple:
-      "Both are products of complexity, not parts you can point to. You can't show me the neuron that holds the self, or the transistor that holds awareness. The pattern looks at itself.",
+      "A computer can run with nobody logged in. A living body, as far as anyone can tell, can't just run itself with nobody home. 'Anima' and 'User' are two names for the same idea: someone the system is for, who isn't made out of the system's own parts.",
     spinalConnection:
-      "Above all spinal channels — consciousness emerges from the integration of signals across every level of the bus simultaneously, not from any single routing assignment.",
+      "Above all spinal channels — the User sits outside the routing diagram entirely, the one the whole bus architecture exists to serve rather than one more assignment on it.",
     spinalConnectionSimple:
-      "Sits above the whole nervous system — awareness arises from the entire system working together, not from any single nerve pathway.",
+      "Sits above the whole nervous system — not one more wire in the diagram, but the one the entire wiring is there to serve.",
   },
 
   // ── LOGIC (GOLD) ───────────────────────────────────────────────────────────

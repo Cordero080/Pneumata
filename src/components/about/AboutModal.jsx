@@ -41,7 +41,7 @@ const CATEGORIES = [
   {
     key: "spirit",
     label: "Consciousness",
-    desc: "Pneuma — the emergent field where information density becomes self-aware.",
+    desc: "Pneuma — the User the hardware and software exist to serve, not a property they produce.",
   },
 ].map((c) => ({ ...c, color: CATEGORY_COLORS[c.key] }));
 
@@ -150,6 +150,13 @@ function AboutModal({ onClose }) {
               the same source.
             </p>
 
+            <p className="about-body">
+              Body is hardware. Brain is software — the operating system running
+              on it. Neither explains why anyone is home. Pneuma names the third
+              term: not a component, not a process, but the User both are built
+              to serve.
+            </p>
+
             <div className="about-divider" />
 
             <div className="about-modes">
@@ -204,8 +211,8 @@ function AboutModal({ onClose }) {
 
             <p className="about-footer">
               Tap or click any node to explore the analogy. The white node at
-              the apex is Pneuma — the point where the system becomes aware of
-              itself.
+              the apex is Pneuma — not a property the machine produces, but the
+              User the whole machine exists to serve.
             </p>
           </>
         )}

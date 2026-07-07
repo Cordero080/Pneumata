@@ -36,6 +36,12 @@ Pneumata makes that argument visual and interactive. Every organ node in the mod
 
 The philosophical source of truth is [`docs/analog.md`](docs/analog.md), which contains the full organ-to-hardware blueprint and closes with Federico Faggin's observation: _we did not invent the computer. We remembered it._
 
+Pneumata also makes a claim about consciousness. A computer runs its programs whether or not anyone is watching the screen. A body does not appear to work that way — every account of it, from the inside, includes someone home. The app labels this third term "the User": the operator hardware and software exist to serve, positioned outside the wiring diagram the same way a person at a keyboard is outside the circuit board they're operating.
+
+This tracks a real disagreement in philosophy of mind. David Chalmers named it the hard problem: physical and computational descriptions can account for function and behavior in exhaustive detail without accounting for why any of it is accompanied by felt experience. Giulio Tononi's Integrated Information Theory takes the opposite position — that consciousness is a measurable property of any sufficiently integrated system, biological or otherwise — though a 2023 open letter signed by over 100 philosophers and scientists called the theory's core claims untestable. Federico Faggin, who helped invent the microprocessor at Intel, spent his early career building the kind of information-processing systems IIT describes, then spent his later career arguing consciousness precedes them rather than emerging from them.
+
+Pneumata sides with Faggin's later position. It is a guess, same as the alternative, but it is the guess that keeps the rest of the analogy honest: a machine, however capable, still needs an operator. The consciousness node in the model (`Pneuma`) is built around this — its hardware analog is labeled "The User."
+
 ---
 
 ## Features
