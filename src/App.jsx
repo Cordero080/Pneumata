@@ -2,7 +2,7 @@ import { useState, useReducer, useRef, useCallback, useEffect } from "react";
 import "./App.scss";
 import Scene from "./components/scene/Scene";
 import LandingOverlay from "./components/landing/LandingOverlay";
-import AnimatedScene from "./components/scene/AnimatedScene";
+import AnimatedScene from "./components/scene/animated-mode/AnimatedScene";
 import GlassModal from "./components/modal/GlassModal";
 import AboutModal from "./components/about/AboutModal";
 import CategoryLegend from "./components/legend/CategoryLegend";
