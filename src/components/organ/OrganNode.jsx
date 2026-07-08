@@ -57,6 +57,7 @@ function OrganNode({
   onPreview,
   onClearPreview,
   legendCategory,
+  showMeridians,
 }) {
   const IS_MOBILE = window.innerWidth <= 768;
 
@@ -474,6 +475,7 @@ function OrganNode({
             color={color}
             labelReady={labelReady}
             screenX={screenXRef.current}
+            showMeridians={showMeridians}
             onClose={() => {
               setLabelClosed(true);
               onClearPreview?.();

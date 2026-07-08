@@ -217,6 +217,26 @@
 
 // === Mobile height breakpoints — shift wrapper + tab up so buttons don't clip ===
 // visual bottom of column ≈ container_top + panelW/2; must stay within visible viewport
+//
+// IMPORTANT — these 5 rules all set .view-controller-tab's `top`, plus the base
+// rule above (line ~63). CSS resolves this by "last matching rule in the file
+// wins," NOT "most specific condition wins" — so when more than one of these
+// conditions is true at once, source order below decides, and it is easy to
+// edit the wrong block. Quick reference for which rule is actually active:
+//
+//   viewport                         → winning rule (last one below that matches)
+//   ---------------------------------------------------------------------------
+//   width >768px, height >900px      → base rule (line ~63)
+//   width >768px, height ≤900px      → max-height: 900px  (this file, next block)
+//   width ≤768px, height >700px      → max-width: 768px   (mobile phones, portrait)
+//   width ≤768px, height ≤700px      → max-height: 700px  (overrides the 768px
+//                                       rule above — it's listed later in the file)
+//   width ≤768px, height ≤600px      → max-height: 600px
+//   width ≤768px, height ≤480px      → max-height: 480px
+//
+// To change the tab position for "phones in general" you likely need to edit
+// the max-width: 768px block below AND every max-height block, since on most
+// phones the max-height rules win over it.
 
 @media (max-height: 900px) {
   .view-controller { top: calc(50% + 40px); }

@@ -11,11 +11,16 @@ function OrganLabel({
   onClose,
   labelReady,
   screenX = 0,
+  showMeridians = false,
 }) {
   const isLeft = organ.position[0] <= 0;
   const isVertical = Math.abs(screenX) > 0.65;
 
-  const tcm = ORGAN_TCM[organ.id];
+  // TCM/meridian info is a separate analogical layer from the hardware view
+  // modes (Logic/Power/Breathing/Unified) — kept out of the default label so
+  // the two systems don't blur together. Only surfaces once the user has
+  // voluntarily turned on Meridian mode via the ☯ toggle.
+  const tcm = showMeridians ? ORGAN_TCM[organ.id] : null;
   const element = tcm ? TCM_ELEMENTS[tcm.element] : null;
 
   const panel = {

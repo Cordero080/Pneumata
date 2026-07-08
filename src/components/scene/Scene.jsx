@@ -356,6 +356,7 @@ function Scene({
               onPreview={handlePreview}
               onClearPreview={handleClearPreview}
               legendCategory={legendCategory}
+              showMeridians={showMeridians}
             />
           ),
         )}
