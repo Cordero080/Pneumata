@@ -137,14 +137,14 @@ export const meridians = [
       },
       {
         id: "LU-7",
-        name: "Lieque",// ✅
-        position: [0.260, 1.030, -0.065], // 1.5 cun above LU-9, radial forearm — anterior, x≈0.27, y≈0.88
+        name: "Lieque", // ✅
+        position: [0.26, 1.03, -0.065], // 1.5 cun above LU-9, radial forearm — anterior, x≈0.27, y≈0.88
         function: "Luo-connecting — opens conception vessel, headache",
       },
       {
         id: "LU-9",
         name: "Taiyuan",
-        position: [0.356, 0.891, -.020], // radial wrist crease, lateral to radial artery — x≈0.28–0.30, y≈0.84
+        position: [0.356, 0.891, -0.02], // radial wrist crease, lateral to radial artery — x≈0.28–0.30, y≈0.84
         function: "Source point — tonifies lung qi, influential for vessels",
         isSource: true,
       },
@@ -154,7 +154,7 @@ export const meridians = [
         position: [0.133, 0.61, 0.04], // RADIAL CORNER OF THUMB NAIL — FINGERTIP: x≈0.11–0.13, y≈0.59–0.62, z>0
         function: "Well point — clears heat, benefits throat, resuscitates",
         useHandLandmark: true,
-        handOffset: [.06, 0.035, 0.030], ///✅✅✅✅✅✅✅✅✅
+        handOffset: [0.06, 0.035, 0.03], ///✅✅✅✅✅✅✅✅✅
       },
     ],
   },
@@ -275,8 +275,8 @@ export const meridians = [
       },
       {
         id: "SP-6",
-        name: "Sanyinjiao",
-        position: [0.04, 0.22, 0.02], // 3 cun above medial malleolus, posterior to tibia — x≈0.03–0.05, y≈0.20–0.24
+        name: "Sanyinjiao", //✅✅✅✅✅✅
+        position: [0.05, 0.078, -0.01], // 3 cun above medial malleolus, posterior to tibia — x≈0.03–0.05, y≈0.20–0.24
         function: "3 yin crossing — digestive, gynecological, sleep, blood",
       },
       {
@@ -287,8 +287,8 @@ export const meridians = [
       },
       {
         id: "SP-10",
-        name: "Xuehai",
-        position: [0.04, 0.6, 0.03], // 2 cun above patella superior border, medial quadriceps — y≈0.58–0.62
+        name: "Xuehai", //✅✅✅✅✅✅✅✅
+        position: [0.062, 0.56, 0.03], // 2 cun above patella superior border, medial quadriceps — y≈0.58–0.62
         function: "Sea of blood — nourishes blood, skin, menstrual disorders",
       },
       {
@@ -312,7 +312,7 @@ export const meridians = [
       {
         id: "HT-3",
         name: "Shaohai", //✅✅✅✅✅✅
-        position: [0.270, 1.14,-0.02], // medial elbow crease, ulnar side of biceps tendon — anterior arm, x≈0.19–0.23, y≈1.08–1.12
+        position: [0.27, 1.14, -0.02], // medial elbow crease, ulnar side of biceps tendon — anterior arm, x≈0.19–0.23, y≈1.08–1.12
         function: "Calms shen, clears heart fire, elbow pain",
       },
       {
@@ -328,7 +328,7 @@ export const meridians = [
         position: [0.11, 0.61, 0.02], // RADIAL CORNER OF LITTLE FINGER NAIL — FINGERTIP: x≈0.10–0.12, y≈0.59–0.62, z>0
         function: "Well point — opens orifices, cardiac emergencies",
         useHandLandmark: true,
-        handOffset: [-0.045, -0.01, 0.010],//✅✅✅✅✅✅✅✅
+        handOffset: [-0.045, -0.01, 0.01], //✅✅✅✅✅✅✅✅
       },
     ],
   },
@@ -434,8 +434,8 @@ export const meridians = [
       },
       {
         id: "BL-67",
-        name: "Zhiyin",
-        position: [0.08, 0.04, 0.02], // LATERAL CORNER OF LITTLE (5TH) TOENAIL — x≈0.07–0.09, y≈0.03–0.05
+        name: "Zhiyin", // ✅✅✅✅✅✅
+        position: [0.119, 0.011, 0.135], // LATERAL CORNER OF LITTLE (5TH) TOENAIL — x≈0.08–0.10, y≈0.03–0.05
         function: "Little toe — malposition of fetus, headache, eye pain",
       },
     ],
@@ -495,14 +495,14 @@ export const meridians = [
       },
       {
         id: "PC-6",
-        name: "Neiguan",//✅
-        position: [0.34, 0.920, -0.068], // 2 cun above PC-7, between palmaris longus & flexor carpi radialis — anterior, y≈0.86–0.90
+        name: "Neiguan", //✅
+        position: [0.34, 0.92, -0.068], // 2 cun above PC-7, between palmaris longus & flexor carpi radialis — anterior, y≈0.86–0.90
         function: "Opens Yin Wei vessel — nausea, heart, anxiety, wrist",
       },
       {
         id: "PC-7",
         name: "Daling",
-        position: [0.353, 0.885,-.061], //✅ wrist crease center, between palmaris longus & flexor carpi radialis — anterior, y≈0.83–0.85
+        position: [0.353, 0.885, -0.061], //✅ wrist crease center, between palmaris longus & flexor carpi radialis — anterior, y≈0.83–0.85
         function: "Source point — calms shen, carpal tunnel, chest pain",
         isSource: true,
       },
@@ -551,8 +551,8 @@ export const meridians = [
       },
       {
         id: "TW-5",
-        name: "Waiguan",//✅✅✅✅✅✅✅
-        position: [0.30, 1.025, -0.080], // 2 cun above TW-4, dorsal forearm between radius & ulna — posterior, y≈0.86–0.90, z<0
+        name: "Waiguan", //✅✅✅✅✅✅✅
+        position: [0.3, 1.025, -0.08], // 2 cun above TW-4, dorsal forearm between radius & ulna — posterior, y≈0.86–0.90, z<0
         function: "Opens Yang Wei vessel — fever, headache, deafness",
       },
       {
