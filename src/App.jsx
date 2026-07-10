@@ -8,6 +8,7 @@ import AboutModal from "./components/about/AboutModal";
 import CategoryLegend from "./components/legend/CategoryLegend";
 import ViewModeController from "./components/view-controller/ViewModeController";
 import VerticalControls from "./components/controls/VerticalControls";
+import OrbToggle from "./components/controls/OrbToggle";
 import CoachMarks from "./components/onboarding/CoachMarks";
 import { organs } from "./data/organs";
 import { IS_MOBILE } from "./utils/device";
@@ -95,6 +96,19 @@ const LANDING_ENTRY_PRESETS = {
 const BG_MODES = ["default", "nebula", "space", "sunset", "matrix"];
 const BG_ICONS = ["⬡︎", "✵︎", "✦︎", "◐︎", "⊞︎"];
 
+// ── AMBIENT ORBS (SceneOrbs particle field) — per-background default ───────
+// Nebula defaults the ambient orb field on; every other themed background
+// defaults off but stays user-togglable via .orb-toggle-btn, which only
+// renders while a themed background (bgMode > 0) is active. "default" (no
+// theme) never shows the orb field or its toggle at all.
+const ORB_DEFAULT_BY_BG = {
+  default: false,
+  nebula: true,
+  space: false,
+  sunset: false,
+  matrix: false,
+};
+
 function App() {
   const [selectedOrgan, setSelectedOrgan] = useState(null);
   const [organFocusY, setOrganFocusY] = useState(null);
@@ -114,6 +128,13 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [bgMode, setBgMode] = useState(0);
   const [bgPanelOpen, setBgPanelOpen] = useState(false);
+  const [orbsEnabled, setOrbsEnabled] = useState(ORB_DEFAULT_BY_BG.default);
+
+  // Reset ambient orb visibility to that background's default each time the
+  // background theme changes.
+  useEffect(() => {
+    setOrbsEnabled(ORB_DEFAULT_BY_BG[BG_MODES[bgMode]] ?? false);
+  }, [bgMode]);
   // 0=Ghost 1=Silver-Trans 2=Silver-Solid 3=Bone 4=Aluminum-Trans 5=Aluminum-Solid 6=Crystal/Onyx
   // Dark mode uses a different cycle sequence — see onClick on .mesh-toggle-btn.
   // Default is dark mode's Ghost (0) — matches darkMode's default of true above.
@@ -161,6 +182,21 @@ function App() {
   const pathBtnRef = useRef(null);
   const navTriggerRef = useRef(null);
   const darkModeRef = useRef(null);
+  const bgToggleRef = useRef(null);
+  const [orbTogglePos, setOrbTogglePos] = useState({ top: 260, left: 90 });
+
+  // Position the orb-toggle chip against bg-toggle-btn's actual rendered
+  // rect rather than a hardcoded pixel guess — the drawer's button stack
+  // shifts position across breakpoints (mobile vs desktop button sizes),
+  // so a fixed value drifts out of alignment depending on viewport.
+  useEffect(() => {
+    if (bgMode === 0 || !bgToggleRef.current) return;
+    const rect = bgToggleRef.current.getBoundingClientRect();
+    setOrbTogglePos({
+      top: rect.top + rect.height / 2 - 12.5, // 12.5 = half the chip's own height
+      left: rect.right + 10,
+    });
+  }, [bgMode, showTopNav]);
 
   useEffect(() => {
     if (!bgPanelOpen) return;
@@ -479,6 +515,7 @@ function App() {
           </button>
           */}
           <button
+            ref={bgToggleRef}
             className={`bg-toggle-btn${bgMode > 0 ? " bg-toggle-btn--active" : ""}`}
             onClick={() => setBgMode((m) => (m + 1) % BG_MODES.length)}
             title={`Background: ${BG_MODES[bgMode]}`}
@@ -494,6 +531,15 @@ function App() {
           </button>
         </div>
       </div>
+
+      {bgMode > 0 && !showAnimation && !showLanding && (
+        <OrbToggle
+          key={bgMode}
+          enabled={orbsEnabled}
+          onToggle={() => setOrbsEnabled((v) => !v)}
+          style={{ top: orbTogglePos.top, left: orbTogglePos.left }}
+        />
+      )}
 
       {showAnimation ? (
         <AnimatedScene darkMode={darkMode} meshMode={meshMode} />
@@ -527,6 +573,7 @@ function App() {
           legendCategory={legendCategory}
           showMeridians={showMeridians}
           autoRotate={autoRotate}
+          orbsEnabled={orbsEnabled}
         />
       )}
 

@@ -103,6 +103,7 @@ function Scene({
   legendCategory,
   showMeridians,
   autoRotate,
+  orbsEnabled,
   style,
 }) {
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
@@ -392,7 +393,9 @@ function Scene({
           TWO: THREE.TOUCH.DOLLY_PAN,
         }}
       />
-      {bgMode > 0 && bgMode <= 4 && <SceneOrbs theme={bgModeName} />}
+      {orbsEnabled && bgMode > 0 && bgMode <= 4 && (
+        <SceneOrbs theme={bgModeName} />
+      )}
     </Canvas>
   );
 }

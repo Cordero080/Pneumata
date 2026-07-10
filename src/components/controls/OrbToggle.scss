@@ -1,0 +1,106 @@
+@use '../../styles/variables' as v;
+
+// Ambient background-orb toggle chip — same silver-metallic glass + chamfer
+// language as the meridian-wip-badge (App.scss) and coach-mark hints.
+// Positioned near the top-left drawer's bg-toggle-btn, since that's the
+// button that determines whether this toggle even exists (only themed
+// backgrounds — nebula/space/sunset/matrix — show it).
+
+@keyframes orb-toggle-in {
+  from { opacity: 0; transform: translateX(-14px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes orb-toggle-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.25); }
+}
+
+.orb-toggle {
+  position: fixed;
+  left: 65px;
+  top: 217px;
+  z-index: 49;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px 6px 10px;
+  border: none;
+  background:
+    linear-gradient(135deg,
+      rgba(222, 228, 234, 0.86) 0%,
+      rgba(200, 210, 218, 0.9) 25%,
+      rgba(232, 238, 244, 0.94) 50%,
+      rgba(195, 206, 214, 0.9) 75%,
+      rgba(215, 222, 229, 0.94) 100%
+    );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 2px solid rgba(255, 255, 255, 0.55);
+  border-right: 3px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.15);
+  @include v.chamfer(v.$chamfer-sm);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  animation: orb-toggle-in 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: filter 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+    transform: scale(1.03);
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(25, 36, 52, 0.5);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  &__label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(25, 36, 52, 0.55);
+    transition: color 0.2s ease;
+  }
+
+  &--on {
+    .orb-toggle__dot {
+      background: rgba(255, 200, 60, 0.95);
+      box-shadow: 0 0 6px rgba(255, 180, 40, 0.75);
+      animation: orb-toggle-pulse 1.6s ease-in-out infinite;
+    }
+    .orb-toggle__label { color: rgba(25, 36, 52, 0.9); }
+  }
+
+  @media (max-width: 768px) {
+    left: 80px;
+    top: 220px;
+    padding: 5px 10px 5px 8px;
+    &__label { font-size: 0.48rem; }
+  }
+}
+
+.app--dark .orb-toggle {
+  @include v.dark-surface;
+  border-top: none;
+  border-right: none;
+  border: 1px solid rgba(120, 160, 220, 0.3);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+
+  .orb-toggle__dot { background: v.$dark-text-dim; }
+  .orb-toggle__label { color: v.$dark-text-dim; }
+
+  &--on {
+    .orb-toggle__dot {
+      background: rgba(255, 200, 60, 0.95);
+      box-shadow: 0 0 8px rgba(255, 180, 40, 0.85);
+    }
+    .orb-toggle__label { color: v.$dark-text; }
+  }
+}
