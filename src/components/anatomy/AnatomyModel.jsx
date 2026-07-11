@@ -207,8 +207,13 @@ if (uRegionFade > 0.0) {
     if (onLandmarksExtracted) onLandmarksExtracted(landmarks);
 
     // Body extremity sampler — logs per-2cm y-slice arm centroid and outer edge.
-    // Open the "[ExtremitySampler]" group in DevTools to calibrate meridian coordinates.
-    sampleExtremities(scene);
+    // Dev-only calibration tool: traverses every vertex in the mesh and blocks
+    // the main thread for seconds, which was stalling the landing→home fade
+    // right when the model finished loading. Opt in with ?calibrate=1 when
+    // hand-tuning meridian coordinates; off by default.
+    if (new URLSearchParams(window.location.search).has("calibrate")) {
+      sampleExtremities(scene);
+    }
 
     const aluminumMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color("#c8d5e0"),

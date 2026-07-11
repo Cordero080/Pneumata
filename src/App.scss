@@ -21,6 +21,23 @@
   right: 0;
   z-index: 20;
   pointer-events: none;
+  opacity: 1;
+  // will-change hints the browser to composite this on the GPU thread ahead
+  // of time, so the fade can't get silently swallowed by main-thread work
+  // happening at the same moment (Scene/organ nodes re-rendering as the
+  // landing screen exits). Duration bumped up so it reads unmistakably as a
+  // fade even under load.
+  will-change: opacity;
+  transition: opacity 1s ease;
+
+  // Landing screen handoff — was `display: none` (an instant, untransitionable
+  // pop-in the moment showLanding flips false). Kept in the DOM at opacity 0
+  // instead so the reveal is a fade, not a cut. The landing overlay itself
+  // sits at z-index 200, well above this, so nothing shows through early.
+  &--hidden {
+    opacity: 0;
+    pointer-events: none !important;
+  }
 }
 
 .header-strip {

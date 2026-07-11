@@ -555,6 +555,14 @@
 }
 
 .landing-overlay--revealing {
+  // The backdrop itself (this element) previously had no fade of its own —
+  // only the inner panel/text animated, so the opaque gradient background
+  // stayed fully solid for the whole reveal and then hard-cut to the scene
+  // the instant React unmounted it at REVEAL_DURATION_MS. Fading the
+  // backdrop out in sync with that unmount is what actually makes the
+  // handoff to the scene underneath read as a dissolve instead of a cut.
+  animation: landingRevealFade 920ms ease forwards;
+
   .landing-content {
     animation: landingRevealFade 920ms ease forwards;
   }

@@ -378,8 +378,7 @@ function App() {
       className={`app app--${bodyModel}${darkMode ? " app--dark" : ""} app--bg-${BG_MODES[bgMode]}`}
     >
       <header
-        className="app-header"
-        style={showLanding ? { display: "none" } : undefined}
+        className={`app-header${showLanding ? " app-header--hidden" : ""}`}
       >
         <div className="header-strip">
           <div className="header-accent header-accent--top">
@@ -413,7 +412,7 @@ function App() {
               >
                 Info
               </button>
-              {!showAnimation && !showLanding && (
+              {!showAnimation && (
                 <VerticalControls
                   panY={panY}
                   onPanChange={handlePanChange}
