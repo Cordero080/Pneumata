@@ -551,49 +551,65 @@ function OrganNode({
                 />
               </div>
 
-              {/* Panel */}
-              <div
-                style={{
-                  background: "rgba(222, 233, 248, 0.18)",
-                  backdropFilter: "blur(48px) saturate(150%)",
-                  WebkitBackdropFilter: "blur(48px) saturate(150%)",
-                  boxShadow: `0 8px 32px rgba(0,0,0,0.22), 0 0 20px ${color}40, inset 0 1.5px 0 rgba(255,255,255,0.70)`,
-                  border: `1px solid ${color}88`,
-                  borderRadius: "6px",
-                  padding: IS_MOBILE ? "6px 10px" : "8px 14px",
-                  maxWidth: IS_MOBILE ? "140px" : "220px",
-                }}
-              >
+              {/* Panel — back layer re-blurs the scene, front layer holds content */}
+              <div style={{ position: "relative", display: "inline-block" }}>
                 <div
                   style={{
-                    fontFamily: "'Orbitron', system-ui, sans-serif",
-                    fontSize: IS_MOBILE
-                      ? "clamp(10px, 3vw, 13px)"
-                      : "clamp(13px, 1.2vw, 17px)",
-                    fontWeight: 800,
-                    letterSpacing: "0.14em",
-                    color: "rgba(8, 20, 48, 0.95)",
-                    textShadow: "0 1px 0 rgba(255,255,255,0.6)",
-                    textTransform: "uppercase",
-                    lineHeight: 1.2,
+                    position: "absolute",
+                    inset: 0,
+                    transform: "translate(0, 1px)",
+                    background: "rgba(205, 222, 250, 0.17)",
+                    backdropFilter: "blur(160px) saturate(65%)",
+                    WebkitBackdropFilter: "blur(160px) saturate(65%)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    borderRadius: "6px",
                   }}
-                >
-                  {organ.organ}
-                </div>
+                />
                 <div
                   style={{
-                    fontFamily: "'Orbitron', system-ui, sans-serif",
-                    fontSize: IS_MOBILE
-                      ? "clamp(7px, 2vw, 9px)"
-                      : "clamp(9px, 0.8vw, 11px)",
-                    fontWeight: 600,
-                    letterSpacing: "0.10em",
-                    color,
-                    textTransform: "uppercase",
-                    marginTop: "4px",
+                    position: "relative",
+                    zIndex: 1,
+                    background: "rgba(190, 212, 248, 0.21)",
+                    backdropFilter: "blur(220px) saturate(65%)",
+                    WebkitBackdropFilter: "blur(220px) saturate(65%)",
+                    boxShadow: `0 8px 32px rgba(0,0,0,0.22), 0 0 20px ${color}40, inset 0 1.5px 0 rgba(255,255,255,0.70)`,
+                    border: `1px solid ${color}88`,
+                    borderRadius: "6px",
+                    padding: IS_MOBILE ? "6px 10px" : "8px 14px",
+                    maxWidth: IS_MOBILE ? "140px" : "220px",
                   }}
                 >
-                  {ORGAN_TCM[organ.id]?.meridianName}
+                  <div
+                    style={{
+                      fontFamily: "'Orbitron', system-ui, sans-serif",
+                      fontSize: IS_MOBILE
+                        ? "clamp(10px, 3vw, 13px)"
+                        : "clamp(13px, 1.2vw, 17px)",
+                      fontWeight: 800,
+                      letterSpacing: "0.14em",
+                      color: "rgba(8, 20, 48, 0.95)",
+                      textShadow: "0 1px 0 rgba(255,255,255,0.6)",
+                      textTransform: "uppercase",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {organ.organ}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Orbitron', system-ui, sans-serif",
+                      fontSize: IS_MOBILE
+                        ? "clamp(7px, 2vw, 9px)"
+                        : "clamp(9px, 0.8vw, 11px)",
+                      fontWeight: 600,
+                      letterSpacing: "0.10em",
+                      color,
+                      textTransform: "uppercase",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {ORGAN_TCM[organ.id]?.meridianName}
+                  </div>
                 </div>
               </div>
             </div>

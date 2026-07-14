@@ -24,10 +24,25 @@ function OrganLabel({
   const tcm = showMeridians ? ORGAN_TCM[organ.id] : null;
   const element = tcm ? TCM_ELEMENTS[tcm.element] : null;
 
+  // Backing layer: sits behind the front panel and re-blurs the already-
+  // tinted composite, so the GLB reads as genuinely diffused glass instead
+  // of a low-opacity sheet with a sharp scene showing through it. Slightly
+  // offset so it also restores a sliver of "plexi thickness" edge.
+  const backLayer = {
+    position: "absolute",
+    inset: 0,
+    transform: `translate(${isLeft ? -2 : 2}px, 1px)`,
+    background: "rgba(205, 222, 250, 0.17)",
+    backdropFilter: "blur(160px) saturate(65%)",
+    WebkitBackdropFilter: "blur(160px) saturate(65%)",
+    border: "1px solid rgba(255,255,255,0.2)",
+    borderRadius: "6px",
+  };
+
   const panel = {
-    background: "rgba(222, 233, 248, 0.18)",
-    backdropFilter: "blur(48px) saturate(150%)",
-    WebkitBackdropFilter: "blur(48px) saturate(150%)",
+    background: "rgba(190, 212, 248, 0.21)",
+    backdropFilter: "blur(220px) saturate(65%)",
+    WebkitBackdropFilter: "blur(220px) saturate(65%)",
     boxShadow: `0 8px 32px rgba(0,0,0,0.22), 0 0 20px ${color}20, inset 0 1.5px 0 rgba(255,255,255,0.70), inset 0 -1px 0 rgba(180,200,230,0.15)`,
     border: "1px solid rgba(255, 255, 255, 0.45)",
     borderRadius: "6px",
@@ -114,31 +129,9 @@ function OrganLabel({
           />
         </div>
 
-        {/* Label panel — stacked layers for plexi thickness */}
+        {/* Label panel — back layer re-blurs the scene, front layer holds content */}
         <div style={{ position: "relative", display: "inline-block" }}>
-          {/* Layer 3 — deepest */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              transform: `translate(${isLeft ? -5 : 5}px, 1px)`,
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.18)",
-              borderRadius: "6px",
-            }}
-          />
-          {/* Layer 2 — middle */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              transform: `translate(${isLeft ? -2.5 : 2.5}px, 0.5px)`,
-              background: "rgba(255,255,255,0.09)",
-              border: "1px solid rgba(255,255,255,0.22)",
-              borderRadius: "6px",
-            }}
-          />
-          {/* Layer 1 — front */}
+          <div style={backLayer} />
           <div
             onClick={
               onSelect
@@ -160,7 +153,7 @@ function OrganLabel({
               zIndex: 1,
               padding: IS_MOBILE ? "7px 12px" : "10px 18px",
               paddingTop: IS_MOBILE ? "22px" : "26px",
-              maxWidth: IS_MOBILE ? "160px" : "300px",
+              maxWidth: IS_MOBILE ? "190px" : "300px",
               textAlign: isLeft ? "right" : "left",
               cursor: onSelect ? "pointer" : "default",
               pointerEvents: "all",
@@ -209,10 +202,10 @@ function OrganLabel({
               style={{
                 fontFamily: "'Orbitron', system-ui, sans-serif",
                 fontSize: IS_MOBILE
-                  ? "clamp(12px, 3.5vw, 15px)"
-                  : "clamp(16px, 1.5vw, 22px)",
+                  ? "clamp(11.5px, 3.4vw, 14.5px)"
+                  : "clamp(15.5px, 1.45vw, 21px)",
                 fontWeight: 800,
-                letterSpacing: "0.16em",
+                letterSpacing: "0.10em",
                 color: "rgba(8, 20, 48, 0.95)",
                 textShadow: "0 1px 0 rgba(255,255,255,0.6)",
                 lineHeight: 1.2,

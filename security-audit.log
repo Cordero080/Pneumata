@@ -11462,3 +11462,516 @@ PASSED
 
 Result: 0 CRITICAL, 0 WARNING
 ================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:26:36Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:29:34Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:30:06Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:35:39Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:35:54Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:36:34Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganNode.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganNode.jsx
+Time: 2026-07-14T19:38:36Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:40:47Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganNode.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganNode.jsx
+Time: 2026-07-14T19:41:33Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:43:10Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganNode.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganNode.jsx
+Time: 2026-07-14T19:43:26Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:44:24Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganNode.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganNode.jsx
+Time: 2026-07-14T19:44:39Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:45:28Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganNode.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganNode.jsx
+Time: 2026-07-14T19:45:45Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:46:33Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganNode.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganNode.jsx
+Time: 2026-07-14T19:46:49Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:48:51Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:55:20Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:55:30Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:55:44Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: src/App.jsx
+Time: 2026-07-14T19:58:16Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — CategoryLegend.jsx
+File: src/components/legend/CategoryLegend.jsx
+Time: 2026-07-14T19:58:16Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganLabel.jsx
+File: src/components/organ/OrganLabel.jsx
+Time: 2026-07-14T19:58:16Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — OrganNode.jsx
+File: src/components/organ/OrganNode.jsx
+Time: 2026-07-14T19:58:16Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — AnimatedModel.jsx
+File: src/components/scene/AnimatedModel.jsx
+Time: 2026-07-14T19:58:16Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — sizing.js
+File: src/data/sizing.js
+Time: 2026-07-14T19:58:16Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
