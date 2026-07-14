@@ -58,6 +58,7 @@ function OrganNode({
   onClearPreview,
   legendCategory,
   showMeridians,
+  darkMode,
 }) {
   const IS_MOBILE = window.innerWidth <= 768;
 
@@ -157,9 +158,11 @@ function OrganNode({
   const sizeTier = useMemo(() => getOrganNodeSizeTier(), []);
   const sz =
     sizeTier[
-      organ.nodeSize === "small" || organ.nodeSize === "large"
-        ? organ.nodeSize
-        : "default"
+      isEye
+        ? "eye"
+        : organ.nodeSize === "small" || organ.nodeSize === "large"
+          ? organ.nodeSize
+          : "default"
     ];
   const isPreview = previewedOrganId === organ.id;
   const isExternallyHighlighted =
@@ -476,6 +479,7 @@ function OrganNode({
             labelReady={labelReady}
             screenX={screenXRef.current}
             showMeridians={showMeridians}
+            darkMode={darkMode}
             onClose={() => {
               setLabelClosed(true);
               onClearPreview?.();
@@ -550,9 +554,9 @@ function OrganNode({
               {/* Panel */}
               <div
                 style={{
-                  background: "rgba(220, 232, 248, 0.30)",
-                  backdropFilter: "blur(32px)",
-                  WebkitBackdropFilter: "blur(32px)",
+                  background: "rgba(222, 233, 248, 0.18)",
+                  backdropFilter: "blur(48px) saturate(150%)",
+                  WebkitBackdropFilter: "blur(48px) saturate(150%)",
                   boxShadow: `0 8px 32px rgba(0,0,0,0.22), 0 0 20px ${color}40, inset 0 1.5px 0 rgba(255,255,255,0.70)`,
                   border: `1px solid ${color}88`,
                   borderRadius: "6px",

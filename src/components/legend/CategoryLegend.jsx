@@ -4,9 +4,11 @@ import "./CategoryLegend.scss";
 // Merge colors into the shared CATEGORIES array for rendering
 const CATEGORIES = _BASE.map((c) => ({ ...c, color: CATEGORY_COLORS[c.key] }));
 
-function CategoryLegend({ onCategoryHover }) {
+function CategoryLegend({ onCategoryHover, darkMode = false }) {
   return (
-    <div className="category-legend">
+    <div
+      className={`category-legend${darkMode ? " category-legend--dark" : ""}`}
+    >
       {CATEGORIES.map(({ key, color, label, desc }) => (
         <div
           key={key}

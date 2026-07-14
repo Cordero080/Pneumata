@@ -12,6 +12,7 @@ function OrganLabel({
   labelReady,
   screenX = 0,
   showMeridians = false,
+  darkMode = false,
 }) {
   const isLeft = organ.position[0] <= 0;
   const isVertical = Math.abs(screenX) > 0.65;
@@ -24,15 +25,17 @@ function OrganLabel({
   const element = tcm ? TCM_ELEMENTS[tcm.element] : null;
 
   const panel = {
-    background: "rgba(220, 232, 248, 0.30)",
-    backdropFilter: "blur(32px)",
-    WebkitBackdropFilter: "blur(32px)",
+    background: "rgba(222, 233, 248, 0.18)",
+    backdropFilter: "blur(48px) saturate(150%)",
+    WebkitBackdropFilter: "blur(48px) saturate(150%)",
     boxShadow: `0 8px 32px rgba(0,0,0,0.22), 0 0 20px ${color}20, inset 0 1.5px 0 rgba(255,255,255,0.70), inset 0 -1px 0 rgba(180,200,230,0.15)`,
     border: "1px solid rgba(255, 255, 255, 0.45)",
     borderRadius: "6px",
   };
 
-  const subtitleColor = "rgba(18, 38, 72, 0.70)";
+  const subtitleColor = darkMode
+    ? "rgba(255, 255, 255, 0.85)"
+    : "rgba(18, 38, 72, 0.70)";
 
   return (
     <Html

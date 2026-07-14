@@ -90,6 +90,10 @@
   text-transform: uppercase;
 }
 
+.category-legend--dark .legend-desc {
+  color: rgba(255, 255, 255, 0.85);
+}
+
 .legend-dot {
   width: 3px;
   height: 22px;

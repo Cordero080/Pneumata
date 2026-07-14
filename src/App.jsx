@@ -616,7 +616,12 @@ function App() {
 
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
 
-      {!showAnimation && <CategoryLegend onCategoryHover={setLegendCategory} />}
+      {!showAnimation && (
+        <CategoryLegend
+          onCategoryHover={setLegendCategory}
+          darkMode={darkMode}
+        />
+      )}
 
       {!showAnimation && (
         <ViewModeController

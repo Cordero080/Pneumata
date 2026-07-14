@@ -19,8 +19,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  max-width: 220px;
-  padding: 7px 12px 7px 10px;
+  max-width: 236px;
+  padding: 8px 13px 8px 10px;
   background:
     linear-gradient(135deg,
       rgba(222, 228, 234, 0.86) 0%,
@@ -50,12 +50,13 @@
 
   &__text {
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.55rem;
+    font-size: 0.6rem;
     font-weight: 600;
-    letter-spacing: 0.04em;
-    line-height: 1.5;
+    letter-spacing: 0.03em;
+    line-height: 1.45;
     text-transform: none;
     color: rgba(25, 36, 52, 0.9);
+    overflow-wrap: break-word;
   }
 
   &__close {
@@ -76,10 +77,10 @@
   }
 
   @media (max-width: 768px) {
-    max-width: 168px;
+    max-width: min(188px, calc(100vw - 32px));
     padding: 6px 10px 6px 8px;
 
-    &__text { font-size: 0.48rem; }
+    &__text { font-size: 0.52rem; line-height: 1.4; }
   }
 }
 
@@ -90,13 +91,13 @@
   border: 1px solid rgba(120, 160, 220, 0.35);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
 
-  .coach-mark__text { color: v.$dark-text-dim; }
+  .coach-mark__text { color: v.$dark-text; }
   .coach-mark__dot {
     background: rgba(180, 210, 255, 0.9);
     box-shadow: 0 0 6px rgba(0, 212, 255, 0.55);
   }
   .coach-mark__close {
-    color: rgba(180, 210, 255, 0.5);
+    color: rgba(200, 222, 255, 0.65);
     &:hover { color: v.$dark-text; }
   }
 }

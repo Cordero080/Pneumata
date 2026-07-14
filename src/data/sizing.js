@@ -16,24 +16,33 @@ export const BRAIN_MESH = {
 };
 
 // Organ node marker radii — glow halo / main faceted core / inner core / hit
-// target — per size tier ("small"/"large"/default), sectioned by breakpoint.
+// target — per size tier ("small"/"large"/"eye"/default), sectioned by
+// breakpoint. "small"/"large" are brain-only tiers (see OrganNode.jsx) and
+// "eye" pins the eyes to their original size — none of these three scale
+// with the "default" tier. Only "main"/"inner"/"hit" grow on "default";
+// "glow" is left untouched everywhere since it's the halo that gets
+// multiplied again on hover (see OrganNode.jsx glowRef scale) — bumping its
+// base radius here would compound into hover feeling more dramatic.
 export const ORGAN_NODE_SIZES = {
   mobile: {
     small: { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.0175 },
-    default: { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.0225 },
+    default: { glow: 0.012, main: 0.0184, inner: 0.0081, hit: 0.0259 },
     large: { glow: 0.016, main: 0.021, inner: 0.009, hit: 0.03 },
+    eye: { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.0225 },
   },
   desktop: {
     small: { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.007 },
-    default: { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.009 },
+    default: { glow: 0.012, main: 0.0184, inner: 0.0081, hit: 0.0104 },
     large: { glow: 0.016, main: 0.021, inner: 0.009, hit: 0.012 },
+    eye: { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.009 },
   },
   largeMonitor: {
     // Same as desktop today — placeholder tier so a future "nodes read too
     // small on a big display" tweak has a home without re-splitting files.
     small: { glow: 0.008, main: 0.011, inner: 0.005, hit: 0.007 },
-    default: { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.009 },
+    default: { glow: 0.012, main: 0.0184, inner: 0.0081, hit: 0.0104 },
     large: { glow: 0.016, main: 0.021, inner: 0.009, hit: 0.012 },
+    eye: { glow: 0.012, main: 0.016, inner: 0.007, hit: 0.009 },
   },
 };
 
