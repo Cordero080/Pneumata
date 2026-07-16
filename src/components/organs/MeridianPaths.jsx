@@ -9,6 +9,27 @@ export default function MeridianPaths({ bodyLandmarks }) {
       if (meridian.points.length < 2) continue;
       let pts = meridian.pathPoints ?? meridian.points.map((p) => p.position);
 
+      // Lung (lu): stop the line at LU-9 (wrist) — don't draw the last
+      // segment out to LU-11 (fingertip), it was cutting across empty space.
+      // Dot markers for LU-11 are untouched (MeridianLayer reads meridian.points
+      // directly, not this array), only the connecting line is shortened.
+      if (meridian.id === "lu") pts = pts.slice(0, -1);
+
+      // Pericardium (pc): stop the line at PC-7 (wrist) — don't draw the
+      // last two segments out to PC-8/PC-9 (palm/fingertip). PC-7 is index 2
+      // in this meridian's points array (PC-3, PC-6, PC-7, PC-8, PC-9).
+      if (meridian.id === "pc") pts = pts.slice(0, 3);
+
+      // Heart (ht): stop the line at HT-7 (wrist) — don't draw the last
+      // segment out to HT-9 (fingertip). HT-7 is index 1 in this meridian's
+      // points array (HT-3, HT-7, HT-9).
+      if (meridian.id === "ht") pts = pts.slice(0, 2);
+
+      // Gallbladder (gb): stop the line at GB-20 (nape) — don't draw the
+      // rest of the path down through GB-21/30/34/40/44 (shoulder to foot).
+      // GB-20 is index 2 in this meridian's pathPoints array.
+      if (meridian.id === "gb") pts = pts.slice(0, 3);
+
       // Replace first pathPoint with actual mesh-sampled wrist position (nerve endpoint)
       if (meridian.handPathLandmark && meridian.pathPoints) {
         const hr = bodyLandmarks?.wrist_right;
