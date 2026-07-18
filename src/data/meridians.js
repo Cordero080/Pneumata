@@ -230,7 +230,7 @@ export const meridians = [
       {
         id: "ST-40",
         name: "Fenglong",//✅✅✅✅✅✅
-        position: [0.09, 0.28, 0.01], // midpoint lower leg, 2 fingers lateral to ST-38, anterior foreleg — y≈0.33–0.37
+        position: [0.08, 0.28, 0.01], // midpoint lower leg, 2 fingers lateral to ST-38, anterior foreleg — y≈0.33–0.37
         function: "Luo-connecting — resolves phlegm and dampness",
       },
       {

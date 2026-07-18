@@ -98,13 +98,16 @@ export default function MeridianPaths({ bodyLandmarks }) {
       // Lung (lu): stop the line at LU-9 (wrist) — don't draw the last
       // segment out to LU-11 (fingertip), it was cutting across empty space.
       // Dot markers for LU-11 are untouched (MeridianLayer reads meridian.points
-      // directly, not this array), only the connecting line is shortened.
-      if (meridian.id === "lu") pts = pts.slice(0, -1);
+      // directly, not this array), only the connecting line is shortened. Then
+      // smooth shoulder → elbow → forearm → wrist through the checked nodes
+      // (LU-1, LU-5, LU-7; LU-9 is the wrist endpoint).
+      if (meridian.id === "lu") pts = curveThrough(pts.slice(0, -1));
 
       // Pericardium (pc): stop the line at PC-7 (wrist) — don't draw the
-      // last two segments out to PC-8/PC-9 (palm/fingertip). PC-7 is index 2
-      // in this meridian's points array (PC-3, PC-6, PC-7, PC-8, PC-9).
-      if (meridian.id === "pc") pts = pts.slice(0, 3);
+      // last two segments out to PC-8/PC-9 (palm/fingertip) — then smooth the
+      // anterior forearm through all three checked nodes (PC-3 elbow, PC-6
+      // forearm, PC-7 wrist).
+      if (meridian.id === "pc") pts = curveThrough(pts.slice(0, 3));
 
       // Heart (ht): stop the line at HT-7 (wrist) — don't draw the last
       // segment out to HT-9 (fingertip). HT-7 is index 1 in this meridian's
@@ -118,11 +121,17 @@ export default function MeridianPaths({ bodyLandmarks }) {
 
       // Spleen (sp): smooth the leg portion (SP-3 → SP-6 → SP-9 → SP-10) into
       // one curve riding the inner-leg contour, anchored by the checked SP-6
-      // (ankle) and SP-10 (thigh). SP-10 → SP-21 (thigh → chest) left straight
-      // for now — separate torso jump.
+      // (ankle) and SP-10 (thigh). Then curve SP-10 → SP-21 (thigh → chest)
+      // through the hip landmark so it rides up over the hip instead of a flat
+      // diagonal across the abdomen. (Abdominal organ nodes all cluster near
+      // SP-21, so the mesh-sampled hip is the better mid-span anchor.)
       if (meridian.id === "sp") {
         const legCurve = curveThrough(pts.slice(0, 4));
-        pts = [...legCurve, pts[4]]; // smoothed leg + SP-21
+        const hip = bodyLandmarks?.hip_right;
+        const torso = hip
+          ? arcThroughGuide(pts[3], hip, pts[4]) // SP-10 → hip → SP-21
+          : [pts[3], pts[4]];
+        pts = [...legCurve, ...torso.slice(1)]; // join at SP-10
       }
 
       // Small Intestine (si): start the line at SI-4 (wrist) — drop SI-3, the
