@@ -125,14 +125,14 @@ export const meridians = [
     points: [
       {
         id: "LU-1",
-        name: "Zhongfu",
-        position: [0.12, 1.4, 0.07], // subclavicular fossa, 1 cun lateral to midline at 1st ICS — x≈0.10–0.14, y≈1.38–1.42
+        name: "Zhongfu",//✅✅✅✅
+        position: [0.13, 1.424, -0.03], // subclavicular fossa, 1 cun lateral to midline at 1st ICS — x≈0.10–0.14, y≈1.38–1.42
         function: "Front mu of lung — disperses lung qi, opens chest",
       },
       {
-        id: "LU-5",
+        id: "LU-5", //✅✅✅✅
         name: "Chize",
-        position: [0.24, 1.1, 0.05], // elbow crease, radial side of biceps tendon — anterior arm, x≈0.22–0.26, y≈1.08–1.12
+        position: [0.24, 1.14, -0.05], // elbow crease, radial side of biceps tendon — anterior arm, x≈0.22–0.26, y≈1.08–1.12
         function: "Elbow crease — clears lung heat, descends lung qi",
       },
       {
@@ -186,21 +186,21 @@ export const meridians = [
         function: "3 cun below elbow — digestion, arm pain",
       },
       {
-        id: "LI-11", //🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
+        id: "LI-11", //✅✅✅✅✅✅
         name: "Quchi",
-        position: [0.29, 1.1, 0.01], // lateral elbow crease end, between biceps and lateral epicondyle — x≈0.28–0.31, y≈1.08–1.12
+        position: [0.26, 1.13, -0.075], // lateral elbow crease end, between biceps and lateral epicondyle — x≈0.28–0.31, y≈1.08–1.12
         function: "Elbow crease — clears heat, drains dampness, immunity",
       },
       {
-        id: "LI-15",
+        id: "LI-15",//✅✅✅✅✅✅
         name: "Jianyu",
-        position: [0.15, 1.42, 0.02], // anterior acromion depression, arm abducted — x≈0.14–0.17, y≈1.40–1.44, z≈0
+        position: [0.169, 1.436, -0.059], // anterior acromion depression, arm abducted — x≈0.14–0.17, y≈1.40–1.44, z≈0
         function: "Anterior acromion — shoulder pain, wind-damp",
       },
       {
-        id: "LI-20",
+        id: "LI-20",//✅✅✅✅✅✅
         name: "Yingxiang",
-        position: [0.04, 1.63, 0.09], // NASOLABIAL GROOVE, LATERAL TO ALA NASI (NOSTRIL WING) — x≈0.03–0.05, y≈1.62–1.64
+        position: [0.015, 1.60, 0.090], // NASOLABIAL GROOVE, LATERAL TO ALA NASI (NOSTRIL WING) — x≈0.03–0.05, y≈1.62–1.64
         function: "Lateral nostril — opens nasal passages, facial issues",
       },
     ],
@@ -223,14 +223,14 @@ export const meridians = [
       },
       {
         id: "ST-36",
-        name: "Zusanli",
-        position: [0.06, 0.45, 0.05], // 3 cun below knee, 1 finger lateral to tibia crest — x≈0.05–0.07, y≈0.43–0.47
+        name: "Zusanli",//✅✅✅✅✅✅
+        position: [0.08, 0.46, 0.01], // 3 cun below knee, 1 finger lateral to tibia crest — x≈0.05–0.07, y≈0.43–0.47
         function: "Master tonification point — qi, blood, immunity, digestion",
       },
       {
         id: "ST-40",
-        name: "Fenglong",
-        position: [0.06, 0.35, 0.04], // midpoint lower leg, 2 fingers lateral to ST-38, anterior foreleg — y≈0.33–0.37
+        name: "Fenglong",//✅✅✅✅✅✅
+        position: [0.09, 0.28, 0.01], // midpoint lower leg, 2 fingers lateral to ST-38, anterior foreleg — y≈0.33–0.37
         function: "Luo-connecting — resolves phlegm and dampness",
       },
       {
@@ -284,9 +284,9 @@ export const meridians = [
         function: "Sea of blood — nourishes blood, skin, menstrual disorders",
       },
       {
-        id: "SP-21",
+        id: "SP-21",//✅✅✅✅✅✅✅✅
         name: "Dabao",
-        position: [0.14, 1.2, 0.02], // 6th ICS on midaxillary line, lateral chest — x≈0.13–0.16, y≈1.18–1.22
+        position: [0.14, 1.2, -0.045], // 6th ICS on midaxillary line, lateral chest — x≈0.13–0.16, y≈1.18–1.22
         function: "Great connecting luo — pain all over body, fatigue",
       },
     ],
@@ -476,13 +476,13 @@ export const meridians = [
     points: [
       {
         id: "PC-3",
-        name: "Quze",
-        position: [0.24, 1.1, 0.06], // medial elbow crease, ulnar side of biceps tendon — anterior arm, x≈0.22–0.26, y≈1.08–1.12
+        name: "Quze",//✅✅✅✅✅✅
+        position: [0.25, 1.16, -0.035], // medial elbow crease, ulnar side of biceps tendon — anterior arm, x≈0.22–0.26, y≈1.08–1.12
         function: "Elbow crease — clears heat, calms shen, nausea",
       },
       {
         id: "PC-6",
-        name: "Neiguan", //✅
+        name: "Neiguan", //✅✅✅✅✅✅
         position: [0.34, 0.92, -0.068], // 2 cun above PC-7, between palmaris longus & flexor carpi radialis — anterior, y≈0.86–0.90
         function: "Opens Yin Wei vessel — nausea, heart, anxiety, wrist",
       },
@@ -538,15 +538,15 @@ export const meridians = [
         function: "Opens Yang Wei vessel — fever, headache, deafness",
       },
       {
-        id: "TW-14",
+        id: "TW-14",//✅✅✅✅✅✅✅
         name: "Jianliao",
-        position: [0.14, 1.42, -0.06], // posterior-inferior to acromion, between two deltoid tendons — x≈0.13–0.16, y≈1.40–1.44, z<0
+        position: [0.16, 1.42, -0.06], // posterior-inferior to acromion, between two deltoid tendons — x≈0.13–0.16, y≈1.40–1.44, z<0
         function: "Posterior shoulder — shoulder pain, limited mobility",
       },
       {
-        id: "TW-23",
+        id: "TW-23",//✅✅✅✅✅✅✅
         name: "Sizhukong",
-        position: [0.07, 1.65, 0.07], // LATERAL END OF EYEBROW, IN DEPRESSION — x≈0.06–0.08, y≈1.64–1.66
+        position: [0.05, 1.65, 0.05], // LATERAL END OF EYEBROW, IN DEPRESSION — x≈0.06–0.08, y≈1.64–1.66
         function: "Lateral eyebrow end — headache, eye disorders, facial",
       },
     ],
@@ -597,8 +597,8 @@ export const meridians = [
       },
       {
         id: "GB-40",
-        name: "Qiuxu",
-        position: [0.07, 0.13, 0.04], // anterior-inferior to lateral malleolus, in depression — x≈0.06–0.08, y≈0.11–0.15
+        name: "Qiuxu", //✅✅✅✅✅✅
+        position: [0.099, 0.047, -0.023], // anterior-inferior to lateral malleolus, in depression — x≈0.06–0.08, y≈0.11–0.15
         function: "Source point — ankle pain, lateral leg, distension",
         isSource: true,
       },

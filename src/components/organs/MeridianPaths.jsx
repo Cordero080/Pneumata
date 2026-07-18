@@ -48,6 +48,46 @@ function applyBow(id, pts) {
   return INTERIOR_BOW_IDS.has(id) ? bowInterior(pts) : pts;
 }
 
+// Smooth arc from p0 to p2 that PASSES THROUGH `guide` at its midpoint.
+// Derives the QuadraticBezier control point (midpoint = 0.25·p0 + 0.5·ctrl +
+// 0.25·p2, solved for ctrl) so an interior anatomical point — e.g. the
+// cervical lymph node — becomes a real anchor the neck segment routes through,
+// not just leans toward. Same derived-control idea as the nerve arcs.
+function arcThroughGuide(p0, guide, p2, samples = 16) {
+  const control = [
+    2 * guide[0] - 0.5 * p0[0] - 0.5 * p2[0],
+    2 * guide[1] - 0.5 * p0[1] - 0.5 * p2[1],
+    2 * guide[2] - 0.5 * p0[2] - 0.5 * p2[2],
+  ];
+  return new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(...p0),
+    new THREE.Vector3(...control),
+    new THREE.Vector3(...p2),
+  )
+    .getPoints(samples)
+    .map((v) => [v.x, v.y, v.z]);
+}
+
+// Cervical lymph node (interior neck) — shared anatomical guide for neck arcs.
+// Coord from lymph_cervical in organs.js.
+const CERVICAL_LYMPH = [0.04, 1.51, 0.01];
+
+// Back-of-arm elbow — shared guide for the dorsal-arm meridians (SI, TW) whose
+// lines jump from the lower arm to the shoulder/scapula and skip the elbow.
+// Located off the checked LI-11 lateral-elbow node [0.29,1.1,0.01], nudged
+// dorsal (z negative).
+const DORSAL_ELBOW = [0.29, 1.1, -0.03];
+
+// Smooth curve PASSING THROUGH every point in `points` (endpoints + interior
+// guides). Centripetal Catmull-Rom — used when a segment needs more than one
+// interior anchor (e.g. side-of-neck lymph node AND a jaw/cheek bend).
+function curveThrough(points, samples = 24) {
+  const v = points.map(([x, y, z]) => new THREE.Vector3(x, y, z));
+  return new THREE.CatmullRomCurve3(v, false, "centripetal")
+    .getPoints(samples)
+    .map((p) => [p.x, p.y, p.z]);
+}
+
 export default function MeridianPaths({ bodyLandmarks }) {
   const paths = useMemo(() => {
     const result = [];
@@ -76,17 +116,61 @@ export default function MeridianPaths({ bodyLandmarks }) {
       // GB-20 is index 2 in this meridian's pathPoints array.
       if (meridian.id === "gb") pts = pts.slice(0, 3);
 
+      // Spleen (sp): smooth the leg portion (SP-3 → SP-6 → SP-9 → SP-10) into
+      // one curve riding the inner-leg contour, anchored by the checked SP-6
+      // (ankle) and SP-10 (thigh). SP-10 → SP-21 (thigh → chest) left straight
+      // for now — separate torso jump.
+      if (meridian.id === "sp") {
+        const legCurve = curveThrough(pts.slice(0, 4));
+        pts = [...legCurve, pts[4]]; // smoothed leg + SP-21
+      }
+
       // Small Intestine (si): start the line at SI-4 (wrist) — drop SI-3, the
       // hand point (index 0), whose position field is a hand-landmark
       // placeholder that would otherwise shoot the line down to the thigh.
-      // Line runs SI-4 → SI-11 → SI-19, same "stop at the wrist" rule as LU/PC/HT.
-      if (meridian.id === "si") pts = pts.slice(1);
+      // Then replace the straight SI-11 → SI-19 chord with a smooth
+      // QuadraticBezier arc pulled toward the cervical lymph node (interior
+      // neck, coord from lymph_cervical in organs.js), so the neck segment
+      // curves inward up the neck. Arm portion (SI-4 → SI-11) stays straight.
+      if (meridian.id === "si") {
+        pts = pts.slice(1); // → [SI-4, SI-11, SI-19]
+        // Arm: curve SI-4 (wrist) → SI-11 (scapula) through the elbow so it
+        // rides up the back of the arm instead of cutting medial across the gap.
+        const armArc = arcThroughGuide(pts[0], DORSAL_ELBOW, pts[1]); // SI-4 → elbow → SI-11
+        // Neck: SI-11 → SI-19 through the cervical lymph node.
+        const neckArc = arcThroughGuide(pts[1], CERVICAL_LYMPH, pts[2]);
+        pts = [...armArc, ...neckArc.slice(1)]; // join at SI-11 without duplicating it
+      }
 
       // Large Intestine (li): start the line at LI-10 (forearm) — drop LI-4,
       // the hand point (index 0), whose hand-landmark position sits on the
-      // wrist and made the line terminate on the PC-9 node. Line runs
-      // LI-10 → LI-11 → LI-15 → LI-20.
-      if (meridian.id === "li") pts = pts.slice(1);
+      // wrist and made the line terminate on the PC-9 node. Then curve the
+      // last segment LI-15 → LI-20 (shoulder → beside nostril) through the
+      // cervical lymph node so it runs up the front of the neck to the face,
+      // instead of a straight diagonal. Arm portion stays straight.
+      if (meridian.id === "li") {
+        pts = pts.slice(1); // → [LI-10, LI-11, LI-15, LI-20]
+        // Two guides: lymph node (lower, side of neck) then a jaw/cheek bend
+        // (upper) so the curve comes up the side of the neck and forward under
+        // the jaw before reaching the nostril. Jaw point derived from the
+        // thyroid ref [0,1.53,0.03] — its height/forward-depth, kept lateral.
+        const jaw = [0.05, 1.56, 0.05];
+        const neck = curveThrough([pts[2], CERVICAL_LYMPH, jaw, pts[3]]);
+        pts = [pts[0], pts[1], ...neck]; // LI-10 → LI-11 → smooth neck curve → LI-20
+      }
+
+      // Triple Warmer (tw): curve the last segment TW-14 → TW-23 through the
+      // cervical lymph node so it routes up the neck instead of a straight
+      // diagonal from the back-shoulder to the front-of-face eyebrow. Points
+      // are [TW-4, TW-5, TW-14, TW-23]; arm portion stays straight.
+      if (meridian.id === "tw") {
+        // Arm: curve TW-5 (forearm) → TW-14 (shoulder) through the elbow so
+        // the upper arm doesn't bulge lateral. Neck: TW-14 → TW-23 through
+        // the lymph node (as before). TW-4 → TW-5 stays straight.
+        const armArc = arcThroughGuide(pts[1], DORSAL_ELBOW, pts[2]); // TW-5 → elbow → TW-14
+        const neckArc = arcThroughGuide(pts[2], CERVICAL_LYMPH, pts[3]); // TW-14 → lymph → TW-23
+        pts = [pts[0], ...armArc, ...neckArc.slice(1)]; // join at TW-14 without duplicating
+      }
 
       // Replace first pathPoint with actual mesh-sampled wrist position (nerve endpoint)
       if (meridian.handPathLandmark && meridian.pathPoints) {
