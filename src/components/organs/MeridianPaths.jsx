@@ -1,6 +1,52 @@
 import { useMemo } from "react";
 import { Line } from "@react-three/drei";
+import * as THREE from "three";
 import { meridians } from "../../data/meridians";
+
+// ── Interior-bow routing ──────────────────────────────────────────────────
+// Same principle proven for the nerve arcs (docs/nerve-routing-technique.md):
+// a QuadraticBezier control point PULLS the curve toward a target but the
+// curve never passes through it, so it can't overshoot/loop outward. Here the
+// target is the body core — each segment's control point is its midpoint
+// pulled toward the central axis (x→0, z→0), so every long segment bows
+// INWARD through the body instead of taking the straight shortest path that
+// escapes the silhouette.
+//
+// Tuning: raise LATERAL_PULL / DEPTH_PULL to bow deeper into the body.
+const BOW_LATERAL_PULL = 0.35; // how hard the mid gets pulled toward x=0
+const BOW_DEPTH_PULL = 0.35; // how hard the mid gets pulled toward z=0 (core)
+const BOW_SEG_SAMPLES = 16; // points sampled per segment
+
+// Meridians that get interior-bow routing. Start with one to eyeball it in
+// isolation; add ids here once the look is dialed in.
+const INTERIOR_BOW_IDS = new Set(["bl"]);
+
+function bowInterior(pts) {
+  if (pts.length < 2) return pts;
+  const v = pts.map(([x, y, z]) => new THREE.Vector3(x, y, z));
+  const out = [];
+  for (let i = 0; i < v.length - 1; i++) {
+    const a = v[i];
+    const b = v[i + 1];
+    const mid = a.clone().lerp(b, 0.5);
+    const control = new THREE.Vector3(
+      mid.x * (1 - BOW_LATERAL_PULL),
+      mid.y,
+      mid.z * (1 - BOW_DEPTH_PULL),
+    );
+    const seg = new THREE.QuadraticBezierCurve3(a, control, b).getPoints(
+      BOW_SEG_SAMPLES,
+    );
+    // Drop the first sample of every segment after the first to avoid
+    // duplicating the shared node between consecutive segments.
+    out.push(...(i === 0 ? seg : seg.slice(1)));
+  }
+  return out;
+}
+
+function applyBow(id, pts) {
+  return INTERIOR_BOW_IDS.has(id) ? bowInterior(pts) : pts;
+}
 
 export default function MeridianPaths({ bodyLandmarks }) {
   const paths = useMemo(() => {
@@ -42,12 +88,12 @@ export default function MeridianPaths({ bodyLandmarks }) {
         result.push({
           id: `${meridian.id}-L`,
           color: meridian.color,
-          points: ptsR,
+          points: applyBow(meridian.id, ptsR),
         });
         result.push({
           id: `${meridian.id}-R`,
           color: meridian.color,
-          points: ptsL,
+          points: applyBow(meridian.id, ptsL),
         });
         continue;
       }
@@ -56,15 +102,22 @@ export default function MeridianPaths({ bodyLandmarks }) {
         result.push({
           id: `${meridian.id}-L`,
           color: meridian.color,
-          points: pts,
+          points: applyBow(meridian.id, pts),
         });
         result.push({
           id: `${meridian.id}-R`,
           color: meridian.color,
-          points: pts.map(([x, y, z]) => [-x, y, z]),
+          points: applyBow(
+            meridian.id,
+            pts.map(([x, y, z]) => [-x, y, z]),
+          ),
         });
       } else {
-        result.push({ id: meridian.id, color: meridian.color, points: pts });
+        result.push({
+          id: meridian.id,
+          color: meridian.color,
+          points: applyBow(meridian.id, pts),
+        });
       }
     }
     return result;

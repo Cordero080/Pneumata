@@ -533,14 +533,9 @@ export const meridians = [
     element: "Fire",
     color: "#ff8800",
     bilateral: true,
-    pathPoints: [
-      [0.29, 0.84, -0.04], // TW-4 wrist dorsum
-      [0.27, 0.88, -0.04], // TW-5 forearm dorsum
-      [0.14, 1.42, -0.06], // TW-14 posterior shoulder
-      [0.05, 1.53, -0.02], // lateral neck
-      [0.08, 1.59, 0.04], // temple
-      [0.07, 1.65, 0.07], // TW-23
-    ],
+    // No pathPoints — the line is built from the node positions below, so
+    // moving a node moves the line. Add TCM points (e.g. an elbow point) to
+    // this array to give the line more anchors to thread through.
     points: [
       {
         id: "TW-4",
@@ -556,6 +551,7 @@ export const meridians = [
         function: "Opens Yang Wei vessel — fever, headache, deafness",
       },
       {
+        id: "TW-14",
         name: "Jianliao",
         position: [0.14, 1.42, -0.06], // posterior-inferior to acromion, between two deltoid tendons — x≈0.13–0.16, y≈1.40–1.44, z<0
         function: "Posterior shoulder — shoulder pain, limited mobility",
