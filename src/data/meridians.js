@@ -167,16 +167,8 @@ export const meridians = [
     element: "Metal",
     color: "#e0e8ff",
     bilateral: true,
-    handPathLandmark: true,
-    pathPoints: [
-      [0.14, 0.68, -0.02], // LI-4 hand dorsum
-      [0.27, 1.05, -0.02], // LI-10 dorsal forearm
-      [0.29, 1.1, 0.01], // LI-11 lateral elbow
-      [0.15, 1.42, 0.02], // LI-15 anterior shoulder
-      [0.08, 1.53, 0.05], // anterior neck
-      [0.05, 1.6, 0.08], // cheek
-      [0.04, 1.63, 0.09], // LI-20
-    ],
+    // No pathPoints — line builds from the node positions below (starts at
+    // LI-10, see MeridianPaths), so it locks onto the nodes.
     points: [
       {
         id: "LI-4",
@@ -341,15 +333,10 @@ export const meridians = [
     element: "Fire",
     color: "#ff7733",
     bilateral: true,
-    handPathLandmark: true,
-    pathPoints: [
-      [0.12, 0.65, -0.03], // SI-3 knuckle
-      [0.28, 0.84, -0.04], // SI-4 ulnar wrist dorsum
-      [0.14, 1.32, -0.07], // SI-11 scapula
-      [0.05, 1.52, -0.04], // posterior neck
-      [0.08, 1.56, 0.02], // jaw angle
-      [0.08, 1.615, -0.015], // SI-19
-    ],
+    // No pathPoints — line builds from the node positions below (SI-3 → SI-4
+    // → SI-11 → SI-19), so it locks onto the nodes and follows when they move.
+    // SI-11 (scapula) → SI-19 (front of ear) is the correct onward path; add
+    // TCM neck points (SI-16/17) here as nodes to route it up the neck.
     points: [
       {
         id: "SI-3",

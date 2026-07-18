@@ -76,6 +76,18 @@ export default function MeridianPaths({ bodyLandmarks }) {
       // GB-20 is index 2 in this meridian's pathPoints array.
       if (meridian.id === "gb") pts = pts.slice(0, 3);
 
+      // Small Intestine (si): start the line at SI-4 (wrist) — drop SI-3, the
+      // hand point (index 0), whose position field is a hand-landmark
+      // placeholder that would otherwise shoot the line down to the thigh.
+      // Line runs SI-4 → SI-11 → SI-19, same "stop at the wrist" rule as LU/PC/HT.
+      if (meridian.id === "si") pts = pts.slice(1);
+
+      // Large Intestine (li): start the line at LI-10 (forearm) — drop LI-4,
+      // the hand point (index 0), whose hand-landmark position sits on the
+      // wrist and made the line terminate on the PC-9 node. Line runs
+      // LI-10 → LI-11 → LI-15 → LI-20.
+      if (meridian.id === "li") pts = pts.slice(1);
+
       // Replace first pathPoint with actual mesh-sampled wrist position (nerve endpoint)
       if (meridian.handPathLandmark && meridian.pathPoints) {
         const hr = bodyLandmarks?.wrist_right;
