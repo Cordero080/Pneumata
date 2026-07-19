@@ -1,8 +1,129 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 import { Line } from "@react-three/drei";
 import * as THREE from "three";
 import { meridians } from "../../data/meridians";
 import { femaleMeridians } from "../../data/femaleMeridians";
+
+// A single "qi" strip that travels one meridian line in flow order (the point
+// array is already ordered), hugging the curve — no trailing geometry that
+// pokes outside bends. Its brightness is a sawtooth: it FLARES the instant it
+// reaches an acupoint node, then fades toward the next node where it flares
+// again (in TCM the points are where qi gathers). Electric white with an
+// additive glow sprite for the electromagnetic feel. meshBasicMaterial + one
+// sprite, no lighting — cheap.
+const QI_SPEED = 0.16; // fraction of the line per second
+const QI_COLOR = "#ffffff"; // electric white
+const QI_LEN = 0.018; // strip length (small)
+const QI_RADIUS = 0.001; // ~line width
+const QI_GLOW = 0.022; // glow sprite base scale
+const QI_FLASH_DIST = 0.025; // proximity (world units) counted as "reached a node"
+const QI_FLOOR = 0.14; // dim baseline brightness between nodes
+const QI_DECAY = 2.6; // how fast the flare fades toward the next node
+const CYL_AXIS = new THREE.Vector3(0, 1, 0); // cylinderGeometry default axis
+
+// Soft radial glow texture, built once and shared by every pulse's sprite.
+let _glowTex = null;
+function glowTexture() {
+  if (_glowTex) return _glowTex;
+  const size = 64;
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const ctx = c.getContext("2d");
+  const g = ctx.createRadialGradient(
+    size / 2,
+    size / 2,
+    0,
+    size / 2,
+    size / 2,
+    size / 2,
+  );
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.35, "rgba(255,255,255,0.4)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  _glowTex = new THREE.CanvasTexture(c);
+  return _glowTex;
+}
+
+function QiPulse({ points, nodes, phase }) {
+  const groupRef = useRef();
+  const stripRef = useRef();
+  const glowRef = useRef();
+  const pos = useRef(new THREE.Vector3());
+  const tan = useRef(new THREE.Vector3());
+  const quat = useRef(new THREE.Quaternion());
+  const energy = useRef(0); // 1 at a node, decays toward the next
+  const wasNear = useRef(false);
+  const curve = useMemo(() => {
+    if (!points || points.length < 2) return null;
+    const v = points.map((p) => new THREE.Vector3(p[0], p[1], p[2]));
+    return new THREE.CatmullRomCurve3(v, false);
+  }, [points]);
+  const nodeVecs = useMemo(
+    () => (nodes ?? []).map(([x, y, z]) => new THREE.Vector3(x, y, z)),
+    [nodes],
+  );
+
+  useFrame((state, delta) => {
+    if (!curve || !groupRef.current) return;
+    const t = (state.clock.getElapsedTime() * QI_SPEED + phase) % 1;
+    curve.getPoint(t, pos.current);
+    curve.getTangent(t, tan.current).normalize();
+    quat.current.setFromUnitVectors(CYL_AXIS, tan.current);
+    groupRef.current.position.copy(pos.current);
+    groupRef.current.quaternion.copy(quat.current);
+
+    // Sawtooth: flare to 1 on entering a node's radius, else decay.
+    let minD = Infinity;
+    for (const nv of nodeVecs) {
+      const d = pos.current.distanceTo(nv);
+      if (d < minD) minD = d;
+    }
+    const near = minD < QI_FLASH_DIST;
+    if (near && !wasNear.current) energy.current = 1;
+    wasNear.current = near;
+    energy.current *= Math.exp(-delta * QI_DECAY);
+
+    const bright = QI_FLOOR + energy.current * (1 - QI_FLOOR);
+    if (stripRef.current) stripRef.current.material.opacity = bright;
+    if (glowRef.current) {
+      glowRef.current.material.opacity = bright * 0.9;
+      const s = QI_GLOW * (0.6 + 0.9 * energy.current);
+      glowRef.current.scale.set(s, s, 1);
+    }
+  });
+
+  if (!curve) return null;
+  return (
+    <group ref={groupRef} renderOrder={7}>
+      <mesh ref={stripRef}>
+        <cylinderGeometry args={[QI_RADIUS, QI_RADIUS, QI_LEN, 5]} />
+        <meshBasicMaterial
+          color={QI_COLOR}
+          transparent
+          opacity={QI_FLOOR}
+          depthWrite={false}
+          depthTest={false}
+          toneMapped={false}
+        />
+      </mesh>
+      <sprite ref={glowRef} scale={[QI_GLOW, QI_GLOW, 1]}>
+        <spriteMaterial
+          map={glowTexture()}
+          color={QI_COLOR}
+          transparent
+          opacity={QI_FLOOR}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+          depthTest={false}
+          toneMapped={false}
+        />
+      </sprite>
+    </group>
+  );
+}
 
 // ── Interior-bow routing ──────────────────────────────────────────────────
 // Same principle proven for the nerve arcs (docs/nerve-routing-technique.md):
@@ -111,6 +232,10 @@ export default function MeridianPaths({ bodyLandmarks, femaleMode = false }) {
     for (const meridian of source) {
       if (meridian.points.length < 2) continue;
       let pts = meridian.pathPoints ?? meridian.points.map((p) => p.position);
+      // Raw acupoint positions for the qi "pit-stop" swell — one side as-is,
+      // the other mirrored, matching how the drawn line's L/R are built below.
+      const nodesL = meridian.points.map((p) => p.position);
+      const nodesR = nodesL.map(([x, y, z]) => [-x, y, z]);
 
       // Lung (lu): stop the line at LU-9 (wrist) — don't draw the last
       // segment out to LU-11 (fingertip), it was cutting across empty space.
@@ -214,11 +339,13 @@ export default function MeridianPaths({ bodyLandmarks, femaleMode = false }) {
           id: `${meridian.id}-L`,
           color: meridian.color,
           points: applyBow(meridian.id, ptsR),
+          nodes: nodesL,
         });
         result.push({
           id: `${meridian.id}-R`,
           color: meridian.color,
           points: applyBow(meridian.id, ptsL),
+          nodes: nodesR,
         });
         continue;
       }
@@ -228,6 +355,7 @@ export default function MeridianPaths({ bodyLandmarks, femaleMode = false }) {
           id: `${meridian.id}-L`,
           color: meridian.color,
           points: applyBow(meridian.id, pts),
+          nodes: nodesL,
         });
         result.push({
           id: `${meridian.id}-R`,
@@ -236,12 +364,14 @@ export default function MeridianPaths({ bodyLandmarks, femaleMode = false }) {
             meridian.id,
             pts.map(([x, y, z]) => [-x, y, z]),
           ),
+          nodes: nodesR,
         });
       } else {
         result.push({
           id: meridian.id,
           color: meridian.color,
           points: applyBow(meridian.id, pts),
+          nodes: nodesL,
         });
       }
     }
@@ -262,6 +392,14 @@ export default function MeridianPaths({ bodyLandmarks, femaleMode = false }) {
           depthWrite={false}
           depthTest={false}
           renderOrder={5}
+        />
+      ))}
+      {paths.map(({ id, points, nodes }, i) => (
+        <QiPulse
+          key={`qi-${id}`}
+          points={points}
+          nodes={nodes}
+          phase={(i * 0.61803) % 1}
         />
       ))}
     </group>

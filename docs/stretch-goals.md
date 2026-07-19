@@ -1,6 +1,54 @@
 # Pneumata — Stretch Goals
 
-These are post-MVP enhancements. The current build uses a programmatic wireframe silhouette (Three.js primitives). The goals below are for when the core experience is fully polished.
+These are post-MVP enhancements. (Note: the old "procedural figure" goals below
+predate the current GLB body + meridian system and are partly done — kept for
+history.)
+
+---
+
+## ⚠️ In progress: Meridians (finish before the meridian stretch goals)
+
+The meridian system is **not finished**. Before building meridian features
+(qi flow, five elements, horary clock), the placement + routing work has to be
+completed:
+
+- **Node placement is incomplete.** Not every acupoint is accurately placed
+  yet. Verified points are marked with a ✅ in `meridians.js` /
+  `femaleMeridians.js`; "new" tags mark freshly-corrected female coords.
+- **Bézier curvature is only done for some regions.** Arms, neck, and parts of
+  the legs are routed; other segments are still straight or rough — on **both**
+  the male and female figures.
+- Male lives in `src/data/meridians.js`, female in
+  `src/data/femaleMeridians.js` (WYSIWYG — what's in the file renders; no
+  runtime transform). Routing/curve logic and the guide constants are in
+  `src/components/organs/MeridianPaths.jsx`.
+
+### How to resume (the method — see `docs/directing-a-blind-ai.md`)
+
+1. **Anchors as sonar.** Use the ✅-verified nodes + organ nodes (lymph,
+   thyroid) + skeletal landmarks (spinal discs like C5–C6, the elbow) as fixed
+   reference points. Route curves _between_ known-good anchors.
+2. **Translate visual → coordinate.** "This line looks wrong" isn't actionable;
+   "route it through the C5–C6 disc / the cervical lymph node" is. Convert the
+   anatomical judgment into a point, then curve through it.
+3. **The tools in `MeridianPaths.jsx`:**
+   - `arcThroughGuide(p0, guide, p2)` — QuadraticBezier that PASSES THROUGH a
+     single interior guide at its midpoint. Good when the guide is roughly the
+     geometric midpoint (else it over-warps — see TW arm).
+   - `curveThrough([...points])` — centripetal Catmull-Rom through many points.
+     Good for smoothing a run of nodes / multiple guides.
+   - Guide constants (`CERVICAL_LYMPH`, `GB_NECK`, etc.) have a
+     `FEMALE_*` variant selected by `femaleMode`. Add a female variant for any
+     new guide.
+4. **Verify without eyes:** after each change, `curl` the dev-server URL of the
+   file and grep for compile errors, and `node --input-type=module` import the
+   data file to confirm it parses.
+5. **Know when to revert.** If a change makes it worse, `git checkout` the file
+   back to the last commit rather than layering fixes (the male→female
+   auto-transform was reverted this way).
+
+Only once placement + routing are solid should the meridian visual features
+below get built on top.
 
 ---
 
@@ -70,6 +118,27 @@ export default WireframeModel
 **Why:** This is where the visual and conceptual payoff lives. Right now the spine and the organ nodes exist in parallel but aren't visibly connected. Nerve roots would make the spine literally function as the PCIe bus it represents — visible signal paths branching out to each organ. The `spinalConnection` field already exists on every organ object with the exact innervation level; the data is there.
 
 **How:** For each organ, find the disc index matching its `spinalConnection` level, draw a `<Line>` from that disc position to the organ node position, animate opacity in sync with the organ's active state or the view mode.
+
+---
+
+## Meridian Horary Clock (Time-of-Day Activation)
+
+**What:** In TCM the "organ clock" cycles qi through the twelve meridians, each
+peaking in a 2-hour window (e.g. Lung 3–5am, Large Intestine 5–7am, … around the
+full 24h). Highlight the currently-"active" meridian based on the real time of
+day — brighten its line/nodes, dim the rest, and label the window.
+
+**Why:** Nearly free on data (just a 12-entry id→hour-range table), conceptually
+rich, and it makes the model feel alive/temporal. Ties the meridian layer to
+something real (the clock) rather than being purely spatial.
+
+**Feasible because:** all twelve bilateral meridians already have stable ids and
+an `element`; the render already supports per-meridian dimming/highlight
+(`activeMeridian`). Add a horary table, read `new Date().getHours()`, map to the
+active meridian, drive the existing highlight.
+
+**Depends on:** meridian placement + routing being finished first (see the WIP
+note at the top).
 
 ---
 
