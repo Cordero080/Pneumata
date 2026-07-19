@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { meridians } from "../../data/meridians";
+import { femaleMeridians } from "../../data/femaleMeridians";
 import { setActiveMeridian } from "../../data/activeMeridian";
 import { ORGAN_TCM } from "../../data/tcmMapping";
 
@@ -189,9 +190,23 @@ function MeridianPoint({ point, color, scale, meridian, onShowConnection }) {
   );
 }
 
+// Cache the last-seen wrist landmarks. On a body-model toggle, bodyLandmarks
+// is briefly null/stale (and the female mesh never samples a wrist at all), so
+// without this the hand nodes drop to their raw fingertip position — which sits
+// at thigh level — until a full refresh re-samples. Falling back to the cached
+// wrist keeps them in place across toggles.
+let cachedWristRight = null;
+let cachedWristLeft = null;
+
 function resolvePos(point, bodyLandmarks, xSign) {
-  if (point.useHandLandmark && bodyLandmarks) {
-    const lm = xSign > 0 ? bodyLandmarks.wrist_right : bodyLandmarks.wrist_left;
+  if (point.useHandLandmark) {
+    if (bodyLandmarks?.wrist_right)
+      cachedWristRight = bodyLandmarks.wrist_right;
+    if (bodyLandmarks?.wrist_left) cachedWristLeft = bodyLandmarks.wrist_left;
+    const lm =
+      xSign > 0
+        ? (bodyLandmarks?.wrist_right ?? cachedWristRight)
+        : (bodyLandmarks?.wrist_left ?? cachedWristLeft);
     if (lm) {
       const [wx, wy, wz] = lm;
       const [dx = 0, dy = 0, dz = 0] = point.handOffset ?? [];
@@ -202,15 +217,16 @@ function resolvePos(point, bodyLandmarks, xSign) {
     return [-point.position[0], point.position[1], point.position[2]];
   return point.position;
 }
-
 export default function MeridianLayer({
   scale = 1,
   onShowConnection,
   bodyLandmarks,
+  femaleMode = false,
 }) {
+  const source = femaleMode ? femaleMeridians : meridians;
   return (
     <group>
-      {meridians.map((meridian) =>
+      {source.map((meridian) =>
         meridian.points.map((point) => {
           const pts = meridian.bilateral
             ? [

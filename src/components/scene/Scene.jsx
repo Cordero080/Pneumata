@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, PerformanceMonitor } from "@react-three/drei";
 import SceneLights from "./SceneLights";
 import OrganNode from "../organ/OrganNode";
 import SpinalCord from "../spine/SpinalCord";
@@ -119,6 +119,16 @@ function Scene({
   const [bodyLandmarks, setBodyLandmarks] = useState(null);
   const [cellTarget, setCellTarget] = useState(null);
 
+  // Adaptive resolution — start at the device's real pixel ratio (capped at 2)
+  // so the mesh renders crisp, then PerformanceMonitor scales it back down if
+  // the framerate can't sustain it. Replaces the old fixed dpr=1 on mobile,
+  // which was the cause of the fuzzy look.
+  const MAX_DPR = Math.min(
+    typeof window !== "undefined" ? window.devicePixelRatio : 1,
+    2,
+  );
+  const [dpr, setDpr] = useState(MAX_DPR);
+
   useEffect(() => {
     setSpinePoints(null);
     setBodyLandmarks(null);
@@ -165,10 +175,17 @@ function Scene({
         powerPreference: "high-performance",
         antialias: window.devicePixelRatio < 2,
       }}
-      dpr={[1, window.innerWidth <= 768 ? 1 : 2]}
+      dpr={dpr}
       performance={{ min: 0.4 }}
       onPointerMissed={() => handleClearPreview()}
     >
+      {/* Drop resolution a step if fps sags, raise it back when there's
+          headroom. Bounds keep it between 1 (smooth) and the device max (crisp). */}
+      <PerformanceMonitor
+        factor={1}
+        onDecline={() => setDpr((d) => Math.max(1, d - 0.5))}
+        onIncline={() => setDpr((d) => Math.min(MAX_DPR, d + 0.5))}
+      />
       <SceneLights darkMode={darkMode} meshMode={meshMode} />
       <BreathingDriver breathingRef={breathingRef} />
       <group
@@ -362,9 +379,18 @@ function Scene({
           ),
         )}
         {showMeridians && (
-          <MeridianLayer scale={globalScale} bodyLandmarks={bodyLandmarks} />
+          <MeridianLayer
+            scale={globalScale}
+            bodyLandmarks={bodyLandmarks}
+            femaleMode={femaleMode}
+          />
         )}
-        {showMeridians && <MeridianPaths bodyLandmarks={bodyLandmarks} />}
+        {showMeridians && (
+          <MeridianPaths
+            bodyLandmarks={bodyLandmarks}
+            femaleMode={femaleMode}
+          />
+        )}
       </group>
       <CameraController
         brainZoom={brainZoom}

@@ -6,10 +6,28 @@ Philosophy: the experience should be identical on mobile and desktop. We do not 
 
 ## Implemented
 
-### Canvas DPR cap — `dpr={[1, 2]}`
+### Adaptive DPR via PerformanceMonitor — mobile crispness fix
 **File:** `src/components/scene/Scene.jsx`
 
-iPhones and Android flagships report `devicePixelRatio` of 3. Without a cap, the WebGL renderer draws **9×** the pixels of a 1× display. Capping at 2 cuts that to 4× — a 55% reduction in fill rate — with zero perceptible quality difference because retina density already exceeds human acuity.
+iPhones and Android flagships report `devicePixelRatio` of 3. Without a cap, the WebGL renderer draws **9×** the pixels of a 1× display, so we cap at 2 (4× — still beyond human acuity).
+
+**The bug this replaced:** the cap was written `dpr={[1, innerWidth<=768 ? 1 : 2]}` — i.e. mobile was pinned to a *fixed* dpr **1**, drawing the 3D at ~1/3 of the screen's real resolution and upscaling it. That's what made the mesh and organs look fuzzy on phones, and it silently violated this doc's own "identical on mobile and desktop" philosophy.
+
+**The fix — adaptive, self-tuning:**
+```js
+const MAX_DPR = Math.min(window.devicePixelRatio, 2);
+const [dpr, setDpr] = useState(MAX_DPR);
+// <Canvas dpr={dpr}>
+<PerformanceMonitor
+  onDecline={() => setDpr((d) => Math.max(1, d - 0.5))}
+  onIncline={() => setDpr((d) => Math.min(MAX_DPR, d + 0.5))}
+/>
+```
+Start at the device's real pixel ratio (capped at 2) so the scene renders **crisp**. `PerformanceMonitor` (drei) watches frame time and steps the DPR **down** (2 → 1.5 → 1) if the phone can't sustain it, then back **up** when there's headroom. Result: capable phones look sharp, weak phones stay smooth — no hardcoded device guess.
+
+**Why this over a fixed bump:** you notice fuzziness mainly when *looking* (static) and need framerate mainly when *moving*; a fixed `dpr=2` would tank fps on low-end phones. Letting the framerate decide is the whole point.
+
+**Why `PerformanceMonitor` and not `AdaptiveDpr`:** `AdaptiveDpr` calls `gl.setPixelRatio` directly, which fights a state-driven `dpr` prop. Pick one; the state-driven `PerformanceMonitor` pattern is the canonical, conflict-free choice.
 
 ### Adaptive resolution under load — `performance={{ min: 0.5 }}`
 **File:** `src/components/scene/Scene.jsx`

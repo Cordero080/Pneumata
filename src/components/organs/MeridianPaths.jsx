@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Line } from "@react-three/drei";
 import * as THREE from "three";
 import { meridians } from "../../data/meridians";
+import { femaleMeridians } from "../../data/femaleMeridians";
 
 // ── Interior-bow routing ──────────────────────────────────────────────────
 // Same principle proven for the nerve arcs (docs/nerve-routing-technique.md):
@@ -71,12 +72,25 @@ function arcThroughGuide(p0, guide, p2, samples = 16) {
 // Cervical lymph node (interior neck) — shared anatomical guide for neck arcs.
 // Coord from lymph_cervical in organs.js.
 const CERVICAL_LYMPH = [0.04, 1.51, 0.01];
+// Female neck guide — routes the neck arc BACK toward the C5–C6 discs at the
+// base of the female neck (midline, posterior) so it curves into the neck
+// instead of hovering outside the lower, narrower female traps.
+const FEMALE_CERVICAL_LYMPH = [0, 1.35, -0.05];
 
 // Back-of-arm elbow — shared guide for the dorsal-arm meridians (SI, TW) whose
 // lines jump from the lower arm to the shoulder/scapula and skip the elbow.
 // Located off the checked LI-11 lateral-elbow node [0.29,1.1,0.01], nudged
 // dorsal (z negative).
 const DORSAL_ELBOW = [0.29, 1.1, -0.03];
+// Female elbow — lower and slightly more medial (female arm sits lower and
+// narrower) so the orange dorsal-arm lines (TW, SI) curve INTO the arm.
+const FEMALE_DORSAL_ELBOW = [0.26, 1.0, -0.03];
+
+// GB nape→shoulder guide — pulled in toward the C5–C6 disc (male spine ≈
+// [0, 1.478, -0.038]) so the arc's halfway point dips deep into the neck
+// instead of bowing outside the trapezius. Nearly midline + posterior.
+const GB_NECK = [0.015, 1.51, -0.05];
+const FEMALE_GB_NECK = [0.012, 1.38, -0.045]; // lower for the shorter female neck
 
 // Smooth curve PASSING THROUGH every point in `points` (endpoints + interior
 // guides). Centripetal Catmull-Rom — used when a segment needs more than one
@@ -88,10 +102,13 @@ function curveThrough(points, samples = 24) {
     .map((p) => [p.x, p.y, p.z]);
 }
 
-export default function MeridianPaths({ bodyLandmarks }) {
+export default function MeridianPaths({ bodyLandmarks, femaleMode = false }) {
   const paths = useMemo(() => {
     const result = [];
-    for (const meridian of meridians) {
+    const source = femaleMode ? femaleMeridians : meridians;
+    const lymph = femaleMode ? FEMALE_CERVICAL_LYMPH : CERVICAL_LYMPH;
+    const gbNeck = femaleMode ? FEMALE_GB_NECK : GB_NECK;
+    for (const meridian of source) {
       if (meridian.points.length < 2) continue;
       let pts = meridian.pathPoints ?? meridian.points.map((p) => p.position);
 
@@ -114,10 +131,16 @@ export default function MeridianPaths({ bodyLandmarks }) {
       // points array (HT-3, HT-7, HT-9).
       if (meridian.id === "ht") pts = pts.slice(0, 2);
 
-      // Gallbladder (gb): stop the line at GB-20 (nape) — don't draw the
-      // rest of the path down through GB-21/30/34/40/44 (shoulder to foot).
-      // GB-20 is index 2 in this meridian's pathPoints array.
-      if (meridian.id === "gb") pts = pts.slice(0, 3);
+      // Gallbladder (gb): now node-driven (pathPoints removed) so GB-20 is the
+      // top node — the line no longer floats up to the eye/temple past it.
+      // Show the upper segment GB-20 → GB-21 → GB-30 (nape → shoulder → hip),
+      // and curve GB-20 → GB-21 IN through the neck (via gbNeck) so it doesn't
+      // bow outside the trapezius. Widen the slice as lower GB nodes get placed.
+      if (meridian.id === "gb") {
+        pts = pts.slice(0, 3); // GB-20, GB-21, GB-30
+        const neckArc = arcThroughGuide(pts[0], gbNeck, pts[1]); // GB-20 → interior → GB-21
+        pts = [...neckArc, ...pts.slice(2)]; // + GB-30
+      }
 
       // Spleen (sp): smooth the leg portion (SP-3 → SP-6 → SP-9 → SP-10) into
       // one curve riding the inner-leg contour, anchored by the checked SP-6
@@ -143,12 +166,10 @@ export default function MeridianPaths({ bodyLandmarks }) {
       // curves inward up the neck. Arm portion (SI-4 → SI-11) stays straight.
       if (meridian.id === "si") {
         pts = pts.slice(1); // → [SI-4, SI-11, SI-19]
-        // Arm: curve SI-4 (wrist) → SI-11 (scapula) through the elbow so it
-        // rides up the back of the arm instead of cutting medial across the gap.
-        const armArc = arcThroughGuide(pts[0], DORSAL_ELBOW, pts[1]); // SI-4 → elbow → SI-11
-        // Neck: SI-11 → SI-19 through the cervical lymph node.
-        const neckArc = arcThroughGuide(pts[1], CERVICAL_LYMPH, pts[2]);
-        pts = [...armArc, ...neckArc.slice(1)]; // join at SI-11 without duplicating it
+        // Arm SI-4 → SI-11 stays straight (nodes are placed on the arm).
+        // Neck: SI-11 → SI-19 curves through the cervical lymph node.
+        const neckArc = arcThroughGuide(pts[1], lymph, pts[2]);
+        pts = [pts[0], ...neckArc]; // SI-4 → SI-11 → neck arc → SI-19
       }
 
       // Large Intestine (li): start the line at LI-10 (forearm) — drop LI-4,
@@ -164,7 +185,7 @@ export default function MeridianPaths({ bodyLandmarks }) {
         // the jaw before reaching the nostril. Jaw point derived from the
         // thyroid ref [0,1.53,0.03] — its height/forward-depth, kept lateral.
         const jaw = [0.05, 1.56, 0.05];
-        const neck = curveThrough([pts[2], CERVICAL_LYMPH, jaw, pts[3]]);
+        const neck = curveThrough([pts[2], lymph, jaw, pts[3]]);
         pts = [pts[0], pts[1], ...neck]; // LI-10 → LI-11 → smooth neck curve → LI-20
       }
 
@@ -173,12 +194,11 @@ export default function MeridianPaths({ bodyLandmarks }) {
       // diagonal from the back-shoulder to the front-of-face eyebrow. Points
       // are [TW-4, TW-5, TW-14, TW-23]; arm portion stays straight.
       if (meridian.id === "tw") {
-        // Arm: curve TW-5 (forearm) → TW-14 (shoulder) through the elbow so
-        // the upper arm doesn't bulge lateral. Neck: TW-14 → TW-23 through
-        // the lymph node (as before). TW-4 → TW-5 stays straight.
-        const armArc = arcThroughGuide(pts[1], DORSAL_ELBOW, pts[2]); // TW-5 → elbow → TW-14
-        const neckArc = arcThroughGuide(pts[2], CERVICAL_LYMPH, pts[3]); // TW-14 → lymph → TW-23
-        pts = [pts[0], ...armArc, ...neckArc.slice(1)]; // join at TW-14 without duplicating
+        // Arm TW-4 → TW-5 → TW-14 stays straight (nodes are placed on the arm;
+        // the old elbow arc over-warped near TW-5). Neck: TW-14 → TW-23 curves
+        // through the lymph node.
+        const neckArc = arcThroughGuide(pts[2], lymph, pts[3]); // TW-14 → lymph → TW-23
+        pts = [pts[0], pts[1], ...neckArc]; // TW-4 → TW-5 → TW-14 → neck arc → TW-23
       }
 
       // Replace first pathPoint with actual mesh-sampled wrist position (nerve endpoint)
@@ -225,8 +245,9 @@ export default function MeridianPaths({ bodyLandmarks }) {
         });
       }
     }
+
     return result;
-  }, [bodyLandmarks]);
+  }, [bodyLandmarks, femaleMode]);
 
   return (
     <group>
