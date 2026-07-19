@@ -125,7 +125,7 @@ function MeridianPoint({ point, color, scale, meridian, onShowConnection }) {
                 fontWeight: 800,
                 letterSpacing: "0.14em",
                 color: "rgba(8, 20, 48, 0.95)",
-                textShadow: "0 1px 0 rgba(255,255,255,0.6)",
+                textShadow: "0 1px 0 rgba(255, 255, 255, 0.75)",
                 lineHeight: 1.2,
                 textTransform: "uppercase",
               }}
@@ -138,7 +138,7 @@ function MeridianPoint({ point, color, scale, meridian, onShowConnection }) {
                 fontSize: "clamp(7px, 2vw, 10px)",
                 fontWeight: 500,
                 letterSpacing: "0.10em",
-                color: "rgba(18, 38, 72, 0.70)",
+                color: "rgba(241, 244, 248, 0.89)",
                 lineHeight: 1.4,
                 marginTop: "3px",
               }}

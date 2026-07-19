@@ -14065,3 +14065,288 @@ PASSED
 
 Result: 0 CRITICAL, 0 WARNING
 ================================================================================
+================================================================================
+SECURITY AUDIT — MeridianPaths.jsx
+File: src/components/organs/MeridianPaths.jsx
+Time: 2026-07-19T15:25:45Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — QiToggle.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/controls/QiToggle.jsx
+Time: 2026-07-19T17:40:23Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T17:40:33Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T17:40:43Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T17:41:11Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T17:42:56Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T17:43:08Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T17:43:35Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T18:23:26Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T18:23:41Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T18:23:58Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — QiToggle.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/components/controls/QiToggle.jsx
+Time: 2026-07-19T18:24:22Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T18:25:31Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T18:29:07Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================
+================================================================================
+SECURITY AUDIT — App.jsx
+File: /Users/pablodcordero/code/my-stuff/Pneumata/src/App.jsx
+Time: 2026-07-19T18:29:56Z
+================================================================================
+
+PASSED
+------
+✓ No hardcoded secrets or credentials
+✓ No API key patterns in source
+✓ No SQL injection patterns detected
+✓ No unsafe process.env in client code
+✓ No eval() or new Function() usage
+✓ No error detail leaks in responses
+✓ No unsafe innerHTML assignments
+✓ No obvious unvalidated input patterns
+
+Result: 0 CRITICAL, 0 WARNING
+================================================================================

@@ -102,6 +102,7 @@ function Scene({
   bgModeName,
   legendCategory,
   showMeridians,
+  showQi,
   autoRotate,
   orbsEnabled,
   style,
@@ -389,6 +390,7 @@ function Scene({
           <MeridianPaths
             bodyLandmarks={bodyLandmarks}
             femaleMode={femaleMode}
+            showQi={showQi}
           />
         )}
       </group>

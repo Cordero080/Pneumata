@@ -9,6 +9,7 @@ import CategoryLegend from "./components/legend/CategoryLegend";
 import ViewModeController from "./components/view-controller/ViewModeController";
 import VerticalControls from "./components/controls/VerticalControls";
 import OrbToggle from "./components/controls/OrbToggle";
+import QiToggle from "./components/controls/QiToggle";
 import CoachMarks from "./components/onboarding/CoachMarks";
 import { organs } from "./data/organs";
 import { IS_MOBILE } from "./utils/device";
@@ -116,6 +117,7 @@ function App() {
   const [viewMode, setViewMode] = useState("logic");
   const [showNerves, setShowNerves] = useState(false);
   const [showMeridians, setShowMeridians] = useState(false);
+  const [showQi, setShowQi] = useState(false);
   const [wipBadgeDismissed, setWipBadgeDismissed] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
 
@@ -194,9 +196,22 @@ function App() {
     const rect = bgToggleRef.current.getBoundingClientRect();
     setOrbTogglePos({
       top: rect.top + rect.height / 2 - 12.5, // 12.5 = half the chip's own height
-      left: rect.right + 10,
+      left: rect.right - 4,
     });
   }, [bgMode, showTopNav]);
+
+  // Qi-toggle chip — same slide-out approach as the orb chip, but anchored to
+  // the meridian-toggle button (☯) so it slides out from behind that button.
+  const meridianToggleRef = useRef(null);
+  const [qiTogglePos, setQiTogglePos] = useState({ top: 300, left: 90 });
+  useEffect(() => {
+    if (!showMeridians || !meridianToggleRef.current) return;
+    const rect = meridianToggleRef.current.getBoundingClientRect();
+    setQiTogglePos({
+      top: rect.top + rect.height / 2 - 12.5,
+      left: rect.right - 4,
+    });
+  }, [showMeridians, showTopNav]);
 
   useEffect(() => {
     if (!bgPanelOpen) return;
@@ -522,6 +537,7 @@ function App() {
             {BG_ICONS[bgMode]}
           </button>
           <button
+            ref={meridianToggleRef}
             className={`meridian-toggle-btn${showMeridians ? " meridian-toggle-btn--active" : ""}`}
             onClick={() => setShowMeridians((v) => !v)}
             title="Meridian points"
@@ -537,6 +553,13 @@ function App() {
           enabled={orbsEnabled}
           onToggle={() => setOrbsEnabled((v) => !v)}
           style={{ top: orbTogglePos.top, left: orbTogglePos.left }}
+        />
+      )}
+      {showMeridians && !showAnimation && !showLanding && (
+        <QiToggle
+          enabled={showQi}
+          onToggle={() => setShowQi((v) => !v)}
+          style={{ top: qiTogglePos.top, left: qiTogglePos.left }}
         />
       )}
 
@@ -571,6 +594,7 @@ function App() {
           bgModeName={BG_MODES[bgMode]}
           legendCategory={legendCategory}
           showMeridians={showMeridians}
+          showQi={showQi}
           autoRotate={autoRotate}
           orbsEnabled={orbsEnabled}
         />

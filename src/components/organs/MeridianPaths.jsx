@@ -223,7 +223,7 @@ function curveThrough(points, samples = 24) {
     .map((p) => [p.x, p.y, p.z]);
 }
 
-export default function MeridianPaths({ bodyLandmarks, femaleMode = false }) {
+export default function MeridianPaths({ bodyLandmarks, femaleMode = false, showQi = false }) {
   const paths = useMemo(() => {
     const result = [];
     const source = femaleMode ? femaleMeridians : meridians;
@@ -394,7 +394,7 @@ export default function MeridianPaths({ bodyLandmarks, femaleMode = false }) {
           renderOrder={5}
         />
       ))}
-      {paths.map(({ id, points, nodes }, i) => (
+      {showQi && paths.map(({ id, points, nodes }, i) => (
         <QiPulse
           key={`qi-${id}`}
           points={points}
