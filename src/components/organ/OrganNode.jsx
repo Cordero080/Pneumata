@@ -197,10 +197,13 @@ function OrganNode({
       currentPos.current.lerp(target, 0.06);
       groupRef.current.position.copy(currentPos.current);
 
-      // Scale: 1.5 when modal open, 1.35 on hover (desktop) or preview tap (mobile), else 1
+      // Scale: 1.5 when modal open, 2.0 on hover (desktop) or preview tap
+      // (mobile), else 1 — shrunk in brain zoom where head nodes are dense.
       const isInteractive = IS_MOBILE ? isPreview : hovered;
+      const zoomShrink = brainZoom ? 0.68 : 1.0;
       const targetScale =
-        selectedOrganId === organ.id ? 1.5 : isInteractive ? 2.0 : 1.0;
+        (selectedOrganId === organ.id ? 1.5 : isInteractive ? 2.0 : 1.0) *
+        zoomShrink;
       selectedScaleRef.current +=
         (targetScale - selectedScaleRef.current) * 0.1;
       groupRef.current.scale.setScalar(selectedScaleRef.current);
@@ -291,8 +294,13 @@ function OrganNode({
         selectionDim *
         legendDim *
         meridianDim;
+      // In brain zoom the head nodes cluster tightly, so shrink the glow halo
+      // (its big soft circle is what overlaps into clutter up close).
+      const gBase = brainZoom ? 1.5 : 2.5;
+      const gHi = brainZoom ? 1.9 : 3.0;
+      const gHover = brainZoom ? 2.0 : 3.33; // hover halo growth trimmed ~5%
       glowRef.current.scale.setScalar(
-        hovered ? 3.5 : isExternallyHighlighted ? 3.0 : 2.5,
+        hovered ? gHover : isExternallyHighlighted ? gHi : gBase,
       );
       glowRef.current.material.opacity +=
         (glowTarget * brainFade - glowRef.current.material.opacity) * 0.08;

@@ -6,24 +6,24 @@
 
 ![Power mode — full body red emissive circulatory system](public/screenshots/new-shots/power-mode-hero.png)
 
-| Dark mode — obsidian                                                                                | Dark mode — female figure                                                                              |
-| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Dark mode — obsidian                                                                                       | Dark mode — female figure                                                                                         |
+| ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | ![Dark mode — obsidian body with glowing organ nodes](public/screenshots/new-shots/dark-mode-obsidian.png) | ![Female figure — dark mode close-up with vibrant spine](public/screenshots/new-shots/female-darkmode-closup.png) |
 
-| Female — power mode                                                                                       | Back view — all systems                                                                            |
-| --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Female — power mode                                                                             | Back view — all systems                                                                                |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | ![Female figure — power mode full body](public/screenshots/new-shots/female-darkmode-power.png) | ![Back view — transparent mesh, all organ systems](public/screenshots/new-shots/DarkModeLightMode.png) |
 
-| Back detail — vertebral discs                                                                      | Heart — Power Supply Unit modal                                                                  |
-| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Back detail — vertebral discs                                                                        | Heart — Power Supply Unit modal                                                      |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | ![Back detail — vertebral disc markers and connections](public/screenshots/new-shots/back-disks.png) | ![Heart node — Heart = PSU modal open](public/screenshots/new-shots/dark-mode-2.png) |
 
-| Neuron vs Transistor                                                                                              | Brain zoom — Axon / Data Bus                                                                         |
-| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Neuron vs Transistor                                                                                           | Brain zoom — Axon / Data Bus                                                                   |
+| -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | ![Neuron vs Transistor — hardware analog comparison](public/screenshots/new-shots/neuron-transistor-modal.png) | ![Axon vs Data Bus — brain detail modal](public/screenshots/new-shots/axon-data-bus-modal.png) |
 
-| Brain zoom — cranial nodes                                                                     |     |
-| ---------------------------------------------------------------------------------------------- | --- |
+| Brain zoom — cranial nodes                                                                               |     |
+| -------------------------------------------------------------------------------------------------------- | --- |
 | ![Brain zoom — cranial nodes clustered with colorful spine](public/screenshots/new-shots/brain-zoom.png) |     |
 
 ---
@@ -56,6 +56,12 @@ Pneumata sides with Faggin's later position. It is a guess, same as the alternat
 - **View mode switching** — Logic (neural network), Power (circulatory grid), Breathing (pulmonary cycle), Unified (all systems)
 - **Breathing mode** — body mesh color-shifts blue (deoxygenated, inhale) → cyan (oxygenated, peak) in sync with a 0.25Hz breath cycle; lung nodes flash at oxygenation moment
 - **Traveling circulation orbs** — two energy nodes circuit the full body on closed loops; the heart node radiates expanding rings on each pass
+- **Meridian layer (TCM channels)** — acupoint nodes and their connecting channel lines. The lines are built from the placed nodes and curve to follow the body, arcing through anatomical anchors (cervical lymph node for the neck, elbow for the arm, hip for the trunk) with rounded corners so a channel follows the limb and neck. Moving a node moves its line.
+- **Meridian points as apertures** — each point renders as a hollow glowing ring in its channel's color, with a small bright center-star at the exact center used as a precision placement anchor.
+- **Qi flow animation** — a toggle animates energy traveling each channel in its flow direction. As the wave reaches a point it brightens and swells, then fades with an afterglow. Source (yuan) points carry a halo that contracts inward as the wave arrives.
+- **Spine reacts to qi** — the vertebral disc markers pulse in sync with the qi flowing through the organ system each disc innervates, sweeping down the spine (see `docs/medical-accuracy.md` for the mapping rationale).
+- **Male and female figures** — each figure has its own meridian coordinate data adjusted for its proportions; the whole-figure scale is set per-figure in the config files.
+- **Expandable category legend** — clicking a legend entry expands it to show a plain-language description, the hardware analog, and example organs; clicking outside closes it.
 - **Tabbed About modal** — Philosophy tab and How to Navigate tab for first-time onboarding
 
 ---

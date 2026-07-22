@@ -9,13 +9,21 @@ export const RAW = {
   centerZ: 0.17,
 };
 
-// Female figure is scaled to 88% of TARGET_HEIGHT to match real proportional difference.
-// Further whole-scene shrinking is applied at the Scene wrapper (see FEMALE_SCALE) so
-// mesh + organ nodes + meridians + spine all shrink together.
+// HEIGHT_SCALE normalizes the raw GLB *mesh* to the right height (mesh only —
+// used in AnatomyModel). To change the overall size of the WHOLE female figure
+// (mesh + organ nodes + organs + meridians together), edit FIGURE_SCALE below.
 export const HEIGHT_SCALE = 0.88;
 
 // Extra Y lift: female GLB floor sits slightly higher than the male baseline
 export const Y_OFFSET = 0.08;
+
+// FIGURE_SCALE — overall display size of the entire female assembly. Applied by
+// Scene.jsx to the parent group that holds the mesh, all nodes, organs, and
+// meridians, so they scale together and stay locked in place. THIS is the knob
+// to make the whole female figure bigger/smaller. FIGURE_Y_LIFT re-centers her
+// vertically after scaling.
+export const FIGURE_SCALE = 0.99;
+export const FIGURE_Y_LIFT = 0.03;
 
 // Female spine is sampled dynamically (not hardcoded) with these vertex-filter opts
 export const SPINE_OPTS = {

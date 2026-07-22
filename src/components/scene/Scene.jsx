@@ -2,6 +2,8 @@ import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { OrbitControls, PerformanceMonitor } from "@react-three/drei";
+import * as maleConfig from "../anatomy/male/male-config";
+import * as femaleConfig from "../anatomy/female/female-config";
 import SceneLights from "./SceneLights";
 import OrganNode from "../organ/OrganNode";
 import SpinalCord from "../spine/SpinalCord";
@@ -90,14 +92,11 @@ const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
 const RIGHT_LUNG_POS = [0.12, 1.22, 0.05];
 const ORBIT_TARGET = [0, 0.85, 0];
 
-// Aesthetic shrink applied to the entire female scene group so mesh, nodes, meridians,
-// spine — everything — scales proportionally together. Sits on top of HEIGHT_SCALE 0.88
-// (the real anatomical ratio) in female-config.js.
-export const FEMALE_SCALE = 0.9224;
-
-// Vertical lift added to offsetY when female mode is on — compensates for the fact
-// that scaling from origin pulls the mesh downward. Tune to re-center visually.
-export const FEMALE_Y_LIFT = 0.08;
+// The whole-figure scale + vertical lift now live per-sex in the config files
+// (male-config.js / female-config.js → FIGURE_SCALE / FIGURE_Y_LIFT), so each
+// figure's overall size is edited alongside its other settings. This applies it
+// to the parent group that holds the mesh, nodes, organs, and meridians, so
+// they all scale together and stay locked in place.
 
 const CIRC_OPACITY = { logic: 0.0, power: 1.0, breathing: 0.0, unified: 0.65 };
 
@@ -149,6 +148,9 @@ function Scene({
   orbsEnabled,
   style,
 }) {
+  // Per-sex figure config — supplies FIGURE_SCALE / FIGURE_Y_LIFT for the whole
+  // assembly's overall size (edit those in male-config.js / female-config.js).
+  const figureConfig = femaleMode ? femaleConfig : maleConfig;
   const [hoveredOrganId, setHoveredOrganId] = useState(null);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [previewedOrgan, setPreviewedOrgan] = useState(null);
@@ -242,8 +244,8 @@ function Scene({
       <SceneLights darkMode={darkMode} meshMode={meshMode} />
       <BreathingDriver breathingRef={breathingRef} />
       <group
-        scale={globalScale * (femaleMode ? FEMALE_SCALE : 1)}
-        position={[offsetX, offsetY + (femaleMode ? FEMALE_Y_LIFT : 0), 0]}
+        scale={globalScale * figureConfig.FIGURE_SCALE}
+        position={[offsetX, offsetY + figureConfig.FIGURE_Y_LIFT, 0]}
       >
         <AnatomyModel
           key={modelPath}

@@ -12,11 +12,18 @@ export const RAW = {
   centerZ: 0.17,
 };
 
-// Scale multiplier applied to TARGET_HEIGHT before dividing by RAW.height
+// Scale multiplier applied to TARGET_HEIGHT before dividing by RAW.height (mesh only)
 export const HEIGHT_SCALE = 1;
 
 // Extra Y offset added after positioning (compensates for model-specific floor placement)
 export const Y_OFFSET = 0;
+
+// FIGURE_SCALE — overall display size of the entire male assembly (mesh + nodes
+// + organs + meridians), applied by Scene.jsx to the parent group so they scale
+// together. Male is the reference figure, so 1.0. FIGURE_Y_LIFT re-centers
+// vertically after scaling.
+export const FIGURE_SCALE = 1.0;
+export const FIGURE_Y_LIFT = 0.0;
 
 // SPINE_OPTS = null → use the hardcoded MALE_SPINE_POINTS constant instead of sampling
 export const SPINE_OPTS = null;
