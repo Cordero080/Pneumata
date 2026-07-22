@@ -170,6 +170,37 @@ function applyBow(id, pts) {
   return INTERIOR_BOW_IDS.has(id) ? bowInterior(pts) : pts;
 }
 
+// Chaikin corner-cutting — gently rounds sharp corners by replacing each
+// interior vertex with two points at 1/4 and 3/4 of its neighboring segments.
+// Endpoints stay fixed, and it CANNOT overshoot (result stays inside the
+// original polyline's hull), so it rounds corners without the line escaping
+// the body the way Catmull-Rom could. One pass = subtle rounding.
+function roundCornersOnce(pts) {
+  if (!pts || pts.length < 3) return pts;
+  const out = [pts[0]];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i];
+    const b = pts[i + 1];
+    out.push([
+      a[0] * 0.75 + b[0] * 0.25,
+      a[1] * 0.75 + b[1] * 0.25,
+      a[2] * 0.75 + b[2] * 0.25,
+    ]);
+    out.push([
+      a[0] * 0.25 + b[0] * 0.75,
+      a[1] * 0.25 + b[1] * 0.75,
+      a[2] * 0.25 + b[2] * 0.75,
+    ]);
+  }
+  out.push(pts[pts.length - 1]);
+  return out;
+}
+function roundCorners(pts, iters = 3) {
+  let out = pts;
+  for (let i = 0; i < iters; i++) out = roundCornersOnce(out);
+  return out;
+}
+
 // Smooth arc from p0 to p2 that PASSES THROUGH `guide` at its midpoint.
 // Derives the QuadraticBezier control point (midpoint = 0.25·p0 + 0.5·ctrl +
 // 0.25·p2, solved for ctrl) so an interior anatomical point — e.g. the
@@ -223,7 +254,11 @@ function curveThrough(points, samples = 24) {
     .map((p) => [p.x, p.y, p.z]);
 }
 
-export default function MeridianPaths({ bodyLandmarks, femaleMode = false, showQi = false }) {
+export default function MeridianPaths({
+  bodyLandmarks,
+  femaleMode = false,
+  showQi = false,
+}) {
   const paths = useMemo(() => {
     const result = [];
     const source = femaleMode ? femaleMeridians : meridians;
@@ -376,6 +411,12 @@ export default function MeridianPaths({ bodyLandmarks, femaleMode = false, showQ
       }
     }
 
+    // Round remaining sharp corners on every line. 3 Chaikin passes so the big
+    // node-to-node angles (e.g. at the shoulders) visibly soften; already-curved
+    // segments barely change, and Chaikin can't overshoot (stays inside the
+    // polyline), so no risk of a line escaping the body.
+    for (const path of result) path.points = roundCorners(path.points, 3);
+
     return result;
   }, [bodyLandmarks, femaleMode]);
 
@@ -394,14 +435,15 @@ export default function MeridianPaths({ bodyLandmarks, femaleMode = false, showQ
           renderOrder={5}
         />
       ))}
-      {showQi && paths.map(({ id, points, nodes }, i) => (
-        <QiPulse
-          key={`qi-${id}`}
-          points={points}
-          nodes={nodes}
-          phase={(i * 0.61803) % 1}
-        />
-      ))}
+      {showQi &&
+        paths.map(({ id, points, nodes }, i) => (
+          <QiPulse
+            key={`qi-${id}`}
+            points={points}
+            nodes={nodes}
+            phase={(i * 0.61803) % 1}
+          />
+        ))}
     </group>
   );
 }

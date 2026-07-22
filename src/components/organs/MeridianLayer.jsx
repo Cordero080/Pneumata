@@ -13,29 +13,114 @@ const MERIDIANS_WITH_ORGANS = new Set(
     .filter(Boolean),
 );
 
-function MeridianPoint({ point, color, scale, meridian, onShowConnection }) {
-  const meshRef = useRef();
+// Aperture texture — a glowing ring with a soft, dimmer center (not a solid
+// ball), so a meridian point reads as a "well" where qi surfaces. Built once,
+// shared by every point sprite.
+let _apertureTex = null;
+function apertureTexture() {
+  if (_apertureTex) return _apertureTex;
+  const size = 64;
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const ctx = c.getContext("2d");
+  const g = ctx.createRadialGradient(
+    size / 2,
+    size / 2,
+    0,
+    size / 2,
+    size / 2,
+    size / 2,
+  );
+  g.addColorStop(0, "rgba(255,255,255,0.25)"); // dim hollow-ish center
+  g.addColorStop(0.45, "rgba(255,255,255,0.55)");
+  g.addColorStop(0.62, "rgba(255,255,255,1)"); // bright ring = aperture rim
+  g.addColorStop(0.8, "rgba(255,255,255,0.3)");
+  g.addColorStop(1, "rgba(255,255,255,0)"); // fade out
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  _apertureTex = new THREE.CanvasTexture(c);
+  return _apertureTex;
+}
+
+// Sequential well-up tuning
+const WAVE_SPEED = 0.18; // how fast the activation wave travels a meridian
+const WAVE_WIDTH = 0.14; // fraction of the channel lit at once (wider = softer)
+
+function MeridianPoint({
+  point,
+  color,
+  scale,
+  meridian,
+  index = 0,
+  count = 1,
+  flowPhase = 0,
+  showQi = false,
+  onShowConnection,
+}) {
+  const spriteRef = useRef();
   const [hovered, setHovered] = useState(false);
   const [labelOpen, setLabelOpen] = useState(false);
   const [connectionActive, setConnectionActive] = useState(false);
-  const targetIntensity = useRef(0);
+  const haloRef = useRef();
+  const glowRef = useRef(0); // lingering afterglow value (decays slowly)
 
-  useFrame(() => {
-    if (!meshRef.current) return;
-    const target = hovered ? 3.5 : 0.8;
-    targetIntensity.current += (target - targetIntensity.current) * 0.12;
-    meshRef.current.material.emissiveIntensity = targetIntensity.current;
-    // source points are 2× geometry size, so half the hover scale keeps the hovered size consistent
-    const s = hovered ? (point.isSource ? 2.0 : 4.0) : 1.0;
-    meshRef.current.scale.setScalar(
-      meshRef.current.scale.x + (s - meshRef.current.scale.x) * 0.15,
-    );
+  // Base sprite size (source points larger); the aperture ring is wider than
+  // the old solid ball so it reads as a well, not a dot.
+  const baseSize = (point.isSource ? 0.03 : 0.02) * scale;
+  const pointPos = count > 1 ? index / (count - 1) : 0;
+
+  useFrame((state) => {
+    const s = spriteRef.current;
+    if (!s) return;
+    const time = state.clock.getElapsedTime();
+
+    // Sequential well-up: a wave travels the channel in flow order (index 0 →
+    // last). A point flares as the wave reaches it, then fades — only while qi
+    // is on. Source points keep a steadier baseline glow.
+    let wavePeak = 0;
+    if (showQi) {
+      let wave = (((time * WAVE_SPEED + flowPhase) % 1) + 1) % 1;
+      let dist = Math.abs(wave - pointPos);
+      dist = Math.min(dist, 1 - dist); // wrap-around
+      wavePeak = Math.max(0, 1 - dist / WAVE_WIDTH);
+      wavePeak *= wavePeak; // sharpen the arrival
+    }
+    // Afterglow: the point jumps to the wave peak, then decays slowly — so the
+    // contact LINGERS and fades gently instead of snapping off with the wave.
+    glowRef.current = Math.max(glowRef.current * 0.965, wavePeak);
+    const activation = glowRef.current;
+
+    // Richer resting saturation (idle raised) so channels read colorful even
+    // when calm; activation flares them brighter on top.
+    const idle = point.isSource ? 0.6 : 0.4;
+    const targetOpacity = hovered
+      ? 1
+      : Math.min(1, idle + activation * (1 - idle));
+    s.material.opacity += (targetOpacity - s.material.opacity) * 0.2;
+
+    // Ripple: the aperture swells as the wave passes (and on hover).
+    const swell = 1 + activation * 0.7 + (hovered ? 0.6 : 0);
+    const target = baseSize * swell;
+    const cur = s.scale.x;
+    s.scale.setScalar(cur + (target - cur) * 0.2);
+
+    // Source-point "absorbing" halo — a wider faint ring that CONTRACTS inward
+    // toward the point as the wave hits, like it's drawing energy in. Source
+    // points only (cheap + meaningful: yuan = where a channel sources its qi).
+    if (haloRef.current) {
+      const h = haloRef.current;
+      const hScale = baseSize * (2.4 - activation * 1.2); // 2.4× → 1.2× as it absorbs
+      const hc = h.scale.x;
+      h.scale.setScalar(hc + (hScale - hc) * 0.15);
+      const hOpacity = 0.12 + activation * 0.5;
+      h.material.opacity += (hOpacity - h.material.opacity) * 0.15;
+    }
   });
 
   return (
     <group position={point.position}>
+      {/* Invisible hit target — a bit larger than the sprite for easy tap/hover */}
       <mesh
-        ref={meshRef}
         onPointerEnter={(e) => {
           e.stopPropagation();
           setHovered(true);
@@ -49,21 +134,50 @@ function MeridianPoint({ point, color, scale, meridian, onShowConnection }) {
           e.stopPropagation();
           setLabelOpen((v) => !v);
         }}
-        renderOrder={6}
       >
-        <octahedronGeometry
-          args={[point.isSource ? 0.016 * scale : 0.008 * scale, 0]}
-        />
-        <meshStandardMaterial
-          color={color}
-          emissive={new THREE.Color(color)}
-          emissiveIntensity={0.8}
+        <sphereGeometry args={[baseSize * 1.6, 8, 8]} />
+        <meshBasicMaterial
           transparent
-          opacity={0.9}
-          depthWrite={false}
+          opacity={0}
           depthTest={false}
+          depthWrite={false}
         />
       </mesh>
+
+      {/* Source-point absorbing halo — wider faint ring that contracts inward
+          as the wave hits. Rendered on source points only (cost + meaning). */}
+      {point.isSource && (
+        <sprite
+          ref={haloRef}
+          renderOrder={5}
+          scale={[baseSize * 2.4, baseSize * 2.4, 1]}
+        >
+          <spriteMaterial
+            map={apertureTexture()}
+            color={color}
+            transparent
+            opacity={0.12}
+            depthWrite={false}
+            depthTest={false}
+            toneMapped={false}
+            blending={THREE.AdditiveBlending}
+          />
+        </sprite>
+      )}
+
+      {/* Visible aperture — a glowing ring/well, not a solid ball */}
+      <sprite ref={spriteRef} renderOrder={6} scale={[baseSize, baseSize, 1]}>
+        <spriteMaterial
+          map={apertureTexture()}
+          color={color}
+          transparent
+          opacity={0.28}
+          depthWrite={false}
+          depthTest={false}
+          toneMapped={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </sprite>
 
       {labelOpen && (
         <Html
@@ -222,12 +336,13 @@ export default function MeridianLayer({
   onShowConnection,
   bodyLandmarks,
   femaleMode = false,
+  showQi = false,
 }) {
   const source = femaleMode ? femaleMeridians : meridians;
   return (
     <group>
-      {source.map((meridian) =>
-        meridian.points.map((point) => {
+      {source.map((meridian, mi) =>
+        meridian.points.map((point, pointIdx) => {
           const pts = meridian.bilateral
             ? [
                 { ...point, position: resolvePos(point, bodyLandmarks, 1) },
@@ -242,6 +357,11 @@ export default function MeridianLayer({
               color={meridian.color}
               scale={scale}
               meridian={meridian}
+              index={pointIdx}
+              count={meridian.points.length}
+              // Offset each meridian's wave so they don't all pulse in unison.
+              flowPhase={mi * 0.37}
+              showQi={showQi}
               onShowConnection={onShowConnection}
             />
           ));

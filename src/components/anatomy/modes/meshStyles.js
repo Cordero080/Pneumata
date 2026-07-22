@@ -52,7 +52,7 @@ export function getMeshStyle(meshMode, darkMode, colors) {
           mat: {
             transparent: true,
             opacity: 0,
-            iridescence: 0,
+            iridescence: 0.001, // epsilon (not 0) so USE_IRIDESCENCE define never toggles = no shader recompile on mode switch
             depthWrite: false,
           },
           al: {
@@ -70,7 +70,7 @@ export function getMeshStyle(meshMode, darkMode, colors) {
           mat: {
             transparent: true,
             opacity: 0,
-            iridescence: 0,
+            iridescence: 0.001, // epsilon (not 0) so USE_IRIDESCENCE define never toggles = no shader recompile on mode switch
             depthWrite: false,
           },
           al: {
@@ -79,7 +79,12 @@ export function getMeshStyle(meshMode, darkMode, colors) {
             metalness: 0.88,
             roughness: 0.15,
             opacity: 0.82,
-            depthWrite: false,
+            // depthWrite ON despite being transparent — at 0.82 it's nearly
+            // opaque, and writing depth lets the GPU cull the hidden back half
+            // of the full-body mesh instead of blending every back-facing
+            // triangle through the front (huge overdraw = the lag). Minor
+            // tradeoff: slightly less see-through, imperceptible at 0.82.
+            depthWrite: true,
           },
         };
       // DARK · MODE 3 — X-RAY/BONE: semi-transparent white (aluminum untouched)
@@ -94,7 +99,7 @@ export function getMeshStyle(meshMode, darkMode, colors) {
             roughness: 0.1,
             emissive: whiteEmissiveDark,
             emissiveIntensity: 0.1,
-            iridescence: 0,
+            iridescence: 0.001, // epsilon (not 0) so USE_IRIDESCENCE define never toggles = no shader recompile on mode switch
             depthWrite: false,
           },
         };
@@ -222,8 +227,11 @@ export function getMeshStyle(meshMode, darkMode, colors) {
           color: alColor,
           metalness: 0.9,
           roughness: 0.15,
-          opacity: 0.62,
-          depthWrite: false,
+          // Bumped 0.62 → 0.78 and depthWrite ON to cull back-half overdraw
+          // (the lag). Higher opacity keeps it looking right now that it reads
+          // as a near-solid surface rather than see-through.
+          opacity: 0.78,
+          depthWrite: true,
         },
       };
     // LIGHT · MODE 2 — ghost + aluminum solid

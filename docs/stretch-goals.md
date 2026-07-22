@@ -121,6 +121,34 @@ export default WireframeModel
 
 ---
 
+## Orb → Meridian Energy Vortexes (Breath Exchange)
+
+**What:** Reframe some of the ambient background orbs (SceneOrbs) as external
+*energetic vortexes* that exchange qi with the body — subtle "energetic lung"
+funnels that **absorb from the ether and repel from the body** on a cycle, like
+breathing. On each cycle, an orb-vortex would funnel energy into a specific
+meridian (which absorbs), and another meridian would repel energy back out —
+following the TCM organ-clock / element cycle order.
+
+**Open design questions (why it's a whole feature, not a tweak):**
+- Which meridians absorb vs repel, and in what sequence? (Tie to the 12-meridian
+  qi cycle: LU→LI→ST→SP→HT→SI→BL→KD→PC→TW→GB→LV→LU, and/or the Five-Element
+  generating/controlling cycles.)
+- Sync to the existing breath cycle (breathingRef) — inhale = absorb, exhale =
+  repel?
+- Cross-layer coordination: the orb field (SceneOrbs) and the meridian layer
+  (MeridianLayer/MeridianPaths) would need to talk (which orb funnels into which
+  meridian, timing).
+- Visual: a funnel/spiral from an orb into a meridian entry point; color for
+  receiving vs extending.
+
+**Prerequisite:** the orb field must be performant first (done — converted to
+instanced meshes). Build on top of that, not the old per-orb version.
+
+**Depends on:** meridian placement/routing finished (see the WIP note at top).
+
+---
+
 ## Meridian Horary Clock (Time-of-Day Activation)
 
 **What:** In TCM the "organ clock" cycles qi through the twelve meridians, each

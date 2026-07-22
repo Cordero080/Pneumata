@@ -193,6 +193,7 @@ function CellMesh({
   hoverLabel,
   hoverHardware,
   pulse = false,
+  modalOnly = false,
 }) {
   const gltf = useGLTF(path);
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
@@ -295,6 +296,13 @@ function CellMesh({
           if (!activeRef.current) return;
           e.stopPropagation();
           if (!clickNode) return;
+          // modalOnly meshes (pituitary) always open their modal — never drill
+          // into cell zoom — so the pituitary shows its modal from any view
+          // instead of lurching the camera into the throat/cellular view.
+          if (modalOnly) {
+            onCellSelect?.(clickNode);
+            return;
+          }
           // First click while only in brainZoom: zoom into cellular view
           if (brainZoom && !cellZoom) {
             onCellZoom?.();
@@ -583,6 +591,7 @@ function CellularView({
             brainZoom={brainZoom}
             cellZoom={cellZoom}
             clickNode={pituitaryOrgan}
+            modalOnly
             onCellSelect={onCellSelect}
             onCellZoom={onCellZoom}
             pulse

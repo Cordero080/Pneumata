@@ -49,7 +49,6 @@ function buildParticleParams(spectralColors) {
     const initY = FIGURE_Y_CENTER + (rng() - 0.4) * 1 * SWELL_Y_SPREAD;
 
     list.push({
-      key: `p${i}`,
       index: i,
       colorHex: spectralColors[i % spectralColors.length],
       angle,
@@ -72,77 +71,107 @@ function buildParticleParams(spectralColors) {
   return list;
 }
 
-function Particle({ d }) {
-  const meshRef = useRef();
-  const glowRef = useRef();
-  const coreMatRef = useRef();
-  const glowMatRef = useRef();
-  const angleRef = useRef(d.angle);
+// meshBasicMaterial + a per-instance ALPHA attribute (injected via
+// onBeforeCompile). This lets each instance fade independently under one shared
+// material — the ONLY faithful way to reproduce the original per-orb opacity
+// pulse while instanced. Colors stay full (never dimmed toward black), so the
+// glow is a faint COLORED halo, not a dark ring. Normal blending, like before.
+function makeAlphaMaterial(extra) {
+  const m = new THREE.MeshBasicMaterial({
+    transparent: true,
+    depthWrite: false,
+    toneMapped: false,
+    ...extra,
+  });
+  m.onBeforeCompile = (shader) => {
+    shader.vertexShader =
+      "attribute float instanceAlpha;\nvarying float vAlpha;\n" +
+      shader.vertexShader.replace(
+        "#include <begin_vertex>",
+        "#include <begin_vertex>\n  vAlpha = instanceAlpha;",
+      );
+    shader.fragmentShader =
+      "varying float vAlpha;\n" +
+      shader.fragmentShader.replace(
+        "#include <dithering_fragment>",
+        "#include <dithering_fragment>\n  gl_FragColor.a *= vAlpha;",
+      );
+  };
+  return m;
+}
+
+function buildInstanced(particles, radiusScale, extra) {
+  const count = particles.length;
+  const geo = new THREE.SphereGeometry(1, 6, 6);
+  const alphas = new Float32Array(count);
+  geo.setAttribute(
+    "instanceAlpha",
+    new THREE.InstancedBufferAttribute(alphas, 1),
+  );
+  const mesh = new THREE.InstancedMesh(geo, makeAlphaMaterial(extra), count);
+  // Static full base colors (never change) + fixed per-instance size.
+  const dummy = new THREE.Object3D();
+  const color = new THREE.Color();
+  particles.forEach((d, i) => {
+    dummy.scale.setScalar(d.radius * radiusScale);
+    dummy.position.set(0, -999, 0); // real position set each frame
+    dummy.updateMatrix();
+    mesh.setMatrixAt(i, dummy.matrix);
+    color.set(d.colorHex);
+    mesh.setColorAt(i, color);
+  });
+  mesh.instanceColor.needsUpdate = true;
+  return { mesh, alphas };
+}
+
+function OrbField({ particles }) {
+  const count = particles.length;
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const angles = useMemo(() => particles.map((d) => d.angle), [particles]);
+
+  const core = useMemo(() => buildInstanced(particles, 1, {}), [particles]);
+  const glow = useMemo(
+    () => buildInstanced(particles, 2, { side: THREE.BackSide }),
+    [particles],
+  );
 
   useFrame((state, delta) => {
-    if (!meshRef.current) return;
     const t = state.clock.getElapsedTime();
+    for (let i = 0; i < count; i++) {
+      const d = particles[i];
+      angles[i] += delta * d.orbitSpeed;
+      const a = angles[i];
+      const x =
+        Math.cos(a) * d.orbitR +
+        Math.sin(t * d.wobbleFreq + d.wobblePhase) * d.wobbleAmp;
+      const z =
+        Math.sin(a) * d.orbitR +
+        Math.cos(t * d.wobbleFreq + d.wobblePhase + 0.9) * d.wobbleAmp;
+      const y =
+        d.initY + Math.sin(t * d.yDriftFreq + d.yDriftPhase) * d.yDriftAmp;
+      const pulse = Math.sin(t * d.pulseSpeed + d.pulseOffset) * 0.5 + 0.5;
 
-    angleRef.current += delta * d.orbitSpeed;
-    const a = angleRef.current;
+      dummy.position.set(x, y, z);
+      dummy.scale.setScalar(d.radius);
+      dummy.updateMatrix();
+      core.mesh.setMatrixAt(i, dummy.matrix);
+      core.alphas[i] = d.baseOpacity * (0.35 + pulse * 0.65);
 
-    const x =
-      Math.cos(a) * d.orbitR +
-      Math.sin(t * d.wobbleFreq + d.wobblePhase) * d.wobbleAmp;
-    const z =
-      Math.sin(a) * d.orbitR +
-      Math.cos(t * d.wobbleFreq + d.wobblePhase + 0.9) * d.wobbleAmp;
-    const y =
-      d.initY + Math.sin(t * d.yDriftFreq + d.yDriftPhase) * d.yDriftAmp;
-
-    meshRef.current.position.set(x, y, z);
-    if (glowRef.current) glowRef.current.position.set(x, y, z);
-
-    const pulse = Math.sin(t * d.pulseSpeed + d.pulseOffset) * 0.5 + 0.5;
-    if (coreMatRef.current)
-      coreMatRef.current.opacity = d.baseOpacity * (0.35 + pulse * 0.65);
-    if (glowMatRef.current) glowMatRef.current.opacity = 0.1 + pulse * 0.18;
+      dummy.scale.setScalar(d.radius * 2);
+      dummy.updateMatrix();
+      glow.mesh.setMatrixAt(i, dummy.matrix);
+      glow.alphas[i] = 0.1 + pulse * 0.18;
+    }
+    core.mesh.instanceMatrix.needsUpdate = true;
+    glow.mesh.instanceMatrix.needsUpdate = true;
+    core.mesh.geometry.attributes.instanceAlpha.needsUpdate = true;
+    glow.mesh.geometry.attributes.instanceAlpha.needsUpdate = true;
   });
-
-  const glowR = d.radius * 2;
 
   return (
     <>
-      <mesh
-        ref={meshRef}
-        position={[
-          Math.cos(d.angle) * d.orbitR,
-          d.initY,
-          Math.sin(d.angle) * d.orbitR,
-        ]}
-      >
-        <sphereGeometry args={[d.radius, 6, 6]} />
-        <meshBasicMaterial
-          ref={coreMatRef}
-          color={d.colorHex}
-          transparent
-          opacity={d.baseOpacity}
-          depthWrite={false}
-        />
-      </mesh>
-      <mesh
-        ref={glowRef}
-        position={[
-          Math.cos(d.angle) * d.orbitR,
-          d.initY,
-          Math.sin(d.angle) * d.orbitR,
-        ]}
-      >
-        <sphereGeometry args={[glowR, 6, 6]} />
-        <meshBasicMaterial
-          ref={glowMatRef}
-          color={d.colorHex}
-          transparent
-          opacity={0.18}
-          side={THREE.BackSide}
-          depthWrite={false}
-        />
-      </mesh>
+      <primitive object={glow.mesh} />
+      <primitive object={core.mesh} />
     </>
   );
 }
@@ -159,13 +188,7 @@ export default function SceneOrbs({ theme }) {
     [spectralColors],
   );
 
-  if (!spectralColors) return null;
+  if (!spectralColors || particles.length === 0) return null;
 
-  return (
-    <>
-      {particles.map((d) => (
-        <Particle key={d.key} d={d} />
-      ))}
-    </>
-  );
+  return <OrbField particles={particles} />;
 }

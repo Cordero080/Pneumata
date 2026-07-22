@@ -27,7 +27,15 @@ function cameraReducer(state, action) {
         resetKey: state.resetKey + 1,
       };
     case "setBrainZoom":
-      return { ...state, brainZoom: action.value };
+      // Reset panY to center when entering brain zoom. The brain camera applies
+      // panY as a Y offset (× 0.4) to the target, which at head scale (~0.2u
+      // tall) badly mis-frames the head if panY wasn't centered — showing only
+      // crown-to-nose. Centering panY on entry frames the whole head.
+      return {
+        ...state,
+        brainZoom: action.value,
+        panY: action.value ? DEFAULTS.panY : state.panY,
+      };
     case "setCellZoom":
       return { ...state, cellZoom: action.value };
     case "setPanY":

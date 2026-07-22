@@ -72,6 +72,7 @@ function SpinalCord({
   onCategoryHover,
   darkMode = true,
   meshMode = 2,
+  showQi = false,
 }) {
   const groupRef = useRef();
   const SC = darkMode ? SC_DARK : SC_LIGHT;
@@ -102,6 +103,7 @@ function SpinalCord({
         hoveredCategory={hoveredCategory}
         onCategoryHover={onCategoryHover}
         onSelect={onSelect}
+        showQi={showQi}
       />
     </group>
   );

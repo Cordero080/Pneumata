@@ -6,6 +6,33 @@ import { smoothPoints, MALE_SPINE_POINTS } from "./spineData";
 
 const CURVE_SAMPLES = 80;
 
+// Soft radial-gradient texture — the same trick the brain synapses use to look
+// like glowing points instead of hard spheres. Built once, shared by every
+// pulse sprite.
+function makeGlowTexture() {
+  const size = 64;
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const ctx = c.getContext("2d");
+  const g = ctx.createRadialGradient(
+    size / 2,
+    size / 2,
+    0,
+    size / 2,
+    size / 2,
+    size / 2,
+  );
+  // Very soft falloff — a faint halo with almost no hard core, so overlapping
+  // sprites blend into a wispy glow instead of stacking into a solid pill.
+  g.addColorStop(0, "rgba(255,255,255,0.9)");
+  g.addColorStop(0.12, "rgba(255,255,255,0.35)");
+  g.addColorStop(0.5, "rgba(255,255,255,0.08)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  return new THREE.CanvasTexture(c);
+}
+
 const TRACTS = [
   {
     id: "dorsal_l",
@@ -121,30 +148,15 @@ const TRACTS = [
   },
 ];
 
+// A pulse is now a small CLUSTER of 3 sparks (not a long comet trail — that
+// read as a solid uniform line from a distance). The three sit close together
+// with a little spacing, and each twinkles on its own phase (see useFrame), so
+// the cluster reads as a dynamic burst of sparks firing along the cord with
+// gaps between pulses — not a continuous streak.
 const TRAIL = [
-  { tOff: 0.0, size: 0.002, opacity: 1.0 },
-  { tOff: 0.008, size: 0.002, opacity: 0.8 },
-  { tOff: 0.016, size: 0.002, opacity: 0.62 },
-  { tOff: 0.024, size: 0.002, opacity: 0.46 },
-  { tOff: 0.032, size: 0.002, opacity: 0.32 },
-  { tOff: 0.032, size: 0.002, opacity: 0.32 },
-  { tOff: 0.032, size: 0.002, opacity: 0.32 },
-  { tOff: 0.04, size: 0.002, opacity: 0.2 },
-  { tOff: 0.04, size: 0.002, opacity: 0.2 },
-  { tOff: 0.04, size: 0.002, opacity: 0.2 },
-  { tOff: 0.05, size: 0.002, opacity: 0.12 },
-  { tOff: 0.062, size: 0.002, opacity: 0.06 },
-  { tOff: 0.062, size: 0.002, opacity: 0.06 },
-  { tOff: 0.062, size: 0.002, opacity: 0.06 },
-  { tOff: 0.076, size: 0.002, opacity: 0.06 },
-  { tOff: 0.076, size: 0.002, opacity: 0.06 },
-  { tOff: 0.076, size: 0.002, opacity: 0.06 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
-  { tOff: 0.076, size: 0.002, opacity: 0.02 },
+  { tOff: 0.0, size: 0.0024, opacity: 1.0 },
+  { tOff: 0.014, size: 0.0019, opacity: 0.7 },
+  { tOff: 0.03, size: 0.0015, opacity: 0.45 },
 ];
 
 function sampleLUT(lut, t) {
@@ -166,6 +178,7 @@ const _lutTmp = new THREE.Vector3();
 export default function SpinalFibers({ spinePoints, viewMode }) {
   const meshRefs = useRef({});
   const pulseT = useRef({});
+  const glowTex = useMemo(() => makeGlowTexture(), []);
 
   const { luts, linePoints } = useMemo(() => {
     const smoothed = smoothPoints(MALE_SPINE_POINTS);
@@ -182,12 +195,14 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
     return { luts, linePoints };
   }, []);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (!luts) return;
     const d = Math.min(delta, 0.05);
+    const time = state.clock.getElapsedTime();
     const mult =
       viewMode === "breathing" ? 0.15 : viewMode === "unified" ? 0.5 : 1.0;
 
+    let tractIdx = 0;
     for (const tract of TRACTS) {
       const lut = luts[tract.id];
       if (!lut) continue;
@@ -201,16 +216,28 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
 
       for (let pi = 0; pi < tract.pulses; pi++) {
         const tHead = (((t0 + pi / tract.pulses) % 1) + 1) % 1;
+        // Firefly glow — each individual pulse breathes on its own phase, and
+        // groups (tracts) are offset from each other, so the cord twinkles as
+        // nested sequences rather than a uniform stream. 0.45..1.0 range keeps
+        // it soft, never fully dark. FIREFLY_RATE tunes the twinkle speed.
+        const groupPhase = tractIdx * 1.7 + pi * 2.3;
         for (let ti = 0; ti < TRAIL.length; ti++) {
           const step = TRAIL[ti];
           const t = Math.max(0, Math.min(1, tHead - tract.dir * step.tOff));
           const ref = meshRefs.current[`${tract.id}_${pi}_${ti}`];
           if (ref) {
             ref.position.copy(sampleLUT(lut, t));
-            ref.material.opacity = step.opacity * mult;
+            // Each spark in the 3-cluster twinkles on its OWN phase (ti offset),
+            // dipping to ~0.15, so the group flickers dynamically rather than
+            // glowing as one uniform blob.
+            const firefly =
+              0.15 +
+              0.85 * (0.5 + 0.5 * Math.sin(time * 2.4 + groupPhase + ti * 2.1));
+            ref.material.opacity = step.opacity * mult * firefly;
           }
         }
       }
+      tractIdx++;
     }
   });
 
@@ -244,22 +271,30 @@ export default function SpinalFibers({ spinePoints, viewMode }) {
       {TRACTS.map((tract) =>
         Array.from({ length: tract.pulses }, (_, pi) =>
           TRAIL.map((step, ti) => (
-            <mesh
+            // Soft glow sprite (radial-gradient texture) instead of a hard
+            // sphere — this is what makes it read as a glowing synapse/firefly
+            // point. White-hot head (first 3 steps), category-colored tail,
+            // additive blend. Scale ~5× the old radius so the fuzzy glow is
+            // visible but still a bit smaller than the brain synapses.
+            <sprite
               key={`${tract.id}_${pi}_${ti}`}
               ref={(el) => {
                 if (el) meshRefs.current[`${tract.id}_${pi}_${ti}`] = el;
               }}
               renderOrder={7}
+              scale={[step.size * 2.4, step.size * 2.4, 1]}
             >
-              <sphereGeometry args={[step.size, 7, 7]} />
-              <meshBasicMaterial
-                color={tract.color}
+              <spriteMaterial
+                map={glowTex}
+                color={ti < 3 ? "#ffffff" : tract.color}
                 transparent
                 opacity={step.opacity * mult}
                 depthWrite={false}
+                depthTest={false}
                 toneMapped={false}
+                blending={THREE.AdditiveBlending}
               />
-            </mesh>
+            </sprite>
           )),
         ),
       )}

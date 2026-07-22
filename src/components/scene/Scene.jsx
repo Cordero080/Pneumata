@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { OrbitControls, PerformanceMonitor } from "@react-three/drei";
 import SceneLights from "./SceneLights";
@@ -42,7 +42,49 @@ const ONYX_ORGAN_IDS = [
   "skin",
 ];
 
-const CELL_ZOOM_IDS = new Set(["pituitary"]);
+// Camera-to-target distance thresholds at which the brain's neural sparks fade
+// in — so approaching the head isn't barren before full brain zoom. Driven by
+// the ACTUAL camera distance (not the zoom slider), so pinch-zoom, scroll, and
+// the slider all trigger it. Hysteresis (enter closer than exit) prevents
+// flicker at the boundary. Default full-body distance is ≈2.1.
+const NEURAL_PREVIEW_ENTER = 1.7; // zoomed in ~20% → sparks appear
+const NEURAL_PREVIEW_EXIT = 1.9; // must pull back past this to hide them
+
+// Watches the live camera distance to the orbit target and flips a boolean when
+// it crosses the preview thresholds. A component (not a prop check) because the
+// distance changes every frame via any input — pinch, scroll, or slider.
+function ZoomWatcher({ controlsRef, onChange }) {
+  const { camera } = useThree();
+  const active = useRef(false);
+  const fallback = useRef(new THREE.Vector3(...ORBIT_TARGET));
+  useFrame(() => {
+    const target = controlsRef.current?.target ?? fallback.current;
+    const d = camera.position.distanceTo(target);
+    const next = active.current
+      ? d < NEURAL_PREVIEW_EXIT
+      : d < NEURAL_PREVIEW_ENTER;
+    if (next !== active.current) {
+      active.current = next;
+      onChange(next);
+    }
+  });
+  return null;
+}
+
+// Brain nodes whose click ONLY opens their modal — never triggers brain/cell
+// zoom or a camera move. The pituitary was both a brain node and a cell-zoom
+// target, so its click lurched the camera (Back button, wrong Y) instead of
+// reliably showing its modal.
+const MODAL_ONLY_IDS = new Set(["pituitary"]);
+
+// Organ nodes that, when clicked while already in brain-zoom, drill further
+// into the cellular view. Was ["pituitary"], but that made a pituitary click
+// fire setCellZoom on the SAME click that opens its modal — the two fought,
+// and the camera lurched into the cellular "throat" view (Back button) instead
+// of showing the modal. Emptied so a pituitary click just opens its modal like
+// every other node. The cellular view is still reachable by clicking the
+// neuron cell meshes directly (CellularView → onCellZoom).
+const CELL_ZOOM_IDS = new Set();
 
 const LEFT_LUNG_POS = [-0.12, 1.22, 0.05];
 const RIGHT_LUNG_POS = [0.12, 1.22, 0.05];
@@ -119,15 +161,20 @@ function Scene({
   const [spinePoints, setSpinePoints] = useState(null);
   const [bodyLandmarks, setBodyLandmarks] = useState(null);
   const [cellTarget, setCellTarget] = useState(null);
+  // True once the camera is zoomed in close enough to show the brain's neural
+  // sparks (driven by ZoomWatcher off the live camera distance — pinch/scroll/slider).
+  const [neuralPreview, setNeuralPreview] = useState(false);
 
-  // Adaptive resolution — start at the device's real pixel ratio (capped at 2)
-  // so the mesh renders crisp, then PerformanceMonitor scales it back down if
-  // the framerate can't sustain it. Replaces the old fixed dpr=1 on mobile,
-  // which was the cause of the fuzzy look.
-  const MAX_DPR = Math.min(
-    typeof window !== "undefined" ? window.devicePixelRatio : 1,
-    2,
-  );
+  // Adaptive resolution. Desktop starts crisp (up to 2×); mobile is capped at
+  // 1.5× — NOT 2×. A phone reporting devicePixelRatio 3 rendering at 2× draws
+  // 4× the pixels of the old fixed dpr=1, which tanked the framerate; 1.5× is
+  // ~2.25× (still sharper than the old 1×, but affordable). PerformanceMonitor
+  // then drops toward 1 if the framerate still can't hold, and `flipflops`
+  // makes it SETTLE at a floor after a few adjustments instead of oscillating
+  // between two values (which reads as periodic jank).
+  const deviceDpr = typeof window !== "undefined" ? window.devicePixelRatio : 1;
+  const MAX_DPR = Math.min(deviceDpr, IS_MOBILE ? 1.5 : 2);
+  const MIN_DPR = 1;
   const [dpr, setDpr] = useState(MAX_DPR);
 
   useEffect(() => {
@@ -180,13 +227,18 @@ function Scene({
       performance={{ min: 0.4 }}
       onPointerMissed={() => handleClearPreview()}
     >
-      {/* Drop resolution a step if fps sags, raise it back when there's
-          headroom. Bounds keep it between 1 (smooth) and the device max (crisp). */}
+      {/* Drop resolution if fps sags, raise it back when there's headroom, but
+          settle instead of oscillate: after a few flips, `flipflops` locks it
+          via onFallback to the low bound so the user isn't shown periodic
+          resolution swings (which read as recurring jank). */}
       <PerformanceMonitor
         factor={1}
-        onDecline={() => setDpr((d) => Math.max(1, d - 0.5))}
+        flipflops={3}
+        onFallback={() => setDpr(MIN_DPR)}
+        onDecline={() => setDpr((d) => Math.max(MIN_DPR, d - 0.5))}
         onIncline={() => setDpr((d) => Math.min(MAX_DPR, d + 0.5))}
       />
+      <ZoomWatcher controlsRef={controlsRef} onChange={setNeuralPreview} />
       <SceneLights darkMode={darkMode} meshMode={meshMode} />
       <BreathingDriver breathingRef={breathingRef} />
       <group
@@ -271,29 +323,41 @@ function Scene({
           onBrainClick={() => setBrainZoom(true)}
         />
 
-        <NeuralActivity
-          brainZoom={brainZoom}
-          cellZoom={cellZoom}
-          femaleMode={femaleMode}
-        />
-        <CellularView
-          brainZoom={brainZoom}
-          cellZoom={cellZoom}
-          darkMode={darkMode}
-          meshMode={meshMode}
-          femaleMode={femaleMode}
-          onCellZoom={() => setCellZoom(true)}
-          onCellSelect={(node) =>
-            onSelect({
-              id: node.id,
-              organ: node.organ ?? node.label,
-              hardware: node.hardware,
-              bioFunction: node.bioFunction,
-              hardFunction: node.hardFunction,
-              synthesis: node.synthesis,
-            })
-          }
-        />
+        {/* Neural sparks (the "synapses") mount a bit before full brain zoom —
+            once the camera has zoomed in past NEURAL_PREVIEW_ZOOM (≈20% closer
+            than the default), so approaching the head doesn't look barren. They
+            stay off in the default full-body view (perf). */}
+        {(brainZoom || cellZoom || neuralPreview) && (
+          <NeuralActivity
+            brainZoom={brainZoom}
+            cellZoom={cellZoom}
+            femaleMode={femaleMode}
+          />
+        )}
+
+        {/* Cellular neurons are the heavy layer (5 GLBs) and only meaningful at
+            the brain close-up, so they stay deferred to actual brain/cell zoom.
+            GLBs are preloaded, so the ~1s camera move masks the mount. */}
+        {(brainZoom || cellZoom) && (
+          <CellularView
+            brainZoom={brainZoom}
+            cellZoom={cellZoom}
+            darkMode={darkMode}
+            meshMode={meshMode}
+            femaleMode={femaleMode}
+            onCellZoom={() => setCellZoom(true)}
+            onCellSelect={(node) =>
+              onSelect({
+                id: node.id,
+                organ: node.organ ?? node.label,
+                hardware: node.hardware,
+                bioFunction: node.bioFunction,
+                hardFunction: node.hardFunction,
+                synthesis: node.synthesis,
+              })
+            }
+          />
+        )}
 
         <LungVolume
           position={LEFT_LUNG_POS}
@@ -340,6 +404,7 @@ function Scene({
               hoveredCategory={activeCategory}
               onCategoryHover={handleCategoryHover}
               legendCategory={legendCategory}
+              showQi={showQi && showMeridians}
             />
           ) : (
             <OrganNode
@@ -348,7 +413,11 @@ function Scene({
               femaleMode={femaleMode}
               onSelect={(o) => {
                 onSelect(o);
-                if (o.brainPosition) {
+                // MODAL_ONLY_IDS (pituitary) always just open their modal — no
+                // brain/cell zoom, no camera move, no Back button — from any
+                // perspective. Its dual role (brain node + cell-zoom target)
+                // made clicks lurch the camera instead of showing the modal.
+                if (o.brainPosition && !MODAL_ONLY_IDS.has(o.id)) {
                   if (brainZoom && CELL_ZOOM_IDS.has(o.id)) setCellZoom(true);
                   else setBrainZoom(true);
                 }
@@ -384,6 +453,7 @@ function Scene({
             scale={globalScale}
             bodyLandmarks={bodyLandmarks}
             femaleMode={femaleMode}
+            showQi={showQi}
           />
         )}
         {showMeridians && (
@@ -409,8 +479,13 @@ function Scene({
       />
       <OrbitControls
         ref={controlsRef}
-        enableZoom
-        enablePan
+        // Freeze user manipulation (rotate/zoom/pan) while a modal is open so
+        // the body doesn't move under the reader; re-enabled on close. Only the
+        // input flags are gated — programmatic camera moves (CameraController's
+        // ctrl.update) and autoRotate are unaffected, so organ-focus still works.
+        enableRotate={!selectedOrgan}
+        enableZoom={!selectedOrgan}
+        enablePan={!selectedOrgan}
         autoRotate={autoRotate}
         autoRotateSpeed={0.5}
         minDistance={0.7}

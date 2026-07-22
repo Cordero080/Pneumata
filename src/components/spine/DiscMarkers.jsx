@@ -2,6 +2,32 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { CATEGORY_COLORS, SPINAL_LEVELS, DISC_STYLES } from "./spineData";
 
+// ── CHI → SPINE REACTION — rationale ─────────────────────────────────────────
+// In TCM, qi flowing through a meridian acts on that meridian's organ. In this
+// model the spine is the bus that innervates the organs (each disc already
+// carries the `category` of the organ SYSTEM it serves — see SPINAL_LEVELS).
+// So when qi flows, the disc that innervates a given system should react — the
+// spine "feeling" the channel fire. We reuse the exact HOVER reaction (brighten
+// toward activeOpacity + scale up), just driven by a chi wave instead of the
+// cursor, so it reads consistently.
+//
+// The wave sweeps the organ systems in a descending sequence (roughly cervical
+// → sacral by where each system sits), so the spine lights up region by region
+// as qi cycles — a legible echo of the flow rather than an anatomically exact
+// 12-meridian jump-around.
+const CATEGORY_PHASE = {
+  logic: 0.0, // cervical / brain
+  sensory: 0.14, // cervical
+  power: 0.3, // upper thoracic (heart)
+  thermal: 0.42, // thoracic (lungs)
+  digestive: 0.56, // mid thoracic–lumbar
+  renal: 0.72, // lower thoracic–lumbar
+  immune: 0.86, // lumbar–sacral
+  spirit: 0.0,
+};
+const DISC_WAVE_SPEED = 0.12; // cycles per second down the spine
+const DISC_WAVE_WIDTH = 0.16; // fraction of the cycle a system is lit at once
+
 function DiscMarkers({
   pts,
   discQuats,
@@ -10,6 +36,7 @@ function DiscMarkers({
   hoveredCategory,
   onCategoryHover,
   onSelect,
+  showQi = false,
 }) {
   const discRefs = useRef([]);
   const hoveredDiscIndexRef = useRef(null);
@@ -20,7 +47,10 @@ function DiscMarkers({
   const isDarkMesh = darkMode ? meshMode <= 2 : meshMode === 0;
   const style = DISC_STYLES[isDarkMesh ? "dark" : "light"];
 
-  useFrame(() => {
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+    const waveT = showQi ? (time * DISC_WAVE_SPEED) % 1 : -1;
+
     discRefs.current.forEach((mesh, i) => {
       if (!mesh?.material) return;
       const levelData = SPINAL_LEVELS[Math.min(i, SPINAL_LEVELS.length - 1)];
@@ -28,16 +58,32 @@ function DiscMarkers({
       const isCategoryHighlighted =
         hoveredCategoryRef.current === levelData.category;
 
-      const targetOpacity = isDirectlyHovered
-        ? style.hoverOpacity
-        : isCategoryHighlighted
-          ? style.activeOpacity
-          : style.baseOpacity;
-      const targetScale = isDirectlyHovered
-        ? 1.6
-        : isCategoryHighlighted
-          ? 1.4
-          : 1.0;
+      // Chi activation — 0..1, peaks as the wave reaches this disc's system.
+      let chi = 0;
+      if (showQi) {
+        const ph = CATEGORY_PHASE[levelData.category] ?? 0;
+        let dist = Math.abs(waveT - ph);
+        dist = Math.min(dist, 1 - dist); // wrap-around
+        chi = Math.max(0, 1 - dist / DISC_WAVE_WIDTH);
+        chi *= chi; // sharpen the pass-through
+      }
+
+      // Same reaction as hover, whichever is strongest: direct hover >
+      // category-highlight/chi. Chi reuses the category-highlight values.
+      let targetOpacity = style.baseOpacity;
+      let targetScale = 1.0;
+      if (isDirectlyHovered) {
+        targetOpacity = style.hoverOpacity;
+        targetScale = 1.6;
+      } else if (isCategoryHighlighted) {
+        targetOpacity = style.activeOpacity;
+        targetScale = 1.4;
+      }
+      // Blend chi in on top (never dimmer than the hover target).
+      const chiOpacity =
+        style.baseOpacity + chi * (style.activeOpacity - style.baseOpacity);
+      targetOpacity = Math.max(targetOpacity, chiOpacity);
+      targetScale = Math.max(targetScale, 1 + chi * 0.4);
 
       mesh.material.opacity += (targetOpacity - mesh.material.opacity) * 0.12;
       const s = mesh.scale.x;

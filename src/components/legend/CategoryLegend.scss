@@ -29,7 +29,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0;
-  cursor: default;
+  cursor: pointer; // rows are clickable to expand
   position: relative;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5)) drop-shadow(0 1px 2px rgba(70, 83, 170, 0.622));
 }
@@ -63,11 +63,79 @@
   padding: 1px 0;
   white-space: nowrap;
 
-  .legend-row:hover & {
-    max-width: 280px;
+  .legend-row:hover &,
+  .legend-row--expanded & {
+    max-width: 300px;
     opacity: 1;
-    padding: 6px 18px 6px 14px;
+    padding: 6px 16px 6px 14px;
   }
+}
+
+// Head row: titles on the left, the +/− click affordance on the right.
+.legend-tag__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.legend-tag__titles {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.legend-toggle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(18, 38, 72, 0.55);
+  margin-left: auto;
+}
+.category-legend--dark .legend-toggle {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+// Expanded detail — about line, hardware analog, example organs.
+.legend-detail {
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(120, 140, 180, 0.35);
+  max-width: 240px;
+  white-space: normal;
+  text-align: left;
+  animation: legend-detail-in 0.25s ease both;
+}
+@keyframes legend-detail-in {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.legend-about {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: rgba(18, 38, 72, 0.82);
+}
+.legend-hw {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 5px;
+  color: rgba(18, 38, 72, 0.62);
+}
+.legend-ex {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 4px;
+  color: rgba(18, 38, 72, 0.5);
+}
+.category-legend--dark {
+  .legend-about { color: rgba(255, 255, 255, 0.9); }
+  .legend-hw { color: rgba(200, 222, 255, 0.75); }
+  .legend-ex { color: rgba(200, 222, 255, 0.6); }
+  .legend-detail { border-top-color: rgba(120, 160, 220, 0.4); }
 }
 
 .legend-label {
