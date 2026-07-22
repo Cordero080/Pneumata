@@ -31,15 +31,45 @@ function apertureTexture() {
     size / 2,
     size / 2,
   );
-  g.addColorStop(0, "rgba(255,255,255,0.25)"); // dim hollow-ish center
-  g.addColorStop(0.45, "rgba(255,255,255,0.55)");
-  g.addColorStop(0.62, "rgba(255,255,255,1)"); // bright ring = aperture rim
-  g.addColorStop(0.8, "rgba(255,255,255,0.3)");
+  // Medium ring — hollow center, moderate rim (a touch thinner than the
+  // original, not razor-thin).
+  g.addColorStop(0, "rgba(255,255,255,0.18)"); // dim hollow center
+  g.addColorStop(0.5, "rgba(255,255,255,0.3)");
+  g.addColorStop(0.66, "rgba(255,255,255,1)"); // bright rim
+  g.addColorStop(0.8, "rgba(255,255,255,0.2)");
   g.addColorStop(1, "rgba(255,255,255,0)"); // fade out
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
   _apertureTex = new THREE.CanvasTexture(c);
   return _apertureTex;
+}
+
+// Bright-center "star" texture — a tight glowing dot (opposite of the hollow
+// aperture). Sits at the exact center of each point as a precision placement
+// anchor, in the meridian's color.
+let _coreTex = null;
+function coreTexture() {
+  if (_coreTex) return _coreTex;
+  const size = 64;
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const ctx = c.getContext("2d");
+  const g = ctx.createRadialGradient(
+    size / 2,
+    size / 2,
+    0,
+    size / 2,
+    size / 2,
+    size / 2,
+  );
+  g.addColorStop(0, "rgba(255,255,255,1)"); // hot center
+  g.addColorStop(0.25, "rgba(255,255,255,0.75)");
+  g.addColorStop(0.6, "rgba(255,255,255,0.15)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  _coreTex = new THREE.CanvasTexture(c);
+  return _coreTex;
 }
 
 // Sequential well-up tuning
@@ -172,6 +202,21 @@ function MeridianPoint({
           color={color}
           transparent
           opacity={0.28}
+          depthWrite={false}
+          depthTest={false}
+          toneMapped={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </sprite>
+
+      {/* Precision center-star — a tight bright dot in the meridian color at the
+          exact node center, to place points against. Small + steady. */}
+      <sprite renderOrder={7} scale={[baseSize * 0.32, baseSize * 0.32, 1]}>
+        <spriteMaterial
+          map={coreTexture()}
+          color={color}
+          transparent
+          opacity={0.95}
           depthWrite={false}
           depthTest={false}
           toneMapped={false}
