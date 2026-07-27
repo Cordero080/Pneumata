@@ -186,7 +186,9 @@ function App() {
   const [showTopNav, setShowTopNav] = useState(false);
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
   const [legendCategory, setLegendCategory] = useState(null);
-  const [showLanding, setShowLanding] = useState(true);
+  const [showLanding, setShowLanding] = useState(
+    () => !localStorage.getItem("pneumata_entered"),
+  );
   const aboutRef = useRef(null);
   const bgPickerRef = useRef(null);
   const pathBtnRef = useRef(null);
@@ -691,7 +693,10 @@ function App() {
       {showLanding && (
         <LandingOverlay
           onPreviewEntry={handleLandingPreview}
-          onEnter={() => setShowLanding(false)}
+          onEnter={() => {
+            localStorage.setItem("pneumata_entered", "1");
+            setShowLanding(false);
+          }}
         />
       )}
 

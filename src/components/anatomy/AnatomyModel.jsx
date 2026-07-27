@@ -17,7 +17,7 @@ import "./male/MaleModel.scss";
 const IS_MOBILE = window.innerWidth <= 768;
 
 const BREATH_BLUE = new THREE.Color("#334499");
-const BREATH_CYAN = new THREE.Color("#b0e8ff");
+const BREATH_CYAN = new THREE.Color("#75d2f7");
 const EMISSIVE_WHITE = new THREE.Color("#ffffff");
 const EMISSIVE_POWER = new THREE.Color("#bd0404");
 
@@ -31,6 +31,7 @@ function AnatomyModel({
   darkMode,
   meshMode,
   femaleMode,
+  active = true,
   organWindowPositions = [],
 }) {
   // Config is constant for this component's lifetime — AnatomyModel remounts (key=modelPath)
@@ -400,6 +401,15 @@ if (uRegionFade > 0.0) {
   useFrame((state) => {
     if (!materialRef.current) return;
     const t = state.clock.getElapsedTime();
+
+    if (!active) {
+      scene.visible = false;
+      if (aluminumScene) aluminumScene.visible = false;
+      if (bloodScene) bloodScene.visible = false;
+      if (breathScene) breathScene.visible = false;
+      if (sheenScene) sheenScene.visible = false;
+      return;
+    }
 
     // Organ positions — sync once (or when positions change), then update fade every frame
     if (!organPosSyncedRef.current && organWindowPositions.length) {

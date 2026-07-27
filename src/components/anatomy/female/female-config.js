@@ -23,7 +23,7 @@ export const Y_OFFSET = 0.08;
 // to make the whole female figure bigger/smaller. FIGURE_Y_LIFT re-centers her
 // vertically after scaling.
 export const FIGURE_SCALE = 0.99;
-export const FIGURE_Y_LIFT = 0.03;
+export const FIGURE_Y_LIFT = 0.008;
 
 // Female spine is sampled dynamically (not hardcoded) with these vertex-filter opts
 export const SPINE_OPTS = {

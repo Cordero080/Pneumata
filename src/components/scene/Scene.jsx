@@ -160,8 +160,14 @@ function Scene({
     previewedOrgan?.category ??
     legendCategory ??
     null;
-  const [spinePoints, setSpinePoints] = useState(null);
-  const [bodyLandmarks, setBodyLandmarks] = useState(null);
+
+  const [maleSpinePoints, setMaleSpinePoints] = useState(null);
+  const [femaleSpinePoints, setFemaleSpinePoints] = useState(null);
+  const [maleLandmarks, setMaleLandmarks] = useState(null);
+  const [femaleLandmarks, setFemaleLandmarks] = useState(null);
+  const spinePoints = femaleMode ? femaleSpinePoints : maleSpinePoints;
+  const bodyLandmarks = femaleMode ? femaleLandmarks : maleLandmarks;
+
   const [cellTarget, setCellTarget] = useState(null);
   // True once the camera is zoomed in close enough to show the brain's neural
   // sparks (driven by ZoomWatcher off the live camera distance — pinch/scroll/slider).
@@ -179,10 +185,22 @@ function Scene({
   const MIN_DPR = 1;
   const [dpr, setDpr] = useState(MAX_DPR);
 
-  useEffect(() => {
-    setSpinePoints(null);
-    setBodyLandmarks(null);
-  }, [modelPath]);
+  const handleMaleSpineExtracted = useCallback(
+    (pts) => setMaleSpinePoints(pts),
+    [],
+  );
+  const handleFemaleSpineExtracted = useCallback(
+    (pts) => setFemaleSpinePoints(pts),
+    [],
+  );
+  const handleMaleLandmarksExtracted = useCallback(
+    (lm) => setMaleLandmarks(lm),
+    [],
+  );
+  const handleFemaleLandmarksExtracted = useCallback(
+    (lm) => setFemaleLandmarks(lm),
+    [],
+  );
 
   const heartbeatRef = useRef(0);
   const breathingRef = useRef(0);
@@ -243,228 +261,254 @@ function Scene({
       <ZoomWatcher controlsRef={controlsRef} onChange={setNeuralPreview} />
       <SceneLights darkMode={darkMode} meshMode={meshMode} />
       <BreathingDriver breathingRef={breathingRef} />
-      <group
-        scale={globalScale * figureConfig.FIGURE_SCALE}
-        position={[offsetX, offsetY + figureConfig.FIGURE_Y_LIFT, 0]}
-      >
-        <AnatomyModel
-          key={modelPath}
-          modelPath={modelPath}
-          viewMode={viewMode}
-          onSpineExtracted={handleSpineExtracted}
-          onLandmarksExtracted={handleLandmarksExtracted}
-          heartbeatRef={heartbeatRef}
-          breathingRef={breathingRef}
-          darkMode={darkMode}
-          meshMode={meshMode}
-          femaleMode={femaleMode}
-          organWindowPositions={organWindowPositions}
-        />
 
-        <HeartModel
-          meshMode={meshMode}
-          viewMode={viewMode}
-          hoveredOrganId={hoveredOrganId}
-          heartbeatRef={heartbeatRef}
-          femaleMode={femaleMode}
-          selectedOrganId={selectedOrgan?.id}
-        />
-
-        <LungsModel
-          meshMode={meshMode}
-          viewMode={viewMode}
-          hoveredOrganId={hoveredOrganId}
-          breathingRef={breathingRef}
-          heartbeatRef={heartbeatRef}
-          femaleMode={femaleMode}
-          selectedOrganId={selectedOrgan?.id}
-        />
-
-        <KidneysModel
-          meshMode={meshMode}
-          viewMode={viewMode}
-          hoveredOrganId={hoveredOrganId}
-          femaleMode={femaleMode}
-          selectedOrganId={selectedOrgan?.id}
-          onKidneyClick={() => {
-            const kidney = organs.find((o) => o.id === "right_kidney");
-            if (kidney) onSelect(kidney);
-          }}
-        />
-
-        <LiverModel
-          meshMode={meshMode}
-          viewMode={viewMode}
-          hoveredOrganId={hoveredOrganId}
-          femaleMode={femaleMode}
-          selectedOrganId={selectedOrgan?.id}
-        />
-
-        <StomachModel
-          meshMode={meshMode}
-          viewMode={viewMode}
-          hoveredOrganId={hoveredOrganId}
-          femaleMode={femaleMode}
-          selectedOrganId={selectedOrgan?.id}
-        />
-
-        <IntestineModel
-          meshMode={meshMode}
-          viewMode={viewMode}
-          hoveredOrganId={hoveredOrganId}
-          femaleMode={femaleMode}
-          selectedOrganId={selectedOrgan?.id}
-        />
-
-        <BrainModel
-          meshMode={meshMode}
-          brainZoom={brainZoom}
-          cellZoom={cellZoom}
-          darkMode={darkMode}
-          femaleMode={femaleMode}
-          onBrainClick={() => setBrainZoom(true)}
-        />
-
-        {/* Neural sparks (the "synapses") mount a bit before full brain zoom —
-            once the camera has zoomed in past NEURAL_PREVIEW_ZOOM (≈20% closer
-            than the default), so approaching the head doesn't look barren. They
-            stay off in the default full-body view (perf). */}
-        {(brainZoom || cellZoom || neuralPreview) && (
-          <NeuralActivity
-            brainZoom={brainZoom}
-            cellZoom={cellZoom}
-            femaleMode={femaleMode}
+      <group scale={globalScale} position={[offsetX, offsetY, 0]}>
+        <group
+          scale={maleConfig.FIGURE_SCALE}
+          position={[0, maleConfig.FIGURE_Y_LIFT, 0]}
+        >
+          <AnatomyModel
+            modelPath="/models/body/male-body.glb"
+            viewMode={viewMode}
+            onSpineExtracted={handleMaleSpineExtracted}
+            onLandmarksExtracted={handleMaleLandmarksExtracted}
+            heartbeatRef={heartbeatRef}
+            breathingRef={breathingRef}
+            darkMode={darkMode}
+            meshMode={meshMode}
+            femaleMode={false}
+            active={!femaleMode}
+            organWindowPositions={organWindowPositions}
           />
-        )}
+        </group>
+        <group
+          scale={femaleConfig.FIGURE_SCALE}
+          position={[0, femaleConfig.FIGURE_Y_LIFT, 0]}
+        >
+          <AnatomyModel
+            modelPath="/models/body/female-body.glb"
+            viewMode={viewMode}
+            onSpineExtracted={handleFemaleSpineExtracted}
+            onLandmarksExtracted={handleFemaleLandmarksExtracted}
+            heartbeatRef={heartbeatRef}
+            breathingRef={breathingRef}
+            darkMode={darkMode}
+            meshMode={meshMode}
+            femaleMode={true}
+            active={femaleMode}
+            organWindowPositions={organWindowPositions}
+          />
+        </group>
 
-        {/* Cellular neurons are the heavy layer (5 GLBs) and only meaningful at
-            the brain close-up, so they stay deferred to actual brain/cell zoom.
-            GLBs are preloaded, so the ~1s camera move masks the mount. */}
-        {(brainZoom || cellZoom) && (
-          <CellularView
+        <group
+          scale={figureConfig.FIGURE_SCALE}
+          position={[0, figureConfig.FIGURE_Y_LIFT, 0]}
+        >
+          <HeartModel
+            meshMode={meshMode}
+            viewMode={viewMode}
+            hoveredOrganId={hoveredOrganId}
+            heartbeatRef={heartbeatRef}
+            femaleMode={femaleMode}
+            selectedOrganId={selectedOrgan?.id}
+          />
+
+          <LungsModel
+            meshMode={meshMode}
+            viewMode={viewMode}
+            hoveredOrganId={hoveredOrganId}
+            breathingRef={breathingRef}
+            heartbeatRef={heartbeatRef}
+            femaleMode={femaleMode}
+            selectedOrganId={selectedOrgan?.id}
+          />
+
+          <KidneysModel
+            meshMode={meshMode}
+            viewMode={viewMode}
+            hoveredOrganId={hoveredOrganId}
+            femaleMode={femaleMode}
+            selectedOrganId={selectedOrgan?.id}
+            onKidneyClick={() => {
+              const kidney = organs.find((o) => o.id === "right_kidney");
+              if (kidney) onSelect(kidney);
+            }}
+          />
+
+          <LiverModel
+            meshMode={meshMode}
+            viewMode={viewMode}
+            hoveredOrganId={hoveredOrganId}
+            femaleMode={femaleMode}
+            selectedOrganId={selectedOrgan?.id}
+          />
+
+          <StomachModel
+            meshMode={meshMode}
+            viewMode={viewMode}
+            hoveredOrganId={hoveredOrganId}
+            femaleMode={femaleMode}
+            selectedOrganId={selectedOrgan?.id}
+          />
+
+          <IntestineModel
+            meshMode={meshMode}
+            viewMode={viewMode}
+            hoveredOrganId={hoveredOrganId}
+            femaleMode={femaleMode}
+            selectedOrganId={selectedOrgan?.id}
+          />
+
+          <BrainModel
+            meshMode={meshMode}
             brainZoom={brainZoom}
             cellZoom={cellZoom}
             darkMode={darkMode}
-            meshMode={meshMode}
             femaleMode={femaleMode}
-            onCellZoom={() => setCellZoom(true)}
-            onCellSelect={(node) =>
-              onSelect({
-                id: node.id,
-                organ: node.organ ?? node.label,
-                hardware: node.hardware,
-                bioFunction: node.bioFunction,
-                hardFunction: node.hardFunction,
-                synthesis: node.synthesis,
-              })
-            }
+            onBrainClick={() => setBrainZoom(true)}
           />
-        )}
 
-        <LungVolume
-          position={LEFT_LUNG_POS}
-          visible={hoveredOrganId === "left_lung"}
-          breathingRef={breathingRef}
-          viewMode={viewMode}
-        />
-        <LungVolume
-          position={RIGHT_LUNG_POS}
-          visible={hoveredOrganId === "right_lung"}
-          breathingRef={breathingRef}
-          viewMode={viewMode}
-        />
-
-        <BodyCirculation opacity={circOpacity} heartbeatRef={heartbeatRef} />
-
-        <NerveRoots
-          spinePoints={spinePoints}
-          hoveredCategory={activeCategory}
-          viewMode={viewMode}
-          showNerves={showNerves}
-        />
-
-        <SpinalFibers spinePoints={spinePoints} viewMode={viewMode} />
-
-        <NerveSystem
-          spinePoints={spinePoints}
-          bodyLandmarks={bodyLandmarks}
-          viewMode={viewMode}
-          hoveredCategory={activeCategory}
-          showNerves={showNerves}
-        />
-
-        {organs.map((organ) =>
-          organ.type === "line" ? (
-            <SpinalCord
-              key={organ.id}
-              organ={organ}
-              darkMode={darkMode}
-              meshMode={meshMode}
-              onSelect={onSelect}
-              nodeOpacity={getNodeOpacity(organ, viewMode)}
-              dynamicPoints={spinePoints}
-              hoveredCategory={activeCategory}
-              onCategoryHover={handleCategoryHover}
-              legendCategory={legendCategory}
-              showQi={showQi && showMeridians}
-            />
-          ) : (
-            <OrganNode
-              key={organ.id}
-              organ={organ}
+          {/* Neural sparks (the "synapses") mount a bit before full brain zoom —
+            once the camera has zoomed in past NEURAL_PREVIEW_ZOOM (≈20% closer
+            than the default), so approaching the head doesn't look barren. They
+            stay off in the default full-body view (perf). */}
+          {(brainZoom || cellZoom || neuralPreview) && (
+            <NeuralActivity
+              brainZoom={brainZoom}
+              cellZoom={cellZoom}
               femaleMode={femaleMode}
-              onSelect={(o) => {
-                onSelect(o);
-                // MODAL_ONLY_IDS (pituitary) always just open their modal — no
-                // brain/cell zoom, no camera move, no Back button — from any
-                // perspective. Its dual role (brain node + cell-zoom target)
-                // made clicks lurch the camera instead of showing the modal.
-                if (o.brainPosition && !MODAL_ONLY_IDS.has(o.id)) {
-                  if (brainZoom && CELL_ZOOM_IDS.has(o.id)) setCellZoom(true);
-                  else setBrainZoom(true);
-                }
-              }}
-              onHover={setHoveredOrganId}
-              nodeOpacity={getNodeOpacity(organ, viewMode)}
-              pulseRef={organ.id === "heart" ? heartbeatRef : undefined}
-              breathingRef={
-                organ.id === "left_lung" ||
-                organ.id === "right_lung" ||
-                organ.id === "consciousness"
-                  ? breathingRef
-                  : undefined
-              }
-              viewMode={viewMode}
-              hoveredCategory={activeCategory}
-              onCategoryHover={handleCategoryHover}
+            />
+          )}
+
+          {/* Cellular neurons are the heavy layer (5 GLBs) and only meaningful at
+            the brain close-up, so they stay deferred to actual brain/cell zoom.
+            GLBs are preloaded, so the ~1s camera move masks the mount. */}
+          {(brainZoom || cellZoom) && (
+            <CellularView
               brainZoom={brainZoom}
               cellZoom={cellZoom}
               darkMode={darkMode}
-              selectedOrganId={selectedOrgan?.id}
-              previewedOrganId={previewedOrgan?.id}
-              onFocus={onFocus}
-              onPreview={handlePreview}
-              onClearPreview={handleClearPreview}
-              legendCategory={legendCategory}
-              showMeridians={showMeridians}
+              meshMode={meshMode}
+              femaleMode={femaleMode}
+              onCellZoom={() => setCellZoom(true)}
+              onCellSelect={(node) =>
+                onSelect({
+                  id: node.id,
+                  organ: node.organ ?? node.label,
+                  hardware: node.hardware,
+                  bioFunction: node.bioFunction,
+                  hardFunction: node.hardFunction,
+                  synthesis: node.synthesis,
+                })
+              }
             />
-          ),
-        )}
-        {showMeridians && (
-          <MeridianLayer
-            scale={globalScale}
-            bodyLandmarks={bodyLandmarks}
-            femaleMode={femaleMode}
-            showQi={showQi}
+          )}
+
+          <LungVolume
+            position={LEFT_LUNG_POS}
+            visible={hoveredOrganId === "left_lung"}
+            breathingRef={breathingRef}
+            viewMode={viewMode}
           />
-        )}
-        {showMeridians && (
-          <MeridianPaths
-            bodyLandmarks={bodyLandmarks}
-            femaleMode={femaleMode}
-            showQi={showQi}
+          <LungVolume
+            position={RIGHT_LUNG_POS}
+            visible={hoveredOrganId === "right_lung"}
+            breathingRef={breathingRef}
+            viewMode={viewMode}
           />
-        )}
+
+          <BodyCirculation opacity={circOpacity} heartbeatRef={heartbeatRef} />
+
+          <NerveRoots
+            spinePoints={spinePoints}
+            hoveredCategory={activeCategory}
+            viewMode={viewMode}
+            showNerves={showNerves}
+          />
+
+          <SpinalFibers spinePoints={spinePoints} viewMode={viewMode} />
+
+          <NerveSystem
+            spinePoints={spinePoints}
+            bodyLandmarks={bodyLandmarks}
+            viewMode={viewMode}
+            hoveredCategory={activeCategory}
+            showNerves={showNerves}
+          />
+
+          {organs.map((organ) =>
+            organ.type === "line" ? (
+              <SpinalCord
+                key={organ.id}
+                organ={organ}
+                darkMode={darkMode}
+                meshMode={meshMode}
+                onSelect={onSelect}
+                nodeOpacity={getNodeOpacity(organ, viewMode)}
+                dynamicPoints={spinePoints}
+                hoveredCategory={activeCategory}
+                onCategoryHover={handleCategoryHover}
+                legendCategory={legendCategory}
+                showQi={showQi && showMeridians}
+              />
+            ) : (
+              <OrganNode
+                key={organ.id}
+                organ={organ}
+                femaleMode={femaleMode}
+                onSelect={(o) => {
+                  onSelect(o);
+                  // MODAL_ONLY_IDS (pituitary) always just open their modal — no
+                  // brain/cell zoom, no camera move, no Back button — from any
+                  // perspective. Its dual role (brain node + cell-zoom target)
+                  // made clicks lurch the camera instead of showing the modal.
+                  if (o.brainPosition && !MODAL_ONLY_IDS.has(o.id)) {
+                    if (brainZoom && CELL_ZOOM_IDS.has(o.id)) setCellZoom(true);
+                    else setBrainZoom(true);
+                  }
+                }}
+                onHover={setHoveredOrganId}
+                nodeOpacity={getNodeOpacity(organ, viewMode)}
+                pulseRef={organ.id === "heart" ? heartbeatRef : undefined}
+                breathingRef={
+                  organ.id === "left_lung" ||
+                  organ.id === "right_lung" ||
+                  organ.id === "consciousness"
+                    ? breathingRef
+                    : undefined
+                }
+                viewMode={viewMode}
+                hoveredCategory={activeCategory}
+                onCategoryHover={handleCategoryHover}
+                brainZoom={brainZoom}
+                cellZoom={cellZoom}
+                darkMode={darkMode}
+                selectedOrganId={selectedOrgan?.id}
+                previewedOrganId={previewedOrgan?.id}
+                onFocus={onFocus}
+                onPreview={handlePreview}
+                onClearPreview={handleClearPreview}
+                legendCategory={legendCategory}
+                showMeridians={showMeridians}
+              />
+            ),
+          )}
+          {showMeridians && (
+            <MeridianLayer
+              scale={globalScale}
+              bodyLandmarks={bodyLandmarks}
+              femaleMode={femaleMode}
+              showQi={showQi}
+            />
+          )}
+          {showMeridians && (
+            <MeridianPaths
+              bodyLandmarks={bodyLandmarks}
+              femaleMode={femaleMode}
+              showQi={showQi}
+            />
+          )}
+        </group>
       </group>
       <CameraController
         brainZoom={brainZoom}
