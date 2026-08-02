@@ -21,6 +21,7 @@ import LiverModel from "../organs/LiverModel";
 import KidneysModel from "../organs/KidneysModel";
 import StomachModel from "../organs/StomachModel";
 import IntestineModel from "../organs/IntestineModel";
+import EyeModel from "../organs/EyeModel";
 import CellularView from "../brain/CellularView";
 import NeuralActivity from "../brain/NeuralActivity";
 import SceneOrbs from "./effects/SceneOrbs";
@@ -358,6 +359,8 @@ function Scene({
             femaleMode={femaleMode}
             selectedOrganId={selectedOrgan?.id}
           />
+
+          <EyeModel femaleMode={femaleMode} />
 
           <BrainModel
             meshMode={meshMode}
